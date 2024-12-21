@@ -1,0 +1,8 @@
+langchain
+openai
+mlflow
+numpy
+pandas
+torch
+transformers
+chromadb

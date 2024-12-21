@@ -1,3 +1,9 @@
+Prompt:
+Thoroughly analyze the GitHub repository EcoSphereNetwork/Smolit_LLM-NN. Clone the repository and use the roadmap.md as a step-by-step guide to develop the application. Ensure precise and systematic implementation of each step outlined in the roadmap, aligning with the project's objectives.
+Maintain a detailed record of all changes made during the development process.
+Write in english.
+The repository contains files with pseudocode examples. Convert these into fully functional and executable Python code, replacing all placeholders with complete implementations. The resulting code should be fully operational, ready to run without any modifications or additional adjustments.
+
 Architektur- und Implementierungs-Plan
 Iteration 1: Basis-Funktionalität & Stabilisierung
 

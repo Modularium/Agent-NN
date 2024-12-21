@@ -1,7 +1,7 @@
 # Smolit_LLM-NN
 NN for LLM Agents
 ______
-
+```
 projekt/
 ├─ main.py
 ├─ config.py
@@ -30,3 +30,4 @@ projekt/
    ├─ __init__.py
    ├─ logging_util.py
    ├─ prompts.py
+```

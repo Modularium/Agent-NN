@@ -3,6 +3,7 @@ Thoroughly analyze the GitHub repository EcoSphereNetwork/Smolit_LLM-NN. Clone t
 Maintain a detailed record of all changes made during the development process.
 Write in english.
 The repository contains files with pseudocode examples. Convert these into fully functional and executable Python code, replacing all placeholders with complete implementations. The resulting code should be fully operational, ready to run without any modifications or additional adjustments.
+---
 
 Architektur- und Implementierungs-Plan
 
@@ -34,6 +35,8 @@ Aufgaben:
 
 Ergebnis:
 Ein stabiler, minimaler Durchstich: Nutzeranfrage → Chatbot → Supervisor → Worker → Antwort, mit einfachen Tests und Logging.
+---
+
 Iteration 2: Agentenauswahl verbessern & NN-Integration
 
 Ziel:
@@ -61,6 +64,8 @@ Aufgaben:
 
 Ergebnis:
 Die Auswahl der Worker-Agents ist jetzt nicht mehr hart kodiert, sondern embeddings-basiert. MLflow erfasst erste Metadaten. Das System ist etwas intelligenter und hat rudimentäre Tests für die Agentenauswahl.
+---
+
 Iteration 3: Verbessertes Domain-Knowledge & Specialized LLM
 
 Ziel:
@@ -88,6 +93,8 @@ Aufgaben:
 
 Ergebnis:
 WorkerAgents sind jetzt wirklich spezialisiert, nutzen angepasste Modelle und Wissensbanken. Das System kann komplexere Anfragen bearbeiten, indem Agents miteinander kommunizieren.
+---
+
 Iteration 4: Training & Lernen des NN-Modells
 
 Ziel:
@@ -123,6 +130,8 @@ Aufgaben:
 
 Ergebnis:
 Die Agentenauswahl basiert jetzt auf einem trainierten Modell, das historische Daten nutzt. MLflow trackt Experimente, das System wird "lernfähig".
+---
+
 Iteration 5: Automatisierte Agenten-Erstellung & Verbesserung
 
 Ziel:
@@ -151,6 +160,8 @@ Aufgaben:
 
 Ergebnis:
 Das System kann neue spezialisierte Agenten on-the-fly erstellen, Agenten verbessern und so langfristig die Performance steigern. Kontinuierliche Lernerfahrung durch Feedback und MLflow-Logging ist gegeben.
+---
+
 Iteration 6: Erweiterte Evaluierung & Sicherheit
 
 Ziel:

@@ -1,23 +1,38 @@
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Any
 import numpy as np
+from datetime import datetime
 from langchain.embeddings import OpenAIEmbeddings
-import mlflow
-from config import LLM_API_KEY, MLFLOW_TRACKING_URI
+from sklearn.metrics.pairwise import cosine_similarity
+from utils.agent_descriptions import (
+    get_agent_description,
+    get_agent_embedding_text,
+    get_task_requirements,
+    match_task_to_domain
+)
+from mlflow_integration.experiment_tracking import ExperimentTracker
+from config import LLM_API_KEY
 
 class NNManager:
     def __init__(self):
         """Initialize the neural network manager for agent selection."""
         self.embeddings = OpenAIEmbeddings(openai_api_key=LLM_API_KEY)
-        mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+        self.experiment_tracker = ExperimentTracker("agent_selection")
         
         # Cache for embeddings to avoid recomputing
         self.embedding_cache: Dict[str, List[float]] = {}
         
-        # Threshold for agent selection confidence
+        # Thresholds and weights for agent selection
         self.confidence_threshold = 0.7
+        self.weights = {
+            "embedding_similarity": 0.6,
+            "requirement_match": 0.4
+        }
+        
+        # Performance tracking
+        self.performance_history: List[Dict[str, Any]] = []
 
     def predict_best_agent(self, task_description: str, available_agents: List[str]) -> Optional[str]:
-        """Predict the best agent for a given task.
+        """Predict the best agent for a given task using multiple criteria.
         
         Args:
             task_description: Description of the task
@@ -29,109 +44,183 @@ class NNManager:
         if not available_agents:
             return None
             
-        # Start MLflow run for tracking
-        with mlflow.start_run(run_name="agent_selection") as run:
-            # Log task description
-            mlflow.log_param("task_description", task_description)
-            mlflow.log_param("available_agents", available_agents)
-            
-            # Get task embedding
-            task_embedding = self._get_embedding(task_description)
-            
-            # Get agent scores
-            agent_scores = self._compute_agent_scores(task_embedding, available_agents)
-            
-            # Log scores
-            for agent, score in agent_scores.items():
-                mlflow.log_metric(f"score_{agent}", score)
-            
-            # Get best agent if score is above threshold
-            best_agent, best_score = max(agent_scores.items(), key=lambda x: x[1])
-            
-            if best_score >= self.confidence_threshold:
-                mlflow.log_metric("selection_confidence", best_score)
-                mlflow.log_param("selected_agent", best_agent)
-                return best_agent
-            
-            mlflow.log_param("selected_agent", "None")
-            return None
+        # Get task embedding and requirements
+        task_embedding = self._get_embedding(task_description)
+        task_requirements = get_task_requirements(task_description)
+        
+        # Calculate scores for each agent
+        agent_scores = self._compute_agent_scores(
+            task_embedding=task_embedding,
+            task_requirements=task_requirements,
+            available_agents=available_agents
+        )
+        
+        # Log the prediction event
+        self.experiment_tracker.log_agent_selection(
+            task_description=task_description,
+            chosen_agent=max(agent_scores.items(), key=lambda x: x[1])[0],
+            available_agents=available_agents,
+            agent_scores=agent_scores,
+            execution_result={"timestamp": datetime.now().isoformat()}
+        )
+        
+        # Return best agent if score is above threshold
+        best_agent, best_score = max(agent_scores.items(), key=lambda x: x[1])
+        return best_agent if best_score >= self.confidence_threshold else None
 
-    def _get_embedding(self, text: str) -> List[float]:
+    def _get_embedding(self, text: str) -> np.ndarray:
         """Get embedding for text, using cache if available."""
         if text not in self.embedding_cache:
-            self.embedding_cache[text] = self.embeddings.embed_query(text)
+            self.embedding_cache[text] = np.array(self.embeddings.embed_query(text))
         return self.embedding_cache[text]
 
-    def _compute_agent_scores(self, task_embedding: List[float], agents: List[str]) -> Dict[str, float]:
-        """Compute similarity scores between task and each agent.
+    def _compute_agent_scores(self,
+                            task_embedding: np.ndarray,
+                            task_requirements: List[str],
+                            available_agents: List[str]) -> Dict[str, float]:
+        """Compute comprehensive scores for each agent.
         
         Args:
             task_embedding: Embedding of the task description
-            agents: List of agent names
+            task_requirements: List of task requirements
+            available_agents: List of available agents
             
         Returns:
-            Dict mapping agent names to similarity scores
+            Dict mapping agent names to scores
         """
-        # Get agent descriptions
-        agent_descriptions = {
-            "finance_agent": """Financial expert agent specializing in:
-                - Financial analysis and reporting
-                - Budgeting and forecasting
-                - Investment strategies
-                - Risk management""",
-            "tech_agent": """Technical expert agent specializing in:
-                - Software development
-                - System architecture
-                - Technical problem-solving
-                - DevOps practices""",
-            "marketing_agent": """Marketing expert agent specializing in:
-                - Marketing strategy
-                - Digital marketing
-                - Brand development
-                - Customer engagement"""
-        }
-        
         scores = {}
-        for agent in agents:
-            # Get base domain from agent name (remove _agent suffix and numbers)
+        for agent in available_agents:
+            # Get base domain from agent name
             base_domain = agent.split('_')[0]
             
-            # Get description for the agent's domain
-            description = agent_descriptions.get(
-                f"{base_domain}_agent",
-                f"Expert agent specializing in {base_domain} related tasks."
+            # Get agent description and embedding
+            agent_text = get_agent_embedding_text(base_domain)
+            agent_embedding = self._get_embedding(agent_text)
+            
+            # Calculate embedding similarity score
+            embedding_score = float(cosine_similarity(
+                task_embedding.reshape(1, -1),
+                agent_embedding.reshape(1, -1)
+            )[0, 0])
+            
+            # Calculate requirement match score
+            requirement_score = match_task_to_domain(task_requirements, base_domain)
+            
+            # Combine scores using weights
+            scores[agent] = (
+                self.weights["embedding_similarity"] * embedding_score +
+                self.weights["requirement_match"] * requirement_score
             )
             
-            # Compute similarity score
-            agent_embedding = self._get_embedding(description)
-            score = self._compute_similarity(task_embedding, agent_embedding)
-            scores[agent] = score
-            
         return scores
-
-    def _compute_similarity(self, embedding1: List[float], embedding2: List[float]) -> float:
-        """Compute cosine similarity between two embeddings."""
-        return float(np.dot(embedding1, embedding2) / 
-                    (np.linalg.norm(embedding1) * np.linalg.norm(embedding2)))
     
-    def update_model(self, task_description: str, chosen_agent: str, success_score: float):
+    def update_model(self,
+                    task_description: str,
+                    chosen_agent: str,
+                    execution_result: Dict[str, Any]):
         """Update the model based on task execution results.
         
         Args:
             task_description: Description of the executed task
             chosen_agent: Name of the agent that executed the task
-            success_score: Score indicating how well the task was executed (0-1)
+            execution_result: Result of task execution including metrics
         """
-        with mlflow.start_run(run_name="model_update") as run:
-            mlflow.log_param("task_description", task_description)
-            mlflow.log_param("chosen_agent", chosen_agent)
-            mlflow.log_metric("success_score", success_score)
+        # Calculate success score
+        success_score = float(execution_result.get("success", False))
+        if success_score:
+            # Adjust score based on execution time and other metrics
+            execution_time = execution_result.get("execution_time", 0)
+            if execution_time > 0:
+                time_penalty = min(execution_time / 60.0, 0.5)  # Penalty for long execution
+                success_score = max(0.5, success_score - time_penalty)
+        
+        # Update performance history
+        self.performance_history.append({
+            "timestamp": datetime.now().isoformat(),
+            "task_description": task_description,
+            "chosen_agent": chosen_agent,
+            "success_score": success_score,
+            "execution_result": execution_result
+        })
+        
+        # Calculate recent performance metrics
+        recent_performance = self._calculate_recent_performance()
+        
+        # Log the update event
+        self.experiment_tracker.log_model_update(
+            model_type="agent_selection",
+            parameters={
+                "confidence_threshold": self.confidence_threshold,
+                "weights": self.weights
+            },
+            metrics={
+                "success_score": success_score,
+                "recent_success_rate": recent_performance["success_rate"],
+                "recent_avg_execution_time": recent_performance["avg_execution_time"]
+            }
+        )
+        
+        # Update model parameters based on performance
+        self._update_parameters(recent_performance)
+    
+    def _calculate_recent_performance(self, window_size: int = 50) -> Dict[str, float]:
+        """Calculate performance metrics over recent tasks.
+        
+        Args:
+            window_size: Number of recent tasks to consider
             
-            # In a more advanced implementation, this would update the model weights
-            # For now, we just adjust the confidence threshold based on success
-            if success_score > 0.8:
-                self.confidence_threshold = max(0.6, self.confidence_threshold - 0.01)
-            elif success_score < 0.5:
-                self.confidence_threshold = min(0.9, self.confidence_threshold + 0.01)
+        Returns:
+            Dict containing performance metrics
+        """
+        recent_tasks = self.performance_history[-window_size:]
+        if not recent_tasks:
+            return {"success_rate": 0.0, "avg_execution_time": 0.0}
             
-            mlflow.log_metric("new_confidence_threshold", self.confidence_threshold)
+        success_rate = sum(1 for task in recent_tasks 
+                         if task["success_score"] > 0.5) / len(recent_tasks)
+        
+        execution_times = [task["execution_result"].get("execution_time", 0) 
+                         for task in recent_tasks]
+        avg_execution_time = sum(execution_times) / len(execution_times)
+        
+        return {
+            "success_rate": success_rate,
+            "avg_execution_time": avg_execution_time
+        }
+    
+    def _update_parameters(self, performance_metrics: Dict[str, float]):
+        """Update model parameters based on performance metrics.
+        
+        Args:
+            performance_metrics: Dict containing performance metrics
+        """
+        # Adjust confidence threshold based on success rate
+        if performance_metrics["success_rate"] > 0.8:
+            # High success rate - we can be more lenient
+            self.confidence_threshold = max(0.6, self.confidence_threshold - 0.02)
+        elif performance_metrics["success_rate"] < 0.5:
+            # Low success rate - be more strict
+            self.confidence_threshold = min(0.9, self.confidence_threshold + 0.02)
+        
+        # Adjust weights based on execution time
+        if performance_metrics["avg_execution_time"] > 30:  # If avg time > 30 seconds
+            # Increase weight of requirement matching to be more selective
+            self.weights["requirement_match"] = min(0.6, self.weights["requirement_match"] + 0.05)
+            self.weights["embedding_similarity"] = 1 - self.weights["requirement_match"]
+            
+    def get_performance_metrics(self) -> Dict[str, Any]:
+        """Get current performance metrics and model parameters.
+        
+        Returns:
+            Dict containing metrics and parameters
+        """
+        recent_performance = self._calculate_recent_performance()
+        return {
+            "model_parameters": {
+                "confidence_threshold": self.confidence_threshold,
+                "weights": self.weights
+            },
+            "performance_metrics": recent_performance,
+            "total_tasks_processed": len(self.performance_history),
+            "embedding_cache_size": len(self.embedding_cache)
+        }

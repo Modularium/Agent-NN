@@ -355,8 +355,201 @@ class LLMManagerCLI:
 
 def main():
     """Main entry point for the CLI."""
-    cli = LLMManagerCLI()
-    cli.run()
+    parser = argparse.ArgumentParser(
+        description="Manage LLM backends and models"
+    )
+    
+    subparsers = parser.add_subparsers(dest="command", help="Command to execute")
+    
+    # Original commands
+    list_parser = subparsers.add_parser("list", help="List available models")
+    list_parser.add_argument(
+        "--backend",
+        choices=[b.value for b in LLMBackendType],
+        help="Filter by backend type"
+    )
+    
+    switch_parser = subparsers.add_parser("switch", help="Switch backend")
+    switch_parser.add_argument(
+        "backend",
+        choices=[b.value for b in LLMBackendType],
+        help="Backend to switch to"
+    )
+    switch_parser.add_argument(
+        "--model",
+        help="Specific model to use"
+    )
+    
+    setup_parser = subparsers.add_parser("setup", help="Set up models")
+    setup_parser.add_argument(
+        "--llamafile",
+        choices=list(LLAMAFILE_CONFIG["models"].keys()) + ["all"],
+        help="Llamafile model to set up"
+    )
+    setup_parser.add_argument(
+        "--lmstudio",
+        action="store_true",
+        help="Show LM Studio setup instructions"
+    )
+    
+    subparsers.add_parser("status", help="Show current status")
+    
+    test_parser = subparsers.add_parser("test", help="Test model functionality")
+    test_parser.add_argument(
+        "--backend",
+        choices=[b.value for b in LLMBackendType],
+        help="Backend to test"
+    )
+    test_parser.add_argument(
+        "--prompt",
+        default="Hello, how are you?",
+        help="Test prompt to use"
+    )
+    
+    config_parser = subparsers.add_parser("config", help="Manage configuration")
+    config_parser.add_argument(
+        "--show",
+        action="store_true",
+        help="Show current configuration"
+    )
+    config_parser.add_argument(
+        "--set",
+        nargs=2,
+        metavar=("KEY", "VALUE"),
+        help="Set configuration value"
+    )
+    
+    # New commands for batch processing
+    batch_parser = subparsers.add_parser("batch", help="Batch process prompts")
+    batch_parser.add_argument(
+        "input_file",
+        help="Input file (CSV or JSON) containing prompts"
+    )
+    batch_parser.add_argument(
+        "--backend",
+        choices=[b.value for b in LLMBackendType],
+        help="Backend to use"
+    )
+    batch_parser.add_argument(
+        "--model",
+        help="Specific model to use"
+    )
+    batch_parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=10,
+        help="Number of prompts to process in parallel"
+    )
+    batch_parser.add_argument(
+        "--output-format",
+        choices=["json", "csv"],
+        default="json",
+        help="Output format"
+    )
+    
+    # New commands for conversation management
+    chat_parser = subparsers.add_parser("chat", help="Start interactive chat")
+    chat_parser.add_argument(
+        "--backend",
+        choices=[b.value for b in LLMBackendType],
+        help="Backend to use"
+    )
+    chat_parser.add_argument(
+        "--model",
+        help="Specific model to use"
+    )
+    chat_parser.add_argument(
+        "--system-prompt",
+        help="System prompt to use"
+    )
+    
+    history_parser = subparsers.add_parser(
+        "history",
+        help="Manage conversation history"
+    )
+    history_parser.add_argument(
+        "--list",
+        action="store_true",
+        help="List available conversations"
+    )
+    history_parser.add_argument(
+        "--load",
+        metavar="ID",
+        help="Load a specific conversation"
+    )
+    
+    # New commands for performance monitoring
+    monitor_parser = subparsers.add_parser(
+        "monitor",
+        help="Performance monitoring"
+    )
+    monitor_parser.add_argument(
+        "--live",
+        action="store_true",
+        help="Show live metrics"
+    )
+    monitor_parser.add_argument(
+        "--compare",
+        nargs="+",
+        metavar="LOG",
+        help="Compare performance across model logs"
+    )
+    monitor_parser.add_argument(
+        "--report",
+        metavar="FILE",
+        help="Generate performance report"
+    )
+    
+    args = parser.parse_args()
+    
+    if args.command == "batch":
+        from .batch_processor import BatchProcessor
+        import asyncio
+        
+        processor = BatchProcessor()
+        asyncio.run(processor.process_file(
+            args.input_file,
+            LLMBackendType(args.backend) if args.backend else None,
+            args.model,
+            args.batch_size,
+            output_format=args.output_format
+        ))
+        
+    elif args.command == "chat":
+        from .conversation_manager import ConversationManager
+        
+        manager = ConversationManager()
+        manager.start_conversation(
+            LLMBackendType(args.backend) if args.backend else None,
+            args.model,
+            args.system_prompt
+        )
+        manager.chat()
+        
+    elif args.command == "history":
+        from .conversation_manager import ConversationManager
+        
+        manager = ConversationManager()
+        if args.list:
+            manager.list_conversations()
+        elif args.load:
+            manager.load_conversation(args.load)
+            manager.chat()
+            
+    elif args.command == "monitor":
+        from .performance_monitor import PerformanceMonitor
+        
+        monitor = PerformanceMonitor()
+        if args.live:
+            monitor.show_live_metrics()
+        elif args.compare:
+            monitor.compare_models(args.compare)
+        elif args.report:
+            monitor.generate_report(args.report)
+            
+    else:
+        cli = LLMManagerCLI()
+        cli.run()
 
 if __name__ == "__main__":
     main()

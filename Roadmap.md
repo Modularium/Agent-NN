@@ -5,6 +5,7 @@ Write in english.
 The repository contains files with pseudocode examples. Convert these into fully functional and executable Python code, replacing all placeholders with complete implementations. The resulting code should be fully operational, ready to run without any modifications or additional adjustments.
 
 Architektur- und Implementierungs-Plan
+
 Iteration 1: Basis-Funktionalität & Stabilisierung
 
 Ziel:

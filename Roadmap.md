@@ -6,9 +6,10 @@ The repository contains files with pseudocode examples. Convert these into fully
 
 
 Architektur- und Implementierungs-Plan
-
+---
 Iteration 1: Basis-Funktionalität & Stabilisierung
 ---
+
 Ziel:
 Sicherstellen, dass das Grundgerüst lauffähig ist, einfache Tests bestehen und lokale Interaktionen funktionieren.
 
@@ -35,9 +36,9 @@ Aufgaben:
 
 Ergebnis:
 Ein stabiler, minimaler Durchstich: Nutzeranfrage → Chatbot → Supervisor → Worker → Antwort, mit einfachen Tests und Logging.
----
 
 Iteration 2: Agentenauswahl verbessern & NN-Integration
+---
 
 Ziel:
 Die Agentenauswahl soll nicht mehr hart kodiert sein. Es soll ein echtes Modell (auch wenn anfangs nur ein Dummy) genutzt werden, um die Agentenwahl vorherzusagen.
@@ -64,9 +65,9 @@ Aufgaben:
 
 Ergebnis:
 Die Auswahl der Worker-Agents ist jetzt nicht mehr hart kodiert, sondern embeddings-basiert. MLflow erfasst erste Metadaten. Das System ist etwas intelligenter und hat rudimentäre Tests für die Agentenauswahl.
----
 
 Iteration 3: Verbessertes Domain-Knowledge & Specialized LLM
+---
 
 Ziel:
 Die WorkerAgents sollen spezifischere Wissensdatenbanken erhalten. Außerdem sollen spezielle LLMs oder Fine-Tunes für bestimmte Domänen eingeführt werden.
@@ -93,9 +94,9 @@ Aufgaben:
 
 Ergebnis:
 WorkerAgents sind jetzt wirklich spezialisiert, nutzen angepasste Modelle und Wissensbanken. Das System kann komplexere Anfragen bearbeiten, indem Agents miteinander kommunizieren.
----
 
 Iteration 4: Training & Lernen des NN-Modells
+---
 
 Ziel:
 Die Entscheidungslogik des Supervisor-Agents wird mit einem trainierbaren neuronalen Netz unterfüttert. Dieses NN soll aus Logs lernen, welcher Agent für welche Task am besten ist.
@@ -130,9 +131,9 @@ Aufgaben:
 
 Ergebnis:
 Die Agentenauswahl basiert jetzt auf einem trainierten Modell, das historische Daten nutzt. MLflow trackt Experimente, das System wird "lernfähig".
----
 
 Iteration 5: Automatisierte Agenten-Erstellung & Verbesserung
+---
 
 Ziel:
 Neue WorkerAgents sollen automatisch erstellt und verbessert werden. Außerdem sollen nicht-performante WorkerAgents verbessert oder ausgetauscht werden.
@@ -160,9 +161,9 @@ Aufgaben:
 
 Ergebnis:
 Das System kann neue spezialisierte Agenten on-the-fly erstellen, Agenten verbessern und so langfristig die Performance steigern. Kontinuierliche Lernerfahrung durch Feedback und MLflow-Logging ist gegeben.
----
 
 Iteration 6: Erweiterte Evaluierung & Sicherheit
+---
 
 Ziel:
 Das System wird robuster, sicherer und kann besser ausgewertet werden.

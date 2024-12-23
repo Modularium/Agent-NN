@@ -116,18 +116,18 @@ Aufgaben:
         Training-Skript schreiben (training/train_nn.py), das auf historischen Daten trainiert und Metriken mit MLflow loggt.
 
     Integration in NNManager:
-        Sobald ein Modell trainiert ist, laden Sie es in NNManager.
+        Sobald ein Modell trainiert ist, laden Sie es in NNManager. #Für den entwicklungs prozess wird das Training eines Modells übersprungen.
         Bei predict_best_agent() wird jetzt das trainierte Modell aufgerufen, um Score-Vektoren für alle Agenten zu erzeugen und den besten auszuwählen.
         Fallback: Falls kein Agent einen guten Score hat, wird ein neuer Agent erstellt.
 
-    Experimentation & MLflow:
+    (Experimentation & MLflow:
         Führen Sie mehrere Trainingsläufe mit unterschiedlichen Hyperparametern durch.
         Loggen Sie in MLflow: Accuracy, Precision, F1-Score, Time-to-Complete, etc.
-        Werten Sie die Metriken aus, um das Modell iterativ zu verbessern.
+        Werten Sie die Metriken aus, um das Modell iterativ zu verbessern.) #Überspringen
 
     Tests & Evaluation:
         Schreiben Sie Tests, in denen Sie Mock-Trainingsdaten erstellen, das Modell trainieren und prüfen, ob sich die Vorhersagen verbessern.
-        Testen Sie, ob bei geänderten Task-Beschreibungen ein anderer Agent gewählt wird.
+        (Testen Sie, ob bei geänderten Task-Beschreibungen ein anderer Agent gewählt wird.) #lediglich code für die test generieren
 
 Ergebnis:
 Die Agentenauswahl basiert jetzt auf einem trainierten Modell, das historische Daten nutzt. MLflow trackt Experimente, das System wird "lernfähig".

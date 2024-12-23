@@ -3,12 +3,12 @@ Thoroughly analyze the GitHub repository EcoSphereNetwork/Smolit_LLM-NN. Clone t
 Maintain a detailed record of all changes made during the development process.
 Write in english.
 The repository contains files with pseudocode examples. Convert these into fully functional and executable Python code, replacing all placeholders with complete implementations. The resulting code should be fully operational, ready to run without any modifications or additional adjustments.
----
+
 
 Architektur- und Implementierungs-Plan
 
 Iteration 1: Basis-Funktionalität & Stabilisierung
-
+---
 Ziel:
 Sicherstellen, dass das Grundgerüst lauffähig ist, einfache Tests bestehen und lokale Interaktionen funktionieren.
 

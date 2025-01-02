@@ -1,6 +1,7 @@
 from typing import List, Union, Optional, Dict, Any
 from datetime import datetime
 import asyncio
+import torch
 from langchain.schema import Document
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
@@ -8,8 +9,10 @@ from llm_models.specialized_llm import SpecializedLLM
 from datastores.worker_agent_db import WorkerAgentDB
 from .agent_communication import AgentCommunicationHub, AgentMessage, MessageType
 from .domain_knowledge import DomainKnowledgeManager
+from nn_models.agent_nn import AgentNN, TaskMetrics
+from utils.logging_util import LoggerMixin
 
-class WorkerAgent:
+class WorkerAgent(LoggerMixin):
     def __init__(self,
                  name: str,
                  domain_docs: Optional[Union[List[str], List[Document]]] = None,
@@ -23,9 +26,14 @@ class WorkerAgent:
             communication_hub: Optional communication hub for agent interaction
             knowledge_manager: Optional domain knowledge manager
         """
+        super().__init__()
         self.name = name
         self.db = WorkerAgentDB(name)
         self.llm = SpecializedLLM(domain=self.name)
+        
+        # Initialize neural network
+        self.nn = AgentNN()
+        self.load_or_init_nn()
         
         # Communication and knowledge management
         self.communication_hub = communication_hub
@@ -321,7 +329,81 @@ class WorkerAgent:
         """Clear all documents from the agent's knowledge base."""
         self.db.clear_knowledge_base()
         
+    def get_features(self) -> torch.Tensor:
+        """Get neural network features for the agent.
+        
+        Returns:
+            torch.Tensor: Feature tensor
+        """
+        # Get agent description
+        description = f"Domain: {self.name}\n"
+        description += "\n".join(
+            doc.page_content
+            for doc in self.search_knowledge_base("", k=5)
+        )
+        
+        # Get embedding from LLM
+        embedding = torch.tensor(
+            self.llm.get_embedding(description)
+        ).unsqueeze(0)
+        
+        # Get features from neural network
+        with torch.no_grad():
+            features = self.nn.predict_task_features(embedding)
+            
+        return features
+        
+    def load_or_init_nn(self):
+        """Load existing neural network or initialize a new one."""
+        model_path = f"models/agent_nn/{self.name}_nn.pt"
+        try:
+            self.nn.load_model(model_path)
+            self.log_event(
+                "nn_loaded",
+                {"path": model_path}
+            )
+        except Exception as e:
+            self.log_error(e, {
+                "path": model_path,
+                "action": "load_nn"
+            })
+            
+    def save_nn(self):
+        """Save neural network state."""
+        model_path = f"models/agent_nn/{self.name}_nn.pt"
+        try:
+            self.nn.save_model(model_path)
+            self.log_event(
+                "nn_saved",
+                {"path": model_path}
+            )
+        except Exception as e:
+            self.log_error(e, {
+                "path": model_path,
+                "action": "save_nn"
+            })
+            
+    def update_performance(self, task_metrics: TaskMetrics):
+        """Update performance metrics.
+        
+        Args:
+            task_metrics: Task execution metrics
+        """
+        self.nn.evaluate_performance(task_metrics)
+        self.log_event(
+            "performance_update",
+            {
+                "metrics": {
+                    "response_time": task_metrics.response_time,
+                    "confidence": task_metrics.confidence_score,
+                    "user_feedback": task_metrics.user_feedback,
+                    "task_success": task_metrics.task_success
+                }
+            }
+        )
+            
     async def shutdown(self):
         """Clean up resources."""
         if self.communication_hub:
             await self.communication_hub.deregister_agent(self.name)
+        self.save_nn()

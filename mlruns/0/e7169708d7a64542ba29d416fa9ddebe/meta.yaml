@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/e7169708d7a64542ba29d416fa9ddebe/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e7169708d7a64542ba29d416fa9ddebe
+run_name: wistful-stoat-752
+run_uuid: e7169708d7a64542ba29d416fa9ddebe
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867687638
+status: 1
+tags: []
+user_id: root

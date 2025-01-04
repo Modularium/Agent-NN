@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/85cf358e995341ba915a10af4467d6fc/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 85cf358e995341ba915a10af4467d6fc
+run_name: nimble-turtle-467
+run_uuid: 85cf358e995341ba915a10af4467d6fc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869921394
+status: 1
+tags: []
+user_id: root

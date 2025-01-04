@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/bdfcc0408264417f80067f5181242cfc/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: bdfcc0408264417f80067f5181242cfc
+run_name: traveling-mink-378
+run_uuid: bdfcc0408264417f80067f5181242cfc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735860791424
+status: 1
+tags: []
+user_id: root

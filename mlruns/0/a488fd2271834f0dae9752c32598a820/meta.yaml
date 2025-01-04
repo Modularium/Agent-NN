@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/a488fd2271834f0dae9752c32598a820/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: a488fd2271834f0dae9752c32598a820
+run_name: merciful-koi-179
+run_uuid: a488fd2271834f0dae9752c32598a820
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735856640264
+status: 1
+tags: []
+user_id: root

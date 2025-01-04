@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/b230dce60ca54114918b1ba88c3b495e/artifacts
+end_time: 1735865299127
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: b230dce60ca54114918b1ba88c3b495e
+run_name: adaptable-snake-375
+run_uuid: b230dce60ca54114918b1ba88c3b495e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865295161
+status: 3
+tags: []
+user_id: root

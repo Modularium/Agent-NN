@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/484d5c4434674d31a4231a12e23d61af/artifacts
+end_time: 1735868643293
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 484d5c4434674d31a4231a12e23d61af
+run_name: marvelous-hare-633
+run_uuid: 484d5c4434674d31a4231a12e23d61af
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735868640668
+status: 3
+tags: []
+user_id: root

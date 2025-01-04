@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/b47e969d412a49dc9bf2da88e7a9ff6b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: b47e969d412a49dc9bf2da88e7a9ff6b
+run_name: popular-boar-170
+run_uuid: b47e969d412a49dc9bf2da88e7a9ff6b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735873083373
+status: 1
+tags: []
+user_id: root

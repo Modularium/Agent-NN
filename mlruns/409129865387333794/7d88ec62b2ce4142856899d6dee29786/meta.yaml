@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/7d88ec62b2ce4142856899d6dee29786/artifacts
+end_time: 1735872191034
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 7d88ec62b2ce4142856899d6dee29786
+run_name: stylish-gnat-190
+run_uuid: 7d88ec62b2ce4142856899d6dee29786
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872168641
+status: 3
+tags: []
+user_id: root

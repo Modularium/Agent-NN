@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/28698b0012cd41ed9b8b432faa930d22/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 28698b0012cd41ed9b8b432faa930d22
+run_name: mysterious-mule-309
+run_uuid: 28698b0012cd41ed9b8b432faa930d22
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735870820009
+status: 1
+tags: []
+user_id: root

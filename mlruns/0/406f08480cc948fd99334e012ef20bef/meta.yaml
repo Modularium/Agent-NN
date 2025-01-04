@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/406f08480cc948fd99334e012ef20bef/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 406f08480cc948fd99334e012ef20bef
+run_name: marvelous-gnat-123
+run_uuid: 406f08480cc948fd99334e012ef20bef
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735857596830
+status: 1
+tags: []
+user_id: root

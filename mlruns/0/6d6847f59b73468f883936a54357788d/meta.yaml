@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/6d6847f59b73468f883936a54357788d/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 6d6847f59b73468f883936a54357788d
+run_name: melodic-shoat-712
+run_uuid: 6d6847f59b73468f883936a54357788d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735862446341
+status: 1
+tags: []
+user_id: root

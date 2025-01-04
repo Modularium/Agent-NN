@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/29a7c15382b144d5a955b6bd774d03ae/artifacts
+end_time: 1735890813019
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 29a7c15382b144d5a955b6bd774d03ae
+run_name: persistent-rat-42
+run_uuid: 29a7c15382b144d5a955b6bd774d03ae
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890808894
+status: 3
+tags: []
+user_id: root

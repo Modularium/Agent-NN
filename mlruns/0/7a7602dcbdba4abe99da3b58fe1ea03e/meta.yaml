@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/7a7602dcbdba4abe99da3b58fe1ea03e/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7a7602dcbdba4abe99da3b58fe1ea03e
+run_name: illustrious-newt-317
+run_uuid: 7a7602dcbdba4abe99da3b58fe1ea03e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735866342648
+status: 1
+tags: []
+user_id: root

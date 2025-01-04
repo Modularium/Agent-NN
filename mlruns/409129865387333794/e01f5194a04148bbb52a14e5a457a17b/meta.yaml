@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/e01f5194a04148bbb52a14e5a457a17b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: e01f5194a04148bbb52a14e5a457a17b
+run_name: unequaled-squid-512
+run_uuid: e01f5194a04148bbb52a14e5a457a17b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735858714174
+status: 1
+tags: []
+user_id: root

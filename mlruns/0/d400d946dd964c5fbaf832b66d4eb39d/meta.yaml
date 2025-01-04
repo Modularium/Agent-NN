@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/d400d946dd964c5fbaf832b66d4eb39d/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: d400d946dd964c5fbaf832b66d4eb39d
+run_name: adventurous-auk-683
+run_uuid: d400d946dd964c5fbaf832b66d4eb39d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735862072479
+status: 1
+tags: []
+user_id: root

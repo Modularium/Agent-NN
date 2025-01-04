@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/81cc90e17d8d474bb3a8497a0293d257/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 81cc90e17d8d474bb3a8497a0293d257
+run_name: wistful-conch-207
+run_uuid: 81cc90e17d8d474bb3a8497a0293d257
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735868127450
+status: 1
+tags: []
+user_id: root

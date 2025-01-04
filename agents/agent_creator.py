@@ -9,6 +9,7 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import mlflow
 from rich.console import Console
+from rich.table import Table
 
 from utils.logging_util import setup_logger
 from utils.prompts import create_combined_prompt
@@ -82,10 +83,54 @@ Provide your analysis in JSON format."""
 
         try:
             response = self.llm.generate_response(prompt)
-            return json.loads(response)
+            logger.debug(f"LLM response: {response}")
+            try:
+                parsed = json.loads(response)
+                logger.debug(f"Parsed response: {parsed}")
+                
+                if not isinstance(parsed, dict):
+                    logger.error(f"Expected dict response, got {type(parsed)}")
+                    return {
+                        "primary_domain": "unknown",
+                        "capabilities": [],
+                        "knowledge_requirements": [],
+                        "tools": [],
+                        "metrics": []
+                    }
+                    
+                # Ensure required fields exist
+                if "primary_domain" not in parsed:
+                    parsed["primary_domain"] = "unknown"
+                if "capabilities" not in parsed:
+                    parsed["capabilities"] = []
+                if "knowledge_requirements" not in parsed:
+                    parsed["knowledge_requirements"] = []
+                if "tools" not in parsed:
+                    parsed["tools"] = []
+                if "metrics" not in parsed:
+                    parsed["metrics"] = []
+                    
+                return parsed
+                
+            except json.JSONDecodeError as e:
+                logger.error(f"Error parsing JSON response: {str(e)}")
+                logger.error(f"Raw response: {response}")
+                return {
+                    "primary_domain": "unknown",
+                    "capabilities": [],
+                    "knowledge_requirements": [],
+                    "tools": [],
+                    "metrics": []
+                }
         except Exception as e:
             logger.error(f"Error analyzing domain: {str(e)}")
-            return {}
+            return {
+                "primary_domain": "unknown",
+                "capabilities": [],
+                "knowledge_requirements": [],
+                "tools": [],
+                "metrics": []
+            }
             
     async def create_agent(self,
                           task_description: str,
@@ -105,8 +150,14 @@ Provide your analysis in JSON format."""
                 mlflow.log_param("task_description", task_description)
                 
                 # Analyze domain requirements
-                requirements = await self.analyze_domain(task_description)
-                mlflow.log_dict(requirements, "domain_requirements.json")
+                try:
+                    requirements = await self.analyze_domain(task_description)
+                    logger.debug(f"Domain requirements: {requirements}")
+                    mlflow.log_dict(requirements, "domain_requirements.json")
+                except Exception as e:
+                    logger.error(f"Error analyzing domain: {str(e)}")
+                    logger.error(f"Task description: {task_description}")
+                    raise
                 
                 # Determine domain
                 domain = domain or requirements.get("primary_domain")
@@ -114,14 +165,28 @@ Provide your analysis in JSON format."""
                     raise ValueError("Could not determine domain")
                     
                 # Create agent configuration
-                config = await self._create_agent_config(domain, requirements)
-                mlflow.log_dict(config, "agent_config.json")
+                try:
+                    logger.debug(f"Creating agent config with domain: {domain} and requirements: {requirements}")
+                    config = await self._create_agent_config(domain, requirements)
+                    logger.debug(f"Created config: {config}")
+                    mlflow.log_dict(config, "agent_config.json")
+                except Exception as e:
+                    logger.error(f"Error creating agent config: {str(e)}")
+                    logger.error(f"Domain: {domain}")
+                    logger.error(f"Requirements: {requirements}")
+                    raise
                 
                 # Initialize knowledge base
-                knowledge = await self._gather_domain_knowledge(
-                    domain,
-                    requirements
-                )
+                try:
+                    knowledge = await self._gather_domain_knowledge(
+                        domain,
+                        requirements
+                    )
+                    logger.debug(f"Generated knowledge: {knowledge}")
+                except Exception as e:
+                    logger.error(f"Error in knowledge gathering: {str(e)}, type: {type(e)}")
+                    logger.error(f"Requirements: {requirements}")
+                    raise
                 
                 # Create agent
                 agent = WorkerAgent(
@@ -295,22 +360,38 @@ Provide your analysis in JSON format."""
         Returns:
             Dict containing agent configuration
         """
-        # Generate unique name
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        name = f"{domain}_agent_{timestamp}"
-        
-        config = {
-            "name": name,
-            "domain": domain,
-            "capabilities": requirements.get("capabilities", []),
-            "knowledge_requirements": requirements.get("knowledge_requirements", []),
-            "tools": requirements.get("tools", []),
-            "metrics": requirements.get("metrics", []),
-            "created_at": datetime.now().isoformat(),
-            "version": "1.0.0"
-        }
-        
-        return config
+        try:
+            # Generate unique name
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            name = f"{domain}_agent_{timestamp}"
+            
+            logger.debug(f"Creating config with domain: {domain}")
+            logger.debug(f"Requirements: {requirements}")
+            
+            # Ensure requirements is a dictionary
+            if not isinstance(requirements, dict):
+                logger.error(f"Requirements must be a dict, got {type(requirements)}")
+                requirements = {}
+            
+            config = {
+                "name": name,
+                "domain": domain,
+                "capabilities": requirements.get("capabilities", []),
+                "knowledge_requirements": requirements.get("knowledge_requirements", []),
+                "tools": requirements.get("tools", []),
+                "metrics": requirements.get("metrics", []),
+                "created_at": datetime.now().isoformat(),
+                "version": "1.0.0"
+            }
+            
+            logger.debug(f"Created config: {config}")
+            return config
+            
+        except Exception as e:
+            logger.error(f"Error creating agent config: {str(e)}")
+            logger.error(f"Domain: {domain}")
+            logger.error(f"Requirements: {requirements}")
+            raise
         
     async def _gather_domain_knowledge(self,
                                      domain: str,
@@ -328,7 +409,7 @@ Provide your analysis in JSON format."""
         
         # Get existing domain knowledge
         domain_docs = self.knowledge_manager.search_knowledge(domain)
-        knowledge.extend([doc.content for doc in domain_docs])
+        knowledge.extend([doc.page_content for doc in domain_docs])
         
         # Generate additional knowledge if needed
         if len(knowledge) < 5:  # Minimum knowledge threshold
@@ -341,10 +422,38 @@ Generate 5 key concepts or principles for this domain."""
 
             try:
                 response = self.llm.generate_response(prompt)
-                knowledge.append(response)
+                try:
+                    response_data = json.loads(response)
+                    
+                    if isinstance(response_data, dict):
+                        if "knowledge" in response_data and isinstance(response_data["knowledge"], list):
+                            knowledge.extend(response_data["knowledge"])
+                        elif "response" in response_data:
+                            knowledge.append(response_data["response"])
+                        else:
+                            # Handle any other dictionary format
+                            knowledge.append(json.dumps(response_data))
+                    elif isinstance(response_data, list):
+                        knowledge.extend(response_data)
+                    else:
+                        knowledge.append(str(response_data))
+                        
+                except json.JSONDecodeError:
+                    # If response is not JSON, treat it as plain text
+                    if isinstance(response, str):
+                        knowledge.append(response.strip())
+                    else:
+                        knowledge.append(str(response))
+                        
             except Exception as e:
                 logger.error(f"Error generating knowledge: {str(e)}")
+                logger.error(f"Response type: {type(response)}")
+                logger.error(f"Response content: {response}")
                 
+        if not knowledge:
+            # Ensure we have at least one knowledge item
+            knowledge.append(f"Basic knowledge for {domain} domain")
+            
         return knowledge
         
     async def _analyze_improvement_needs(self,

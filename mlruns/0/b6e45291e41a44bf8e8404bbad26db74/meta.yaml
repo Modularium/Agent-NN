@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/b6e45291e41a44bf8e8404bbad26db74/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: b6e45291e41a44bf8e8404bbad26db74
+run_name: nosy-croc-119
+run_uuid: b6e45291e41a44bf8e8404bbad26db74
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865259997
+status: 1
+tags: []
+user_id: root

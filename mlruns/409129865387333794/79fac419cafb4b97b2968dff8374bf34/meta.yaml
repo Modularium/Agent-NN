@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/79fac419cafb4b97b2968dff8374bf34/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 79fac419cafb4b97b2968dff8374bf34
+run_name: rambunctious-asp-700
+run_uuid: 79fac419cafb4b97b2968dff8374bf34
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735870818664
+status: 1
+tags: []
+user_id: root

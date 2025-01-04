@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/78e08ac0592646cd8c8947d178f592bb/artifacts
+end_time: 1735890334743
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 78e08ac0592646cd8c8947d178f592bb
+run_name: wistful-bat-300
+run_uuid: 78e08ac0592646cd8c8947d178f592bb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890330820
+status: 3
+tags: []
+user_id: root

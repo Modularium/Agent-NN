@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/5048d1dfadb14d5cbe06f50f80f56aa5/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5048d1dfadb14d5cbe06f50f80f56aa5
+run_name: gregarious-whale-247
+run_uuid: 5048d1dfadb14d5cbe06f50f80f56aa5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735851148299
+status: 1
+tags: []
+user_id: root

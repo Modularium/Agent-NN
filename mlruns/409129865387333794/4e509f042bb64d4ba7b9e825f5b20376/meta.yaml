@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/4e509f042bb64d4ba7b9e825f5b20376/artifacts
+end_time: 1735866383329
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 4e509f042bb64d4ba7b9e825f5b20376
+run_name: intrigued-panda-512
+run_uuid: 4e509f042bb64d4ba7b9e825f5b20376
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735866379213
+status: 3
+tags: []
+user_id: root

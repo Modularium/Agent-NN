@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/a651358338564e78baa8e8e4c67941b0/artifacts
+end_time: 1735875413775
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: a651358338564e78baa8e8e4c67941b0
+run_name: gregarious-sow-263
+run_uuid: a651358338564e78baa8e8e4c67941b0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735875409760
+status: 3
+tags: []
+user_id: root

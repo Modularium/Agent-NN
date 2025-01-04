@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/9de6aba29a6848ec9f06c8d12c09047e/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 9de6aba29a6848ec9f06c8d12c09047e
+run_name: bright-flea-736
+run_uuid: 9de6aba29a6848ec9f06c8d12c09047e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864500453
+status: 1
+tags: []
+user_id: root

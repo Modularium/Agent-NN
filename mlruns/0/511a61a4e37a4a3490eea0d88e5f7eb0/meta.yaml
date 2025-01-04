@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/511a61a4e37a4a3490eea0d88e5f7eb0/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 511a61a4e37a4a3490eea0d88e5f7eb0
+run_name: amazing-bee-915
+run_uuid: 511a61a4e37a4a3490eea0d88e5f7eb0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872838976
+status: 1
+tags: []
+user_id: root

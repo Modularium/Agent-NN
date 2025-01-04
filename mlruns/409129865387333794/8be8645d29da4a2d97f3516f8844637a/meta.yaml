@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/8be8645d29da4a2d97f3516f8844637a/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 8be8645d29da4a2d97f3516f8844637a
+run_name: omniscient-lamb-225
+run_uuid: 8be8645d29da4a2d97f3516f8844637a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869932616
+status: 1
+tags: []
+user_id: root

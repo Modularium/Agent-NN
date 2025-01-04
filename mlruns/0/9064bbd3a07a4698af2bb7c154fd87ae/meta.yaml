@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/9064bbd3a07a4698af2bb7c154fd87ae/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 9064bbd3a07a4698af2bb7c154fd87ae
+run_name: intelligent-fowl-383
+run_uuid: 9064bbd3a07a4698af2bb7c154fd87ae
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865263547
+status: 1
+tags: []
+user_id: root

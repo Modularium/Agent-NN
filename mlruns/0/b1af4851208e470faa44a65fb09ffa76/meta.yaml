@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/b1af4851208e470faa44a65fb09ffa76/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: b1af4851208e470faa44a65fb09ffa76
+run_name: legendary-wren-188
+run_uuid: b1af4851208e470faa44a65fb09ffa76
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735868601612
+status: 1
+tags: []
+user_id: root

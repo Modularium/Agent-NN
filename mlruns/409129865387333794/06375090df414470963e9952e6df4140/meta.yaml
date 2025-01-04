@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/06375090df414470963e9952e6df4140/artifacts
+end_time: 1735867727461
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 06375090df414470963e9952e6df4140
+run_name: auspicious-asp-614
+run_uuid: 06375090df414470963e9952e6df4140
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867723539
+status: 3
+tags: []
+user_id: root

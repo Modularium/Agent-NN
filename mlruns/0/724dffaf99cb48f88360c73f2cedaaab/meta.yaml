@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/724dffaf99cb48f88360c73f2cedaaab/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 724dffaf99cb48f88360c73f2cedaaab
+run_name: dapper-fowl-857
+run_uuid: 724dffaf99cb48f88360c73f2cedaaab
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869608815
+status: 1
+tags: []
+user_id: root

@@ -322,6 +322,10 @@ class ABTestingManager(LoggerMixin):
         Returns:
             bool: Whether test should be completed
         """
+        # Only check running tests
+        if test.status != TestStatus.RUNNING:
+            return False
+            
         # Check duration
         if test.duration > test.max_duration:
             return True

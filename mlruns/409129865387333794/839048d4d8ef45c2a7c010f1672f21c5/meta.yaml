@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/839048d4d8ef45c2a7c010f1672f21c5/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 839048d4d8ef45c2a7c010f1672f21c5
+run_name: enchanting-cub-918
+run_uuid: 839048d4d8ef45c2a7c010f1672f21c5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735863285535
+status: 1
+tags: []
+user_id: root

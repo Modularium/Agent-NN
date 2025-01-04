@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/46b1318009ee4c4298f77b0f6392851b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 46b1318009ee4c4298f77b0f6392851b
+run_name: selective-worm-209
+run_uuid: 46b1318009ee4c4298f77b0f6392851b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735862447104
+status: 1
+tags: []
+user_id: root

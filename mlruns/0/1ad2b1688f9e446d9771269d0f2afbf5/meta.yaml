@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/1ad2b1688f9e446d9771269d0f2afbf5/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1ad2b1688f9e446d9771269d0f2afbf5
+run_name: brawny-rat-678
+run_uuid: 1ad2b1688f9e446d9771269d0f2afbf5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867689942
+status: 1
+tags: []
+user_id: root

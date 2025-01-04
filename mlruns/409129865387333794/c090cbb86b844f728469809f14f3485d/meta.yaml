@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/c090cbb86b844f728469809f14f3485d/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: c090cbb86b844f728469809f14f3485d
+run_name: useful-colt-200
+run_uuid: c090cbb86b844f728469809f14f3485d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867698087
+status: 1
+tags: []
+user_id: root

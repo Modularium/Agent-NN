@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/66ddf9a11ce64cefb3468579daf0333c/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 66ddf9a11ce64cefb3468579daf0333c
+run_name: loud-hound-148
+run_uuid: 66ddf9a11ce64cefb3468579daf0333c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735860794954
+status: 1
+tags: []
+user_id: root

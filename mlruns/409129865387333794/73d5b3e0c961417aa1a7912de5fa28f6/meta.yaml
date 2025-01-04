@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/73d5b3e0c961417aa1a7912de5fa28f6/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 73d5b3e0c961417aa1a7912de5fa28f6
+run_name: nervous-fowl-37
+run_uuid: 73d5b3e0c961417aa1a7912de5fa28f6
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872842318
+status: 1
+tags: []
+user_id: root

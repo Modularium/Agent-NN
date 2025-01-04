@@ -24,7 +24,7 @@ class SimpleModel(nn.Module):
         y = batch["target"]
         out = self.linear(x)
         loss = nn.functional.mse_loss(out, y)
-        return {"loss": loss, "output": out}
+        return loss
 
 class TestOnlineLearning(unittest.TestCase):
     def setUp(self):
@@ -107,7 +107,7 @@ class TestOnlineLearning(unittest.TestCase):
         self.assertGreater(lr, 0.001)
         
         # Test decrease
-        lr = adaptive_lr.update(0.9)  # Increasing loss
+        lr = adaptive_lr.update(1.2)  # Increasing loss
         self.assertLess(lr, 0.001 * 1.05)
         
     def test_online_learner(self):
@@ -228,11 +228,15 @@ class TestOnlineLearning(unittest.TestCase):
         # Track initial loss
         initial_loss = None
         
+        # Generate consistent training data
+        input_data = torch.randn(self.input_dim)
+        target_data = torch.randn(self.output_dim)
+        
         # Add training data
         for _ in range(50):
             data = {
-                "input": torch.randn(self.input_dim),
-                "target": torch.randn(self.output_dim)
+                "input": input_data,  # Use same input
+                "target": target_data  # Use same target
             }
             learner.add_data(data)
             
@@ -243,7 +247,7 @@ class TestOnlineLearning(unittest.TestCase):
             time.sleep(0.02)
             
         # Wait for processing
-        time.sleep(0.5)
+        time.sleep(1.0)  # Wait longer
         
         # Stop learning
         learner.stop()

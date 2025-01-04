@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/be4e31d5951a4d61ba6d41f7585a3372/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: be4e31d5951a4d61ba6d41f7585a3372
+run_name: able-lark-917
+run_uuid: be4e31d5951a4d61ba6d41f7585a3372
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735857603161
+status: 1
+tags: []
+user_id: root

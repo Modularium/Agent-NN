@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/e7a9862b3d7b413c8cfa4e7e25503482/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e7a9862b3d7b413c8cfa4e7e25503482
+run_name: kindly-gnu-225
+run_uuid: e7a9862b3d7b413c8cfa4e7e25503482
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735866346434
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/5b1d408509f04523bf8574bdf9582006/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 5b1d408509f04523bf8574bdf9582006
+run_name: fun-shoat-271
+run_uuid: 5b1d408509f04523bf8574bdf9582006
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869615841
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/ff4b1d6222f04662bd401bd1ef7d2012/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: ff4b1d6222f04662bd401bd1ef7d2012
+run_name: indecisive-midge-152
+run_uuid: ff4b1d6222f04662bd401bd1ef7d2012
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890572395
+status: 1
+tags: []
+user_id: root

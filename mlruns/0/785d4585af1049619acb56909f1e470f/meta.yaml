@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/785d4585af1049619acb56909f1e470f/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 785d4585af1049619acb56909f1e470f
+run_name: thoughtful-boar-328
+run_uuid: 785d4585af1049619acb56909f1e470f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735863799826
+status: 1
+tags: []
+user_id: root

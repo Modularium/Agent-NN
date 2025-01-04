@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/50b58b0e44d84d898448e56b9a6c3ff5/artifacts
+end_time: 1735870849331
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 50b58b0e44d84d898448e56b9a6c3ff5
+run_name: bouncy-stag-200
+run_uuid: 50b58b0e44d84d898448e56b9a6c3ff5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735870849252
+status: 3
+tags: []
+user_id: root

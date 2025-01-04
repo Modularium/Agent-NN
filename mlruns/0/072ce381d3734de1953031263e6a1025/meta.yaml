@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/072ce381d3734de1953031263e6a1025/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 072ce381d3734de1953031263e6a1025
+run_name: righteous-fish-850
+run_uuid: 072ce381d3734de1953031263e6a1025
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864491599
+status: 1
+tags: []
+user_id: root

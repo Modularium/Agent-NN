@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/3ec4e299f4bd4de9989fa4a586e1fae7/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 3ec4e299f4bd4de9989fa4a586e1fae7
+run_name: masked-ray-366
+run_uuid: 3ec4e299f4bd4de9989fa4a586e1fae7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735873070662
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/a6772be4ce0e423788beedeb83add3bb/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: a6772be4ce0e423788beedeb83add3bb
+run_name: treasured-sloth-315
+run_uuid: a6772be4ce0e423788beedeb83add3bb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735859305565
+status: 1
+tags: []
+user_id: root

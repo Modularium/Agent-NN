@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/0d8d934ea0414d6cb68b3919b69a98e2/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 0d8d934ea0414d6cb68b3919b69a98e2
+run_name: calm-tern-501
+run_uuid: 0d8d934ea0414d6cb68b3919b69a98e2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864213244
+status: 1
+tags: []
+user_id: root

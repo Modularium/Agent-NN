@@ -73,13 +73,10 @@ class DynamicLayer(nn.Module):
             
         elif self.config.layer_type == LayerType.ATTENTION:
             num_heads = params.get("num_heads", 4)
-            return nn.Sequential(
-                nn.MultiheadAttention(
-                    self.config.input_dim,
-                    num_heads,
-                    dropout=params.get("dropout", 0.1)
-                ),
-                nn.LayerNorm(self.config.input_dim)
+            return nn.MultiheadAttention(
+                self.config.input_dim,
+                num_heads,
+                dropout=params.get("dropout", 0.1)
             )
             
         elif self.config.layer_type == LayerType.TRANSFORMER:
@@ -145,7 +142,8 @@ class DynamicArchitecture(nn.Module, LoggerMixin):
             output_dim: Output dimension
             hidden_dims: Optional hidden layer dimensions
         """
-        super().__init__()
+        nn.Module.__init__(self)
+        LoggerMixin.__init__(self)
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.hidden_dims = hidden_dims or [256, 128, 64]
@@ -206,10 +204,11 @@ class DynamicArchitecture(nn.Module, LoggerMixin):
         
         if current_accuracy < accuracy_threshold:
             if complexity == "high":
-                # Add more capacity
+                # Add more capacity with linear layers
                 changes_needed.append({
                     "type": "add_layer",
-                    "layer_type": LayerType.TRANSFORMER
+                    "layer_type": LayerType.LINEAR,
+                    "params": {"dropout": 0.3}
                 })
             elif sequence_data:
                 # Add recurrent layer
@@ -218,10 +217,11 @@ class DynamicArchitecture(nn.Module, LoggerMixin):
                     "layer_type": LayerType.LSTM
                 })
             elif attention_needed:
-                # Add attention layer
+                # Add linear layer instead of attention
                 changes_needed.append({
                     "type": "add_layer",
-                    "layer_type": LayerType.ATTENTION
+                    "layer_type": LayerType.LINEAR,
+                    "params": {"dropout": 0.2}
                 })
                 
         # Apply changes
@@ -363,9 +363,12 @@ class ArchitectureOptimizer(LoggerMixin):
         Returns:
             Dict[str, float]: Training metrics
         """
+        # Unpack batch
+        inputs, targets = batch
+        
         # Forward pass
-        outputs = self.model(batch["input"])
-        loss = self._compute_loss(outputs, batch["target"])
+        outputs = self.model(inputs)
+        loss = self._compute_loss(outputs, targets)
         
         # Backward pass
         self.optimizer.zero_grad()
@@ -375,7 +378,7 @@ class ArchitectureOptimizer(LoggerMixin):
         # Calculate metrics
         metrics = {
             "loss": loss.item(),
-            "accuracy": self._compute_accuracy(outputs, batch["target"])
+            "accuracy": self._compute_accuracy(outputs, targets)
         }
         
         return metrics
@@ -435,11 +438,11 @@ class ArchitectureOptimizer(LoggerMixin):
         num_batches = 0
         
         with torch.no_grad():
-            for batch in val_loader:
+            for inputs, targets in val_loader:
                 # Forward pass
-                outputs = self.model(batch["input"])
-                loss = self._compute_loss(outputs, batch["target"])
-                acc = self._compute_accuracy(outputs, batch["target"])
+                outputs = self.model(inputs)
+                loss = self._compute_loss(outputs, targets)
+                acc = self._compute_accuracy(outputs, targets)
                 
                 # Update metrics
                 total_loss += loss.item()
@@ -498,10 +501,12 @@ class ArchitectureOptimizer(LoggerMixin):
             val_metrics = self.evaluate(val_loader)
             
             # Update best metrics
-            if (best_metrics is None or
-                val_metrics["val_accuracy"] > best_metrics["val_accuracy"]):
+            if best_metrics is None or val_metrics["val_accuracy"] > best_metrics["val_accuracy"]:
                 best_metrics = val_metrics
-                best_state = self.model.state_dict()
+                best_state = {
+                    "model_state": self.model.state_dict(),
+                    "optimizer_state": self.optimizer.state_dict()
+                }
                 
             # Adapt architecture if needed
             self.model.adapt_architecture(
@@ -520,7 +525,8 @@ class ArchitectureOptimizer(LoggerMixin):
             )
             
         # Restore best state
-        self.model.load_state_dict(best_state)
+        self.model.load_state_dict(best_state["model_state"])
+        self.optimizer.load_state_dict(best_state["optimizer_state"])
         
         return {
             "best_metrics": best_metrics,
@@ -528,7 +534,8 @@ class ArchitectureOptimizer(LoggerMixin):
                 {
                     "type": config.layer_type.value,
                     "input_dim": config.input_dim,
-                    "output_dim": config.output_dim
+                    "output_dim": config.output_dim,
+                    "params": config.params
                 }
                 for config in self.model.layer_configs
             ]

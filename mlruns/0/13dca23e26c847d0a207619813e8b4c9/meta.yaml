@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/13dca23e26c847d0a207619813e8b4c9/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 13dca23e26c847d0a207619813e8b4c9
+run_name: tasteful-midge-238
+run_uuid: 13dca23e26c847d0a207619813e8b4c9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735866350063
+status: 1
+tags: []
+user_id: root

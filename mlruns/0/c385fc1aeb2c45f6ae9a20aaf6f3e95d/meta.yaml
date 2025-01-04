@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/c385fc1aeb2c45f6ae9a20aaf6f3e95d/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c385fc1aeb2c45f6ae9a20aaf6f3e95d
+run_name: sedate-snake-283
+run_uuid: c385fc1aeb2c45f6ae9a20aaf6f3e95d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735860788220
+status: 1
+tags: []
+user_id: root

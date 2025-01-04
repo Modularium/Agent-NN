@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/68cefc4f00c4429ca3c80eae4721d6b0/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 68cefc4f00c4429ca3c80eae4721d6b0
+run_name: puzzled-snipe-766
+run_uuid: 68cefc4f00c4429ca3c80eae4721d6b0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735866354783
+status: 1
+tags: []
+user_id: root

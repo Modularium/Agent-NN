@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/313acb01ee124b73967c625f4a2a47f9/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 313acb01ee124b73967c625f4a2a47f9
+run_name: overjoyed-owl-313
+run_uuid: 313acb01ee124b73967c625f4a2a47f9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735862453099
+status: 1
+tags: []
+user_id: root

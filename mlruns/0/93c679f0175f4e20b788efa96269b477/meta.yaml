@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/93c679f0175f4e20b788efa96269b477/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 93c679f0175f4e20b788efa96269b477
+run_name: fun-shrike-396
+run_uuid: 93c679f0175f4e20b788efa96269b477
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735863995472
+status: 1
+tags: []
+user_id: root

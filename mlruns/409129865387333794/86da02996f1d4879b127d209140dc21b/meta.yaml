@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/86da02996f1d4879b127d209140dc21b/artifacts
+end_time: 1735890617488
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 86da02996f1d4879b127d209140dc21b
+run_name: defiant-sheep-476
+run_uuid: 86da02996f1d4879b127d209140dc21b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890617419
+status: 3
+tags: []
+user_id: root

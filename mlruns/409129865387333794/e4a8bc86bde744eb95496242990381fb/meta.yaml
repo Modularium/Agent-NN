@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/e4a8bc86bde744eb95496242990381fb/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: e4a8bc86bde744eb95496242990381fb
+run_name: sophisticated-fly-51
+run_uuid: e4a8bc86bde744eb95496242990381fb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890782262
+status: 1
+tags: []
+user_id: root

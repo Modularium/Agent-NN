@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/b18996e91fcc4592b1132241a715add0/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: b18996e91fcc4592b1132241a715add0
+run_name: receptive-ox-756
+run_uuid: b18996e91fcc4592b1132241a715add0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735857604202
+status: 1
+tags: []
+user_id: root

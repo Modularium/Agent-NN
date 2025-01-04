@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/45898b0aecb14c7a9bb781c512572a8b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 45898b0aecb14c7a9bb781c512572a8b
+run_name: tasteful-jay-487
+run_uuid: 45898b0aecb14c7a9bb781c512572a8b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735873081826
+status: 1
+tags: []
+user_id: root

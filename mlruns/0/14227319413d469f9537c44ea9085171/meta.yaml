@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/14227319413d469f9537c44ea9085171/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 14227319413d469f9537c44ea9085171
+run_name: bustling-shrike-397
+run_uuid: 14227319413d469f9537c44ea9085171
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865856792
+status: 1
+tags: []
+user_id: root

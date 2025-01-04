@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/ca0341f756f947ee9eb13c65d7da439a/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: ca0341f756f947ee9eb13c65d7da439a
+run_name: placid-wasp-498
+run_uuid: ca0341f756f947ee9eb13c65d7da439a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890297636
+status: 1
+tags: []
+user_id: root

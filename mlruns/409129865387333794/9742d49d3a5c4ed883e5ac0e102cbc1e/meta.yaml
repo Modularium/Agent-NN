@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/9742d49d3a5c4ed883e5ac0e102cbc1e/artifacts
+end_time: 1735890638040
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 9742d49d3a5c4ed883e5ac0e102cbc1e
+run_name: useful-foal-103
+run_uuid: 9742d49d3a5c4ed883e5ac0e102cbc1e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890617551
+status: 3
+tags: []
+user_id: root

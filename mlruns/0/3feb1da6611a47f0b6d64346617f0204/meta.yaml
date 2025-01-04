@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/3feb1da6611a47f0b6d64346617f0204/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 3feb1da6611a47f0b6d64346617f0204
+run_name: fortunate-donkey-777
+run_uuid: 3feb1da6611a47f0b6d64346617f0204
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867691580
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/223ef5ddcaf84c2e98ed3509e81d8228/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 223ef5ddcaf84c2e98ed3509e81d8228
+run_name: bemused-rat-549
+run_uuid: 223ef5ddcaf84c2e98ed3509e81d8228
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735858712732
+status: 1
+tags: []
+user_id: root

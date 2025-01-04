@@ -1,0 +1,17 @@
+{
+  "primary_domain": "test_domain",
+  "capabilities": [
+    "test_capability"
+  ],
+  "knowledge_requirements": {},
+  "tools": [
+    "test_tool"
+  ],
+  "metrics": [
+    "test_metric"
+  ],
+  "config_updates": {},
+  "needs_knowledge": false,
+  "needs_llm_update": false,
+  "llm_updates": {}
+}

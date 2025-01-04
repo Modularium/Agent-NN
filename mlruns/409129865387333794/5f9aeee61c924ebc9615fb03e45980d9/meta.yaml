@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/5f9aeee61c924ebc9615fb03e45980d9/artifacts
+end_time: 1735867731324
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 5f9aeee61c924ebc9615fb03e45980d9
+run_name: luminous-fox-421
+run_uuid: 5f9aeee61c924ebc9615fb03e45980d9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867728758
+status: 3
+tags: []
+user_id: root

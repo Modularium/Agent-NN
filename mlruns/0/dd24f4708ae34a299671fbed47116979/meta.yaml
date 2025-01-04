@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/dd24f4708ae34a299671fbed47116979/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: dd24f4708ae34a299671fbed47116979
+run_name: clumsy-dove-886
+run_uuid: dd24f4708ae34a299671fbed47116979
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735854032968
+status: 1
+tags: []
+user_id: root

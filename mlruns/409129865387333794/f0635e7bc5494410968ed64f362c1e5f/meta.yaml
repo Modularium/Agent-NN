@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/f0635e7bc5494410968ed64f362c1e5f/artifacts
+end_time: 1735890816296
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: f0635e7bc5494410968ed64f362c1e5f
+run_name: suave-snake-640
+run_uuid: f0635e7bc5494410968ed64f362c1e5f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890816213
+status: 3
+tags: []
+user_id: root

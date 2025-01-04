@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/a002e824b14d4291bc0b3cacced0e96a/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: a002e824b14d4291bc0b3cacced0e96a
+run_name: magnificent-fowl-989
+run_uuid: a002e824b14d4291bc0b3cacced0e96a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735854035665
+status: 1
+tags: []
+user_id: root

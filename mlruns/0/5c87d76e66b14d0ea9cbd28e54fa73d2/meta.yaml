@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/5c87d76e66b14d0ea9cbd28e54fa73d2/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5c87d76e66b14d0ea9cbd28e54fa73d2
+run_name: zealous-sow-792
+run_uuid: 5c87d76e66b14d0ea9cbd28e54fa73d2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872835332
+status: 1
+tags: []
+user_id: root

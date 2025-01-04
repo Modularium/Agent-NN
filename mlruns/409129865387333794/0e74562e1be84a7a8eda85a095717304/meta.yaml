@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/0e74562e1be84a7a8eda85a095717304/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 0e74562e1be84a7a8eda85a095717304
+run_name: useful-stork-259
+run_uuid: 0e74562e1be84a7a8eda85a095717304
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890584760
+status: 1
+tags: []
+user_id: root

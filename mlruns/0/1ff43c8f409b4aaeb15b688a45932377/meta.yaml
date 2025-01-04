@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/1ff43c8f409b4aaeb15b688a45932377/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1ff43c8f409b4aaeb15b688a45932377
+run_name: suave-worm-704
+run_uuid: 1ff43c8f409b4aaeb15b688a45932377
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735855818380
+status: 1
+tags: []
+user_id: root

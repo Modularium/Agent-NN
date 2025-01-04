@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/d4cce0eef24d45259e628e635e628d67/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: d4cce0eef24d45259e628e635e628d67
+run_name: whimsical-perch-382
+run_uuid: d4cce0eef24d45259e628e635e628d67
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735891111352
+status: 1
+tags: []
+user_id: root

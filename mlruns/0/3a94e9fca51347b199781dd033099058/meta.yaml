@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/3a94e9fca51347b199781dd033099058/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 3a94e9fca51347b199781dd033099058
+run_name: stately-stork-880
+run_uuid: 3a94e9fca51347b199781dd033099058
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872834107
+status: 1
+tags: []
+user_id: root

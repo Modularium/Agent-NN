@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/0bf869a578004488a71160b0ca98dcfe/artifacts
+end_time: 1735874415677
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 0bf869a578004488a71160b0ca98dcfe
+run_name: silent-conch-753
+run_uuid: 0bf869a578004488a71160b0ca98dcfe
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735874393227
+status: 3
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/1a0ada80f32e4af6b9d9c9ccf50e6038/artifacts
+end_time: 1735890358469
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 1a0ada80f32e4af6b9d9c9ccf50e6038
+run_name: honorable-gnat-55
+run_uuid: 1a0ada80f32e4af6b9d9c9ccf50e6038
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890338004
+status: 3
+tags: []
+user_id: root

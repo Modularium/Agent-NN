@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/240559db75604dadb80b770f18fa484a/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 240559db75604dadb80b770f18fa484a
+run_name: welcoming-sloth-202
+run_uuid: 240559db75604dadb80b770f18fa484a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735870807295
+status: 1
+tags: []
+user_id: root

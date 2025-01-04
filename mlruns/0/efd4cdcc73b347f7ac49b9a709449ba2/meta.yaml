@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/efd4cdcc73b347f7ac49b9a709449ba2/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: efd4cdcc73b347f7ac49b9a709449ba2
+run_name: ambitious-koi-360
+run_uuid: efd4cdcc73b347f7ac49b9a709449ba2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864731364
+status: 1
+tags: []
+user_id: root

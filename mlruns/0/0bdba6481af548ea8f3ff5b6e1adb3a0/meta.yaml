@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/0bdba6481af548ea8f3ff5b6e1adb3a0/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 0bdba6481af548ea8f3ff5b6e1adb3a0
+run_name: resilient-hound-935
+run_uuid: 0bdba6481af548ea8f3ff5b6e1adb3a0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869107046
+status: 1
+tags: []
+user_id: root

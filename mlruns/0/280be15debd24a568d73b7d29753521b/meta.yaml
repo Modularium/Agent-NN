@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/280be15debd24a568d73b7d29753521b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 280be15debd24a568d73b7d29753521b
+run_name: auspicious-trout-10
+run_uuid: 280be15debd24a568d73b7d29753521b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869612426
+status: 1
+tags: []
+user_id: root

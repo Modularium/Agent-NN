@@ -9,6 +9,7 @@ import mlflow
 from mlflow.tracking import MlflowClient
 import tempfile
 import hashlib
+import pandas as pd
 from utils.logging_util import LoggerMixin
 
 class ModelVersion:
@@ -354,8 +355,6 @@ class ModelRegistry(LoggerMixin):
         Returns:
             pd.DataFrame: Version comparison
         """
-        import pandas as pd
-        
         # Get versions
         versions = []
         for version_id in version_ids:

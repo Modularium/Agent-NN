@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/9f3f2c5f75dc4faca023ce0b6dae4824/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 9f3f2c5f75dc4faca023ce0b6dae4824
+run_name: zealous-koi-998
+run_uuid: 9f3f2c5f75dc4faca023ce0b6dae4824
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735856643593
+status: 1
+tags: []
+user_id: root

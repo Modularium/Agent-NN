@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/3938f107b9ea454db1a9de85fc2b65b0/artifacts
+end_time: 1735872872060
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 3938f107b9ea454db1a9de85fc2b65b0
+run_name: vaunted-worm-78
+run_uuid: 3938f107b9ea454db1a9de85fc2b65b0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872868193
+status: 3
+tags: []
+user_id: root

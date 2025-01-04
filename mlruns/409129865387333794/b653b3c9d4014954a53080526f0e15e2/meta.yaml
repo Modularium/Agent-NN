@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/b653b3c9d4014954a53080526f0e15e2/artifacts
+end_time: 1735874393206
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: b653b3c9d4014954a53080526f0e15e2
+run_name: serious-grouse-749
+run_uuid: b653b3c9d4014954a53080526f0e15e2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735874393176
+status: 3
+tags: []
+user_id: root

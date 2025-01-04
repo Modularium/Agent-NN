@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/c348e803d4174966b038869316c3344e/artifacts
+end_time: 1735869645588
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: c348e803d4174966b038869316c3344e
+run_name: lyrical-bear-949
+run_uuid: c348e803d4174966b038869316c3344e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869641611
+status: 3
+tags: []
+user_id: root

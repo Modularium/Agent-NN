@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/5ae3b1c24b624174a20eeb45e82e35d5/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5ae3b1c24b624174a20eeb45e82e35d5
+run_name: ModelRegistry_run
+run_uuid: 5ae3b1c24b624174a20eeb45e82e35d5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735858703190
+status: 1
+tags: []
+user_id: root

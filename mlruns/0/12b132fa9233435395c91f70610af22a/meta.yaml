@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/12b132fa9233435395c91f70610af22a/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 12b132fa9233435395c91f70610af22a
+run_name: funny-panda-892
+run_uuid: 12b132fa9233435395c91f70610af22a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865567729
+status: 1
+tags: []
+user_id: root

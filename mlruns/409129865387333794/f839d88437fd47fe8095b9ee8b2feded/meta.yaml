@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/f839d88437fd47fe8095b9ee8b2feded/artifacts
+end_time: 1735869649780
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: f839d88437fd47fe8095b9ee8b2feded
+run_name: sedate-owl-269
+run_uuid: f839d88437fd47fe8095b9ee8b2feded
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869646872
+status: 3
+tags: []
+user_id: root

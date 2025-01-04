@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/e5f2e01794124ee1a0cfca338eca5a6c/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e5f2e01794124ee1a0cfca338eca5a6c
+run_name: caring-donkey-861
+run_uuid: e5f2e01794124ee1a0cfca338eca5a6c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867314633
+status: 1
+tags: []
+user_id: root

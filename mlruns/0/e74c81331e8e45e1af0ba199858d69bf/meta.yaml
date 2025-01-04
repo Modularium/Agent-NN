@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/e74c81331e8e45e1af0ba199858d69bf/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e74c81331e8e45e1af0ba199858d69bf
+run_name: gentle-pig-377
+run_uuid: e74c81331e8e45e1af0ba199858d69bf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735862450447
+status: 1
+tags: []
+user_id: root

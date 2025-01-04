@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/43390ccdd87b4785ae7cdd1538949697/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 43390ccdd87b4785ae7cdd1538949697
+run_name: secretive-shark-59
+run_uuid: 43390ccdd87b4785ae7cdd1538949697
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867311295
+status: 1
+tags: []
+user_id: root

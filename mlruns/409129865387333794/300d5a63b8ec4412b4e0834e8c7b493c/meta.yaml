@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/300d5a63b8ec4412b4e0834e8c7b493c/artifacts
+end_time: 1735864770087
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 300d5a63b8ec4412b4e0834e8c7b493c
+run_name: popular-fox-689
+run_uuid: 300d5a63b8ec4412b4e0834e8c7b493c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864768331
+status: 3
+tags: []
+user_id: root

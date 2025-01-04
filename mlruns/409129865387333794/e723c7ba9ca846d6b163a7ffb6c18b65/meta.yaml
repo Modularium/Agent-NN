@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/e723c7ba9ca846d6b163a7ffb6c18b65/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: e723c7ba9ca846d6b163a7ffb6c18b65
+run_name: silent-squid-460
+run_uuid: e723c7ba9ca846d6b163a7ffb6c18b65
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735863802616
+status: 1
+tags: []
+user_id: root

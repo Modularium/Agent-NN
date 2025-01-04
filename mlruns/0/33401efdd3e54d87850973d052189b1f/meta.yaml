@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/33401efdd3e54d87850973d052189b1f/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 33401efdd3e54d87850973d052189b1f
+run_name: exultant-hen-278
+run_uuid: 33401efdd3e54d87850973d052189b1f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735858436440
+status: 1
+tags: []
+user_id: root

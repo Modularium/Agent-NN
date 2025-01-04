@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/6fc2d4748db74c62b624f31c4a52afd2/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 6fc2d4748db74c62b624f31c4a52afd2
+run_name: legendary-donkey-533
+run_uuid: 6fc2d4748db74c62b624f31c4a52afd2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869605831
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/9c1628e4e25d4e1fad6e8350bec539c5/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 9c1628e4e25d4e1fad6e8350bec539c5
+run_name: languid-deer-898
+run_uuid: 9c1628e4e25d4e1fad6e8350bec539c5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735857595855
+status: 1
+tags: []
+user_id: root

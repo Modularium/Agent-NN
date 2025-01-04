@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/13ff21d73d9b43399049cad4a4a83a27/artifacts
+end_time: 1735869962584
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 13ff21d73d9b43399049cad4a4a83a27
+run_name: gaudy-loon-177
+run_uuid: 13ff21d73d9b43399049cad4a4a83a27
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869958638
+status: 3
+tags: []
+user_id: root

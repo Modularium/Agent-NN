@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/bd55e622c8e545b8abcf8a39bcdb96bf/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: bd55e622c8e545b8abcf8a39bcdb96bf
+run_name: delicate-finch-460
+run_uuid: bd55e622c8e545b8abcf8a39bcdb96bf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865572545
+status: 1
+tags: []
+user_id: root

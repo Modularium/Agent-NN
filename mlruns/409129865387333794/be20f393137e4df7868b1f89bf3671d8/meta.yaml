@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/be20f393137e4df7868b1f89bf3671d8/artifacts
+end_time: 1735869144311
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: be20f393137e4df7868b1f89bf3671d8
+run_name: sincere-duck-944
+run_uuid: be20f393137e4df7868b1f89bf3671d8
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869140234
+status: 3
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/22edd8ded6494bf09a3d61acf998a959/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 22edd8ded6494bf09a3d61acf998a959
+run_name: worried-fox-684
+run_uuid: 22edd8ded6494bf09a3d61acf998a959
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735859301937
+status: 1
+tags: []
+user_id: root

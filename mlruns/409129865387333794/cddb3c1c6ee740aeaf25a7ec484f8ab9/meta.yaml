@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/cddb3c1c6ee740aeaf25a7ec484f8ab9/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: cddb3c1c6ee740aeaf25a7ec484f8ab9
+run_name: sedate-pug-692
+run_uuid: cddb3c1c6ee740aeaf25a7ec484f8ab9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890586310
+status: 1
+tags: []
+user_id: root

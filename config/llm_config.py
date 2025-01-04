@@ -8,7 +8,7 @@ os.makedirs(DEFAULT_MODELS_DIR, exist_ok=True)
 
 # LM Studio configuration
 LMSTUDIO_CONFIG = {
-    "endpoint_url": os.getenv("LMSTUDIO_URL", "http://localhost:1234/v1"),
+    "endpoint_url": os.getenv("LMSTUDIO_URL", "http://192.168.0.247:1234/v1"),
     "models": {
         "local-model": {
             "max_tokens": 1024,
@@ -23,19 +23,19 @@ LLAMAFILE_CONFIG = {
     "models_dir": os.getenv("LLAMAFILE_MODELS_DIR", DEFAULT_MODELS_DIR),
     "models": {
         "llama-2-7b": {
-            "filename": "llama-2-7b.llamafile",
+            "filename": "llama-2-7b.gguf",
             "max_tokens": 1024,
             "temperature": 0.7,
             "description": "Llama 2 7B base model"
         },
         "llama-2-13b": {
-            "filename": "llama-2-13b.llamafile",
+            "filename": "llama-2-13b.gguf",
             "max_tokens": 2048,
             "temperature": 0.7,
             "description": "Llama 2 13B base model"
         },
         "codellama-7b": {
-            "filename": "codellama-7b.llamafile",
+            "filename": "codellama-7b.gguf",
             "max_tokens": 1024,
             "temperature": 0.7,
             "description": "CodeLlama 7B for technical tasks"

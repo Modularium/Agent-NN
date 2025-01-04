@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/4b4892ea049e4af0905220b4c6d2e0a6/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 4b4892ea049e4af0905220b4c6d2e0a6
+run_name: glamorous-sponge-388
+run_uuid: 4b4892ea049e4af0905220b4c6d2e0a6
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735854032076
+status: 1
+tags: []
+user_id: root

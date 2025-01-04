@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/8cae7fd8114645c48de5f08a90eee02b/artifacts
+end_time: 1735870848001
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 8cae7fd8114645c48de5f08a90eee02b
+run_name: luminous-fly-414
+run_uuid: 8cae7fd8114645c48de5f08a90eee02b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735870843919
+status: 3
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/0e783af44de54c68946b01782c3141a9/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 0e783af44de54c68946b01782c3141a9
+run_name: omniscient-rook-931
+run_uuid: 0e783af44de54c68946b01782c3141a9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890574700
+status: 1
+tags: []
+user_id: root

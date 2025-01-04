@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/c3deb12d102f46a7ae5c3d51f8d3ce3e/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: c3deb12d102f46a7ae5c3d51f8d3ce3e
+run_name: upbeat-wren-621
+run_uuid: c3deb12d102f46a7ae5c3d51f8d3ce3e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735866353245
+status: 1
+tags: []
+user_id: root

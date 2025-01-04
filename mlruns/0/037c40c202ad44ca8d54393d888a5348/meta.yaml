@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/037c40c202ad44ca8d54393d888a5348/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 037c40c202ad44ca8d54393d888a5348
+run_name: delightful-chimp-807
+run_uuid: 037c40c202ad44ca8d54393d888a5348
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890301633
+status: 1
+tags: []
+user_id: root

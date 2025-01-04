@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/2054e6eeeb1c4542bd0a676887746dcd/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 2054e6eeeb1c4542bd0a676887746dcd
+run_name: auspicious-horse-572
+run_uuid: 2054e6eeeb1c4542bd0a676887746dcd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735855819263
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/ec7783c31b5446069130f060be5c7d42/artifacts
+end_time: 1735864532212
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: ec7783c31b5446069130f060be5c7d42
+run_name: learned-panda-448
+run_uuid: ec7783c31b5446069130f060be5c7d42
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864530264
+status: 3
+tags: []
+user_id: root

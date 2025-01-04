@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/083619a6edad4b2cad09ba941e60a598/artifacts
+end_time: 1735864241619
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 083619a6edad4b2cad09ba941e60a598
+run_name: bright-squirrel-728
+run_uuid: 083619a6edad4b2cad09ba941e60a598
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864237482
+status: 3
+tags: []
+user_id: root

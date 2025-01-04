@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/d734dc18f4984c929665fae1881fc6d6/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: d734dc18f4984c929665fae1881fc6d6
+run_name: angry-sheep-631
+run_uuid: d734dc18f4984c929665fae1881fc6d6
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735860797974
+status: 1
+tags: []
+user_id: root

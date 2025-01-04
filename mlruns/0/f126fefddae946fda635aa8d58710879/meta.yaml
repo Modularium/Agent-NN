@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/f126fefddae946fda635aa8d58710879/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f126fefddae946fda635aa8d58710879
+run_name: amusing-stoat-66
+run_uuid: f126fefddae946fda635aa8d58710879
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864489298
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/e3cd0b1fb1a3409cae77fec1042fa769/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e3cd0b1fb1a3409cae77fec1042fa769
+run_name: caring-squirrel-400
+run_uuid: e3cd0b1fb1a3409cae77fec1042fa769
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735861385829
+status: 1
+tags: []
+user_id: root

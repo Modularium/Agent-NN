@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/6beadd2170c04c478d7b2c7aa1ed47c1/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 6beadd2170c04c478d7b2c7aa1ed47c1
+run_name: nimble-shrike-551
+run_uuid: 6beadd2170c04c478d7b2c7aa1ed47c1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735853150440
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/3d520537078446439d38dcdc2d882cfa/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 3d520537078446439d38dcdc2d882cfa
+run_name: valuable-fly-441
+run_uuid: 3d520537078446439d38dcdc2d882cfa
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735875374535
+status: 1
+tags: []
+user_id: root

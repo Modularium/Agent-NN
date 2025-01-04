@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/681857af142e47e4958f33ee6bd0563d/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 681857af142e47e4958f33ee6bd0563d
+run_name: fun-wolf-301
+run_uuid: 681857af142e47e4958f33ee6bd0563d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735863796030
+status: 1
+tags: []
+user_id: root

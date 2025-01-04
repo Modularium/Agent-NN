@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/418f616f875947108d909307c53f0001/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 418f616f875947108d909307c53f0001
+run_name: thoughtful-ox-556
+run_uuid: 418f616f875947108d909307c53f0001
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865262227
+status: 1
+tags: []
+user_id: root

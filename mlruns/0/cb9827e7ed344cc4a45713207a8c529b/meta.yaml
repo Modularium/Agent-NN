@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/cb9827e7ed344cc4a45713207a8c529b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: cb9827e7ed344cc4a45713207a8c529b
+run_name: OnlineLearner_run
+run_uuid: cb9827e7ed344cc4a45713207a8c529b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735862446984
+status: 1
+tags: []
+user_id: root

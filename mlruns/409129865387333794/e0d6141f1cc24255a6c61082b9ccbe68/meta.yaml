@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/e0d6141f1cc24255a6c61082b9ccbe68/artifacts
+end_time: 1735870871775
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: e0d6141f1cc24255a6c61082b9ccbe68
+run_name: secretive-stork-221
+run_uuid: e0d6141f1cc24255a6c61082b9ccbe68
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735870849381
+status: 3
+tags: []
+user_id: root

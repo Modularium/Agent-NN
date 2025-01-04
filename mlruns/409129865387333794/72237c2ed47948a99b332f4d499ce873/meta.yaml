@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/72237c2ed47948a99b332f4d499ce873/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 72237c2ed47948a99b332f4d499ce873
+run_name: intrigued-kite-403
+run_uuid: 72237c2ed47948a99b332f4d499ce873
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735863999750
+status: 1
+tags: []
+user_id: root

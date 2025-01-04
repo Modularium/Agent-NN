@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/ac04d07ec40148ecb668ace66364a1ee/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: ac04d07ec40148ecb668ace66364a1ee
+run_name: polite-goose-906
+run_uuid: ac04d07ec40148ecb668ace66364a1ee
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735863276482
+status: 1
+tags: []
+user_id: root

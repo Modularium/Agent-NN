@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/a8c3b5150b5345b5ad75e0581acaf278/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: a8c3b5150b5345b5ad75e0581acaf278
+run_name: popular-sheep-237
+run_uuid: a8c3b5150b5345b5ad75e0581acaf278
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735868118808
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/81251bd251d0416e935db5334c797117/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 81251bd251d0416e935db5334c797117
+run_name: spiffy-mare-916
+run_uuid: 81251bd251d0416e935db5334c797117
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735858709963
+status: 1
+tags: []
+user_id: root

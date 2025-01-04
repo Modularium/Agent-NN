@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/1b8220fb09d542e4ba06b10a32b7303d/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1b8220fb09d542e4ba06b10a32b7303d
+run_name: bold-shrew-403
+run_uuid: 1b8220fb09d542e4ba06b10a32b7303d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735862444105
+status: 1
+tags: []
+user_id: root

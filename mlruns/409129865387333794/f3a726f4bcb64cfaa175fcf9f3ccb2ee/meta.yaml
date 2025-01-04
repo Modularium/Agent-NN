@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/f3a726f4bcb64cfaa175fcf9f3ccb2ee/artifacts
+end_time: 1735890816339
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: f3a726f4bcb64cfaa175fcf9f3ccb2ee
+run_name: rumbling-flea-279
+run_uuid: f3a726f4bcb64cfaa175fcf9f3ccb2ee
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890816303
+status: 3
+tags: []
+user_id: root

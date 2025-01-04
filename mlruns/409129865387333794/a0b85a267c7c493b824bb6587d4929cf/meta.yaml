@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/a0b85a267c7c493b824bb6587d4929cf/artifacts
+end_time: 1735872873278
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: a0b85a267c7c493b824bb6587d4929cf
+run_name: unequaled-duck-365
+run_uuid: a0b85a267c7c493b824bb6587d4929cf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872873217
+status: 3
+tags: []
+user_id: root

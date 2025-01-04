@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/fd8ea3484df84a289146816f6442a35a/artifacts
+end_time: 1735869119495
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: fd8ea3484df84a289146816f6442a35a
+run_name: DynamicArchitecture_run
+run_uuid: fd8ea3484df84a289146816f6442a35a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869113449
+status: 3
+tags: []
+user_id: root

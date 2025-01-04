@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/2a5265c3e7d04590ba8110390a304e63/artifacts
+end_time: 1735868155626
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 2a5265c3e7d04590ba8110390a304e63
+run_name: mercurial-mink-852
+run_uuid: 2a5265c3e7d04590ba8110390a304e63
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735868151703
+status: 3
+tags: []
+user_id: root

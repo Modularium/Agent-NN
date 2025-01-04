@@ -1,0 +1,78 @@
+site_name: Smolit LLM-NN
+site_description: Multi-agent system with neural network-based task routing
+repo_url: https://github.com/EcoSphereNetwork/Smolit_LLM-NN
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - search.suggest
+    - search.highlight
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          rendering:
+            show_source: true
+            show_root_heading: true
+  - git-revision-date-localized
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - Configuration: getting-started/configuration.md
+  - Core Concepts:
+    - Architecture: concepts/architecture.md
+    - Agents: concepts/agents.md
+    - Neural Networks: concepts/neural-networks.md
+    - Knowledge Base: concepts/knowledge-base.md
+  - Components:
+    - Agent Manager: components/agent-manager.md
+    - Worker Agents: components/worker-agents.md
+    - Neural Models: components/neural-models.md
+    - Vector Store: components/vector-store.md
+  - Advanced Features:
+    - Security: advanced/security.md
+    - Evaluation: advanced/evaluation.md
+    - Monitoring: advanced/monitoring.md
+    - Scaling: advanced/scaling.md
+  - API Reference:
+    - Agents: api/agents.md
+    - Managers: api/managers.md
+    - Models: api/models.md
+    - Utils: api/utils.md
+  - Development:
+    - Contributing: development/contributing.md
+    - Testing: development/testing.md
+    - CI/CD: development/cicd.md
+    - Release Notes: development/releases.md

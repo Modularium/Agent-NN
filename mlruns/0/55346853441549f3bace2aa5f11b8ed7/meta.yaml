@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/55346853441549f3bace2aa5f11b8ed7/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 55346853441549f3bace2aa5f11b8ed7
+run_name: colorful-slug-405
+run_uuid: 55346853441549f3bace2aa5f11b8ed7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735874356702
+status: 1
+tags: []
+user_id: root

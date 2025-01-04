@@ -1,0 +1,1 @@
+[{'type': 'add_layer', 'layer_type': <LayerType.LINEAR: 'linear'>, 'params': {'dropout': 0.3}}]

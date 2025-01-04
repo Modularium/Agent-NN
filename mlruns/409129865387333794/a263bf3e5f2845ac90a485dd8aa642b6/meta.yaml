@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/a263bf3e5f2845ac90a485dd8aa642b6/artifacts
+end_time: 1735864216612
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: a263bf3e5f2845ac90a485dd8aa642b6
+run_name: ArchitectureOptimizer_run
+run_uuid: a263bf3e5f2845ac90a485dd8aa642b6
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864211416
+status: 3
+tags: []
+user_id: root

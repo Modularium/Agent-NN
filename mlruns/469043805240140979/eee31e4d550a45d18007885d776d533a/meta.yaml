@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/469043805240140979/eee31e4d550a45d18007885d776d533a/artifacts
+end_time: 1735864506577
+entry_point_name: ''
+experiment_id: '469043805240140979'
+lifecycle_stage: active
+run_id: eee31e4d550a45d18007885d776d533a
+run_name: CacheManager_run
+run_uuid: eee31e4d550a45d18007885d776d533a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864505522
+status: 3
+tags: []
+user_id: root

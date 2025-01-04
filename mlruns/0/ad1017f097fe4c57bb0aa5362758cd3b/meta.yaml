@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/ad1017f097fe4c57bb0aa5362758cd3b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: ad1017f097fe4c57bb0aa5362758cd3b
+run_name: abrasive-wren-174
+run_uuid: ad1017f097fe4c57bb0aa5362758cd3b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735891097825
+status: 1
+tags: []
+user_id: root

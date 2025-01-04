@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/f9f59f81007649ce93c9646fcf0f2c84/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f9f59f81007649ce93c9646fcf0f2c84
+run_name: grandiose-snipe-144
+run_uuid: f9f59f81007649ce93c9646fcf0f2c84
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872129377
+status: 1
+tags: []
+user_id: root

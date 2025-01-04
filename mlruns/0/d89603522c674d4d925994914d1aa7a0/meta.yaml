@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/d89603522c674d4d925994914d1aa7a0/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: d89603522c674d4d925994914d1aa7a0
+run_name: crawling-tern-205
+run_uuid: d89603522c674d4d925994914d1aa7a0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869925346
+status: 1
+tags: []
+user_id: root

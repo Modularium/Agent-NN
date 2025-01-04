@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/6c53e4371af34cc3a89961c7c0886e05/artifacts
+end_time: 1735890337939
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 6c53e4371af34cc3a89961c7c0886e05
+run_name: abrasive-moth-5
+run_uuid: 6c53e4371af34cc3a89961c7c0886e05
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890337871
+status: 3
+tags: []
+user_id: root

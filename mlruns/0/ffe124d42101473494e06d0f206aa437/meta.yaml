@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/ffe124d42101473494e06d0f206aa437/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: ffe124d42101473494e06d0f206aa437
+run_name: adorable-finch-985
+run_uuid: ffe124d42101473494e06d0f206aa437
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864727834
+status: 1
+tags: []
+user_id: root

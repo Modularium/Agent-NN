@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/8a0ff7473fb0403b87b116d553f7bf5a/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 8a0ff7473fb0403b87b116d553f7bf5a
+run_name: puzzled-colt-721
+run_uuid: 8a0ff7473fb0403b87b116d553f7bf5a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735866344890
+status: 1
+tags: []
+user_id: root

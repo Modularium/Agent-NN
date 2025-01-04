@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/ffc64ba4a4ce44ca8f7c0e609cb83c25/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: ffc64ba4a4ce44ca8f7c0e609cb83c25
+run_name: bouncy-crane-842
+run_uuid: ffc64ba4a4ce44ca8f7c0e609cb83c25
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735859309318
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/da56c730ece643049632ad39101bb344/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: da56c730ece643049632ad39101bb344
+run_name: dapper-bird-960
+run_uuid: da56c730ece643049632ad39101bb344
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867313609
+status: 1
+tags: []
+user_id: root

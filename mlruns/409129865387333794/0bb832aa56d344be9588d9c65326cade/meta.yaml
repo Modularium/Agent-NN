@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/0bb832aa56d344be9588d9c65326cade/artifacts
+end_time: 1735874393171
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 0bb832aa56d344be9588d9c65326cade
+run_name: fun-midge-959
+run_uuid: 0bb832aa56d344be9588d9c65326cade
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735874393108
+status: 3
+tags: []
+user_id: root

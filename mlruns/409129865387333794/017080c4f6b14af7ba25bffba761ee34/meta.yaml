@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/017080c4f6b14af7ba25bffba761ee34/artifacts
+end_time: 1735865605249
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 017080c4f6b14af7ba25bffba761ee34
+run_name: big-bird-949
+run_uuid: 017080c4f6b14af7ba25bffba761ee34
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865601359
+status: 3
+tags: []
+user_id: root

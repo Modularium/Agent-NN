@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/505bb6bfc8844ed49e06f01d0bc79451/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 505bb6bfc8844ed49e06f01d0bc79451
+run_name: bouncy-conch-179
+run_uuid: 505bb6bfc8844ed49e06f01d0bc79451
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865860119
+status: 1
+tags: []
+user_id: root

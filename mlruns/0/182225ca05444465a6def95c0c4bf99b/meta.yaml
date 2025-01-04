@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/182225ca05444465a6def95c0c4bf99b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 182225ca05444465a6def95c0c4bf99b
+run_name: loud-wolf-841
+run_uuid: 182225ca05444465a6def95c0c4bf99b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869608065
+status: 1
+tags: []
+user_id: root

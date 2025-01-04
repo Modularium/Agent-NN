@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/c0db84e740b844f2afe8a456d6e8c949/artifacts
+end_time: 1735891140512
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: c0db84e740b844f2afe8a456d6e8c949
+run_name: dashing-carp-171
+run_uuid: c0db84e740b844f2afe8a456d6e8c949
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735891136157
+status: 3
+tags: []
+user_id: root

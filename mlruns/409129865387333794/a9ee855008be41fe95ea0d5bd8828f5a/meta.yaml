@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/a9ee855008be41fe95ea0d5bd8828f5a/artifacts
+end_time: 1735872167250
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: a9ee855008be41fe95ea0d5bd8828f5a
+run_name: resilient-pug-976
+run_uuid: a9ee855008be41fe95ea0d5bd8828f5a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872163321
+status: 3
+tags: []
+user_id: root

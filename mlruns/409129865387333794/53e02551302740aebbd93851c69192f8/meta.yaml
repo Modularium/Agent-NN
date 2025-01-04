@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/53e02551302740aebbd93851c69192f8/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 53e02551302740aebbd93851c69192f8
+run_name: beautiful-fox-320
+run_uuid: 53e02551302740aebbd93851c69192f8
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735861388550
+status: 1
+tags: []
+user_id: root

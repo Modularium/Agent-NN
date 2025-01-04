@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/8ff4c37d78c24cb48f634720cb4d12ea/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 8ff4c37d78c24cb48f634720cb4d12ea
+run_name: hilarious-mare-593
+run_uuid: 8ff4c37d78c24cb48f634720cb4d12ea
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864734902
+status: 1
+tags: []
+user_id: root

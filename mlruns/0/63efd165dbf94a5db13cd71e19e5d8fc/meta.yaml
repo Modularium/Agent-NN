@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/63efd165dbf94a5db13cd71e19e5d8fc/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 63efd165dbf94a5db13cd71e19e5d8fc
+run_name: resilient-duck-210
+run_uuid: 63efd165dbf94a5db13cd71e19e5d8fc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735870815205
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/5abee3a5cf4a4d5eb3e2529807e4df74/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5abee3a5cf4a4d5eb3e2529807e4df74
+run_name: hilarious-croc-544
+run_uuid: 5abee3a5cf4a4d5eb3e2529807e4df74
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864493211
+status: 1
+tags: []
+user_id: root

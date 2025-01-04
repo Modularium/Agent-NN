@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/4b4133c136624362ae784e29fde9980b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 4b4133c136624362ae784e29fde9980b
+run_name: overjoyed-doe-302
+run_uuid: 4b4133c136624362ae784e29fde9980b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735863998316
+status: 1
+tags: []
+user_id: root

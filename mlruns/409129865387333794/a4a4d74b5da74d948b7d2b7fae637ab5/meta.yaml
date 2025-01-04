@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/a4a4d74b5da74d948b7d2b7fae637ab5/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: a4a4d74b5da74d948b7d2b7fae637ab5
+run_name: suave-yak-924
+run_uuid: a4a4d74b5da74d948b7d2b7fae637ab5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865861756
+status: 1
+tags: []
+user_id: root

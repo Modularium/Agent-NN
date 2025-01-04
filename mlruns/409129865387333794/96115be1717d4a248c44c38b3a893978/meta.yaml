@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/96115be1717d4a248c44c38b3a893978/artifacts
+end_time: 1735870849362
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 96115be1717d4a248c44c38b3a893978
+run_name: valuable-doe-68
+run_uuid: 96115be1717d4a248c44c38b3a893978
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735870849337
+status: 3
+tags: []
+user_id: root

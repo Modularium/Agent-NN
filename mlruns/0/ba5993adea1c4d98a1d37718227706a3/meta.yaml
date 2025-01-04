@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/ba5993adea1c4d98a1d37718227706a3/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: ba5993adea1c4d98a1d37718227706a3
+run_name: dazzling-sheep-0
+run_uuid: ba5993adea1c4d98a1d37718227706a3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872134686
+status: 1
+tags: []
+user_id: root

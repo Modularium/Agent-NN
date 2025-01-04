@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/f6cecf91c21d46a994f3c1c2add219fd/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f6cecf91c21d46a994f3c1c2add219fd
+run_name: wise-dog-432
+run_uuid: f6cecf91c21d46a994f3c1c2add219fd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890296021
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/bc5bd98c00f34a08ac0e7a4fdca1386a/artifacts
+end_time: 1735873137106
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: bc5bd98c00f34a08ac0e7a4fdca1386a
+run_name: blushing-snipe-845
+run_uuid: bc5bd98c00f34a08ac0e7a4fdca1386a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735873114700
+status: 3
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/b40dbd028cba4f1ea5067e223a298d44/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: b40dbd028cba4f1ea5067e223a298d44
+run_name: intrigued-carp-909
+run_uuid: b40dbd028cba4f1ea5067e223a298d44
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735858439607
+status: 1
+tags: []
+user_id: root

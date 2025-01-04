@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/ec65cc3f3f2c4a80b9298f78b13cd9cf/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: ec65cc3f3f2c4a80b9298f78b13cd9cf
+run_name: casual-crane-506
+run_uuid: ec65cc3f3f2c4a80b9298f78b13cd9cf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872139326
+status: 1
+tags: []
+user_id: root

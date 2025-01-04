@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/dea8ce6188ea476db5639cebbc42f200/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: dea8ce6188ea476db5639cebbc42f200
+run_name: secretive-midge-20
+run_uuid: dea8ce6188ea476db5639cebbc42f200
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735862074713
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/1929189cb3d84e3b84f168c25684f28e/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1929189cb3d84e3b84f168c25684f28e
+run_name: amazing-cod-659
+run_uuid: 1929189cb3d84e3b84f168c25684f28e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890773088
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/ca48a814b5f24099904b2422db14b47d/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: ca48a814b5f24099904b2422db14b47d
+run_name: illustrious-ape-43
+run_uuid: ca48a814b5f24099904b2422db14b47d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735854038620
+status: 1
+tags: []
+user_id: root

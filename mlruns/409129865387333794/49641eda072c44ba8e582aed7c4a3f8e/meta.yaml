@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/49641eda072c44ba8e582aed7c4a3f8e/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 49641eda072c44ba8e582aed7c4a3f8e
+run_name: bright-panda-360
+run_uuid: 49641eda072c44ba8e582aed7c4a3f8e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735855826395
+status: 1
+tags: []
+user_id: root

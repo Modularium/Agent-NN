@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/1701523a3da74fc59d347bf5f47c4b4f/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 1701523a3da74fc59d347bf5f47c4b4f
+run_name: efficient-mouse-987
+run_uuid: 1701523a3da74fc59d347bf5f47c4b4f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890783914
+status: 1
+tags: []
+user_id: root

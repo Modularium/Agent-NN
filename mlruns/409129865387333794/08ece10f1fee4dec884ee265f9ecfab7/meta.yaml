@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/08ece10f1fee4dec884ee265f9ecfab7/artifacts
+end_time: 1735890836661
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 08ece10f1fee4dec884ee265f9ecfab7
+run_name: judicious-vole-244
+run_uuid: 08ece10f1fee4dec884ee265f9ecfab7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890816363
+status: 3
+tags: []
+user_id: root

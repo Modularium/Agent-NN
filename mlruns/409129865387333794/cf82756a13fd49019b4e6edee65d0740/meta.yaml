@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/cf82756a13fd49019b4e6edee65d0740/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: cf82756a13fd49019b4e6edee65d0740
+run_name: fun-snake-187
+run_uuid: cf82756a13fd49019b4e6edee65d0740
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735874361827
+status: 1
+tags: []
+user_id: root

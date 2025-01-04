@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/16e7b7bc568d41f2993a97694faa9447/artifacts
+end_time: 1735891165143
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 16e7b7bc568d41f2993a97694faa9447
+run_name: righteous-zebra-291
+run_uuid: 16e7b7bc568d41f2993a97694faa9447
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735891143803
+status: 3
+tags: []
+user_id: root

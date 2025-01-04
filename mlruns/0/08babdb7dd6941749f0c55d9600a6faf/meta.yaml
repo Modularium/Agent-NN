@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/08babdb7dd6941749f0c55d9600a6faf/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 08babdb7dd6941749f0c55d9600a6faf
+run_name: invincible-snipe-650
+run_uuid: 08babdb7dd6941749f0c55d9600a6faf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735859300924
+status: 1
+tags: []
+user_id: root

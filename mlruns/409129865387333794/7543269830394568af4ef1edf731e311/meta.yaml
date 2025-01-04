@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/7543269830394568af4ef1edf731e311/artifacts
+end_time: 1735869145577
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 7543269830394568af4ef1edf731e311
+run_name: hilarious-roo-986
+run_uuid: 7543269830394568af4ef1edf731e311
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869145519
+status: 3
+tags: []
+user_id: root

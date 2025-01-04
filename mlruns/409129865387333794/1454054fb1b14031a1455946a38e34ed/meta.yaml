@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/1454054fb1b14031a1455946a38e34ed/artifacts
+end_time: 1735864530245
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 1454054fb1b14031a1455946a38e34ed
+run_name: delicate-croc-823
+run_uuid: 1454054fb1b14031a1455946a38e34ed
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735864526299
+status: 3
+tags: []
+user_id: root

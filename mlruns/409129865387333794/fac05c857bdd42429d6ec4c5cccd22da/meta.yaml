@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/fac05c857bdd42429d6ec4c5cccd22da/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: fac05c857bdd42429d6ec4c5cccd22da
+run_name: puzzled-crow-814
+run_uuid: fac05c857bdd42429d6ec4c5cccd22da
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735874359980
+status: 1
+tags: []
+user_id: root

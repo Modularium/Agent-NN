@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/d1c8efb7b8844d589e6122690530b5a3/artifacts
+end_time: 1735890617528
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: d1c8efb7b8844d589e6122690530b5a3
+run_name: stylish-hen-146
+run_uuid: d1c8efb7b8844d589e6122690530b5a3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735890617494
+status: 3
+tags: []
+user_id: root

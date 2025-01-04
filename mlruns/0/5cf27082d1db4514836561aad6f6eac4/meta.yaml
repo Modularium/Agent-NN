@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/5cf27082d1db4514836561aad6f6eac4/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5cf27082d1db4514836561aad6f6eac4
+run_name: intrigued-mare-66
+run_uuid: 5cf27082d1db4514836561aad6f6eac4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735863992095
+status: 1
+tags: []
+user_id: root

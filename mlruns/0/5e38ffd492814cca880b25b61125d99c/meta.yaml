@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/5e38ffd492814cca880b25b61125d99c/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5e38ffd492814cca880b25b61125d99c
+run_name: bald-goat-648
+run_uuid: 5e38ffd492814cca880b25b61125d99c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735870809623
+status: 1
+tags: []
+user_id: root

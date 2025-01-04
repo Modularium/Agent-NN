@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/1d2d952bc6b04feca2f756b61e7a93d7/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 1d2d952bc6b04feca2f756b61e7a93d7
+run_name: bustling-tern-277
+run_uuid: 1d2d952bc6b04feca2f756b61e7a93d7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735863284109
+status: 1
+tags: []
+user_id: root

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/569a8303485142818f0ecabec0682e53/artifacts
+end_time: 1735868159275
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 569a8303485142818f0ecabec0682e53
+run_name: inquisitive-toad-529
+run_uuid: 569a8303485142818f0ecabec0682e53
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735868156800
+status: 3
+tags: []
+user_id: root

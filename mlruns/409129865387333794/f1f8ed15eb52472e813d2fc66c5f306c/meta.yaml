@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/f1f8ed15eb52472e813d2fc66c5f306c/artifacts
+end_time: 1735869987356
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: f1f8ed15eb52472e813d2fc66c5f306c
+run_name: legendary-turtle-898
+run_uuid: f1f8ed15eb52472e813d2fc66c5f306c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869963923
+status: 3
+tags: []
+user_id: root

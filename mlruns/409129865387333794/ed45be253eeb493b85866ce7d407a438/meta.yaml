@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/ed45be253eeb493b85866ce7d407a438/artifacts
+end_time: 1735867351085
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: ed45be253eeb493b85866ce7d407a438
+run_name: redolent-frog-465
+run_uuid: ed45be253eeb493b85866ce7d407a438
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867347223
+status: 3
+tags: []
+user_id: root

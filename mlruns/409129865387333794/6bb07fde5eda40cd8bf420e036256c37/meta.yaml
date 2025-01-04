@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/6bb07fde5eda40cd8bf420e036256c37/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 6bb07fde5eda40cd8bf420e036256c37
+run_name: nimble-skink-472
+run_uuid: 6bb07fde5eda40cd8bf420e036256c37
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735869114125
+status: 1
+tags: []
+user_id: root

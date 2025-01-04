@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/9533281fa1fc405c934b40ca6b51244b/artifacts
+end_time: 1735875417046
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 9533281fa1fc405c934b40ca6b51244b
+run_name: skillful-carp-2
+run_uuid: 9533281fa1fc405c934b40ca6b51244b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735875417015
+status: 3
+tags: []
+user_id: root

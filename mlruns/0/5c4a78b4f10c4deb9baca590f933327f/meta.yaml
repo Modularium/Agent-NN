@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/5c4a78b4f10c4deb9baca590f933327f/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5c4a78b4f10c4deb9baca590f933327f
+run_name: nosy-sponge-8
+run_uuid: 5c4a78b4f10c4deb9baca590f933327f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865853096
+status: 1
+tags: []
+user_id: root

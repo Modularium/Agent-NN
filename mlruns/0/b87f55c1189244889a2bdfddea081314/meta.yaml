@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/b87f55c1189244889a2bdfddea081314/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: b87f55c1189244889a2bdfddea081314
+run_name: melodic-asp-202
+run_uuid: b87f55c1189244889a2bdfddea081314
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735858443009
+status: 1
+tags: []
+user_id: root

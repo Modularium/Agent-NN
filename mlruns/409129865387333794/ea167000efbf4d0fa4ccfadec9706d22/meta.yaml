@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/ea167000efbf4d0fa4ccfadec9706d22/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: ea167000efbf4d0fa4ccfadec9706d22
+run_name: adorable-skink-758
+run_uuid: ea167000efbf4d0fa4ccfadec9706d22
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735867323415
+status: 1
+tags: []
+user_id: root

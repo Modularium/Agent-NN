@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/965711462300224126/885f51f7f17642b4a5c456a0270e5983/artifacts
+end_time: 1735892929566
+entry_point_name: ''
+experiment_id: '965711462300224126'
+lifecycle_stage: active
+run_id: 885f51f7f17642b4a5c456a0270e5983
+run_name: agent_creation
+run_uuid: 885f51f7f17642b4a5c456a0270e5983
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735892922356
+status: 3
+tags: []
+user_id: root

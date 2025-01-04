@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/56460f81c4c74ad69c0a6c67b3bf9134/artifacts
+end_time: 1735872873316
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 56460f81c4c74ad69c0a6c67b3bf9134
+run_name: gentle-mink-595
+run_uuid: 56460f81c4c74ad69c0a6c67b3bf9134
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872873284
+status: 3
+tags: []
+user_id: root

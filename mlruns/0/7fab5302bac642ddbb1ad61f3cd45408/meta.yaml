@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/7fab5302bac642ddbb1ad61f3cd45408/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7fab5302bac642ddbb1ad61f3cd45408
+run_name: nosy-lark-950
+run_uuid: 7fab5302bac642ddbb1ad61f3cd45408
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735855816066
+status: 1
+tags: []
+user_id: root

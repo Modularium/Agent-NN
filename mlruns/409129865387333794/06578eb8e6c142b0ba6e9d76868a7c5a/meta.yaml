@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/06578eb8e6c142b0ba6e9d76868a7c5a/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 06578eb8e6c142b0ba6e9d76868a7c5a
+run_name: ambitious-flea-269
+run_uuid: 06578eb8e6c142b0ba6e9d76868a7c5a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735868125710
+status: 1
+tags: []
+user_id: root

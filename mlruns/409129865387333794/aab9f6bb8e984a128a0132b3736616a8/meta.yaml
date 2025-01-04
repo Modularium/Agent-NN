@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/aab9f6bb8e984a128a0132b3736616a8/artifacts
+end_time: 1735865890259
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: aab9f6bb8e984a128a0132b3736616a8
+run_name: secretive-mare-705
+run_uuid: aab9f6bb8e984a128a0132b3736616a8
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865886183
+status: 3
+tags: []
+user_id: root

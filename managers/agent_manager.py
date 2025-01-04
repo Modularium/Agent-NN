@@ -1,11 +1,17 @@
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
+import torch
 from langchain.schema import Document
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from agents.worker_agent import WorkerAgent
-from config import LLM_API_KEY
+from managers.hybrid_matcher import HybridMatcher, MatchResult
+from nn_models.agent_nn import TaskMetrics
+from utils.logging_util import LoggerMixin
+from config import LLM_BACKEND
+from config.llm_config import OPENAI_CONFIG, LMSTUDIO_CONFIG
 
-class AgentManager:
+class AgentManager(LoggerMixin):
     # Default domain knowledge for initial agents
     DOMAIN_KNOWLEDGE = {
         "finance": [
@@ -30,13 +36,29 @@ class AgentManager:
 
     def __init__(self):
         """Initialize the agent manager with default agents."""
+        super().__init__()
         self.agents: Dict[str, WorkerAgent] = {}
-        self.embeddings = OpenAIEmbeddings(openai_api_key=LLM_API_KEY)
+        
+        # Initialize embeddings based on backend
+        if LLM_BACKEND == "openai":
+            self.embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_CONFIG["api_key"])
+        else:  # Default to LM-Studio
+            self.embeddings = HuggingFaceEmbeddings(
+                model_name="sentence-transformers/all-mpnet-base-v2",
+                model_kwargs={"device": "cpu"}
+            )
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=200,
             length_function=len
         )
+        
+        # Initialize hybrid matcher
+        self.matcher = HybridMatcher()
+        
+        # Cache for embeddings and features
+        self.embedding_cache: Dict[str, torch.Tensor] = {}
+        self.feature_cache: Dict[str, torch.Tensor] = {}
         
         # Initialize default agents with domain knowledge
         for domain, knowledge in self.DOMAIN_KNOWLEDGE.items():
@@ -46,6 +68,9 @@ class AgentManager:
                 domain_docs=[Document(page_content=text, metadata={"domain": domain}) 
                            for text in knowledge]
             )
+            
+            # Cache agent embeddings and features
+            self._update_agent_cache(agent_name)
 
     def get_all_agents(self) -> List[str]:
         """Get list of all available agent names."""
@@ -137,8 +162,142 @@ class AgentManager:
         if not agent:
             return {}
             
-        return {
+        metadata = {
             "name": agent_name,
             "domain": agent.name,
             "knowledge_base_size": len(agent.search_knowledge_base("", k=1000))
         }
+        
+        # Add embeddings and features if available
+        if agent_name in self.embedding_cache:
+            metadata["embedding"] = self.embedding_cache[agent_name].tolist()
+        if agent_name in self.feature_cache:
+            metadata["features"] = self.feature_cache[agent_name].tolist()
+            
+        return metadata
+        
+    def select_agent(self, task_description: str) -> Tuple[WorkerAgent, MatchResult]:
+        """Select the best agent for a task using hybrid matching.
+        
+        Args:
+            task_description: Description of the task
+            
+        Returns:
+            Tuple[WorkerAgent, MatchResult]: Selected agent and match details
+        """
+        # Get task embedding
+        task_embedding = torch.tensor(
+            self.embeddings.embed_query(task_description)
+        ).unsqueeze(0)
+        
+        # Prepare agent data for matcher
+        agent_data = {
+            name: {
+                "embedding": self.embedding_cache[name],
+                "features": self.feature_cache[name]
+            }
+            for name in self.agents.keys()
+            if name in self.embedding_cache and name in self.feature_cache
+        }
+        
+        # Get matches from hybrid matcher
+        matches = self.matcher.match_task(
+            task_description,
+            task_embedding,
+            agent_data
+        )
+        
+        # Log matching results
+        self.log_event(
+            "agent_selection",
+            {
+                "task": task_description,
+                "selected_agent": matches[0].agent_name,
+                "confidence": matches[0].confidence,
+                "match_details": matches[0].match_details
+            }
+        )
+        
+        # Return best match
+        best_match = matches[0]
+        return self.agents[best_match.agent_name], best_match
+        
+    def update_agent_performance(self,
+                               agent_name: str,
+                               task_metrics: TaskMetrics,
+                               success_score: float):
+        """Update agent performance metrics.
+        
+        Args:
+            agent_name: Name of the agent
+            task_metrics: Task execution metrics
+            success_score: Task success score
+        """
+        self.matcher.update_agent_performance(
+            agent_name,
+            task_metrics,
+            success_score
+        )
+        
+        # Update cache if needed
+        self._update_agent_cache(agent_name)
+        
+    def _update_agent_cache(self, agent_name: str):
+        """Update cached embeddings and features for an agent.
+        
+        Args:
+            agent_name: Name of the agent to update
+        """
+        agent = self.agents[agent_name]
+        
+        try:
+            # Get agent description
+            description = f"Domain: {agent.name}\n"
+            description += "\n".join(
+                doc.page_content
+                for doc in agent.search_knowledge_base("", k=5)
+            )
+            
+            # Update embedding cache
+            self.embedding_cache[agent_name] = torch.tensor(
+                self.embeddings.embed_query(description)
+            ).unsqueeze(0)
+            
+            # Update feature cache
+            self.feature_cache[agent_name] = agent.get_features()
+            
+            self.log_event(
+                "cache_update",
+                {
+                    "agent": agent_name,
+                    "cache_type": "both",
+                    "status": "success"
+                }
+            )
+            
+        except Exception as e:
+            self.log_error(e, {
+                "agent": agent_name,
+                "operation": "cache_update"
+            })
+            
+    def save_state(self, path: str):
+        """Save manager state.
+        
+        Args:
+            path: Path to save state
+        """
+        self.matcher.save_state(f"{path}_matcher")
+        self.log_event("state_saved", {"path": path})
+        
+    def load_state(self, path: str):
+        """Load manager state.
+        
+        Args:
+            path: Path to load state from
+        """
+        try:
+            self.matcher.load_state(f"{path}_matcher")
+            self.log_event("state_loaded", {"path": path})
+        except Exception as e:
+            self.log_error(e, {"path": path})

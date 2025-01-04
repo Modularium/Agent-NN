@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/409129865387333794/0a044bdbfb844a08a6dc04e2a3541d00/artifacts
+end_time: 1735872896234
+entry_point_name: ''
+experiment_id: '409129865387333794'
+lifecycle_stage: active
+run_id: 0a044bdbfb844a08a6dc04e2a3541d00
+run_name: rebellious-bat-740
+run_uuid: 0a044bdbfb844a08a6dc04e2a3541d00
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872873337
+status: 3
+tags: []
+user_id: root

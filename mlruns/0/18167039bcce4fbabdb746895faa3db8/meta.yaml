@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/18167039bcce4fbabdb746895faa3db8/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 18167039bcce4fbabdb746895faa3db8
+run_name: caring-wren-327
+run_uuid: 18167039bcce4fbabdb746895faa3db8
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735872831869
+status: 1
+tags: []
+user_id: root

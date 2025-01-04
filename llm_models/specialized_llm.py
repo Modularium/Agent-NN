@@ -1,6 +1,6 @@
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from langchain_core.runnables import RunnablePassthrough
 from .llm_backend import LLMBackendManager, LLMBackendType
 
 class SpecializedLLM:
@@ -75,11 +75,8 @@ class SpecializedLLM:
             template=f"{self.config['system_prompt']}\n\nContext: {{context}}\n\nQuestion: {{question}}\n\nAnswer:"
         )
         
-        # Create LLMChain with the specialized prompt
-        self.chain = LLMChain(
-            llm=self.llm,
-            prompt=self.prompt_template
-        )
+        # Create RunnableSequence with the specialized prompt
+        self.chain = RunnablePassthrough() | self.prompt_template | self.llm
 
     def _get_domain_llm(self):
         """Get the appropriate LLM for the domain."""
@@ -100,10 +97,7 @@ class SpecializedLLM:
         """
         self.backend_manager.set_backend(backend_type)
         self.llm = self._get_domain_llm()
-        self.chain = LLMChain(
-            llm=self.llm,
-            prompt=self.prompt_template
-        )
+        self.chain = RunnablePassthrough() | self.prompt_template | self.llm
 
     def get_llm(self):
         """Get the current LLM instance."""
@@ -132,19 +126,19 @@ class SpecializedLLM:
             original_backend = self.backend_manager.current_backend
             self.switch_backend(backend_type)
             try:
-                response = self.chain.run({
+                response = self.chain.invoke({
                     "question": question,
                     "context": context or "No additional context provided."
-                })
+                }).content
             finally:
                 # Switch back to original backend
                 self.switch_backend(original_backend)
             return response
             
-        return self.chain.run({
+        return self.chain.invoke({
             "question": question,
             "context": context or "No additional context provided."
-        })
+        }).content
     
     def get_backend_info(self) -> Dict[str, Any]:
         """Get information about the current backend configuration.
@@ -159,3 +153,15 @@ class SpecializedLLM:
             "domain": self.domain,
             "temperature": self.config["temperature"]
         }
+        
+    def get_embedding(self, text: str) -> List[float]:
+        """Get embedding for text using the current backend.
+        
+        Args:
+            text: Text to get embedding for
+            
+        Returns:
+            List[float]: Embedding vector
+        """
+        embeddings = self.backend_manager.get_embeddings()
+        return embeddings.embed_query(text)

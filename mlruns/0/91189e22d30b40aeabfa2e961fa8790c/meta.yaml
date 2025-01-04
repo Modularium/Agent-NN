@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/Smolit_LLM-NN/mlruns/0/91189e22d30b40aeabfa2e961fa8790c/artifacts
+end_time: 1735865865101
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 91189e22d30b40aeabfa2e961fa8790c
+run_name: ABTestingManager_run
+run_uuid: 91189e22d30b40aeabfa2e961fa8790c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1735865858045
+status: 3
+tags: []
+user_id: root

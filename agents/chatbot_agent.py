@@ -1,42 +1,30 @@
 from typing import List, Dict, Any, Optional
-from langchain.chains import LLMChain
-from langchain.llms import OpenAI
+from langchain_core.runnables import RunnablePassthrough
 from utils.prompts import (
     CHATBOT_SYSTEM_PROMPT,
     TASK_IDENTIFICATION_PROMPT,
     TASK_RESULT_PROMPT,
     ERROR_HANDLING_PROMPT
 )
-from config import LLM_API_KEY
+from llm_models.llm_handler import get_llm_instance, get_default_llm
 
 class ChatbotAgent:
-    def __init__(self, supervisor_agent):
+    def __init__(self, supervisor_agent, llm_backend: str = "lmstudio"):
         """Initialize the chatbot agent.
         
         Args:
             supervisor_agent: The supervisor agent to delegate tasks to
+            llm_backend: The LLM backend to use ("lmstudio" or "openai")
         """
         # Initialize LLM with different temperatures for different purposes
-        self.conversation_llm = OpenAI(openai_api_key=LLM_API_KEY, temperature=0.7)
-        self.task_llm = OpenAI(openai_api_key=LLM_API_KEY, temperature=0.2)
+        self.conversation_llm = get_llm_instance(backend=llm_backend, temperature=0.7)
+        self.task_llm = get_llm_instance(backend=llm_backend, temperature=0.2)
         
         # Create different chains for different purposes
-        self.conversation_chain = LLMChain(
-            llm=self.conversation_llm,
-            prompt=CHATBOT_SYSTEM_PROMPT
-        )
-        self.task_identification_chain = LLMChain(
-            llm=self.task_llm,
-            prompt=TASK_IDENTIFICATION_PROMPT
-        )
-        self.result_formatting_chain = LLMChain(
-            llm=self.task_llm,
-            prompt=TASK_RESULT_PROMPT
-        )
-        self.error_handling_chain = LLMChain(
-            llm=self.task_llm,
-            prompt=ERROR_HANDLING_PROMPT
-        )
+        self.conversation_chain = RunnablePassthrough() | CHATBOT_SYSTEM_PROMPT | self.conversation_llm
+        self.task_identification_chain = RunnablePassthrough() | TASK_IDENTIFICATION_PROMPT | self.task_llm
+        self.result_formatting_chain = RunnablePassthrough() | TASK_RESULT_PROMPT | self.task_llm
+        self.error_handling_chain = RunnablePassthrough() | ERROR_HANDLING_PROMPT | self.task_llm
         
         self.supervisor = supervisor_agent
         self.conversation_history: List[Dict[str, str]] = []
@@ -58,9 +46,9 @@ class ChatbotAgent:
             })
             
             # Determine if message contains a task
-            identification_result = self.task_identification_chain.run(
-                message=user_message
-            )
+            identification_result = self.task_identification_chain.invoke({
+                "message": user_message
+            }).content
             
             if identification_result.startswith("TASK:"):
                 # Extract task description and execute it
@@ -69,22 +57,22 @@ class ChatbotAgent:
                 
                 # Format the result
                 if execution_result.get("success", False):
-                    response = self.result_formatting_chain.run(
-                        task_description=task_description,
-                        result=execution_result["result"]
-                    )
+                    response = self.result_formatting_chain.invoke({
+                        "task_description": task_description,
+                        "result": execution_result["result"]
+                    }).content
                 else:
-                    response = self.error_handling_chain.run(
-                        user_request=user_message,
-                        error_message=execution_result.get("error", "Unknown error occurred")
-                    )
+                    response = self.error_handling_chain.invoke({
+                        "user_request": user_message,
+                        "error_message": execution_result.get("error", "Unknown error occurred")
+                    }).content
             else:
                 # Handle as normal conversation
                 chat_history = self._format_history()
-                response = self.conversation_chain.run(
-                    input=user_message,
-                    chat_history=chat_history
-                )
+                response = self.conversation_chain.invoke({
+                    "input": user_message,
+                    "chat_history": chat_history
+                }).content
             
             # Add response to history
             self.conversation_history.append({
@@ -96,10 +84,10 @@ class ChatbotAgent:
             
         except Exception as e:
             # Handle any unexpected errors
-            error_response = self.error_handling_chain.run(
-                user_request=user_message,
-                error_message=str(e)
-            )
+            error_response = self.error_handling_chain.invoke({
+                "user_request": user_message,
+                "error_message": str(e)
+            }).content
             
             self.conversation_history.append({
                 "role": "assistant",

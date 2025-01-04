@@ -1,15 +1,15 @@
 from typing import List, Dict, Optional, Tuple
 import torch
 from langchain.schema import Document
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from agents.worker_agent import WorkerAgent
 from managers.hybrid_matcher import HybridMatcher, MatchResult
 from nn_models.agent_nn import TaskMetrics
 from utils.logging_util import LoggerMixin
-from config.llm_config import OPENAI_CONFIG
-
-LLM_API_KEY = OPENAI_CONFIG["api_key"]
+from config import LLM_BACKEND
+from config.llm_config import OPENAI_CONFIG, LMSTUDIO_CONFIG
 
 class AgentManager(LoggerMixin):
     # Default domain knowledge for initial agents
@@ -38,7 +38,15 @@ class AgentManager(LoggerMixin):
         """Initialize the agent manager with default agents."""
         super().__init__()
         self.agents: Dict[str, WorkerAgent] = {}
-        self.embeddings = OpenAIEmbeddings(openai_api_key=LLM_API_KEY)
+        
+        # Initialize embeddings based on backend
+        if LLM_BACKEND == "openai":
+            self.embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_CONFIG["api_key"])
+        else:  # Default to LM-Studio
+            self.embeddings = HuggingFaceEmbeddings(
+                model_name="sentence-transformers/all-mpnet-base-v2",
+                model_kwargs={"device": "cpu"}
+            )
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=200,

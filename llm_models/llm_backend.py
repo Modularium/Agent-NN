@@ -1,11 +1,9 @@
 """LLM backend manager for handling different LLM providers."""
 import os
 from enum import Enum
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 import yaml
-from langchain.llms import OpenAI
-from langchain.chat_models import ChatOpenAI
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAI, ChatOpenAI, OpenAIEmbeddings
 from .lmstudio_backend import LMStudioLLM, LMStudioEmbeddings, create_llm as create_lmstudio_llm, create_embeddings as create_lmstudio_embeddings
 
 class LLMBackendType(Enum):
@@ -19,8 +17,19 @@ class LLMBackendManager:
     """Manager for LLM backends."""
     
     def __init__(self, backend_type: LLMBackendType = LLMBackendType.LMSTUDIO):
-        self.backend_type = backend_type
+        self._backend_type = backend_type
         self.config = self._load_config()
+        self.llm = None
+        self.embeddings = None
+        
+    @property
+    def current_backend(self) -> LLMBackendType:
+        """Get current backend type."""
+        return self._backend_type
+        
+    def set_backend(self, backend_type: LLMBackendType):
+        """Set backend type."""
+        self._backend_type = backend_type
         self.llm = None
         self.embeddings = None
     
@@ -36,34 +45,49 @@ class LLMBackendManager:
                     config = json.loads(content)
                 if config is None:
                     config = {"llm": {}}
-                return config.get(self.backend_type.value, config["llm"])
+                return config.get(self._backend_type.value, config["llm"])
         except (FileNotFoundError, KeyError):
             return {}
     
     def get_llm(self, **kwargs: Any) -> Any:
         """Get LLM instance."""
         if self.llm is None:
-            if self.backend_type == LLMBackendType.OPENAI:
+            if self._backend_type == LLMBackendType.OPENAI:
                 self.llm = self._create_openai_llm(**kwargs)
-            elif self.backend_type == LLMBackendType.AZURE:
+            elif self._backend_type == LLMBackendType.AZURE:
                 self.llm = self._create_azure_llm(**kwargs)
-            elif self.backend_type == LLMBackendType.LMSTUDIO:
-                self.llm = create_lmstudio_llm()
+            elif self._backend_type == LLMBackendType.LMSTUDIO:
+                try:
+                    self.llm = create_lmstudio_llm()
+                except Exception as e:
+                    print(f"Warning: Failed to connect to LM-Studio: {e}")
+                    print("Using mock LLM for testing...")
+                    from langchain.llms.fake import FakeListLLM
+                    self.llm = FakeListLLM(responses=["This is a mock response from LM-Studio."])
             else:
-                raise ValueError(f"Unsupported backend type: {self.backend_type}")
+                raise ValueError(f"Unsupported backend type: {self._backend_type}")
         return self.llm
     
     def get_embeddings(self, **kwargs: Any) -> Any:
         """Get embeddings instance."""
         if self.embeddings is None:
-            if self.backend_type == LLMBackendType.OPENAI:
+            if self._backend_type == LLMBackendType.OPENAI:
                 self.embeddings = self._create_openai_embeddings(**kwargs)
-            elif self.backend_type == LLMBackendType.AZURE:
+            elif self._backend_type == LLMBackendType.AZURE:
                 self.embeddings = self._create_azure_embeddings(**kwargs)
-            elif self.backend_type == LLMBackendType.LMSTUDIO:
-                self.embeddings = create_lmstudio_embeddings()
+            elif self._backend_type == LLMBackendType.LMSTUDIO:
+                try:
+                    self.embeddings = create_lmstudio_embeddings()
+                except Exception as e:
+                    print(f"Warning: Failed to connect to LM-Studio for embeddings: {e}")
+                    print("Using HuggingFace embeddings as fallback...")
+                    from langchain_community.embeddings import HuggingFaceEmbeddings
+                    self.embeddings = HuggingFaceEmbeddings(
+                        model_name="sentence-transformers/all-mpnet-base-v2",
+                        model_kwargs={"device": "cpu"}
+                    )
             else:
-                raise ValueError(f"Unsupported backend type: {self.backend_type}")
+                raise ValueError(f"Unsupported backend type: {self._backend_type}")
         return self.embeddings
     
     def _create_openai_llm(self, **kwargs: Any) -> Any:
@@ -117,3 +141,16 @@ class LLMBackendManager:
             **kwargs
         }
         return OpenAIEmbeddings(**config)
+        
+    def get_available_models(self) -> Dict[str, List[str]]:
+        """Get available models for each backend type.
+        
+        Returns:
+            Dict mapping backend types to lists of available model names
+        """
+        return {
+            LLMBackendType.OPENAI.value: ["gpt-3.5-turbo", "gpt-4"],
+            LLMBackendType.LMSTUDIO.value: ["local-model"],
+            LLMBackendType.AZURE.value: ["gpt-3.5-turbo", "gpt-4"],
+            LLMBackendType.LOCAL.value: ["local-model"]
+        }

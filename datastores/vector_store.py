@@ -1,7 +1,7 @@
 import os
 from typing import List, Optional
 from langchain_chroma import Chroma
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.schema import Document
 from config.llm_config import OPENAI_CONFIG

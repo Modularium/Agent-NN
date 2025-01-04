@@ -1,7 +1,7 @@
 from typing import List, Dict, Optional, Tuple, Any
 import numpy as np
 from datetime import datetime
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from sklearn.metrics.pairwise import cosine_similarity
 from utils.agent_descriptions import (
     get_agent_description,
@@ -10,12 +10,14 @@ from utils.agent_descriptions import (
     match_task_to_domain
 )
 from mlflow_integration.experiment_tracking import ExperimentTracker
-from config import LLM_API_KEY
 
 class NNManager:
     def __init__(self):
         """Initialize the neural network manager for agent selection."""
-        self.embeddings = OpenAIEmbeddings(openai_api_key=LLM_API_KEY)
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-mpnet-base-v2",
+            model_kwargs={"device": "cpu"}
+        )
         self.experiment_tracker = ExperimentTracker("agent_selection")
         
         # Cache for embeddings to avoid recomputing

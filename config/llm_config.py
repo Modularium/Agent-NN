@@ -8,7 +8,7 @@ os.makedirs(DEFAULT_MODELS_DIR, exist_ok=True)
 
 # LM Studio configuration
 LMSTUDIO_CONFIG = {
-    "endpoint_url": os.getenv("LMSTUDIO_URL", "http://localhost:1234/v1"),
+    "endpoint_url": os.getenv("LMSTUDIO_URL", "http://192.168.0.247:1234/v1"),
     "models": {
         "local-model": {
             "max_tokens": 1024,

@@ -31,3 +31,8 @@ projekt/
    ├─ logging_util.py
    ├─ prompts.py
 ```
+
+
+### Activity
+
+![Alt](https://repobeats.axiom.co/api/embed/369e063d4ba357435584a1ea4a720f12ea2b945f.svg "Repobeats analytics image")

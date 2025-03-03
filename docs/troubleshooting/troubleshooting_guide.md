@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-This guide helps diagnose and resolve common issues in the Smolit LLM-NN system.
+This guide helps diagnose and resolve common issues in the Agent-NN system.
 
 ## Quick Reference
 

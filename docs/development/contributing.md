@@ -1,6 +1,6 @@
-# Contributing to Smolit LLM-NN
+# Contributing to Agent-NN
 
-We love your input! We want to make contributing to Smolit LLM-NN as easy and transparent as possible, whether it's:
+We love your input! We want to make contributing to Agent-NN as easy and transparent as possible, whether it's:
 
 - Reporting a bug
 - Discussing the current state of the code

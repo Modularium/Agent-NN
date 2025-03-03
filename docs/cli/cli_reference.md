@@ -1,6 +1,6 @@
 # CLI Reference
 
-The Smolit LLM-NN Command Line Interface (CLI) provides a convenient way to interact with the system.
+The Agent-NN Command Line Interface (CLI) provides a convenient way to interact with the system.
 
 ## Installation
 

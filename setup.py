@@ -1,4 +1,4 @@
-"""Setup script for Smolit LLM-NN."""
+"""Setup script for Agent-NN."""
 from setuptools import setup, find_packages
 
 setup(
@@ -25,7 +25,7 @@ setup(
     },
     author="OpenHands",
     author_email="openhands@all-hands.dev",
-    description="Command line interface for Smolit LLM-NN",
+    description="Command line interface for Agent-NN",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/openhands/smolit-llm-nn",

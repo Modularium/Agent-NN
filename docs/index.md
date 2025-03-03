@@ -1,10 +1,10 @@
-# Smolit LLM-NN Documentation
+# Agent-NN Documentation
 
-Welcome to the Smolit LLM-NN documentation! This documentation will help you understand and use our multi-agent system with neural network-based task routing.
+Welcome to the Agent-NN documentation! This documentation will help you understand and use our multi-agent system with neural network-based task routing.
 
 ## Overview
 
-Smolit LLM-NN is a sophisticated multi-agent system that combines large language models (LLMs) with neural networks to create an intelligent task routing and execution framework. The system features:
+Agent-NN is a sophisticated multi-agent system that combines large language models (LLMs) with neural networks to create an intelligent task routing and execution framework. The system features:
 
 - Dynamic agent creation and specialization
 - Neural network-based task routing
@@ -46,7 +46,7 @@ Smolit LLM-NN is a sophisticated multi-agent system that combines large language
 
 ## Getting Started
 
-To get started with Smolit LLM-NN, check out the following sections:
+To get started with Agent-NN, check out the following sections:
 
 1. [Installation Guide](getting-started/installation.md)
 2. [Quick Start Tutorial](getting-started/quickstart.md)

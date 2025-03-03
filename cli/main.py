@@ -5,7 +5,7 @@ from .core import SmolitCLI, console
 
 @click.group()
 def cli():
-    """Smolit LLM-NN Command Line Interface."""
+    """Agent-NN Command Line Interface."""
     pass
 
 @cli.command()

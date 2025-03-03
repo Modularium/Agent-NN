@@ -1,6 +1,6 @@
 # CI/CD Pipeline
 
-This document describes the Continuous Integration and Continuous Deployment (CI/CD) pipeline for Smolit LLM-NN.
+This document describes the Continuous Integration and Continuous Deployment (CI/CD) pipeline for Agent-NN.
 
 ## Overview
 

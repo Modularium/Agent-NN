@@ -1,4 +1,4 @@
-"""Smolit LLM-NN Command Line Interface."""
+"""Agent-NN Command Line Interface."""
 import os
 import json
 import click
@@ -49,7 +49,7 @@ class SmolitCLI(LoggerMixin):
 
 @click.group()
 def cli():
-    """Smolit LLM-NN Command Line Interface."""
+    """Agent-NN Command Line Interface."""
     pass
 
 @cli.command()

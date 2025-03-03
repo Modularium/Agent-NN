@@ -1,4 +1,4 @@
-"""Unified CLI for Smolit LLM-NN."""
+"""Unified CLI for Agent-NN."""
 import click
 import asyncio
 from typing import Optional
@@ -29,9 +29,9 @@ class UnifiedCLI:
     def display_welcome(self):
         """Display welcome message."""
         welcome_md = """
-        # 🤖 Smolit LLM-NN Unified CLI
+        # 🤖 Agent-NN Unified CLI
         
-        Welcome to the Smolit LLM-NN command-line interface!
+        Welcome to the Agent-NN command-line interface!
         
         ## Available Commands:
         
@@ -64,7 +64,7 @@ class UnifiedCLI:
 
 @click.group()
 def cli():
-    """Smolit LLM-NN Command Line Interface."""
+    """Agent-NN Command Line Interface."""
     pass
 
 # Chat commands

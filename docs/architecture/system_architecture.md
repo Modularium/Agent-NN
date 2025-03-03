@@ -1,10 +1,10 @@
 # System Architecture
 
-This document provides a comprehensive overview of the Smolit LLM-NN system architecture.
+This document provides a comprehensive overview of the Agent-NN system architecture.
 
 ## Overview
 
-Smolit LLM-NN is a distributed multi-agent system that combines large language models with neural networks for intelligent task routing and execution. The system is designed to be:
+Agent-NN is a distributed multi-agent system that combines large language models with neural networks for intelligent task routing and execution. The system is designed to be:
 
 - Scalable: Handles increasing workloads through distributed processing
 - Resilient: Maintains operation despite component failures

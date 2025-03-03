@@ -1,4 +1,4 @@
-"""Core CLI implementation for Smolit LLM-NN."""
+"""Core CLI implementation for Agent-NN."""
 import os
 import json
 import asyncio

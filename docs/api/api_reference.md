@@ -1,6 +1,6 @@
 # API Reference
 
-This document provides detailed information about the Smolit LLM-NN API endpoints.
+This document provides detailed information about the Agent-NN API endpoints.
 
 ## Authentication
 

@@ -12,7 +12,7 @@ from rich.syntax import Syntax
 from rich.panel import Panel
 
 class CLIClient:
-    """CLI client for Smolit LLM-NN."""
+    """CLI client for Agent-NN."""
     
     def __init__(self,
                  api_url: str = "http://localhost:8000",
@@ -303,7 +303,7 @@ class CLIClient:
 # CLI Commands
 @click.group()
 def cli():
-    """Smolit LLM-NN Command Line Interface."""
+    """Agent-NN Command Line Interface."""
     pass
 
 @cli.command()

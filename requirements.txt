@@ -6,3 +6,24 @@ pandas
 torch
 transformers
 chromadb
+
+Pydantic
+Pydantic Settings
+Python Dotenv
+FastAPI
+Celery
+PostgreSQL
+psycopg2
+MongoDB
+PyMongo
+SQLAlchemy
+Alembic
+Pandas
+Instructor
+pgvectorscale
+langfuse
+DSPy
+PyMuPDF
+PyPDF2
+Docling
+Jinja

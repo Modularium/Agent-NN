@@ -1,4 +1,4 @@
-# Smolit_LLM-NN
+# Agent-NN
 NN for LLM Agents
 ______
 ```

@@ -1,25 +1,69 @@
 // monitoring/dashboard/components/common/Card.tsx
 import React, { ReactNode } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface CardProps {
   title?: string;
   children: ReactNode;
   className?: string;
   headerAction?: ReactNode;
+  footer?: ReactNode;
+  noPadding?: boolean;
+  hoverable?: boolean;
+  bordered?: boolean;
+  collapsible?: boolean;
+  defaultCollapsed?: boolean;
 }
 
-const Card: React.FC<CardProps> = ({ title, children, className = '', headerAction }) => {
+const Card: React.FC<CardProps> = ({
+  title,
+  children,
+  className = '',
+  headerAction,
+  footer,
+  noPadding = false,
+  hoverable = false,
+  bordered = true,
+  collapsible = false,
+  defaultCollapsed = false
+}) => {
+  const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   return (
-    <div className={`bg-white dark:bg-gray-800 shadow rounded-lg ${className}`}>
+    <div 
+      className={`
+        bg-white dark:bg-gray-800 
+        shadow rounded-lg 
+        ${bordered ? 'border border-gray-200 dark:border-gray-700' : ''} 
+        ${hoverable ? 'transition-shadow duration-200 hover:shadow-md' : ''} 
+        ${className}
+      `}
+    >
       {title && (
         <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 p-4">
           <h3 className="font-bold text-gray-800 dark:text-white">{title}</h3>
-          {headerAction && <div>{headerAction}</div>}
+          <div className="flex items-center space-x-2">
+            {headerAction}
+            {collapsible && (
+              <button 
+                onClick={() => setIsCollapsed(!isCollapsed)}
+                className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                {isCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+              </button>
+            )}
+          </div>
         </div>
       )}
-      <div className="p-4">
+      
+      <div className={`${noPadding ? '' : 'p-4'} ${isCollapsed ? 'hidden' : ''}`}>
         {children}
       </div>
+      
+      {footer && (
+        <div className="border-t border-gray-200 dark:border-gray-700 p-4">
+          {footer}
+        </div>
+      )}
     </div>
   );
 };

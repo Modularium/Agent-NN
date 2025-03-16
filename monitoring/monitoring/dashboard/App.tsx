@@ -3,6 +3,7 @@ import React from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { DashboardProvider } from './context/DashboardContext';
+import { NotificationProvider } from './components/common/NotificationSystem';
 import Dashboard from './pages/Dashboard';
 import ErrorBoundary from './components/common/ErrorBoundary';
 
@@ -12,9 +13,11 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <AuthProvider>
         <ThemeProvider>
-          <DashboardProvider>
-            <Dashboard />
-          </DashboardProvider>
+          <NotificationProvider>
+            <DashboardProvider>
+              <Dashboard />
+            </DashboardProvider>
+          </NotificationProvider>
         </ThemeProvider>
       </AuthProvider>
     </ErrorBoundary>

@@ -3,7 +3,7 @@
   <rect width="800" height="500" fill="#f5f7fa" rx="10" ry="10"/>
   
   <!-- Title -->
-  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold" fill="#333">Agent-Framework Agententypen</text>
+  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold" fill="#333">SmartAgents Agententypen</text>
   
   <!-- Agent Circles -->
   <g id="supervisor">

@@ -1,6 +1,7 @@
-// monitoring/dashboard/components/common/DataTable.tsx
+// DataTable.tsx - Reusable data table component with sorting, filtering, and pagination
 import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronUp, ChevronDown, Search, Filter, ArrowLeft, ArrowRight, RefreshCw } from 'lucide-react';
+import { ChevronUp, ChevronDown, Search, Filter, ArrowLeft, ArrowRight, RefreshCw, Download, Trash2, Settings, Plus, Check } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 
 export type SortDirection = 'asc' | 'desc' | null;
 
@@ -13,6 +14,10 @@ export interface Column<T> {
   cell?: (value: any, row: T) => React.ReactNode;
   className?: string;
   headerClassName?: string;
+  width?: string;
+  minWidth?: string;
+  maxWidth?: string;
+  hide?: boolean;
 }
 
 interface DataTableProps<T> {
@@ -27,9 +32,18 @@ interface DataTableProps<T> {
   itemsPerPage?: number;
   showSearch?: boolean;
   onRefresh?: () => Promise<void>;
+  onExport?: () => void;
+  onDelete?: (selectedRows: T[]) => void;
+  onAdd?: () => void;
+  searchPlaceholder?: string;
+  selectable?: boolean;
   className?: string;
   rowClassName?: (row: T) => string;
+  headerClassName?: string;
+  bodyClassName?: string;
   actions?: React.ReactNode;
+  title?: string;
+  subtitle?: string;
 }
 
 function DataTable<T>({
@@ -44,10 +58,20 @@ function DataTable<T>({
   itemsPerPage = 10,
   showSearch = true,
   onRefresh,
+  onExport,
+  onDelete,
+  onAdd,
+  searchPlaceholder = 'Search...',
+  selectable = false,
   className = '',
   rowClassName,
-  actions
+  headerClassName = '',
+  bodyClassName = '',
+  actions,
+  title,
+  subtitle,
 }: DataTableProps<T>) {
+  const { themeMode } = useTheme();
   const [sortBy, setSortBy] = useState<{ id: string; direction: SortDirection }>(
     initialSortBy || { id: '', direction: null }
   );
@@ -55,13 +79,24 @@ function DataTable<T>({
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [activeColumn, setActiveColumn] = useState<string | null>(null);
-  const [filterPopupPosition, setFilterPopupPosition] = useState({ top: 0, left: 0 });
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [filterPosition, setFilterPosition] = useState({ top: 0, left: 0 });
+  const [selectedRows, setSelectedRows] = useState<T[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   // Reset to first page when search term changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filters]);
+
+  // Handle select all
+  useEffect(() => {
+    if (selectAll) {
+      setSelectedRows(filteredData);
+    } else if (selectedRows.length === filteredData.length) {
+      setSelectedRows([]);
+    }
+  }, [selectAll]);
 
   // Search and filter data
   const filteredData = useMemo(() => {
@@ -70,9 +105,11 @@ function DataTable<T>({
       if (searchTerm) {
         const searchString = searchTerm.toLowerCase();
         const searchMatch = columns.some(column => {
+          if (column.hide) return false;
+          
           const value = column.accessor(row);
           return value !== null && value !== undefined &&
-            value.toString().toLowerCase().includes(searchString);
+            String(value).toLowerCase().includes(searchString);
         });
         
         if (!searchMatch) return false;
@@ -88,7 +125,7 @@ function DataTable<T>({
         const value = column.accessor(row);
         if (value === null || value === undefined) return false;
         
-        const stringValue = value.toString().toLowerCase();
+        const stringValue = String(value).toLowerCase();
         if (!stringValue.includes(filterValue.toLowerCase())) return false;
       }
       
@@ -126,8 +163,8 @@ function DataTable<T>({
       }
       
       // Sort strings
-      const aString = aValue.toString();
-      const bString = bValue.toString();
+      const aString = String(aValue);
+      const bString = String(bValue);
       
       return sortBy.direction === 'asc'
         ? aString.localeCompare(bString)
@@ -171,7 +208,7 @@ function DataTable<T>({
 
   // Handle refresh
   const handleRefresh = async () => {
-    if (!onRefresh) return;
+    if (!onRefresh || isRefreshing) return;
     
     setIsRefreshing(true);
     try {
@@ -190,27 +227,55 @@ function DataTable<T>({
     setCurrentPage(prev => Math.min(totalPages, prev + 1));
   };
 
-  // Show/hide filter popup
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.min(Math.max(1, page), totalPages));
+  };
+
+  // Handle row selection
+  const isRowSelected = (row: T) => {
+    return selectedRows.some(selectedRow => 
+      rowKeyAccessor(selectedRow) === rowKeyAccessor(row)
+    );
+  };
+
+  const toggleRowSelection = (row: T) => {
+    if (isRowSelected(row)) {
+      setSelectedRows(selectedRows.filter(selectedRow => 
+        rowKeyAccessor(selectedRow) !== rowKeyAccessor(row)
+      ));
+    } else {
+      setSelectedRows([...selectedRows, row]);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    setSelectAll(!selectAll);
+    if (!selectAll) {
+      setSelectedRows(filteredData);
+    } else {
+      setSelectedRows([]);
+    }
+  };
+
+  // Handle filter click
   const handleFilterClick = (columnId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const column = columns.find(col => col.id === columnId);
     if (!column || column.filterable === false) return;
     
-    // If already active, hide the popup
-    if (activeColumn === columnId) {
-      setActiveColumn(null);
-      return;
+    // Toggle filter popup
+    if (activeFilter === columnId) {
+      setActiveFilter(null);
+    } else {
+      setActiveFilter(columnId);
+      
+      // Position the filter popup
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      setFilterPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX
+      });
     }
-    
-    // Show popup for this column
-    setActiveColumn(columnId);
-    
-    // Calculate popup position
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    setFilterPopupPosition({
-      top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX
-    });
   };
 
   // Apply filter
@@ -224,106 +289,222 @@ function DataTable<T>({
         return newFilters;
       });
     }
-    setActiveColumn(null);
+    setActiveFilter(null);
   };
 
-  // Handle outside click to close filter popup
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (!activeColumn) return;
-      
-      const isOutside = !(e.target as HTMLElement).closest('.filter-popup');
-      const isNotFilterButton = !(e.target as HTMLElement).closest('.filter-button');
-      
-      if (isOutside && isNotFilterButton) {
-        setActiveColumn(null);
-      }
-    };
+  // Clear all filters
+  const handleClearFilters = () => {
+    setFilters({});
+    setSearchTerm('');
+  };
+
+  // Handle bulk actions
+  const handleDelete = () => {
+    if (onDelete && selectedRows.length > 0) {
+      onDelete(selectedRows);
+      setSelectedRows([]);
+    }
+  };
+
+  // Format cell value
+  const formatCellValue = (value: any): React.ReactNode => {
+    if (value === null || value === undefined) {
+      return <span className="text-gray-400 dark:text-gray-600">—</span>;
+    }
     
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [activeColumn]);
+    if (typeof value === 'boolean') {
+      return value ? 'Yes' : 'No';
+    }
+    
+    if (value instanceof Date) {
+      return value.toLocaleString();
+    }
+    
+    return String(value);
+  };
+
+  // Generate page numbers for pagination
+  const generatePageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if there are few
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Show a subset of pages with ellipsis
+      if (currentPage <= 3) {
+        // Near the start
+        for (let i = 1; i <= 3; i++) {
+          pages.push(i);
+        }
+        pages.push('ellipsis');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        // Near the end
+        pages.push(1);
+        pages.push('ellipsis');
+        for (let i = totalPages - 2; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // In the middle
+        pages.push(1);
+        pages.push('ellipsis');
+        pages.push(currentPage - 1);
+        pages.push(currentPage);
+        pages.push(currentPage + 1);
+        pages.push('ellipsis');
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
 
   return (
-    <div className={`overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 ${className}`}>
+    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden ${className}`}>
       {/* Table header with search and actions */}
-      <div className="bg-white dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-        {showSearch ? (
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-            />
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search size={18} className="text-gray-400" />
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          {/* Title */}
+          {(title || subtitle) && (
+            <div>
+              {title && <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>}
+              {subtitle && <p className="text-sm text-gray-500 dark:text-gray-400">{subtitle}</p>}
+            </div>
+          )}
+          
+          {/* Search and actions */}
+          <div className="flex flex-wrap items-center gap-2">
+            {showSearch && (
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder={searchPlaceholder}
+                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search size={18} className="text-gray-400" />
+                </div>
+              </div>
+            )}
+            
+            {/* Filter indicators */}
+            {Object.keys(filters).length > 0 && (
+              <div className="flex items-center gap-2">
+                <div className="text-xs text-gray-500 dark:text-gray-400">Filters:</div>
+                <div className="flex flex-wrap gap-1">
+                  {Object.entries(filters).map(([columnId, value]) => {
+                    const column = columns.find(col => col.id === columnId);
+                    return (
+                      <div 
+                        key={columnId}
+                        className="flex items-center bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs px-2 py-1 rounded"
+                      >
+                        <span>{column?.header || columnId}: {value}</span>
+                        <button
+                          className="ml-1 text-indigo-700 dark:text-indigo-300 hover:text-indigo-900 dark:hover:text-indigo-100"
+                          onClick={() => handleFilterApply(columnId, '')}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    );
+                  })}
+                  <button
+                    className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
+                    onClick={handleClearFilters}
+                  >
+                    Clear all
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            <div className="flex ml-auto gap-2">
+              {/* Refresh button */}
+              {onRefresh && (
+                <button
+                  className="p-2 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={handleRefresh}
+                  disabled={isRefreshing}
+                >
+                  <RefreshCw size={18} className={isRefreshing ? "animate-spin" : ""} />
+                </button>
+              )}
+              
+              {/* Export button */}
+              {onExport && (
+                <button
+                  className="p-2 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={onExport}
+                >
+                  <Download size={18} />
+                </button>
+              )}
+              
+              {/* Delete button - active when rows are selected */}
+              {onDelete && selectedRows.length > 0 && (
+                <button
+                  className="p-2 rounded text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  onClick={handleDelete}
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
+              
+              {/* Add button */}
+              {onAdd && (
+                <button
+                  className="flex items-center space-x-1 px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600"
+                  onClick={onAdd}
+                >
+                  <Plus size={18} />
+                  <span>Add</span>
+                </button>
+              )}
+              
+              {/* Custom actions */}
+              {actions}
             </div>
           </div>
-        ) : (
-          <div></div> // Empty div to maintain flex layout
-        )}
-        
-        <div className="flex items-center space-x-2">
-          {/* Applied filters display */}
-          {Object.keys(filters).length > 0 && (
-            <div className="flex items-center mr-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">Filters:</span>
-              <div className="flex flex-wrap gap-1">
-                {Object.entries(filters).map(([columnId, value]) => {
-                  const column = columns.find(col => col.id === columnId);
-                  return (
-                    <div 
-                      key={columnId}
-                      className="flex items-center bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs px-2 py-1 rounded"
-                    >
-                      <span>{column?.header || columnId}: {value}</span>
-                      <button
-                        className="ml-1"
-                        onClick={() => handleFilterApply(columnId, '')}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  );
-                })}
-                <button
-                  className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
-                  onClick={() => setFilters({})}
-                >
-                  Clear all
-                </button>
-              </div>
-            </div>
-          )}
-          
-          {/* Refresh button */}
-          {onRefresh && (
-            <button
-              className="p-2 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-            >
-              <RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />
-            </button>
-          )}
-          
-          {/* Custom actions */}
-          {actions}
         </div>
       </div>
       
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+          <thead className={`bg-gray-50 dark:bg-gray-800 ${headerClassName}`}>
             <tr>
-              {columns.map(column => (
-                <th
+              {/* Selection checkbox */}
+              {selectable && (
+                <th className="px-3 py-3 text-left">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
+                      checked={selectAll}
+                      onChange={toggleSelectAll}
+                    />
+                  </div>
+                </th>
+              )}
+              
+              {/* Column headers */}
+              {columns.filter(col => !col.hide).map(column => (
+                <th 
                   key={column.id}
-                  scope="col"
                   className={`px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${column.headerClassName || ''}`}
+                  style={{
+                    width: column.width,
+                    minWidth: column.minWidth,
+                    maxWidth: column.maxWidth
+                  }}
                 >
                   <div className="flex items-center space-x-1">
                     <button
@@ -345,16 +526,17 @@ function DataTable<T>({
                       )}
                     </button>
                     
+                    {/* Filter button */}
                     {column.filterable !== false && (
                       <button
                         className={`p-1 rounded filter-button ${
-                          activeColumn === column.id 
+                          activeFilter === column.id 
                             ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
                             : filters[column.id] 
                               ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300'
                               : 'text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
                         }`}
-                        onClick={e => handleFilterClick(column.id, e)}
+                        onClick={(e) => handleFilterClick(column.id, e)}
                       >
                         <Filter size={14} />
                       </button>
@@ -362,13 +544,14 @@ function DataTable<T>({
                   </div>
                   
                   {/* Filter popup */}
-                  {activeColumn === column.id && (
-                    <div
+                  {activeFilter === column.id && (
+                    <div 
                       className="filter-popup absolute bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10 p-3 mt-1"
                       style={{
-                        top: filterPopupPosition.top,
-                        left: filterPopupPosition.left
+                        top: filterPosition.top,
+                        left: filterPosition.left
                       }}
+                      onClick={e => e.stopPropagation()}
                     >
                       <div className="text-sm text-gray-900 dark:text-gray-100 mb-2">
                         Filter by {column.header}
@@ -384,7 +567,7 @@ function DataTable<T>({
                             if (e.key === 'Enter') {
                               handleFilterApply(column.id, e.currentTarget.value);
                             } else if (e.key === 'Escape') {
-                              setActiveColumn(null);
+                              setActiveFilter(null);
                             }
                           }}
                         />
@@ -404,11 +587,11 @@ function DataTable<T>({
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody className={`bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 ${bodyClassName}`}>
             {isLoading ? (
               <tr>
                 <td
-                  colSpan={columns.length}
+                  colSpan={columns.filter(col => !col.hide).length + (selectable ? 1 : 0)}
                   className="px-3 py-4 text-center text-gray-500 dark:text-gray-400"
                 >
                   <div className="flex justify-center items-center">
@@ -420,7 +603,7 @@ function DataTable<T>({
             ) : paginatedData.length === 0 ? (
               <tr>
                 <td
-                  colSpan={columns.length}
+                  colSpan={columns.filter(col => !col.hide).length + (selectable ? 1 : 0)}
                   className="px-3 py-4 text-center text-gray-500 dark:text-gray-400"
                 >
                   {emptyMessage}
@@ -432,17 +615,32 @@ function DataTable<T>({
                   key={rowKeyAccessor(row)}
                   className={`${
                     onRowClick ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700' : ''
-                  } ${rowClassName ? rowClassName(row) : ''}`}
+                  } ${isRowSelected(row) ? 'bg-indigo-50 dark:bg-indigo-900/20' : ''} ${rowClassName ? rowClassName(row) : ''}`}
                   onClick={() => onRowClick && onRowClick(row)}
                 >
-                  {columns.map(column => (
+                  {/* Selection checkbox */}
+                  {selectable && (
+                    <td className="px-3 py-4" onClick={e => e.stopPropagation()}>
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
+                          checked={isRowSelected(row)}
+                          onChange={() => toggleRowSelection(row)}
+                        />
+                      </div>
+                    </td>
+                  )}
+                  
+                  {/* Row cells */}
+                  {columns.filter(col => !col.hide).map(column => (
                     <td
                       key={column.id}
                       className={`px-3 py-4 whitespace-nowrap text-sm ${column.className || ''}`}
                     >
                       {column.cell
                         ? column.cell(column.accessor(row), row)
-                        : renderCellValue(column.accessor(row))}
+                        : formatCellValue(column.accessor(row))}
                     </td>
                   ))}
                 </tr>
@@ -505,7 +703,26 @@ function DataTable<T>({
                 </button>
                 
                 {/* Page numbers */}
-                {renderPageNumbers()}
+                {generatePageNumbers().map((page, index) => (
+                  <React.Fragment key={index}>
+                    {page === 'ellipsis' ? (
+                      <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        ...
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => goToPage(page as number)}
+                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                          currentPage === page
+                            ? 'z-10 bg-indigo-50 dark:bg-indigo-900/20 border-indigo-500 dark:border-indigo-500 text-indigo-600 dark:text-indigo-300'
+                            : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    )}
+                  </React.Fragment>
+                ))}
                 
                 <button
                   onClick={handleNextPage}
@@ -513,104 +730,4 @@ function DataTable<T>({
                   className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 text-sm font-medium ${
                     currentPage === totalPages
                       ? 'text-gray-300 dark:text-gray-600 bg-gray-50 dark:bg-gray-800'
-                      : 'text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  <span className="sr-only">Next</span>
-                  <ArrowRight size={16} />
-                </button>
-              </nav>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-  
-  // Helper function to render cell values
-  function renderCellValue(value: any): React.ReactNode {
-    if (value === null || value === undefined) {
-      return <span className="text-gray-400 dark:text-gray-600">-</span>;
-    }
-    
-    if (typeof value === 'boolean') {
-      return value ? 'Yes' : 'No';
-    }
-    
-    if (value instanceof Date) {
-      return value.toLocaleString();
-    }
-    
-    return value.toString();
-  }
-  
-  // Helper function to render page numbers
-  function renderPageNumbers() {
-    const pageNumbers = [];
-    
-    // For small number of pages, show all
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(renderPageButton(i));
-      }
-    } else {
-      // For many pages, show ellipsis
-      if (currentPage <= 3) {
-        // Near start
-        for (let i = 1; i <= 5; i++) {
-          pageNumbers.push(renderPageButton(i));
-        }
-        pageNumbers.push(renderEllipsis());
-        pageNumbers.push(renderPageButton(totalPages));
-      } else if (currentPage >= totalPages - 2) {
-        // Near end
-        pageNumbers.push(renderPageButton(1));
-        pageNumbers.push(renderEllipsis());
-        for (let i = totalPages - 4; i <= totalPages; i++) {
-          pageNumbers.push(renderPageButton(i));
-        }
-      } else {
-        // In middle
-        pageNumbers.push(renderPageButton(1));
-        pageNumbers.push(renderEllipsis());
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          pageNumbers.push(renderPageButton(i));
-        }
-        pageNumbers.push(renderEllipsis());
-        pageNumbers.push(renderPageButton(totalPages));
-      }
-    }
-    
-    return pageNumbers;
-  }
-  
-  // Render a single page button
-  function renderPageButton(pageNumber: number) {
-    return (
-      <button
-        key={pageNumber}
-        onClick={() => setCurrentPage(pageNumber)}
-        aria-current={pageNumber === currentPage ? 'page' : undefined}
-        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-          pageNumber === currentPage
-            ? 'z-10 bg-indigo-50 dark:bg-indigo-900/20 border-indigo-500 dark:border-indigo-500 text-indigo-600 dark:text-indigo-300'
-            : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
-        }`}
-      >
-        {pageNumber}
-      </button>
-    );
-  }
-  
-  // Render ellipsis
-  function renderEllipsis() {
-    return (
-      <span
-        key="ellipsis"
-        className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
-        ...
-      </span>
-    );
-  }
-}
+                      : 'text-gray-500 dark:text-gray-400 bg-white dark:bg-

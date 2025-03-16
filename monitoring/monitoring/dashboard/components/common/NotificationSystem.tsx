@@ -1,7 +1,7 @@
 // monitoring/dashboard/components/common/NotificationSystem.tsx
-import React, { useState, useEffect, useCallback, createContext, useContext } from 'react';
-import { AlertCircle, CheckCircle, Info, X, XCircle, Bell } from 'lucide-react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { XCircle, CheckCircle, AlertCircle, Info, Bell, X } from 'lucide-react';
 
 // Types
 export type NotificationType = 'success' | 'error' | 'warning' | 'info';
@@ -11,30 +11,37 @@ export interface Notification {
   type: NotificationType;
   title?: string;
   message: string;
-  duration?: number;
+  duration?: number; // in milliseconds, 0 = doesn't auto-dismiss
   dismissible?: boolean;
   link?: { url: string; text: string };
-  onClick?: () => void;
+  timestamp: Date;
+  read?: boolean;
 }
 
 interface NotificationContextType {
   notifications: Notification[];
-  addNotification: (notification: Omit<Notification, 'id'>) => string;
+  addNotification: (notification: Omit<Notification, 'id' | 'timestamp'>) => string;
   updateNotification: (id: string, notification: Partial<Notification>) => void;
   removeNotification: (id: string) => void;
   clearNotifications: () => void;
+  markAllAsRead: () => void;
+  unreadCount: number;
 }
 
-// Context
+// Create context
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-// Provider Component
-export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// Provider component
+export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationContainer, setNotificationContainer] = useState<HTMLElement | null>(null);
+  
+  // Calculate unread count
+  const unreadCount = notifications.filter(notification => !notification.read).length;
 
+  // Set up notification container
   useEffect(() => {
-    // Create container for notifications
+    // Create container for notifications if it doesn't exist
     const container = document.getElementById('notification-container');
     if (container) {
       setNotificationContainer(container);
@@ -56,26 +63,25 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   }, []);
 
   // Generate unique ID
-  const generateId = () => {
+  const generateId = (): string => {
     return Math.random().toString(36).substring(2, 11);
   };
 
   // Add a notification
-  const addNotification = useCallback((notification: Omit<Notification, 'id'>) => {
+  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp'>): string => {
     const id = generateId();
     const newNotification: Notification = {
       ...notification,
       id,
+      timestamp: new Date(),
       dismissible: notification.dismissible ?? true,
       duration: notification.duration ?? 5000, // Default 5 seconds
+      read: false
     };
 
-    setNotifications((prevNotifications) => [
-      ...prevNotifications,
-      newNotification,
-    ]);
+    setNotifications(prev => [newNotification, ...prev]);
 
-    // Auto-dismiss after duration (if not -1)
+    // Auto-dismiss after duration (if not 0)
     if (newNotification.duration && newNotification.duration > 0) {
       setTimeout(() => {
         removeNotification(id);
@@ -87,8 +93,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   // Update a notification
   const updateNotification = useCallback((id: string, notification: Partial<Notification>) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.map((item) =>
+    setNotifications(prev =>
+      prev.map(item =>
         item.id === id ? { ...item, ...notification } : item
       )
     );
@@ -96,8 +102,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   // Remove a notification
   const removeNotification = useCallback((id: string) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification.id !== id)
+    setNotifications(prev =>
+      prev.filter(notification => notification.id !== id)
     );
   }, []);
 
@@ -105,17 +111,27 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const clearNotifications = useCallback(() => {
     setNotifications([]);
   }, []);
+  
+  // Mark all notifications as read
+  const markAllAsRead = useCallback(() => {
+    setNotifications(prev =>
+      prev.map(notification => ({ ...notification, read: true }))
+    );
+  }, []);
 
-  const contextValue = {
+  // Context value
+  const value = {
     notifications,
     addNotification,
     updateNotification,
     removeNotification,
     clearNotifications,
+    markAllAsRead,
+    unreadCount
   };
 
   return (
-    <NotificationContext.Provider value={contextValue}>
+    <NotificationContext.Provider value={value}>
       {children}
       {notificationContainer &&
         createPortal(<NotificationList />, notificationContainer)}
@@ -137,10 +153,9 @@ const NotificationItem: React.FC<{
   notification: Notification;
   onDismiss: () => void;
 }> = ({ notification, onDismiss }) => {
-  const { type, title, message, dismissible, link, onClick } = notification;
+  const { type, title, message, dismissible, link } = notification;
   const [isClosing, setIsClosing] = useState(false);
 
-  // Animations for entry and exit
   useEffect(() => {
     // Entry animation happens automatically with CSS
     return () => {
@@ -156,13 +171,7 @@ const NotificationItem: React.FC<{
     }, 300);
   };
 
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-    }
-  };
-
-  // Icon based on notification type
+  // Get icon based on notification type
   const getIcon = () => {
     switch (type) {
       case 'success':
@@ -177,61 +186,67 @@ const NotificationItem: React.FC<{
     }
   };
 
-  // Background color based on notification type
-  const getBackgroundColor = () => {
+  // Get styles based on notification type
+  const getStyles = () => {
     switch (type) {
       case 'success':
-        return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800';
+        return {
+          container: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
+          title: 'text-green-800 dark:text-green-300',
+          message: 'text-green-700 dark:text-green-400'
+        };
       case 'error':
-        return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800';
+        return {
+          container: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
+          title: 'text-red-800 dark:text-red-300',
+          message: 'text-red-700 dark:text-red-400'
+        };
       case 'warning':
-        return 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800';
+        return {
+          container: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800',
+          title: 'text-yellow-800 dark:text-yellow-300',
+          message: 'text-yellow-700 dark:text-yellow-400'
+        };
       case 'info':
       default:
-        return 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800';
+        return {
+          container: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
+          title: 'text-blue-800 dark:text-blue-300',
+          message: 'text-blue-700 dark:text-blue-400'
+        };
     }
   };
 
-  // Text color based on notification type
-  const getTextColor = () => {
-    switch (type) {
-      case 'success':
-        return 'text-green-800 dark:text-green-300';
-      case 'error':
-        return 'text-red-800 dark:text-red-300';
-      case 'warning':
-        return 'text-yellow-800 dark:text-yellow-300';
-      case 'info':
-      default:
-        return 'text-blue-800 dark:text-blue-300';
-    }
-  };
+  const styles = getStyles();
 
   return (
     <div
-      className={`${getBackgroundColor()} border rounded-lg shadow-lg p-4 transform transition-all duration-300 ${
-        isClosing ? 'opacity-0 translate-x-full' : 'opacity-100'
-      } ${onClick ? 'cursor-pointer' : ''}`}
-      onClick={handleClick}
+      className={`
+        ${styles.container} border rounded-lg shadow-lg p-4 
+        transform transition-all duration-300 
+        ${isClosing ? 'opacity-0 translate-x-full' : 'opacity-100'}
+      `}
       role="alert"
     >
       <div className="flex">
-        <div className="flex-shrink-0">{getIcon()}</div>
+        <div className="flex-shrink-0">
+          {getIcon()}
+        </div>
         <div className="ml-3 flex-1">
           {title && (
-            <h3 className={`text-sm font-medium ${getTextColor()}`}>
-              {title}
-            </h3>
+            <h3 className={`text-sm font-medium ${styles.title}`}>{title}</h3>
           )}
-          <div className={`text-sm ${title ? 'mt-1' : ''} ${getTextColor()}`}>
+          <div className={`text-sm ${styles.message} ${title ? 'mt-1' : ''}`}>
             {message}
           </div>
           {link && (
             <div className="mt-2">
               <a
                 href={link.url}
-                className={`text-sm font-medium ${getTextColor()} hover:underline`}
+                className={`text-sm font-medium ${styles.title} hover:underline`}
                 onClick={(e) => e.stopPropagation()}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 {link.text}
               </a>
@@ -239,26 +254,22 @@ const NotificationItem: React.FC<{
           )}
         </div>
         {dismissible && (
-          <div className="ml-4 flex-shrink-0 flex">
-            <button
-              type="button"
-              className={`bg-transparent rounded-md inline-flex ${getTextColor()} hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none`}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDismiss();
-              }}
-            >
-              <span className="sr-only">Close</span>
-              <X className="h-5 w-5" />
-            </button>
-          </div>
+          <button
+            type="button"
+            className={`ml-auto -mx-1.5 -my-1.5 ${styles.message} hover:bg-gray-100 dark:hover:bg-gray-800 rounded p-1.5`}
+            onClick={handleDismiss}
+            aria-label="Close"
+          >
+            <span className="sr-only">Close</span>
+            <X className="w-4 h-4" />
+          </button>
         )}
       </div>
     </div>
   );
 };
 
-// List of all notifications
+// Notification List Component
 const NotificationList: React.FC = () => {
   const { notifications, removeNotification } = useNotification();
 
@@ -279,84 +290,120 @@ const NotificationList: React.FC = () => {
   );
 };
 
-// Notification button component to show/hide notifications panel
+// Notification Button Component for the header
 export const NotificationButton: React.FC = () => {
-  const { notifications, clearNotifications } = useNotification();
-  const [showPanel, setShowPanel] = useState(false);
-  const hasUnread = notifications.length > 0;
+  const { notifications, unreadCount, clearNotifications, markAllAsRead } = useNotification();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const togglePanel = () => {
-    setShowPanel(!showPanel);
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isOpen && !(event.target as Element).closest('.notification-dropdown')) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+    if (!isOpen && unreadCount > 0) {
+      // Mark as read when opening
+      markAllAsRead();
+    }
   };
 
   return (
-    <div className="relative">
+    <div className="relative notification-dropdown">
       <button
-        className="relative p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 rounded"
-        onClick={togglePanel}
+        className="relative p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 rounded-full"
+        onClick={toggleDropdown}
         aria-label="Notifications"
       >
         <Bell size={20} />
-        {hasUnread && (
-          <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
+        {unreadCount > 0 && (
+          <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
         )}
       </button>
 
-      {showPanel && (
-        <div className="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
-          <div className="py-1">
-            <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-              <h3 className="text-sm font-medium text-gray-900 dark:text-white">Notifications</h3>
-              {notifications.length > 0 && (
-                <button
-                  className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
-                  onClick={clearNotifications}
-                >
-                  Clear all
-                </button>
-              )}
-            </div>
-            <div className="max-h-60 overflow-y-auto">
-              {notifications.length === 0 ? (
-                <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
-                  No notifications
-                </div>
-              ) : (
-                notifications.map((notification) => (
-                  <div
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden z-30 notification-dropdown-menu">
+          {/* Header */}
+          <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <h3 className="text-sm font-medium text-gray-900 dark:text-white">Notifications</h3>
+            {notifications.length > 0 && (
+              <button
+                className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
+                onClick={clearNotifications}
+              >
+                Clear all
+              </button>
+            )}
+          </div>
+
+          {/* Notification list */}
+          <div className="max-h-96 overflow-y-auto">
+            {notifications.length === 0 ? (
+              <div className="px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                No notifications
+              </div>
+            ) : (
+              <ul>
+                {notifications.map((notification) => (
+                  <li
                     key={notification.id}
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-800"
+                    className={`
+                      border-b border-gray-100 dark:border-gray-700 last:border-b-0
+                      ${notification.read ? '' : 'bg-indigo-50 dark:bg-indigo-900/10'}
+                    `}
                   >
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0 mt-0.5">
-                        {notification.type === 'success' && <CheckCircle className="w-4 h-4 text-green-500" />}
-                        {notification.type === 'error' && <XCircle className="w-4 h-4 text-red-500" />}
-                        {notification.type === 'warning' && <AlertCircle className="w-4 h-4 text-yellow-500" />}
-                        {notification.type === 'info' && <Info className="w-4 h-4 text-blue-500" />}
-                      </div>
-                      <div className="ml-2">
-                        {notification.title && (
-                          <div className="font-medium">{notification.title}</div>
-                        )}
-                        <div className="text-xs mt-0.5">{notification.message}</div>
+                    <div className="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 mt-0.5">
+                          {notification.type === 'success' && <CheckCircle className="w-4 h-4 text-green-500" />}
+                          {notification.type === 'error' && <XCircle className="w-4 h-4 text-red-500" />}
+                          {notification.type === 'warning' && <AlertCircle className="w-4 h-4 text-yellow-500" />}
+                          {notification.type === 'info' && <Info className="w-4 h-4 text-blue-500" />}
+                        </div>
+                        <div className="ml-2">
+                          {notification.title && (
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                              {notification.title}
+                            </p>
+                          )}
+                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+                            {notification.message}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                            {formatTimeAgo(notification.timestamp)}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
-              )}
-            </div>
-            <div className="border-t border-gray-200 dark:border-gray-700">
-              <a 
-                href="#" 
-                className="block px-4 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowPanel(false);
-                }}
-              >
-                View all notifications
-              </a>
-            </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-center">
+            <a
+              href="#"
+              className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsOpen(false);
+              }}
+            >
+              View all notifications
+            </a>
           </div>
         </div>
       )}
@@ -364,75 +411,32 @@ export const NotificationButton: React.FC = () => {
   );
 };
 
-// Notification examples for development
-export const NotificationExample: React.FC = () => {
-  const { addNotification } = useNotification();
-
-  const showSuccessNotification = () => {
-    addNotification({
-      type: 'success',
-      title: 'Operation Successful',
-      message: 'Your changes have been saved successfully.',
-      duration: 5000,
-    });
-  };
-
-  const showErrorNotification = () => {
-    addNotification({
-      type: 'error',
-      title: 'Error Occurred',
-      message: 'There was an error processing your request. Please try again.',
-      duration: 0, // Won't auto-dismiss
-    });
-  };
-
-  const showWarningNotification = () => {
-    addNotification({
-      type: 'warning',
-      title: 'Warning',
-      message: 'This action cannot be undone. Please proceed with caution.',
-      duration: 7000,
-    });
-  };
-
-  const showInfoNotification = () => {
-    addNotification({
-      type: 'info',
-      title: 'Information',
-      message: 'The system will be undergoing maintenance in 30 minutes.',
-      link: {
-        url: '#',
-        text: 'Learn more',
-      },
-    });
-  };
-
-  return (
-    <div className="space-y-2">
-      <button
-        className="px-4 py-2 bg-green-600 text-white rounded-md"
-        onClick={showSuccessNotification}
-      >
-        Show Success
-      </button>
-      <button
-        className="px-4 py-2 bg-red-600 text-white rounded-md"
-        onClick={showErrorNotification}
-      >
-        Show Error
-      </button>
-      <button
-        className="px-4 py-2 bg-yellow-600 text-white rounded-md"
-        onClick={showWarningNotification}
-      >
-        Show Warning
-      </button>
-      <button
-        className="px-4 py-2 bg-blue-600 text-white rounded-md"
-        onClick={showInfoNotification}
-      >
-        Show Info
-      </button>
-    </div>
-  );
+// Helper function to format time ago
+const formatTimeAgo = (date: Date): string => {
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+  if (diffInSeconds < 60) {
+    return 'just now';
+  }
+  
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
+  }
+  
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) {
+    return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+  }
+  
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 30) {
+    return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+  }
+  
+  const diffInMonths = Math.floor(diffInDays / 30);
+  return `${diffInMonths} month${diffInMonths > 1 ? 's' : ''} ago`;
 };
+
+export default NotificationProvider;

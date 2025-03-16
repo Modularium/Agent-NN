@@ -81,8 +81,72 @@ Agent-NN ist eine webbasierte Anwendung und erfordert keine lokale Installation.
 1. Besuchen Sie die Agent-NN-Website und klicken Sie auf "Anmelden"
 2. Erstellen Sie ein neues Konto oder melden Sie sich mit bestehenden Anmeldedaten an
 3. Füllen Sie Ihr Profil aus, um personalisierte Empfehlungen zu erhalten
-4. Konfigurieren
+4. Konfigurieren Sie Ihre bevorzugten Domänen und Interessen
 
+![Anmeldeprozess](login-process-svg)
+
+## Die Benutzeroberfläche
+
+Die Agent-NN-Benutzeroberfläche ist intuitiv und benutzerfreundlich gestaltet, mit klaren Navigationselementen und einem zentralen Chat-Interface.
+
+![Benutzeroberfläche](ui-overview-svg)
+
+### Hauptelemente
+
+1. **Chat-Bereich**: Zentrales Element für die Kommunikation mit Agenten
+2. **Agenten-Auswahl**: Seitenleiste zur direkten Auswahl bestimmter Agenten
+3. **Wissensmanagement**: Bereich für die Verwaltung von Dokumenten und Wissensbasen
+4. **Verlauf**: Zugriff auf frühere Konversationen und Ergebnisse
+5. **Einstellungen**: Systemkonfiguration und Benutzerpräferenzen
+
+### Tastenkombinationen
+
+| Aktion | Windows | Mac |
+|--------|---------|-----|
+| Neue Konversation | Ctrl+N | Cmd+N |
+| Agent wechseln | Ctrl+Tab | Cmd+Tab |
+| Verlauf durchsuchen | Ctrl+H | Cmd+H |
+| Hilfe aufrufen | F1 | F1 |
+| Letzte Nachricht bearbeiten | Ctrl+E | Cmd+E |
+
+## Mit Agenten interagieren
+
+Die Interaktion mit Agent-NN erfolgt hauptsächlich über natürlichsprachliche Gespräche. Das System analysiert Ihre Anfragen und leitet sie an die am besten geeigneten Agenten weiter.
+
+### Einen Chat starten
+
+1. Öffnen Sie die Agent-NN-Anwendung
+2. Klicken Sie auf "Neue Konversation" oder verwenden Sie die Tastenkombination Ctrl+N/Cmd+N
+3. Beginnen Sie mit einer Nachricht an das System
+
+![Chat-Interaktion](chat-interaction-svg)
+
+### Direkte Agentenwahl
+
+Sie können auch direkt mit einem bestimmten Agenten sprechen:
+
+1. Wählen Sie den gewünschten Agenten aus der Seitenleiste aus
+2. Alternativ können Sie "@" gefolgt vom Agentennamen in Ihrer Nachricht verwenden, z.B. "@FinanzAgent"
+
+### Aufgaben an Agenten delegieren
+
+Agent-NN kann komplexe Aufgaben ausführen:
+
+1. Beschreiben Sie klar die Aufgabe, die Sie erledigt haben möchten
+2. Geben Sie relevante Details, Einschränkungen und Anforderungen an
+3. Der Supervisor-Agent analysiert Ihre Anfrage und delegiert sie an den passenden Spezialisten
+4. Bei Bedarf können Agenten Rückfragen stellen oder Klarstellungen erbitten
+
+![Aufgabendelegation](task-delegation-svg)
+
+### Multi-Agent-Zusammenarbeit
+
+Für komplexe Aufgaben können mehrere Agenten zusammenarbeiten:
+
+1. Stellen Sie eine komplexe Anfrage, die verschiedene Domänen umfasst
+2. Das System koordiniert automatisch mehrere Agenten
+3. Die Agenten kommunizieren untereinander, um eine vollständige Lösung zu erarbeiten
+4. Das System präsentiert Ihnen die integrierte Antwort
 ---
 ---
 ---

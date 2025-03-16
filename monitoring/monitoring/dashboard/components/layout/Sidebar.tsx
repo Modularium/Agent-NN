@@ -1,5 +1,6 @@
-// Sidebar.tsx - Navigation sidebar for the dashboard
+// src/components/layout/Sidebar.tsx
 import React from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { 
   Server, 
   Users, 
@@ -14,7 +15,6 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import { useDashboard } from '../../context/DashboardContext';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -22,20 +22,20 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapse }) => {
-  const { activeTab, setActiveTab } = useDashboard();
+  const location = useLocation();
   
-  // Navigation items configuration
+  // Navigation items with routes
   const navItems = [
-    { id: 'system', label: 'System Overview', icon: <Server size={20} /> },
-    { id: 'agents', label: 'Agents', icon: <Users size={20} /> },
-    { id: 'models', label: 'Models', icon: <Cpu size={20} /> },
-    { id: 'knowledge', label: 'Knowledge Bases', icon: <Database size={20} /> },
-    { id: 'monitoring', label: 'Monitoring', icon: <BarChart size={20} /> },
-    { id: 'security', label: 'Security', icon: <Shield size={20} /> },
-    { id: 'testing', label: 'A/B Testing', icon: <GitBranch size={20} /> },
-    { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },
-    { id: 'logs', label: 'Logs & Alerts', icon: <AlertTriangle size={20} /> },
-    { id: 'docs', label: 'Documentation', icon: <Book size={20} /> },
+    { id: 'system', label: 'System Overview', icon: <Server size={20} />, path: '/system' },
+    { id: 'agents', label: 'Agents', icon: <Users size={20} />, path: '/agents' },
+    { id: 'models', label: 'Models', icon: <Cpu size={20} />, path: '/models' },
+    { id: 'knowledge', label: 'Knowledge Bases', icon: <Database size={20} />, path: '/knowledge' },
+    { id: 'monitoring', label: 'Monitoring', icon: <BarChart size={20} />, path: '/monitoring' },
+    { id: 'security', label: 'Security', icon: <Shield size={20} />, path: '/security' },
+    { id: 'testing', label: 'A/B Testing', icon: <GitBranch size={20} />, path: '/testing' },
+    { id: 'settings', label: 'Settings', icon: <Settings size={20} />, path: '/settings' },
+    { id: 'logs', label: 'Logs & Alerts', icon: <AlertTriangle size={20} />, path: '/logs' },
+    { id: 'docs', label: 'Documentation', icon: <Book size={20} />, path: '/docs' },
   ];
   
   return (
@@ -43,8 +43,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapse }) => {
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         {!collapsed && <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Navigation</h2>}
         <button 
-          className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
+          className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={toggleCollapse}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? <Menu size={20} /> : <X size={20} />}
         </button>
@@ -52,17 +53,26 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapse }) => {
       
       <nav className="flex-1 overflow-y-auto p-2">
         <ul className="space-y-1">
-          {navItems.map(item => (
-            <li key={item.id}>
-              <button 
-                className={`flex items-center ${collapsed ? 'justify-center' : 'space-x-3'} w-full p-3 rounded-md ${activeTab === item.id ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
-                onClick={() => setActiveTab(item.id)}
-              >
-                <span>{item.icon}</span>
-                {!collapsed && <span>{item.label}</span>}
-              </button>
-            </li>
-          ))}
+          {navItems.map(item => {
+            const isActive = location.pathname === item.path || (location.pathname === '/' && item.id === 'system');
+            
+            return (
+              <li key={item.id}>
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) => `
+                    flex items-center ${collapsed ? 'justify-center' : 'space-x-3'} w-full p-3 rounded-md 
+                    ${isActive 
+                      ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' 
+                      : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}
+                  `}
+                >
+                  <span>{item.icon}</span>
+                  {!collapsed && <span>{item.label}</span>}
+                </NavLink>
+              </li>
+            );
+          })}
         </ul>
       </nav>
       

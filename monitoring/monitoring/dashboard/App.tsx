@@ -1,11 +1,39 @@
-// monitoring/dashboard/App.tsx
+// src/App.tsx
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { DashboardProvider } from './context/DashboardContext';
 import { NotificationProvider } from './components/common/NotificationSystem';
-import Dashboard from './pages/Dashboard';
 import ErrorBoundary from './components/common/ErrorBoundary';
+
+// Pages
+import LoginPage from './pages/LoginPage';
+import DashboardLayout from './components/layout/DashboardLayout';
+import SystemOverviewPanel from './components/panels/SystemOverviewPanel';
+import AgentsPanel from './components/panels/AgentsPanel';
+import ModelsPanel from './components/panels/ModelsPanel';
+import KnowledgePanel from './components/panels/KnowledgePanel';
+import MonitoringPanel from './components/panels/MonitoringPanel';
+import SecurityPanel from './components/panels/SecurityPanel';
+import TestingPanel from './components/panels/TestingPanel';
+import SettingsPanel from './components/panels/SettingsPanel';
+import LogsPanel from './components/panels/LogsPanel';
+import DocsPanel from './components/panels/DocsPanel';
+import NotFoundPage from './pages/NotFoundPage';
+
+// Protected Route Component
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // We'll use our auth context to check if the user is authenticated
+  const isAuthenticated = localStorage.getItem('authToken') !== null;
+  
+  if (!isAuthenticated) {
+    // Redirect to the login page if not authenticated
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+};
 
 // Main App component
 const App: React.FC = () => {
@@ -15,7 +43,37 @@ const App: React.FC = () => {
         <ThemeProvider>
           <NotificationProvider>
             <DashboardProvider>
-              <Dashboard />
+              <Router>
+                <Routes>
+                  {/* Public routes */}
+                  <Route path="/login" element={<LoginPage />} />
+                  
+                  {/* Protected dashboard routes */}
+                  <Route 
+                    path="/" 
+                    element={
+                      <ProtectedRoute>
+                        <DashboardLayout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<SystemOverviewPanel />} />
+                    <Route path="system" element={<SystemOverviewPanel />} />
+                    <Route path="agents" element={<AgentsPanel />} />
+                    <Route path="models" element={<ModelsPanel />} />
+                    <Route path="knowledge" element={<KnowledgePanel />} />
+                    <Route path="monitoring" element={<MonitoringPanel />} />
+                    <Route path="security" element={<SecurityPanel />} />
+                    <Route path="testing" element={<TestingPanel />} />
+                    <Route path="settings" element={<SettingsPanel />} />
+                    <Route path="logs" element={<LogsPanel />} />
+                    <Route path="docs" element={<DocsPanel />} />
+                  </Route>
+                  
+                  {/* 404 Not Found route */}
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Router>
             </DashboardProvider>
           </NotificationProvider>
         </ThemeProvider>

@@ -51,4 +51,20 @@
   <polygon points="480,260 485,270 475,270" fill="#4299e1"/>
   
   <!-- Trello Integration -->
-  <rect x="560" y="400" width="140" height="70" rx="10" ry="10" fill="#fed7e2" stroke="#d53f8c
+  <rect x="560" y="400" width="140" height="70" rx="10" ry="10" fill="#fed7e2" stroke="#d53f8c" stroke-width="2"/>
+  <text x="630" y="435" font-family="Arial" font-size="16" text-anchor="middle" fill="#702459" font-weight="bold">Trello</text>
+  <text x="630" y="455" font-family="Arial" font-size="12" text-anchor="middle" fill="#702459">Aufgabenmanagement</text>
+  
+  <path d="M630,400 C630,370 600,350 480,250" stroke="#d53f8c" stroke-width="2" fill="none"/>
+  <polygon points="490,260 480,250 500,250" fill="#d53f8c"/>
+  
+  <!-- Legend -->
+  <rect x="330" y="430" width="140" height="60" rx="5" ry="5" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="400" y="450" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568" font-weight="bold">Integration via:</text>
+  
+  <line x1="340" y1="465" x2="360" y2="465" stroke="#4299e1" stroke-width="2"/>
+  <text x="380" y="470" font-family="Arial" font-size="11" fill="#4a5568">API & SDK</text>
+  
+  <line x1="340" y1="485" x2="360" y2="485" stroke="#d69e2e" stroke-width="2" stroke-dasharray="2,2"/>
+  <text x="385" y="490" font-family="Arial" font-size="11" fill="#4a5568">Webhooks</text>
+</svg>

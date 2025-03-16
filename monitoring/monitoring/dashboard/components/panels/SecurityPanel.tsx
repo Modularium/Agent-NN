@@ -1,3 +1,236 @@
+// monitoring/dashboard/components/panels/SecurityPanel.tsx
+import React, { useState } from 'react';
+import { Shield, Bell, AlertTriangle, Search, Filter, Lock, Key, User, Users, FileText, RefreshCw, Clock, ExternalLink } from 'lucide-react';
+import { useDashboard } from '../../context/DashboardContext';
+import Card from '../common/Card';
+import StatusBadge from '../common/StatusBadge';
+
+const SecurityPanel: React.FC = () => {
+  const { securityStatus } = useDashboard();
+  const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'access' | 'settings'>('overview');
+  const [timeRange, setTimeRange] = useState<string>('24h');
+  
+  // Mock security audit data
+  const securityAudit = {
+    lastAudit: '2025-03-10T08:00:00Z',
+    nextAudit: '2025-04-10T08:00:00Z',
+    score: 92,
+    findings: [
+      { severity: 'medium', description: 'API keys rotation policy not enforced', fixed: false },
+      { severity: 'low', description: 'Password policy could be strengthened', fixed: true },
+      { severity: 'info', description: 'Consider implementing MFA for admin accounts', fixed: false },
+    ]
+  };
+  
+  // Mock active sessions
+  const activeSessions = [
+    { id: 'session-1', user: 'admin', role: 'Administrator', ip: '192.168.1.105', startTime: '2025-03-16T08:30:00Z', lastActivity: '2025-03-16T14:15:00Z' },
+    { id: 'session-2', user: 'john.doe', role: 'Manager', ip: '192.168.1.110', startTime: '2025-03-16T09:45:00Z', lastActivity: '2025-03-16T13:20:00Z' },
+    { id: 'session-3', user: 'emma.wilson', role: 'User', ip: '192.168.1.120', startTime: '2025-03-16T10:15:00Z', lastActivity: '2025-03-16T11:30:00Z' },
+  ];
+  
+  // Mock authentication methods
+  const authMethods = [
+    { name: 'JWT Token', enabled: true, default: true },
+    { name: 'OAuth 2.0', enabled: true, default: false },
+    { name: 'API Key', enabled: true, default: false },
+    { name: 'LDAP', enabled: false, default: false },
+  ];
+  
+  // Mock access roles
+  const accessRoles = [
+    { name: 'Administrator', users: 2, description: 'Full access to all features' },
+    { name: 'Manager', users: 5, description: 'View and manage agents, knowledge bases' },
+    { name: 'User', users: 28, description: 'Submit tasks and view results' },
+    { name: 'Guest', users: 12, description: 'Read-only access to documentation' },
+  ];
+  
+  // Function to format timestamp
+  const formatTimestamp = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+  };
+  
+  // Function to calculate time since
+  const timeSince = (timestamp: string) => {
+    const now = new Date();
+    const date = new Date(timestamp);
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    let interval = seconds / 3600;
+    if (interval > 24) {
+      return Math.floor(interval / 24) + ' days ago';
+    }
+    if (interval > 1) {
+      return Math.floor(interval) + ' hours ago';
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) + ' minutes ago';
+    }
+    return Math.floor(seconds) + ' seconds ago';
+  };
+  
+  // Function to get severity class
+  const getSeverityClass = (severity: string): string => {
+    switch (severity.toLowerCase()) {
+      case 'high':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300';
+      case 'low':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+    }
+  };
+  
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Security Management</h2>
+        <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 flex items-center transition">
+          <Shield size={18} className="mr-2" />
+          Security Audit
+        </button>
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="flex border-b border-gray-200 dark:border-gray-700">
+        <button
+          className={`px-4 py-2 font-medium ${
+            activeTab === 'overview'
+              ? 'border-b-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+          }`}
+          onClick={() => setActiveTab('overview')}
+        >
+          Security Overview
+        </button>
+        <button
+          className={`px-4 py-2 font-medium ${
+            activeTab === 'events'
+              ? 'border-b-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+          }`}
+          onClick={() => setActiveTab('events')}
+        >
+          Security Events
+        </button>
+        <button
+          className={`px-4 py-2 font-medium ${
+            activeTab === 'access'
+              ? 'border-b-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+          }`}
+          onClick={() => setActiveTab('access')}
+        >
+          Access Control
+        </button>
+        <button
+          className={`px-4 py-2 font-medium ${
+            activeTab === 'settings'
+              ? 'border-b-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+          }`}
+          onClick={() => setActiveTab('settings')}
+        >
+          Security Settings
+        </button>
+      </div>
+
+      {/* Security Overview Tab */}
+      {activeTab === 'overview' && (
+        <>
+          <Card>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="border rounded-lg p-4 dark:border-gray-700">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-gray-900 dark:text-white">Security Status</h4>
+                  <Shield size={18} className="text-green-600 dark:text-green-500" />
+                </div>
+                <StatusBadge status="Secure" />
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  Security systems are functioning normally.
+                </p>
+              </div>
+              
+              <div className="border rounded-lg p-4 dark:border-gray-700">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-gray-900 dark:text-white">Last Security Scan</h4>
+                  <Shield size={18} className="text-indigo-600 dark:text-indigo-500" />
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {formatTimestamp(securityStatus?.lastScan || '')}
+                </p>
+                <p className="text-sm text-green-600 dark:text-green-500 mt-1">
+                  No critical issues found
+                </p>
+              </div>
+              
+              <div className="border rounded-lg p-4 dark:border-gray-700">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-gray-900 dark:text-white">Detected Vulnerabilities</h4>
+                  <Shield size={18} className="text-indigo-600 dark:text-indigo-500" />
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="flex flex-col items-center">
+                    <span className="text-red-600 dark:text-red-500 font-bold text-xl">
+                      {securityStatus?.vulnerabilities.high || 0}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">High</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-yellow-600 dark:text-yellow-500 font-bold text-xl">
+                      {securityStatus?.vulnerabilities.medium || 0}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">Medium</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-blue-600 dark:text-blue-500 font-bold text-xl">
+                      {securityStatus?.vulnerabilities.low || 0}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">Low</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+          
+          <Card title="Security Audit Results">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Last audit: {formatTimestamp(securityAudit.lastAudit)}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Next scheduled audit: {formatTimestamp(securityAudit.nextAudit)}
+                </p>
+              </div>
+              
+              <div className="flex items-center">
+                <div className="w-16 h-16 rounded-full border-4 border-green-500 flex items-center justify-center mr-4">
+                  <span className="text-xl font-bold text-green-600 dark:text-green-500">{securityAudit.score}</span>
+                </div>
+                <div className="text-sm">
+                  <p className="font-medium text-gray-900 dark:text-white">Security Score</p>
+                  <p className="text-green-600 dark:text-green-500">Good</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="border rounded-lg dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700">
+              {securityAudit.findings.map((finding, index) => (
+                <div key={index} className="p-3 flex items-center justify-between">
+                  <div className="flex items-start">
+                    <span className={`inline-block w-2 h-2 rounded-full mt-1.5 mr-2 ${
+                      finding.severity === 'medium' ? 'bg-yellow-500' : 
+                      finding.severity === 'low' ? 'bg-blue-500' : 'bg-gray-500'
+                    }`}></span>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{finding.description}</p>
+                      <span className={`text-xs mt-1 inline
+
 <span className={`text-xs mt-1 inline-flex items-center ${
                         finding.severity === 'medium' ? 'text-yellow-700 dark:text-yellow-500' : 
                         finding.severity === 'low' ? 'text-blue-700 dark:text-blue-500' : 'text-gray-700 dark:text-gray-500'
@@ -427,47 +660,22 @@
               </div>
             </div>
             
-            <div className="pt-4 border-t dark:border-gray-700">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-3">Network Security</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium text-gray-700 dark:text-gray-300">IP Allowlisting</h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Restrict access to specific IP addresses
-                    </p>
-                  </div>
-                  <div className="relative inline-block w-12 h-6 border rounded-full dark:border-gray-700">
-                    <input type="checkbox" className="sr-only" />
-                    <span className="block absolute left-1 top-1 bg-gray-300 dark:bg-gray-600 w-4 h-4 rounded-full transition-transform"></span>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium text-gray-700 dark:text-gray-300">Rate Limiting</h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Limit request frequency to prevent abuse
-                    </p>
-                  </div>
-                  <div className="relative inline-block w-12 h-6 border rounded-full dark:border-gray-700">
-                    <input type="checkbox" className="sr-only" defaultChecked />
-                    <span className="block absolute left-1 top-1 bg-indigo-600 dark:bg-indigo-500 w-4 h-4 rounded-full transition-transform transform translate-x-6"></span>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium text-gray-700 dark:text-gray-300">Brute Force Protection</h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Block IPs after failed login attempts
-                    </p>
-                  </div>
-                  <div className="relative inline-block w-12 h-6 border rounded-full dark:border-gray-700">
-                    <input type="checkbox" className="sr-only" defaultChecked />
-                    <span className="block absolute left-1 top-1 bg-indigo-600 dark:bg-indigo-500 w-4 h-4 rounded-full transition-transform transform translate-x-6"></span>
-                  </div>
-                </div// monitoring/dashboard/components/panels/SecurityPanel.tsx
+            <div className="flex space-x-3 pt-4 border-t dark:border-gray-700 mt-4">
+              <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 transition">
+                Save Settings
+              </button>
+              <button className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition">
+                Reset to Defaults
+              </button>
+            </div>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+export default SecurityPanel;// monitoring/dashboard/components/panels/SecurityPanel.tsx
 import React, { useState } from 'react';
 import { Shield, Bell, AlertTriangle, Search, Filter, Lock, Key, User, Users, FileText, RefreshCw, Clock, ExternalLink } from 'lucide-react';
 import { useDashboard } from '../../context/DashboardContext';

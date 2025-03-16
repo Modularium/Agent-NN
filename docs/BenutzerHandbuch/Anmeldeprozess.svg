@@ -37,4 +37,16 @@
   <!-- Connection Lines -->
   <line x1="180" y1="150" x2="220" y2="150" stroke="#a0aec0" stroke-width="3"/>
   <line x1="340" y1="150" x2="380" y2="150" stroke="#a0aec0" stroke-width="3"/>
-  <line x1="500" y1="150" x2="540" y2="150" stroke="#a0aec0" stroke
+  <line x1="500" y1="150" x2="540" y2="150" stroke="#a0aec0" stroke-width="3"/>
+  
+  <!-- Arrow tips -->
+  <polygon points="220,150 210,145 210,155" fill="#a0aec0"/>
+  <polygon points="380,150 370,145 370,155" fill="#a0aec0"/>
+  <polygon points="540,150 530,145 530,155" fill="#a0aec0"/>
+  
+  <!-- Bottom Info -->
+  <rect x="100" y="300" width="600" height="70" rx="10" ry="10" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="400" y="325" font-family="Arial" font-size="14" text-anchor="middle" fill="#4a5568" font-weight="bold">Schneller Einstieg in wenigen Schritten</text>
+  <text x="400" y="350" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Nach Abschluss des Anmeldeprozesses steht Ihnen das volle Potenzial</text>
+  <text x="400" y="370" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">der spezialisierten KI-Agenten zur Verfügung.</text>
+</svg>

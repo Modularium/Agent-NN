@@ -36,6 +36,95 @@ Agent-NN ist ein intelligentes Assistenzsystem, das unterschiedliche spezialisie
 
 Agent-NN besteht aus mehreren Hauptkomponenten, die zusammenarbeiten, um Ihnen ein leistungsstarkes Assistenzsystem zu bieten.
 
+![Systemarchitektur](systemarchitektur.svg)
+
+### Hauptkomponenten
+
+1. **Chatbot-Interface**: Ihr Haupteinstiegspunkt für die Interaktion mit dem System
+2. **Supervisor-Agent**: Analysiert Anfragen und leitet sie an die passenden Spezialisten weiter
+3. **Fach-Agenten**: Spezialisierte Experten für verschiedene Wissensdomänen
+4. **Wissensbasen**: Domänenspezifische Informationsquellen für fundierte Antworten
+5. **Web-Crawler**: System für die automatische Aktualisierung von Informationen
+
+### Agententypen
+
+Agent-NN bietet verschiedene Arten von Agenten, jeder mit einzigartigen Fähigkeiten:
+
+![Agententypen](agententypen.svg)
+
+- **Finanz-Agent**: Experte für Finanzanalyse, Investitionen und Finanzplanung
+- **Tech-Agent**: Spezialist für Softwareentwicklung, Systemarchitektur und technische Problemlösung
+- **Marketing-Agent**: Experte für Marketingstrategien, digitales Marketing und Markenentwicklung
+- **Web-Agent**: Spezialist für die Beschaffung und Analyse von Webinhalten
+- **Forschungs-Agent**: Experte für die tiefgehende Analyse von Themen und Datenzusammenstellung
+
+## Erste Schritte
+
+### Systemanforderungen
+
+- **Browser**: Chrome, Firefox, Safari, Edge (aktuelle Versionen)
+- **Internetverbindung**: Breitbandverbindung empfohlen
+- **Konto**: Gültiges Benutzerkonto im Agent-NN-System
+
+### Installation
+
+Agent-NN ist eine webbasierte Anwendung und erfordert keine lokale Installation. Für Unternehmenslösungen gibt es jedoch auch eine lokale Deployment-Option:
+
+1. **Cloud-Version**: Besuchen Sie einfach [app.agent-nn.com](https://app.agent-nn.com) und melden Sie sich an
+2. **Lokales Deployment**:
+   - Docker installieren
+   - Das Agent-NN-Image aus unserem privaten Repository herunterladen
+   - Den Container mit den entsprechenden Umgebungsvariablen starten
+
+### Anmeldung und Kontoeinrichtung
+
+1. Besuchen Sie die Agent-NN-Website und klicken Sie auf "Anmelden"
+2. Erstellen Sie ein neues Konto oder melden Sie sich mit bestehenden Anmeldedaten an
+3. Füllen Sie Ihr Profil aus, um personalisierte Empfehlungen zu erhalten
+4. Konfigurieren
+
+---
+---
+---
+
+# Agent-NN: Benutzerhandbuch
+
+## Inhaltsverzeichnis
+
+1. [Einführung](#einführung)
+2. [Systemüberblick](#systemüberblick)
+3. [Erste Schritte](#erste-schritte)
+4. [Die Benutzeroberfläche](#die-benutzeroberfläche)
+5. [Mit Agenten interagieren](#mit-agenten-interagieren)
+6. [Domänenspezifische Agenten](#domänenspezifische-agenten)
+7. [Wissensmanagement](#wissensmanagement)
+8. [Erweiterte Funktionen](#erweiterte-funktionen)
+9. [Fehlerbehebung](#fehlerbehebung)
+10. [Häufig gestellte Fragen](#häufig-gestellte-fragen)
+11. [Kontakt und Support](#kontakt-und-support)
+
+## Einführung
+
+Willkommen bei Agent-NN, Ihrem fortschrittlichen Multi-Agent-System für domänenspezifische Assistenz und Aufgabenautomatisierung. Agent-NN kombiniert die Leistungsfähigkeit von modernen Sprachmodellen mit spezialisierten Wissensbasen, um maßgeschneiderte Hilfe in verschiedenen Fachbereichen anzubieten.
+
+Diese Dokumentation führt Sie durch alle Funktionen und Möglichkeiten des Systems und zeigt Ihnen, wie Sie von der Leistungsfähigkeit spezialisierter KI-Agenten profitieren können.
+
+### Was ist Agent-NN?
+
+Agent-NN ist ein intelligentes Assistenzsystem, das unterschiedliche spezialisierte Agenten für verschiedene Wissensbereiche und Aufgabentypen koordiniert. Anders als herkömmliche KI-Assistenten, die als Generalisten arbeiten, bietet Agent-NN Zugang zu maßgeschneiderten Experten für Bereiche wie Finanzen, Technologie, Marketing und mehr.
+
+### Hauptmerkmale
+
+- **Domänenspezifische Expertise**: Spezialisierte Agenten für verschiedene Fachbereiche
+- **Kollaborative Intelligenz**: Agenten, die zusammenarbeiten, um komplexe Aufgaben zu lösen
+- **Kontinuierliche Verbesserung**: Agenten, die aus Interaktionen lernen und sich verbessern
+- **Wissensbasierte Antworten**: Präzise Antworten basierend auf verifiziertem Fachwissen
+- **Web-Integration**: Automatische Datenerfassung und -aktualisierung aus dem Web
+
+## Systemüberblick
+
+Agent-NN besteht aus mehreren Hauptkomponenten, die zusammenarbeiten, um Ihnen ein leistungsstarkes Assistenzsystem zu bieten.
+
 ![Systemarchitektur](system_architecture.png)
 
 ### Hauptkomponenten

@@ -1,27 +1,24 @@
 // monitoring/dashboard/components/common/DocumentViewer.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Search, 
+  XCircle, 
+  Download, 
+  Printer, 
   ZoomIn, 
   ZoomOut, 
   RotateCw, 
-  Download, 
-  Printer, 
-  X,
+  ChevronLeft, 
+  ChevronRight,
   Maximize,
   Minimize,
-  ArrowLeft,
-  ArrowRight,
-  Plus,
-  Minus
+  Search,
+  X
 } from 'lucide-react';
 
 // Document types the viewer can handle
 export type DocumentType = 'pdf' | 'image' | 'text' | 'json' | 'csv' | 'html' | 'markdown';
 
-export interface DocumentViewerProps {
+interface DocumentViewerProps {
   url: string;
   type?: DocumentType;
   title?: string;
@@ -30,8 +27,6 @@ export interface DocumentViewerProps {
   initialPage?: number;
   showToolbar?: boolean;
   showNavigation?: boolean;
-  showThumbnails?: boolean;
-  showSearch?: boolean;
   allowDownload?: boolean;
   allowPrint?: boolean;
   allowFullscreen?: boolean;
@@ -41,9 +36,6 @@ export interface DocumentViewerProps {
   onError?: (error: Error) => void;
 }
 
-/**
- * A component for viewing different types of documents with controls
- */
 const DocumentViewer: React.FC<DocumentViewerProps> = ({
   url,
   type,
@@ -53,17 +45,43 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
   initialPage = 1,
   showToolbar = true,
   showNavigation = true,
-  showThumbnails = false,
-  showSearch = true,
   allowDownload = true,
   allowPrint = true,
   allowFullscreen = true,
-  maxHeight,
+  maxHeight = 600,
   onDocumentLoaded,
   onPageChange,
-  onError,
+  onError
 }) => {
-  // Detect document type if not provided
+  // Auto-detect document type if not provided
+  const detectDocumentType = (url: string): DocumentType => {
+    const extension = url.split('.').pop()?.toLowerCase();
+    switch (extension) {
+      case 'pdf':
+        return 'pdf';
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+      case 'svg':
+        return 'image';
+      case 'txt':
+        return 'text';
+      case 'json':
+        return 'json';
+      case 'csv':
+        return 'csv';
+      case 'html':
+      case 'htm':
+        return 'html';
+      case 'md':
+        return 'markdown';
+      default:
+        // Default to text
+        return 'text';
+    }
+  };
+
   const documentType = type || detectDocumentType(url);
   
   // State for viewer
@@ -75,13 +93,6 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
   const [rotation, setRotation] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [currentSearchResult, setCurrentSearchResult] = useState(0);
-  
-  // References
-  const viewerRef = useRef<HTMLDivElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
   
   // When URL changes, reset viewer
   useEffect(() => {
@@ -91,8 +102,6 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
     setZoom(1);
     setRotation(0);
     setSearchQuery('');
-    setSearchResults([]);
-    setCurrentSearchResult(0);
     
     // Simulate document loading
     const timer = setTimeout(() => {
@@ -146,61 +155,18 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
   
   // Handle print
   const handlePrint = () => {
-    // If it's an iframe for PDF, we can print the iframe
-    if (iframeRef.current && documentType === 'pdf') {
-      const iframe = iframeRef.current;
-      iframe.focus();
-      iframe.contentWindow?.print();
-    } else {
-      // Otherwise create a new window with the content
-      const printWindow = window.open(url, '_blank');
-      if (printWindow) {
-        printWindow.addEventListener('load', () => {
-          printWindow.print();
-        });
-      }
+    // Create a new window with the content for printing
+    const printWindow = window.open(url, '_blank');
+    if (printWindow) {
+      printWindow.addEventListener('load', () => {
+        printWindow.print();
+      });
     }
   };
   
-  // Handle fullscreen
-  const handleFullscreen = () => {
+  // Handle fullscreen toggle
+  const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
-  };
-  
-  // Handle search
-  const handleSearch = () => {
-    if (!searchQuery) {
-      setSearchResults([]);
-      return;
-    }
-    
-    // Mock search results
-    const mockResults = [
-      { page: 1, snippet: `...containing "${searchQuery}"...`, rect: { x: 100, y: 100, width: 200, height: 20 } },
-      { page: 3, snippet: `...another match for "${searchQuery}"...`, rect: { x: 150, y: 200, width: 180, height: 20 } },
-    ];
-    
-    setSearchResults(mockResults);
-    
-    if (mockResults.length > 0) {
-      setCurrentSearchResult(0);
-      handlePageChange(mockResults[0].page);
-    }
-  };
-  
-  // Navigate search results
-  const navigateSearchResults = (direction: 'next' | 'prev') => {
-    if (searchResults.length === 0) return;
-    
-    let newIndex;
-    if (direction === 'next') {
-      newIndex = (currentSearchResult + 1) % searchResults.length;
-    } else {
-      newIndex = (currentSearchResult - 1 + searchResults.length) % searchResults.length;
-    }
-    
-    setCurrentSearchResult(newIndex);
-    handlePageChange(searchResults[newIndex].page);
   };
   
   // Render document content based on type
@@ -208,7 +174,8 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
     if (isLoading) {
       return (
         <div className="flex items-center justify-center w-full h-full min-h-[300px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+          <span className="ml-2 text-gray-600 dark:text-gray-300">Loading document...</span>
         </div>
       );
     }
@@ -216,6 +183,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
     if (error) {
       return (
         <div className="flex flex-col items-center justify-center w-full h-full min-h-[300px] p-4 text-red-600 dark:text-red-400">
+          <XCircle className="w-12 h-12 mb-2" />
           <div className="text-lg font-medium mb-2">Error loading document</div>
           <div className="text-sm">{error.message}</div>
         </div>
@@ -226,12 +194,12 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
       case 'pdf':
         return (
           <iframe
-            ref={iframeRef}
             src={`${url}#page=${currentPage}&zoom=${zoom * 100},0,0`}
             className="w-full h-full"
             style={{ 
               transform: `rotate(${rotation}deg)`,
-              minHeight: '500px',
+              maxHeight: isFullscreen ? 'none' : maxHeight,
+              minHeight: isFullscreen ? '80vh' : 500
             }}
             title={title || 'PDF Document'}
           />
@@ -239,4 +207,232 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
         
       case 'image':
         return (
-          <div className="flex
+          <div className="flex items-center justify-center">
+            <img 
+              src={url} 
+              alt={title || 'Document'} 
+              style={{ 
+                transform: `rotate(${rotation}deg) scale(${zoom})`,
+                maxHeight: isFullscreen ? '80vh' : maxHeight
+              }}
+              className="max-w-full"
+            />
+          </div>
+        );
+        
+      case 'text':
+      case 'markdown':
+        return (
+          <iframe
+            src={url}
+            className="w-full h-full border-0"
+            style={{ 
+              maxHeight: isFullscreen ? 'none' : maxHeight,
+              minHeight: isFullscreen ? '80vh' : 500
+            }}
+            title={title || 'Text Document'}
+          />
+        );
+        
+      case 'json':
+        return (
+          <iframe
+            src={url}
+            className="w-full h-full border-0"
+            style={{ 
+              maxHeight: isFullscreen ? 'none' : maxHeight,
+              minHeight: isFullscreen ? '80vh' : 500
+            }}
+            title={title || 'JSON Document'}
+          />
+        );
+        
+      case 'csv':
+        return (
+          <iframe
+            src={url}
+            className="w-full h-full border-0"
+            style={{ 
+              maxHeight: isFullscreen ? 'none' : maxHeight,
+              minHeight: isFullscreen ? '80vh' : 500
+            }}
+            title={title || 'CSV Document'}
+          />
+        );
+        
+      case 'html':
+        return (
+          <iframe
+            src={url}
+            className="w-full h-full border-0"
+            style={{ 
+              maxHeight: isFullscreen ? 'none' : maxHeight,
+              minHeight: isFullscreen ? '80vh' : 500
+            }}
+            title={title || 'HTML Document'}
+          />
+        );
+        
+      default:
+        return (
+          <div className="flex flex-col items-center justify-center w-full h-full min-h-[300px] p-4 text-gray-600 dark:text-gray-400">
+            <div className="text-lg font-medium mb-2">Unsupported document type</div>
+            <div className="text-sm">Download the document to view it.</div>
+          </div>
+        );
+    }
+  };
+  
+  // Main container classes based on fullscreen state
+  const containerClasses = isFullscreen
+    ? 'fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-auto flex flex-col'
+    : `bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden ${className}`;
+  
+  return (
+    <div className={containerClasses}>
+      {/* Header with title and close button */}
+      <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="font-bold text-gray-900 dark:text-white truncate">
+          {title || url.split('/').pop() || 'Document'}
+        </h3>
+        <div className="flex items-center space-x-2">
+          {/* Search input for PDFs */}
+          {documentType === 'pdf' && showToolbar && (
+            <div className="relative max-w-xs">
+              <input
+                type="text"
+                placeholder="Search..."
+                className="pl-8 pr-3 py-1 text-sm border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Search 
+                size={14} 
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400"
+              />
+              {searchQuery && (
+                <button 
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  onClick={() => setSearchQuery('')}
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+          )}
+          
+          {/* Close button */}
+          {onClose && (
+            <button
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              onClick={onClose}
+              aria-label="Close"
+            >
+              <X size={20} />
+            </button>
+          )}
+        </div>
+      </div>
+      
+      {/* Toolbar */}
+      {showToolbar && (
+        <div className="flex justify-between items-center p-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+          <div className="flex items-center space-x-2">
+            {/* Page navigation for PDFs */}
+            {documentType === 'pdf' && showNavigation && (
+              <div className="flex items-center">
+                <button
+                  className="p-1 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage <= 1}
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <span className="mx-2 text-sm text-gray-600 dark:text-gray-300">
+                  Page {currentPage} of {numPages}
+                </span>
+                <button
+                  className="p-1 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage >= numPages}
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            {/* Zoom controls */}
+            <button
+              className="p-1 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={() => handleZoom(-0.25)}
+              aria-label="Zoom out"
+            >
+              <ZoomOut size={16} />
+            </button>
+            <span className="text-sm text-gray-600 dark:text-gray-300">
+              {Math.round(zoom * 100)}%
+            </span>
+            <button
+              className="p-1 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={() => handleZoom(0.25)}
+              aria-label="Zoom in"
+            >
+              <ZoomIn size={16} />
+            </button>
+            
+            {/* Rotate control */}
+            <button
+              className="p-1 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={handleRotate}
+              aria-label="Rotate"
+            >
+              <RotateCw size={16} />
+            </button>
+            
+            {/* Download button */}
+            {allowDownload && (
+              <button
+                className="p-1 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                onClick={handleDownload}
+                aria-label="Download"
+              >
+                <Download size={16} />
+              </button>
+            )}
+            
+            {/* Print button */}
+            {allowPrint && (
+              <button
+                className="p-1 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                onClick={handlePrint}
+                aria-label="Print"
+              >
+                <Printer size={16} />
+              </button>
+            )}
+            
+            {/* Fullscreen toggle button */}
+            {allowFullscreen && (
+              <button
+                className="p-1 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                onClick={toggleFullscreen}
+                aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              >
+                {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+      
+      {/* Main document content */}
+      <div className="flex-1 overflow-auto">
+        {renderDocumentContent()}
+      </div>
+    </div>
+  );
+};
+
+export default DocumentViewer;

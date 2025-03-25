@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { ThemeProvider } from '@smolitux/theme'
-import { I18nProvider } from '@smolitux/core'
+import { ThemeProvider } from './utils/theme'
+import { I18nProvider } from './utils/i18n'
 import App from './App.tsx'
 import './styles/index.css'
 

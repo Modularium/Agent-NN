@@ -1,5 +1,15 @@
 # Agent-NN
 NN for LLM Agents
+
+**Entwicklungsstand MVP:**
+- Smolitux-UI ist implementiert 
+- als nächstes muss das Agent-NN lokal 
+    - installier werden
+    - konfiguriert werden
+    - weitere Agents implementieren:
+        - LOH-Agent
+        - Agent-Setup
+        - Agent-Framework
 ______
 ```
 .

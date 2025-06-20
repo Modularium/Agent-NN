@@ -1,4 +1,4 @@
-"""API server for Smolit LLM-NN."""
+"""API server for Agent-NN."""
 import os
 import asyncio
 from typing import Optional
@@ -14,7 +14,7 @@ from managers.monitoring_system import MonitoringSystem
 from utils.logging_util import LoggerMixin
 
 class APIServer(LoggerMixin):
-    """FastAPI server for Smolit LLM-NN."""
+    """FastAPI server for Agent-NN."""
     
     def __init__(self,
                 host: str = "0.0.0.0",
@@ -34,7 +34,7 @@ class APIServer(LoggerMixin):
         
         # Initialize FastAPI
         self.app = FastAPI(
-            title="Smolit LLM-NN API",
+            title="Agent-NN API",
             description="API for multi-agent neural network system",
             version="2.0.0",
             docs_url="/docs",

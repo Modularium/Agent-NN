@@ -1,4 +1,4 @@
-"""API endpoints for Smolit LLM-NN."""
+"""API endpoints for Agent-NN."""
 from typing import Dict, Any, Optional, List
 from fastapi import APIRouter, HTTPException, Security, status, File, UploadFile, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm

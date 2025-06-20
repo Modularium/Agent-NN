@@ -4,3 +4,4 @@
 [Phase 2] Core services implemented: dispatcher, registry, session manager.
 [Phase 3] Worker services, vector store and LLM gateway implemented.
 [Phase 4] Tests und Docker-Setup implementiert.
+[Phase 5] Dokumentation finalisiert und MVP v0.9.0-mcp veröffentlicht.

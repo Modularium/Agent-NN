@@ -6,3 +6,19 @@
 
 `GET /health` – Health check endpoint returning `{"status": "ok"}`.
 
+
+### Beispiel
+
+Request:
+```bash
+curl -X POST http://localhost:8004/generate \
+     -H "Content-Type: application/json" \
+     -d '{"prompt": "Say hi"}'
+```
+
+Response:
+```json
+{
+    "text": "Hi!"
+}
+```

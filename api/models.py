@@ -1,4 +1,4 @@
-"""API models for Smolit LLM-NN."""
+"""API models for Agent-NN."""
 from typing import Dict, Any, Optional, List, Union
 from pydantic import BaseModel, Field
 from datetime import datetime

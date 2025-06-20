@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="smolit-llm-nn",
-    version="1.0.0",
+    version="0.9.0-mcp",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[

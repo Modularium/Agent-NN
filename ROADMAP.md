@@ -23,9 +23,9 @@ Diese Roadmap skizziert die Migration von Agent-NN zur Modular Control Plane Arc
 - ✅ Docker-Compose Skripte erstellt
 
 ## Phase 5: Abschluss & Deployment
-- ⬜ Dokumentation und README auf MCP-Architektur aktualisieren
-- ⬜ Containerisierung/Docker-Compose für alle Services erstellen
-- ⬜ Roadmap finalisieren und weitere Schritte planen
+- ✅ Dokumentation und README auf MCP-Architektur aktualisieren
+- ✅ Containerisierung/Docker-Compose für alle Services erstellen
+- ✅ Roadmap finalisieren und weitere Schritte planen
 
 ---
 

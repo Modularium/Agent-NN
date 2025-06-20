@@ -1,0 +1,23 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.7
+    hooks:
+      - id: ruff
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        args: ["mcp"]
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+  - repo: https://github.com/pytest-dev/pytest
+    rev: v8.2.0
+    hooks:
+      - id: pytest
+        additional_dependencies: [pytest-cov]

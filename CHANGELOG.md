@@ -1,0 +1,15 @@
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+## v0.9.0-mcp
+- Abschluss der MCP-Migration
+- Dokumentation überarbeitet
+- Docker-Compose für Kernservices
+- Tests und Linting eingerichtet
+
+## Frühere Phasen
+- Phase 1: Architektur-Blueprint
+- Phase 2: Kernservices
+- Phase 3: Wissens- und LLM-Services
+- Phase 4: Qualitätssicherung

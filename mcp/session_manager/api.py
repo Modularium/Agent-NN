@@ -23,6 +23,12 @@ async def get_session(sid: str) -> dict:
     return {"data": data}
 
 
+@router.get("/session/{sid}/status")
+async def session_status(sid: str) -> dict:
+    data = service.get_session(sid)
+    return {"status": "active" if data is not None else "expired"}
+
+
 @router.get("/health")
 async def health() -> dict:
     return {"status": "ok"}

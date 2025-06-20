@@ -3,14 +3,14 @@
 Diese Roadmap skizziert die Migration von Agent-NN zur Modular Control Plane Architektur. Jeder Abschnitt beschreibt die wichtigsten Schritte und den Zielzustand.
 
 ## Phase 1: Architektur-Blueprint
-- ⬜ Schnittstellen und Verantwortlichkeiten der neuen Dienste festlegen
-- ⬜ Ordnerstruktur und Docker-Compose-Skelett anlegen
-- ⬜ Beispiel-Dispatcher, Registry und Dummy-Worker starten
+- ✅ Schnittstellen und Verantwortlichkeiten der neuen Dienste festlegen
+- ✅ Ordnerstruktur und Docker-Compose-Skelett anlegen
+- ✅ Beispiel-Dispatcher, Registry und Dummy-Worker starten
 
 ## Phase 2: Kernservices
-- ⬜ Agent-Registry mit statischen Einträgen implementieren
-- ⬜ Task-Dispatcher auf Registry und Session-Manager umstellen
-- ⬜ Redis-basierte Session-Verwaltung bereitstellen
+- ✅ Agent-Registry mit statischen Einträgen implementieren
+- ✅ Task-Dispatcher auf Registry und Session-Manager umstellen
+- ✅ Redis-basierte Session-Verwaltung bereitstellen
 
 ## Phase 3: Wissens- und LLM-Services
 - ⬜ Eigenständiger Vector-Store-Service mit REST-API

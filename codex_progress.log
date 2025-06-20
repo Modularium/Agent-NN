@@ -1,3 +1,4 @@
 [Phase 1] Analyse gestartet. Konfigurationsdateien erstellt.
 [MCP] Architekturdateien aktualisiert und neue Phasen definiert.
 [MCP] Phase 1 scaffolding: created mcp services and docker compose.
+[Phase 2] Core services implemented: dispatcher, registry, session manager.

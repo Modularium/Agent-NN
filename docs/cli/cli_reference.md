@@ -241,3 +241,13 @@ Batch file format:
     ]
 }
 ```
+
+## agent_nn_cli.py
+The simplified CLI allows asking an agent directly:
+
+```bash
+python cli/agent_nn_cli.py ask --agent dev --input "Erkläre TCP/IP"
+```
+
+Use `--interactive` to stay in a chat session. Other commands include
+`tools`, `sessions`, `log` and `feedback`.

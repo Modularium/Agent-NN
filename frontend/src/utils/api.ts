@@ -62,6 +62,38 @@ class ApiClient {
     return response.json();
   }
 
+  async sendChatMessage(message: string, agent: string, sessionId?: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, agent, session_id: sessionId })
+    })
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`)
+    }
+    return response.json()
+  }
+
+  async getChatHistory(sessionId: string): Promise<Message[]> {
+    const response = await fetch(`${API_BASE_URL}/chat/history/${sessionId}`)
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`)
+    }
+    return response.json()
+  }
+
+  async sendFeedback(sessionId: string, index: number, rating: string, comment?: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/chat/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId, index, rating, comment })
+    })
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`)
+    }
+    return response.json()
+  }
+
   // WebSocket methods
   connectWebSocket(): WebSocket {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {

@@ -8,3 +8,18 @@
 6. Results are returned to the dispatcher and from there to the user.
 
 This flow decouples responsibilities and allows each service to evolve independently.
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant TD as Task Dispatcher
+    participant SM as Session Manager
+    participant AR as Agent Registry
+    participant W as Worker Service
+    U->>TD: POST /task
+    TD->>SM: fetch session
+    TD->>AR: query agents
+    TD->>W: delegate task
+    W-->>TD: result
+    TD-->>U: response
+```

@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 - Roadmap und Codex-Konfiguration an Entwicklungsplan angepasst
 - Neue Phasenbeschreibungen in `.codex.json`
 - Aufgabenliste in `codex.tasks.json` aktualisiert
+- Basisdatenstrukturen `ModelContext` und `TaskContext` hinzugefügt
+- Microservice-Gerüste für Dispatcher, Registry, LLM-Gateway, Vector-Store,
+  Session-Manager und Example-Agent erstellt
 
 ## v1.0.0
 - Erste stabile Version

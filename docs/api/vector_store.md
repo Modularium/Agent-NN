@@ -6,3 +6,19 @@
 
 `GET /health` – Simple health check.
 
+
+### Beispiel
+
+Request:
+```bash
+curl -X POST http://localhost:8003/query \
+     -H "Content-Type: application/json" \
+     -d '{"text": "hello"}'
+```
+
+Response:
+```json
+[
+    {"id": "doc1", "score": 0.9}
+]
+```

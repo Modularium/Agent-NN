@@ -11,3 +11,19 @@
 
 `GET /health`
 : Health check for the service.
+
+### Beispiel
+
+Request:
+```bash
+curl -X POST http://localhost:8002/session \
+     -H "Content-Type: application/json" \
+     -d '{"user_id": 42}'
+```
+
+Response:
+```json
+{
+    "session_id": "abc123"
+}
+```

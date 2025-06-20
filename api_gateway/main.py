@@ -13,6 +13,7 @@ API_AUTH_ENABLED = os.getenv("API_AUTH_ENABLED", "false").lower() == "true"
 API_GATEWAY_KEY = os.getenv("API_GATEWAY_KEY", "")
 JWT_SECRET = os.getenv("JWT_SECRET", "secret")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+API_KEY_SCOPES = os.getenv("API_KEY_SCOPES", "*").split(",")
 LLM_GATEWAY_URL = os.getenv("LLM_GATEWAY_URL", "http://llm_gateway:8004")
 DISPATCHER_URL = os.getenv("DISPATCHER_URL", "http://task_dispatcher:8000")
 SESSION_MANAGER_URL = os.getenv("SESSION_MANAGER_URL", "http://session_manager:8000")
@@ -26,26 +27,35 @@ app.add_middleware(CORSMiddleware, allow_origins=CORS_ALLOW_ORIGINS.split(","), 
 Instrumentator().instrument(app).expose(app)
 
 
-def check_key(request: Request) -> None:
+def _decode_token(token: str) -> dict | None:
+    try:
+        return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    except JWTError:  # pragma: no cover - invalid tokens
+        return None
+
+
+def check_scope(request: Request, scope: str) -> None:
+    """Verify that the caller is authorized for the given scope."""
     if not API_AUTH_ENABLED:
         return
     api_key = request.headers.get("X-API-Key")
     if api_key and api_key == API_GATEWAY_KEY:
-        return
+        if scope in API_KEY_SCOPES or "*" in API_KEY_SCOPES:
+            return
     token = request.headers.get("Authorization")
     if token and token.startswith("Bearer "):
-        try:
-            jwt.decode(token.split()[1], JWT_SECRET, algorithms=[JWT_ALGORITHM])
-            return
-        except JWTError:
-            pass
-    raise HTTPException(status_code=401, detail="Unauthorized")
+        payload = _decode_token(token.split()[1])
+        if payload:
+            scopes = payload.get("scopes", [])
+            if scope in scopes or "*" in scopes:
+                return
+    raise HTTPException(status_code=403, detail="Forbidden")
 
 
 @app.post("/llm/generate")
 @limiter.limit(RATE_LIMIT)
 async def llm_generate(request: Request) -> dict:
-    check_key(request)
+    check_scope(request, "llm:generate")
     payload = await request.body()
     url = f"{LLM_GATEWAY_URL}/generate"
     req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
@@ -56,7 +66,7 @@ async def llm_generate(request: Request) -> dict:
 @app.post("/chat")
 @limiter.limit(RATE_LIMIT)
 async def chat(request: Request) -> dict:
-    check_key(request)
+    check_scope(request, "chat:write")
     payload = await request.json()
     sid = payload.get("session_id")
     if not sid:
@@ -86,7 +96,7 @@ async def chat(request: Request) -> dict:
 @app.get("/chat/history/{sid}")
 @limiter.limit(RATE_LIMIT)
 async def chat_history(sid: str, request: Request) -> dict:
-    check_key(request)
+    check_scope(request, "chat:read")
     url = f"{SESSION_MANAGER_URL}/session/{sid}/history"
     with urllib.request.urlopen(url) as resp:
         data = json.loads(resp.read().decode())
@@ -96,7 +106,7 @@ async def chat_history(sid: str, request: Request) -> dict:
 @app.post("/chat/feedback")
 @limiter.limit(RATE_LIMIT)
 async def chat_feedback(request: Request) -> dict:
-    check_key(request)
+    check_scope(request, "feedback:write")
     payload = await request.json()
     sid = payload.get("session_id")
     url = f"{SESSION_MANAGER_URL}/session/{sid}/feedback"

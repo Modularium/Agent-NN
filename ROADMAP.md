@@ -41,3 +41,29 @@ Diese Roadmap zeigt den Weg zum **Minimal Viable Product** für Agent-NN. Die En
 
 **Legende:** ✅ = erledigt, ⬜ = offen/zu tun.  
 Sobald alle Punkte einer Phase erledigt sind, wechselt der Codex-Agent automatisch in die nächste Phase. Dieses iterative Vorgehen gewährleistet eine systematische Fertigstellung des MVP mit minimalen Rückschlägen.
+## Konkrete MVP-Aufgaben
+
+Die folgenden Punkte fassen alle noch fehlenden Arbeiten zusammen. Zu jedem Task sind Ziel und Akzeptanzkriterien aufgeführt.
+
+1. ⬜ **LOH-Agent implementieren**
+   - *Ziel:* Spezialisierten LOH-Agent anlegen, der LOH-relevante Aufgaben ausführt.
+   - *Abhängigkeiten:* Funktionierender SupervisorAgent.
+   - *Akzeptanzkriterien:* Modul `agents/loh_agent.py` existiert und der Test `tests/test_loh_agent.py` besteht.
+2. ⬜ **Setup-Agent & Agent-Framework entwickeln**
+   - *Ziel:* Einen Setup-Agenten und ein Basis-Framework erstellen, um neue Worker automatisiert einzurichten.
+   - *Akzeptanzkriterien:* `tests/test_setup_agent.py` deckt die Initialisierung ab; Ausführung erstellt einsatzbereite Worker ohne Fehler.
+3. ⬜ **SupervisorAgent testen**
+   - *Ziel:* Kernlogik des Supervisors per Unit-Test absichern.
+   - *Akzeptanzkriterien:* Datei `tests/test_supervisor_agent.py` vorhanden und grün.
+4. ⬜ **Zentrales Logging einrichten**
+   - *Ziel:* Einheitliches Logging in allen Modulen mit `LoggerMixin`.
+   - *Akzeptanzkriterien:* Logs erscheinen im definierten Format; Fehler werden in `logs/` protokolliert.
+5. ⬜ **Integrationstests für Agent-Kommunikation**
+   - *Ziel:* Sicherstellen, dass Chatbot → Supervisor → Worker fehlerfrei funktioniert.
+   - *Akzeptanzkriterien:* Ein End-to-End-Test in `tests/test_integration.py` läuft erfolgreich durch.
+6. ⬜ **CLI und API vervollständigen**
+   - *Ziel:* Fehlende Befehle und Endpunkte implementieren, sodass typische Workflows per Kommandozeile oder HTTP möglich sind.
+   - *Akzeptanzkriterien:* Befehle starten Agents ohne Exceptions; API-Test `tests/test_api.py` besteht.
+
+### Offene Abhängigkeiten
+- `transformers` und `langchain_openai` sind aktuell nicht installiert. Vor den Tests müssen diese Pakete verfügbar sein.

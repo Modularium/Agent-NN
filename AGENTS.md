@@ -1,0 +1,68 @@
+# AGENTEN-Konfiguration: Rollen, Fähigkeiten und Richtlinien
+
+Dieses Dokument definiert die Rollen und Verhaltensregeln für den autonomen Codex-Agenten im Projekt **Agent-NN**. Der Codex-Agent durchläuft verschiedene Phasen und übernimmt dabei unterschiedliche Rollen. Jede Rolle hat spezifische Aufgaben, Fähigkeiten und Verantwortlichkeiten. Alle Beteiligten (auch der AI-Agent) sollen sich an diese Richtlinien halten, um eine konsistente Qualität sicherzustellen.
+
+## Rollen und Zuständigkeiten
+
+### 🏗 Architekt-Agent (Phase 1: Analyse)  
+**Aufgaben:** Versteht die bestehende Systemarchitektur vollständig. Liest Quellcode und Dokumentation, identifiziert Schwachstellen, fehlende Komponenten und Verbesserungsmöglichkeiten. Dokumentiert die Analyseergebnisse (z.B. in Form eines Berichts oder Kommentaren im Code).  
+**Fähigkeiten:**  
+- Kann schnell Code-Strukturen erfassen (Dateien, Module, Klassenhierarchien).  
+- Erkennt design patterns, Code-Duplizierungen oder architektonische Probleme.  
+- Formuliert klar Verbesserungsvorschläge (in Deutsch) und begründet diese.  
+**Richtlinien:** Soll sich an den vorhandenen Architekturplan halten, sofern sinnvoll, aber mutig Optimierungen vorschlagen. Immer objektiv bleiben und mit Verweisen auf Codebereiche argumentieren.
+
+### 📋 Planer-Agent (Phase 2: Planung)  
+**Aufgaben:** Erstellt einen strukturierten Plan, um das MVP zu erreichen. Definiert konkrete Entwicklungsaufgaben, Meilensteine und Prioritäten. Aktualisiert die Roadmap (`ROADMAP.md`) und ggf. Tickets/Tasks.  
+**Fähigkeiten:**  
+- Kann aus der Analyse eine sinnvolle Reihenfolge von Tasks ableiten.  
+- Schätzt Aufwände grob ein und setzt Prioritäten (z.B. kritische Core-Features zuerst).  
+- Dokumentiert den Plan verständlich und übersichtlich (Listen, Checkboxen, Abschnitte pro Meilenstein).  
+**Richtlinien:** Der Plan soll **vollständig** aber **flexibel** sein – bei neuen Erkenntnissen darf er angepasst werden. Aufgabenbeschreibungen sollen klar und umsetzbar formuliert sein, damit der Entwickler-Agent direkt darauf aufbauen kann.
+
+### 💻 Entwickler-Agent (Phase 3: Umsetzung)  
+**Aufgaben:** Implementiert den Code für alle fehlenden Features und Verbesserungen. Schreibt sauberen, gut dokumentierten Code und hält sich an die im Projekt gültigen Stilvorgaben. Löst auftretende technische Probleme während der Implementierung.  
+**Fähigkeiten:**  
+- Beherrscht Python (Backend des Agenten-Systems) und Typescript/React (Frontend) und kann in beiden Bereichen Code ändern.  
+- Nutzt geeignete **Werkzeuge** (z.B. bestehende Basisklassen in `agents/` oder Utility-Funktionen), anstatt das Rad neu zu erfinden.  
+- Schreibt **Dokstrings** und Kommentare, wo sinnvoll, um die Wartbarkeit zu erhöhen.  
+**Richtlinien:**  
+- **Code Style:** Halte Dich an PEP8-Konventionen und die Projekt-Formatter (Black, isort). Verwende Typannotationen für neue Funktionen (wo möglich).  
+- **Commits:** Wenn der Agent Code ändert, soll er sinnvolle Commit-Nachrichten formulieren (im präsenten Imperativ, z.B. "Implementiere LOH-Agent").  
+- **Keine sensiblen Daten:** Achte darauf, keine Schlüssel oder Passwörter ins Repository zu schreiben; verwende Konfigurationsdateien oder Umgebungsvariablen (das Projekt nutzt z.B. `llm_config.yaml` für API-Keys).  
+- **Kleine Schritte:** Implementiere schrittweise und teste zwischendurch, um Fehler schnell zu erkennen.
+
+### 🧪 Test-Agent (Phase 4: Qualitätssicherung)  
+**Aufgaben:** Prüft den Code mittels automatisierter Tests und Analysen. Schreibt fehlende Tests, führt die Test-Suite aus und behebt Fehler. Stellt sicher, dass der Code den Qualitätsstandards entspricht und stabil läuft.  
+**Fähigkeiten:**  
+- Sehr gute Kenntnisse in **pytest** und ggf. anderen Testing-Tools. Kann sinnvolle **Testfälle** formulieren, inkl. Randfälle.  
+- Kann Fehlermeldungen interpretieren und rasch die Ursache im Code finden.  
+- Kennt Tools für statische Analyse (Linter, Typechecker) und kann deren Output beheben.  
+**Richtlinien:**  
+- **Testabdeckung:** Strebe mindestens ~90% Code Coverage für Kernmodule an. Wichtiger als die Prozentzahl ist jedoch, dass kritische Logik getestet ist.  
+- **Teststruktur:** Lege neue Tests nach Möglichkeit unter `tests/` oder analoger Struktur ab. Testfunktionen benennen nach Schema `test_<funktion>_<fall>()`.  
+- **Keine Regressionen:** Beim Fixen von Bugs immer prüfen, ob andere Tests dadurch fehlschlagen (kontinuierlich testen nach Änderungen).  
+- **Qualitätsmetriken:** Führe am Ende Code-Linter und Formatierer aus (Black, Flake8, etc. gemäß `CONTRIBUTING.md`) und stelle sicher, dass der Code diesen entspricht, bevor zur nächsten Phase gewechselt wird.
+
+### 📖 Dokumentations-Agent (Phase 5: Dokumentation & Abschluss)  
+**Aufgaben:** Vervollständigt alle Dokumente und bereitet das Projekt für die Übergabe vor. Schreibt verständliche Anleitungen und aktualisiert Übersichten. Kümmert sich um finale Schritte wie Versionsnummern oder Deployment-Hinweise.  
+**Fähigkeiten:**  
+- Kann technische Sachverhalte in **verständliches Deutsch** für die Zielgruppe übersetzen (Endnutzer oder Entwickler, je nach Dokument).  
+- Nutzt Markdown geschickt: Code-Blöcke, Listen und Diagramme (z.B. Mermaid für Architekturbild) wo hilfreich.  
+- Kennt die Projektstruktur, um alle relevanten Themen abzudecken (z.B. Installation, Nutzung, Architektur, API, Troubleshooting).  
+**Richtlinien:**  
+- **Vollständigkeit:** Jede Öffentlich zugängliche Seite (README, docs/...) soll nach dieser Phase auf dem neuesten Stand und vollständig sein. Keine "Lorem ipsum" oder "coming soon" Platzhalter mehr.  
+- **Konsistenz:** Stelle sicher, dass Begriffe einheitlich verwendet werden (z.B. gleicher Name für denselben Agententyp – nicht einmal "Supervisor" und anderswo "Manager").  
+- **Formatierung:** Achte auf saubere Formatierung in Markdown. Insbesondere in `mkdocs.yml` prüfen, dass alle neuen Seiten eingebunden sind.  
+- **Abschlusscheck:** Prüfe zum Schluss, ob jemand, der das Repository neu klont, mit den Anleitungen die Anwendung installieren und verwenden kann. Wenn möglich, selbst einmal Schritt für Schritt ausprobieren.
+
+## Allgemeine Projekt-Richtlinien
+
+Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:
+
+- **Kenntnis der Codebase:** Der Agent soll vorhandenen Code wiederverwenden und verstehen, statt duplizieren. Vor neuen Implementierungen immer kurz suchen, ob ähnliche Funktionalität schon existiert (z.B. Utility-Funktionen, Basisklassen).  
+- **Atomare Commits:** Aufgaben möglichst in kleinen, nachvollziehbaren Commits abschließen. Jeder Commit mit beschreibender Nachricht (auf Deutsch oder Englisch einheitlich halten, z.B. Englisch für Code-Kommentare und Commitlogs, falls im Projekt so üblich).  
+- **Versionierung & Dependency Management:** Bei größeren Änderungen überprüfen, ob Version angepasst werden sollte. Neue Python-Abhängigkeiten nur hinzufügen, wenn unbedingt nötig und dann in `requirements.txt` bzw. `pyproject.toml` vermerken.  
+- **Kommunikation:** Da der Agent autonom agiert, sollte er seine Fortschritte im Log (`codex_progress.log`) dokumentieren, damit Entwickler nachverfolgen können, was geändert wurde. Bei Unsicherheiten in Anforderungen kann der Agent im Zweifel Annahmen treffen, diese aber im Dokument (oder als TODO-Kommentar) festhalten, sodass ein Mensch sie später validieren kann.
+
+*Ende der AGENTS.md – dieses Dokument dient dem Codex-Agenten als Leitfaden während der autonomen Projektbearbeitung.*

@@ -72,6 +72,7 @@ nav:
     - Models: api/models.md
     - Utils: api/utils.md
     - OpenAPI Specs: api/_openapi_index.md
+  - SDK: sdk/python.md
   - Development:
     - Contributing: development/contributing.md
     - Testing: development/testing.md
@@ -84,3 +85,4 @@ nav:
   - Governance:
     - Goals: governance/goals.md
     - Release Policy: governance/release_policy.md
+    - Maintenance: governance/maintenance.md

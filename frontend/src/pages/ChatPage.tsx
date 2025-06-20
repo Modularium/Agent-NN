@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { 
-  Card, 
-  Input, 
-  Button, 
+import {
+  Card,
+  Input,
+  Button,
   Alert,
   Spinner,
+  Select,
   useTranslation
 } from '@smolitux/core'
+import apiClient from '../utils/api'
 
 interface Message {
   role: 'user' | 'assistant' | 'system'
@@ -22,6 +24,8 @@ const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [agent, setAgent] = useState('dev')
+  const [sessionId, setSessionId] = useState<string | null>(null)
   const t = useTranslation()
 
   // Scroll to bottom when messages change
@@ -42,40 +46,18 @@ const ChatPage: React.FC = () => {
     setLoading(true)
     
     try {
-      // In a real implementation, this would be an API call
-      // For demo purposes, we'll simulate a response
-      setTimeout(() => {
-        const agentResponse: Message = {
-          role: 'assistant',
-          content: `This is a simulated response to: "${input}"`,
-          metadata: {
-            agent: 'finance_agent',
-            executionTime: 1.2
-          }
-        }
-        setMessages(prev => [...prev, agentResponse])
-        setLoading(false)
-      }, 1500)
-      
-      // Real API call would look like this:
-      /*
-      const response = await fetch('/api/tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task_description: input })
-      })
-      
-      const data = await response.json()
-      
-      setMessages(prev => [...prev, {
+      const response = await apiClient.sendChatMessage(input, agent, sessionId || undefined)
+      setSessionId(response.session_id)
+      const agentResponse: Message = {
         role: 'assistant',
-        content: data.result,
+        content: response.response.result ?? response.response,
         metadata: {
-          agent: data.chosen_agent,
-          executionTime: data.execution_time
+          agent: response.worker,
+          executionTime: response.duration
         }
-      }])
-      */
+      }
+      setMessages(prev => [...prev, agentResponse])
+      setLoading(false)
     } catch (error) {
       // Error handling
       setMessages(prev => [...prev, {
@@ -135,6 +117,11 @@ const ChatPage: React.FC = () => {
         </div>
         
         <div className="input-container">
+          <Select value={agent} onChange={(v) => setAgent(v as string)}>
+            <option value="dev">dev</option>
+            <option value="openhands">openhands</option>
+            <option value="plugin-agent">plugin-agent</option>
+          </Select>
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}

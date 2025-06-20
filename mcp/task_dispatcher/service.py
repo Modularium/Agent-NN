@@ -2,6 +2,7 @@ import json
 import urllib.request
 import logging
 from typing import Dict, Optional
+import time
 
 from mcp.agent_registry.service import AgentRegistryService
 from mcp.session_manager.service import SessionManagerService
@@ -39,17 +40,35 @@ class TaskDispatcherService:
             req = urllib.request.Request(
                 url, data=payload, headers={"Content-Type": "application/json"}
             )
+            start = time.perf_counter()
             with urllib.request.urlopen(req, timeout=10) as resp:
                 result = json.loads(resp.read().decode())
+            duration = time.perf_counter() - start
         except Exception as exc:
             self.logger.error("Worker call failed: %s", exc)
             result = {"error": str(exc)}
+            duration = 0.0
 
         if session_id:
-            history = session_data.get("history", []) if session_data else []
-            history.append(
-                {"task_type": task_type, "input": task_input, "result": result}
-            )
+            entry = {
+                "task_type": task_type,
+                "input": task_input,
+                "result": result,
+                "duration": duration,
+            }
+            if session_data:
+                history = session_data.get("history", [])
+            else:
+                history = []
+            history.append(entry)
             self.sessions.update_session(session_id, {"history": history})
+            self.sessions.append_history(session_id, entry)
 
-        return {"worker": agent["name"], "response": result}
+        return {
+            "worker": agent["name"],
+            "response": result,
+            "duration": duration,
+            "confidence": result.get("confidence", 1.0)
+            if isinstance(result, dict)
+            else 1.0,
+        }

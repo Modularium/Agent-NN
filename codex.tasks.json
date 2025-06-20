@@ -1,0 +1,9 @@
+{
+  "tasks": [
+    { "description": "Phase 1: Analysiere die Codebasis und erstelle einen Architekturbericht.", "priority": 1 },
+    { "description": "Phase 2: Erstelle einen detaillierten Plan (Roadmap) zur Implementierung der fehlenden Features.", "priority": 1 },
+    { "description": "Phase 3: Implementiere alle fehlenden Features (LOH-Agent, Agent-Setup, Agent-Framework) und vervollst\u00e4ndige den SupervisorAgent.", "priority": 1 },
+    { "description": "Phase 4: F\u00fchre alle Tests aus, implementiere fehlende Tests und behebe gefundene Fehler bis alles stabil l\u00e4uft.", "priority": 1 },
+    { "description": "Phase 5: Vervollst\u00e4ndige die Dokumentation (Benutzerhandbuch, Entwickler-Doku) und aktualisiere README und CONTRIBUTING. Bereite den MVP-Abschluss vor.", "priority": 1 }
+  ]
+}

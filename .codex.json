@@ -1,0 +1,70 @@
+{
+  "project": "Agent-NN Autonomer MVP-Assistent",
+  "objective": "Entwickle das Agent-NN Projekt zum MVP-Abschluss durch autonome Phasenbearbeitung",
+  "model": "gpt-4",
+  "approvalMode": "full-auto",
+  "fullAutoErrorMode": "ignore-and-continue",
+  "notify": false,
+  "phases": [
+    {
+      "name": "Analyse",
+      "description": "Analysiere den bestehenden Code und die Architektur. Identifiziere fehlende Features, Design-Probleme und Verbesserungsm\u00f6glichkeiten.",
+      "tasks": [
+        {"id": "AN1", "description": "Codebase und Dokumentation durchgehen, Architekturdiagramme erstellen, fehlende Komponenten auflisten."},
+        {"id": "AN2", "description": "Schwachstellen und Optimierungspotential in der Architektur identifizieren (z.B. Redundanzen, Engp\u00e4sse)."},
+        {"id": "AN3", "description": "Erkenntnisse in einem Bericht (docs/architecture/analysis.md) festhalten."}
+      ],
+      "exitCriteria": "Architekturbericht erstellt; Liste aller offenen Features/Probleme vorhanden."
+    },
+    {
+      "name": "Planung",
+      "description": "Erstelle einen konkreten Umsetzungsplan auf Basis der Analyse. Lege Reihenfolge der Implementierungen fest.",
+      "tasks": [
+        {"id": "PL1", "description": "Roadmap.md pr\u00fcfen oder anlegen; Meilensteine f\u00fcr MVP definieren."},
+        {"id": "PL2", "description": "Tasks f\u00fcr fehlende Features definieren (LOH-Agent, Agent-Setup, Agent-Framework, etc.) und priorisieren."},
+        {"id": "PL3", "description": "Akzeptanzkriterien pro Task festlegen (Wann gilt ein Feature als fertig?)."},
+        {"id": "PL4", "description": "AGENTS.md mit Rollen und Richtlinien erstellen, damit Codex die n\u00e4chsten Phasen korrekt ausf\u00fchren kann."}
+      ],
+      "exitCriteria": "Detaillierter Aufgabenplan (Roadmap/Tasks) steht; AGENTS.md f\u00fcr Projekt vorhanden."
+    },
+    {
+      "name": "Umsetzung",
+      "description": "Implementiere die geplanten Features und Verbesserungen im Code. Mache das System MVP-f\u00e4hig.",
+      "tasks": [
+        {"id": "DE1", "description": "SupervisorAgent fertig implementieren (inkl. Delegation an WorkerAgents, gem. Entwurf)."},
+        {"id": "DE2", "description": "LOH-Agent, Agent-Setup und Agent-Framework Klassen implementieren laut Planung."},
+        {"id": "DE3", "description": "Neural Network Router (NNManager) und sonstige ML-Komponenten zum Laufen bringen."},
+        {"id": "DE4", "description": "Vector Store und Wissensdatenbank integrieren (Dokumente laden, Suchfunktion testen)."},
+        {"id": "DE5", "description": "Logging-Utility und Fehlermanagement einf\u00fchren (logging_util.py etc.)."},
+        {"id": "DE6", "description": "Nach jeder gr\u00f6\u00dferen Implementierung: Smoke-Test durchf\u00fchren und evtl. Bugs sofort beheben."}
+      ],
+      "exitCriteria": "Alle Kernfeatures implementiert; kurzer manueller Test (z.B. beispielhafte Task-Ausf\u00fchrung) erfolgreich."
+    },
+    {
+      "name": "Qualit\u00e4tssicherung",
+      "description": "Teste und \u00fcberpr\u00fe den Code automatisch. Stelle sicher, dass alles stabil und standardkonform l\u00e4uft.",
+      "tasks": [
+        {"id": "QA1", "description": "Unit-Tests f\u00fcr alle neuen Komponenten schreiben (inkl. SupervisorAgent, neue Agents, NNManager etc.)."},
+        {"id": "QA2", "description": "Alle Testsuite ausf\u00fchren (pytest) und Fehler beheben, bis 100% der Tests erfolgreich sind."},
+        {"id": "QA3", "description": "Code-Format und Linting ausf\u00fchren (black, flake8, isort, mypy); Verst\u00f6\u00dfe korrigieren."},
+        {"id": "QA4", "description": "Integrationstest: gesamten Ablauf Nutzeranfrage -> Antwort durchspielen und Ergebnis validieren."},
+        {"id": "QA5", "description": "Optional: Performance-Test (Benchmark-Skript) ausf\u00fchren und Ergebnisse protokollieren."}
+      ],
+      "exitCriteria": "Testabdeckung ausreichend (z.B. >90%); alle Qualit\u00e4tspr\u00fcfungen bestanden; keine bekannten kritischen Bugs."
+    },
+    {
+      "name": "Dokumentation & Abschluss",
+      "description": "Vervollst\u00e4ndige Dokumentation und bereite das Projekt f\u00fcr \u00dcbergabe/Release vor.",
+      "tasks": [
+        {"id": "DO1", "description": "Benutzer-Dokumentation fertigstellen (Guide, Tutorials, README-Updates)."},
+        {"id": "DO2", "description": "Entwickler-Dokumentation/Architektur-Doku fertigstellen (in docs/ ausformulieren, Diagramme ggf. erg\u00e4nzen)."},
+        {"id": "DO3", "description": "CONTRIBUTING.md \u00fcberarbeiten (Beitragsrichtlinien, Entwickler-Setup, Test-Instruktionen)."},
+        {"id": "DO4", "description": "Changelog oder Roadmap aktualisieren: alle erledigten Punkte abhaken, verbleibende als Future Work notieren."},
+        {"id": "DO5", "description": "Optionale Deployment-Schritte: Docker-Setup erstellen, Version bump f\u00fcr Release."}
+      ],
+      "exitCriteria": "S\u00e4mtliche Doku-Seiten sind auf aktuellem Stand; Projekt kann von Dritten benutzt oder weiterentwickelt werden."
+    }
+  ],
+  "autoPhaseSwitch": true,
+  "progressLog": "codex_progress.log"
+}

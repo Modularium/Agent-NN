@@ -30,9 +30,9 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 
 In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
 
-## Report bugs using GitHub's [issue tracker](https://github.com/EcoSphereNetwork/Smolit_LLM-NN/issues)
+## Report bugs using GitHub's [issue tracker](https://github.com/EcoSphereNetwork/Agent-NN/issues)
 
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/EcoSphereNetwork/Smolit_LLM-NN/issues/new).
+We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/EcoSphereNetwork/Agent-NN/issues/new).
 
 ## Write bug reports with detail, background, and sample code
 
@@ -50,8 +50,8 @@ We use GitHub issues to track public bugs. Report a bug by [opening a new issue]
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/EcoSphereNetwork/Smolit_LLM-NN.git
-cd Smolit_LLM-NN
+git clone https://github.com/EcoSphereNetwork/Agent-NN.git
+cd Agent-NN
 ```
 
 2. Install dependencies:

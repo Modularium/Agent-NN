@@ -1,4 +1,4 @@
-"""API client for Smolit LLM-NN."""
+"""API client for Agent-NN."""
 import os
 import json
 import aiohttp
@@ -11,7 +11,7 @@ from .models import *
 from utils.logging_util import LoggerMixin
 
 class APIClient(LoggerMixin):
-    """API client for Smolit LLM-NN."""
+    """API client for Agent-NN."""
     
     def __init__(self,
                 base_url: str = "http://localhost:8000",

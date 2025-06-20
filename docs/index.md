@@ -75,4 +75,4 @@ We welcome contributions! Please see our [Contributing Guide](development/contri
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/EcoSphereNetwork/Smolit_LLM-NN/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/EcoSphereNetwork/Agent-NN/blob/main/LICENSE) file for details.

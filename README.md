@@ -28,8 +28,9 @@ graph TD
 
 1. Repository klonen
    ```bash
-   git clone https://github.com/EcoSphereNetwork/Smolit_LLM-NN.git
-   cd Smolit_LLM-NN
+   git clone https://github.com/EcoSphereNetwork/Agent-NN.git
+   cd Agent-NN
+
    ```
 2. Abhängigkeiten installieren
    ```bash

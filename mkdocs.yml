@@ -1,6 +1,6 @@
-site_name: Smolit LLM-NN
+site_name: Agent-NN
 site_description: Multi-agent system with neural network-based task routing
-repo_url: https://github.com/EcoSphereNetwork/Smolit_LLM-NN
+repo_url: https://github.com/EcoSphereNetwork/Agent-NN
 theme:
   name: material
   features:

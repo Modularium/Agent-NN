@@ -11,7 +11,7 @@
 ├── config.py
 ├── mkdocs.yml
 ├── requirements.txt
-├── Smolit_LLM-NN/
+├── Agent-NN/
 ├── __pycache__/
 │   ├── config.cpython-312.pyc
 ├── agents/

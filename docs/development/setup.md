@@ -11,8 +11,8 @@ Dieses Dokument beschreibt, wie Sie eine lokale Entwicklungsumgebung für Agent-
 ## Repository klonen
 
 ```bash
-git clone https://github.com/EcoSphereNetwork/Smolit_LLM-NN.git
-cd Smolit_LLM-NN
+git clone https://github.com/EcoSphereNetwork/Agent-NN.git
+cd Agent-NN
 ```
 
 ## Abhängigkeiten installieren

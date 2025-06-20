@@ -1,17 +1,21 @@
-# Release v0.9.0-mcp
+# Release v1.0.0-mcp
 
-Diese Version markiert den MVP-Abschluss der Modular Control Plane.
+Dies ist die erste stabile Ausgabe der Modular Control Plane fuer Agent-NN.
+
+## Highlights
+- Alle Kernservices als eigenstaendige Container
+- Docker-Compose fuer Entwicklung und Produktion
+- Python SDK aus den OpenAPI-Spezifikationen generiert
+
+## Systemanforderungen
+- Docker 20+
+- Python 3.10 fuer SDK und Tools
 
 ## Installation
-
 ```bash
-docker-compose up dispatcher registry session-manager
+docker compose -f docker-compose.production.yml up -d
 ```
 
-## Bekannte Einschränkungen
-- Worker-Services sind exemplarisch umgesetzt
-- Keine ausgereifte Authentifizierung
-
-## Geplante Erweiterungen
-- Vollständige UI-Integration
-- Skalierbare Deployment-Skripte
+## Bekannte Risiken & TODOs
+- Authentifizierung ist noch rudimentaer
+- Weitere Worker-Services koennen folgen

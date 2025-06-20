@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## v1.0.0
+- Erste stabile Version
+- SDKs und Release-Dokumente
+- Production Docker Compose
+
 ## v0.9.0-mcp
 - Abschluss der MCP-Migration
 - Dokumentation überarbeitet

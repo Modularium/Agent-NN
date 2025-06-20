@@ -30,3 +30,6 @@ Diese Roadmap skizziert die Migration von Agent-NN zur Modular Control Plane Arc
 ---
 
 **Legende:** ⬜ offen / ✅ erledigt. Jede Phase baut auf der vorherigen auf. Nach Abschluss von Phase 5 ist Agent-NN vollständig auf die MCP-Struktur migriert.
+
+## v1.0.0 abgeschlossen
+- Erste stabile MCP-Veröffentlichung

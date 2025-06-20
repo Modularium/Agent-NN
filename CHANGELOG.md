@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## Unreleased
+- Roadmap und Codex-Konfiguration an Entwicklungsplan angepasst
+- Neue Phasenbeschreibungen in `.codex.json`
+- Aufgabenliste in `codex.tasks.json` aktualisiert
+
 ## v1.0.0
 - Erste stabile Version
 - SDKs und Release-Dokumente

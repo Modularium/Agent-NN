@@ -48,3 +48,19 @@ def test_qa_timeout(monkeypatch):
     monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
     text = service.qa("question")
     assert text == "ans"
+
+
+def test_translate(monkeypatch):
+    service = LLMGatewayService()
+    fake_llm = SimpleNamespace(invoke=lambda prompt: "translated")
+    monkeypatch.setattr(service, "backend", SimpleNamespace(get_llm=lambda: fake_llm))
+    text = service.translate("hi", "de")
+    assert text == "translated"
+
+
+def test_vision_describe(monkeypatch):
+    service = LLMGatewayService()
+    fake_llm = SimpleNamespace(invoke=lambda prompt: "description")
+    monkeypatch.setattr(service, "backend", SimpleNamespace(get_llm=lambda: fake_llm))
+    text = service.vision_describe("http://img")
+    assert text == "description"

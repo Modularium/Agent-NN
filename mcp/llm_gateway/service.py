@@ -54,3 +54,13 @@ class LLMGatewayService:
             f"Context:\n{context}\nQuestion: {question}\nAnswer:"
         )
         return self.generate(prompt)
+
+    def translate(self, text: str, target_lang: str) -> str:
+        """Return a translated version of text using the LLM backend."""
+        prompt = f"Translate the following text to {target_lang}:\n{text}"
+        return self.generate(prompt)
+
+    def vision_describe(self, image_url: str) -> str:
+        """Describe an image. Currently a placeholder for future multimodal models."""
+        prompt = f"Describe the image at {image_url}."
+        return self.generate(prompt)

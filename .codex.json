@@ -7,54 +7,44 @@
   "notify": false,
   "phases": [
     {
-      "name": "MCP Phase 1: Architektur-Blueprint",
-      "description": "Grundstruktur f\u00fcr die Microservice-Architektur festlegen und Platzhalter-Dienste anlegen.",
+      "name": "Phase 1: Architektur-Migration zu MCP",
+      "description": "ModelContext einf\u00fchren und alle Grundservices als Microservices bereitstellen.",
       "tasks": [
-        {"id": "M1T1", "description": "Schnittstellen und Service-Grenzen definieren."},
-        {"id": "M1T2", "description": "Ordnerstruktur f\u00fcr Dispatcher, Registry und Worker-Services anlegen."},
-        {"id": "M1T3", "description": "Basis-Docker-Compose f\u00fcr neue Dienste erstellen."}
+        {"id": "P1T1", "description": "ModelContext-Datentypen definieren."},
+        {"id": "P1T2", "description": "Dispatcher, Registry, Session-Manager, Vector-Store und LLM-Gateway als Dienste anlegen."},
+        {"id": "P1T3", "description": "Basis-Docker-Compose zum Starten aller Dienste erstellen."}
       ],
-      "exitCriteria": "Blueprint und Skeleton-Dienste laufen lokal miteinander."
+      "exitCriteria": "Ein einfacher End-to-End-Test l\u00e4uft \u00fcber die neuen Services."
     },
     {
-      "name": "MCP Phase 2: Kernservices",
-      "description": "Task-Dispatcher, Agent-Registry und Session-Manager mit erster Logik f\u00fcllen.",
+      "name": "Phase 2: Agent-NN & Meta-Learning",
+      "description": "MetaLearner aktivieren und WorkerAgents mit internem Modell-Routing ausstatten.",
       "tasks": [
-        {"id": "M2T1", "description": "Agent-Registry mit statischer Konfiguration implementieren."},
-        {"id": "M2T2", "description": "Dispatcher nutzt Registry zur Agentenwahl."},
-        {"id": "M2T3", "description": "Session-Verwaltung \u00fcber Redis bereitstellen."}
+        {"id": "P2T1", "description": "Heuristische Logik im NNManager durch MetaLearner ersetzen."},
+        {"id": "P2T2", "description": "Feedbackschleife und AutoTrainer implementieren."},
+        {"id": "P2T3", "description": "Capability-basiertes Routing in einem WorkerAgent prototypisieren."}
       ],
-      "exitCriteria": "Dispatcher kann eine Testanfrage \u00fcber Registry an einen Dummy-Worker weiterleiten."
+      "exitCriteria": "Mindestens ein Agent nutzt das neue Lernmodell erfolgreich."
     },
     {
-      "name": "MCP Phase 3: Wissens- und LLM-Services",
-      "description": "Vector-Store-Service und LLM-Gateway aufbauen; Worker-Services aus dem Monolithen herausl\u00f6sen.",
+      "name": "Phase 3: SDK & Provider-System",
+      "description": "LLM-SDK mit OpenAI, Anthropic, OpenRouter und lokalen Providern entwickeln.",
       "tasks": [
-        {"id": "M3T1", "description": "Vector-Store-Service mit REST-API implementieren."},
-        {"id": "M3T2", "description": "LLM-Gateway f\u00fcr OpenAI und lokale Modelle bereitstellen."},
-        {"id": "M3T3", "description": "Erste Worker-Services (Dev, OpenHands, LOH) auslagern."}
+        {"id": "P3T1", "description": "Provider-Klassen und Factory implementieren."},
+        {"id": "P3T2", "description": "Konfiguration \u00fcber llm_config.yaml erm\u00f6glichen."},
+        {"id": "P3T3", "description": "Beispiele und Tests f\u00fcr das SDK bereitstellen."}
       ],
-      "exitCriteria": "Dispatcher greift auf Vector-Store und LLM-Service zu; mindestens ein Worker-Service arbeitet eigenst\u00e4ndig."
+      "exitCriteria": "SDK ist dokumentiert und wird vom LLM-Gateway genutzt."
     },
     {
-      "name": "MCP Phase 4: Integration & Messaging",
-      "description": "Asynchrone Kommunikation und API-Gateway erg\u00e4nzen; CLI/API auf neue Dienste umstellen.",
+      "name": "Phase 4: Testing, CI/CD, Doku",
+      "description": "Umfangreiche Tests, GitHub Actions und finalisierte Dokumentation.",
       "tasks": [
-        {"id": "M4T1", "description": "Message-Queue (Redis/Kafka) f\u00fcr Dispatcher \u2192 Worker einrichten."},
-        {"id": "M4T2", "description": "API-Gateway vor die Services schalten."},
-        {"id": "M4T3", "description": "CLI und bestehende API an Dispatcher anbinden."}
+        {"id": "P4T1", "description": "Pytest-Suite mit Mocks und Integrations-Tests erstellen."},
+        {"id": "P4T2", "description": "CI-Workflow mit ruff, black, pytest und coverage konfigurieren."},
+        {"id": "P4T3", "description": "Docker-Compose f\u00fcr Deployment und aktualisierte Doku ver\u00f6ffentlichen."}
       ],
-      "exitCriteria": "End-to-End-Flow \u00fcber Queue und Gateway funktioniert stabil."
-    },
-    {
-      "name": "MCP Phase 5: Abschluss & Deployment",
-      "description": "Dokumentation aktualisieren und Container-Deployment vorbereiten.",
-      "tasks": [
-        {"id": "M5T1", "description": "Architekturdokumente und README auf MCP-Stand bringen."},
-        {"id": "M5T2", "description": "Docker-Compose/Helm f\u00fcr alle Services bereitstellen."},
-        {"id": "M5T3", "description": "Roadmap abschlie\u00dfen und Ausblick notieren."}
-      ],
-      "exitCriteria": "Alle Dienste laufen containerisiert; Doku reflektiert finalen MCP-Aufbau."
+      "exitCriteria": "Tests bestehen und Doku beschreibt die produktionsreife MCP-Architektur."
     }
   ],
   "autoPhaseSwitch": true,

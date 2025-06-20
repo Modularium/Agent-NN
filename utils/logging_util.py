@@ -26,6 +26,19 @@ class CustomJSONEncoder(json.JSONEncoder):
             return obj.value
         return super().default(obj)
 
+
+class JsonFormatter(logging.Formatter):
+    """Format log records as JSON."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        log_record = {
+            "time": self.formatTime(record, self.datefmt),
+            "name": record.name,
+            "level": record.levelname,
+            "message": record.getMessage(),
+        }
+        return json.dumps(log_record, cls=CustomJSONEncoder)
+
 def setup_logger(name: str, log_file: Optional[str] = None, level: int = logging.INFO) -> logging.Logger:
     """Set up a logger with file and console handlers.
     
@@ -48,13 +61,17 @@ def setup_logger(name: str, log_file: Optional[str] = None, level: int = logging
     # Remove existing handlers to avoid duplicates
     logger.handlers = []
     
-    # Create formatters
-    console_formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-    file_formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
-    )
+    use_json = os.getenv("LOG_JSON", "false").lower() == "true"
+    if use_json:
+        console_formatter = JsonFormatter()
+        file_formatter = JsonFormatter()
+    else:
+        console_formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
+        file_formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
+        )
     
     # Create console handler
     console_handler = logging.StreamHandler()

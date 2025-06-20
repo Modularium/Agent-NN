@@ -1,24 +1,29 @@
+FROM python:3.9-slim as builder
+
+WORKDIR /app
+
+# install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
+
+# install python requirements first for caching
+COPY requirements.txt ./
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt uvicorn[standard]
+
+# copy source
+COPY . .
+
 FROM python:3.9-slim
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# copy dependencies from builder
+COPY --from=builder /usr/local /usr/local
+COPY --from=builder /app /app
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application code
-COPY . .
-
-# Create necessary directories
+# ensure directories exist
 RUN mkdir -p /app/logs /app/models
 
-# Expose port
 EXPOSE 8000
 
-# Start application
 CMD ["uvicorn", "api.server:app", "--host", "0.0.0.0", "--port", "8000"]

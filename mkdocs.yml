@@ -76,3 +76,7 @@ nav:
     - Testing: development/testing.md
     - CI/CD: development/cicd.md
     - Release Notes: development/releases.md
+  - Deployment:
+    - Docker: deployment/docker.md
+    - Kubernetes: deployment/kubernetes.md
+    - Cloud: deployment/cloud.md

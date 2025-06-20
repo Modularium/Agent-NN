@@ -1,5 +1,6 @@
 import json
 import urllib.request
+import logging
 from typing import Dict, Optional
 
 from mcp.agent_registry.service import AgentRegistryService
@@ -14,6 +15,9 @@ class TaskDispatcherService:
         self.sessions = SessionManagerService()
         # simple rule mapping task_type to agent name
         self.task_map = {"greeting": "worker_dev"}
+        self.logger = logging.getLogger(__name__)
+        if not self.logger.handlers:
+            logging.basicConfig(level=logging.INFO)
 
     def dispatch_task(
         self, task_type: str, task_input: str, session_id: Optional[str]
@@ -31,12 +35,14 @@ class TaskDispatcherService:
         url = agent["url"].rstrip("/") + "/execute_task"
         payload = json.dumps({"task": task_input}).encode()
         try:
+            self.logger.info("Dispatch %s to %s", task_type, url)
             req = urllib.request.Request(
                 url, data=payload, headers={"Content-Type": "application/json"}
             )
             with urllib.request.urlopen(req, timeout=10) as resp:
                 result = json.loads(resp.read().decode())
         except Exception as exc:
+            self.logger.error("Worker call failed: %s", exc)
             result = {"error": str(exc)}
 
         if session_id:

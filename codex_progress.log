@@ -3,3 +3,4 @@
 [MCP] Phase 1 scaffolding: created mcp services and docker compose.
 [Phase 2] Core services implemented: dispatcher, registry, session manager.
 [Phase 3] Worker services, vector store and LLM gateway implemented.
+[Phase 4] Tests und Docker-Setup implementiert.

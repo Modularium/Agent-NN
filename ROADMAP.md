@@ -17,10 +17,10 @@ Diese Roadmap skizziert die Migration von Agent-NN zur Modular Control Plane Arc
 - ✅ LLM-Gateway-Service für OpenAI und lokale Modelle
 - ✅ Worker-Services aus dem Monolithen herauslösen (Dev, OpenHands, LOH)
 
-## Phase 4: Integration & Messaging
-- ⬜ Nachrichtenschicht (Redis/Kafka) für Dispatcher↔Worker etablieren
-- ⬜ API-Gateway und CLI auf Dispatcher umstellen
-- ⬜ End-to-End-Flow über alle Dienste testen
+## Phase 4: Qualitätssicherung & Deployment-Vorbereitung
+- ✅ Testsuite und Linter eingerichtet
+- ✅ Logging in allen Services
+- ✅ Docker-Compose Skripte erstellt
 
 ## Phase 5: Abschluss & Deployment
 - ⬜ Dokumentation und README auf MCP-Architektur aktualisieren

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import urllib.request
+import logging
 from typing import Dict, List
 
 from llm_models.llm_backend import LLMBackendManager
@@ -16,13 +17,18 @@ class LLMGatewayService:
     def __init__(self) -> None:
         self.backend = LLMBackendManager()
         self.vector_url = os.getenv("VECTOR_STORE_URL", "http://vector_store:8000")
+        self.logger = logging.getLogger(__name__)
+        if not self.logger.handlers:
+            logging.basicConfig(level=logging.INFO)
 
     def generate(self, prompt: str) -> str:
         """Return a generated completion for a prompt."""
         llm = self.backend.get_llm()
         try:
+            self.logger.info("LLM generate: %s", prompt)
             return llm.invoke(prompt)
         except Exception as exc:  # pragma: no cover - network errors
+            self.logger.error("LLM generate failed: %s", exc)
             return f"error: {exc}"
 
     def qa(self, question: str) -> str:
@@ -35,9 +41,11 @@ class LLMGatewayService:
             query_url, data=payload, headers={"Content-Type": "application/json"}
         )
         try:
+            self.logger.info("Query vector store: %s", question)
             with urllib.request.urlopen(req, timeout=10) as resp:
                 docs = json.loads(resp.read().decode())
         except Exception:
+            self.logger.error("Vector store query failed", exc_info=True)
             docs = []
 
         context = "\n".join(d.get("text", "") for d in docs)

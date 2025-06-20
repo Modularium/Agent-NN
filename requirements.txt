@@ -30,3 +30,5 @@ Jinja
 uvicorn
 redis
 PyYAML
+slowapi
+prometheus_fastapi_instrumentator

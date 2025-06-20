@@ -8,3 +8,7 @@
 - **Worker Services**: domain specific executors, e.g. Dev, OpenHands, LOH.
 - **API Gateway**: optional entrypoint for external requests with auth and rate limiting.
 - **Monitoring/Logging**: collects logs and metrics from all services.
+
+## Service Registration
+
+Worker services announce themselves to the Agent Registry. For local testing the registry loads static data from `mcp/agents.yaml`. Each worker can send a `POST /register` request during startup to appear in the registry. In Phase 1 this process is manual but it prepares automatic discovery for later stages.

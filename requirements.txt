@@ -27,3 +27,5 @@ PyMuPDF
 PyPDF2
 Docling
 Jinja
+uvicorn
+redis

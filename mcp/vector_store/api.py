@@ -28,3 +28,4 @@ async def add_document(req: DocumentRequest) -> dict:
 @router.get("/health")
 async def health() -> dict:
     return {"status": "ok"}
+

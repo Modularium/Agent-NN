@@ -14,6 +14,24 @@ graph TD
     E --> G
 ```
 
+The following sequence shows the end-to-end flow after Phase&nbsp;3:
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant D as Dispatcher
+    participant W as Worker
+    participant L as LLM Gateway
+    participant V as Vector Store
+    U->>D: task request
+    D->>W: execute_task
+    W->>L: generate/qa
+    L->>V: query (optional)
+    L-->>W: answer
+    W-->>D: result
+    D-->>U: response
+```
+
 Each service can be scaled independently and replaced without touching the others. The dispatcher coordinates requests and uses the registry to find suitable workers. Session data and knowledge retrieval are handled by dedicated services.
 
 ### Directory Layout
@@ -31,3 +49,5 @@ mcp/
 ```
 
 All services expose small FastAPI apps with `/health` endpoints and stubs for their main functions.
+
+

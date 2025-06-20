@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import uuid
 from typing import Dict, List
+import logging
 
 import numpy as np
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -16,6 +17,9 @@ class VectorStoreService:
         self._docs: Dict[str, str] = {}
         self._embeddings: List[List[float]] = []
         self._ids: List[str] = []
+        self.logger = logging.getLogger(__name__)
+        if not self.logger.handlers:
+            logging.basicConfig(level=logging.INFO)
         self.embedder = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": "cpu"},
@@ -25,6 +29,7 @@ class VectorStoreService:
         """Add a text document to the store."""
         doc_id = document.get("id") or str(uuid.uuid4())
         text = document.get("text", "")
+        self.logger.info("Add document %s", doc_id)
         embedding = self.embedder.embed_query(text)
         self._docs[doc_id] = text
         self._ids.append(doc_id)

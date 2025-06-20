@@ -1,68 +1,60 @@
 {
-  "project": "Agent-NN Autonomer MVP-Assistent",
-  "objective": "Entwickle das Agent-NN Projekt zum MVP-Abschluss durch autonome Phasenbearbeitung",
+  "project": "Agent-NN MCP Modernization",
+  "objective": "Schrittweise Umstellung auf eine Modular Control Plane Architektur",
   "model": "gpt-4",
   "approvalMode": "full-auto",
   "fullAutoErrorMode": "ignore-and-continue",
   "notify": false,
   "phases": [
     {
-      "name": "Analyse",
-      "description": "Analysiere den bestehenden Code und die Architektur. Identifiziere fehlende Features, Design-Probleme und Verbesserungsm\u00f6glichkeiten.",
+      "name": "MCP Phase 1: Architektur-Blueprint",
+      "description": "Grundstruktur f\u00fcr die Microservice-Architektur festlegen und Platzhalter-Dienste anlegen.",
       "tasks": [
-        {"id": "AN1", "description": "Codebase und Dokumentation durchgehen, Architekturdiagramme erstellen, fehlende Komponenten auflisten."},
-        {"id": "AN2", "description": "Schwachstellen und Optimierungspotential in der Architektur identifizieren (z.B. Redundanzen, Engp\u00e4sse)."},
-        {"id": "AN3", "description": "Erkenntnisse in einem Bericht (docs/architecture/analysis.md) festhalten."}
+        {"id": "M1T1", "description": "Schnittstellen und Service-Grenzen definieren."},
+        {"id": "M1T2", "description": "Ordnerstruktur f\u00fcr Dispatcher, Registry und Worker-Services anlegen."},
+        {"id": "M1T3", "description": "Basis-Docker-Compose f\u00fcr neue Dienste erstellen."}
       ],
-      "exitCriteria": "Architekturbericht erstellt; Liste aller offenen Features/Probleme vorhanden."
+      "exitCriteria": "Blueprint und Skeleton-Dienste laufen lokal miteinander."
     },
     {
-      "name": "Planung",
-      "description": "Erstelle einen konkreten Umsetzungsplan auf Basis der Analyse. Lege Reihenfolge der Implementierungen fest.",
+      "name": "MCP Phase 2: Kernservices",
+      "description": "Task-Dispatcher, Agent-Registry und Session-Manager mit erster Logik f\u00fcllen.",
       "tasks": [
-        {"id": "PL1", "description": "Roadmap.md pr\u00fcfen oder anlegen; Meilensteine f\u00fcr MVP definieren."},
-        {"id": "PL2", "description": "Tasks f\u00fcr fehlende Features definieren (LOH-Agent, Agent-Setup, Agent-Framework, etc.) und priorisieren."},
-        {"id": "PL3", "description": "Akzeptanzkriterien pro Task festlegen (Wann gilt ein Feature als fertig?)."},
-        {"id": "PL4", "description": "AGENTS.md mit Rollen und Richtlinien erstellen, damit Codex die n\u00e4chsten Phasen korrekt ausf\u00fchren kann."}
+        {"id": "M2T1", "description": "Agent-Registry mit statischer Konfiguration implementieren."},
+        {"id": "M2T2", "description": "Dispatcher nutzt Registry zur Agentenwahl."},
+        {"id": "M2T3", "description": "Session-Verwaltung \u00fcber Redis bereitstellen."}
       ],
-      "exitCriteria": "Detaillierter Aufgabenplan (Roadmap/Tasks) steht; AGENTS.md f\u00fcr Projekt vorhanden."
+      "exitCriteria": "Dispatcher kann eine Testanfrage \u00fcber Registry an einen Dummy-Worker weiterleiten."
     },
     {
-      "name": "Umsetzung",
-      "description": "Implementiere die geplanten Features und Verbesserungen im Code. Mache das System MVP-f\u00e4hig.",
+      "name": "MCP Phase 3: Wissens- und LLM-Services",
+      "description": "Vector-Store-Service und LLM-Gateway aufbauen; Worker-Services aus dem Monolithen herausl\u00f6sen.",
       "tasks": [
-        {"id": "DE1", "description": "SupervisorAgent fertig implementieren (inkl. Delegation an WorkerAgents, gem. Entwurf)."},
-        {"id": "DE2", "description": "LOH-Agent, Agent-Setup und Agent-Framework Klassen implementieren laut Planung."},
-        {"id": "DE3", "description": "Neural Network Router (NNManager) und sonstige ML-Komponenten zum Laufen bringen."},
-        {"id": "DE4", "description": "Vector Store und Wissensdatenbank integrieren (Dokumente laden, Suchfunktion testen)."},
-        {"id": "DE5", "description": "Logging-Utility und Fehlermanagement einf\u00fchren (logging_util.py etc.)."},
-        {"id": "DE6", "description": "Nach jeder gr\u00f6\u00dferen Implementierung: Smoke-Test durchf\u00fchren und evtl. Bugs sofort beheben."}
+        {"id": "M3T1", "description": "Vector-Store-Service mit REST-API implementieren."},
+        {"id": "M3T2", "description": "LLM-Gateway f\u00fcr OpenAI und lokale Modelle bereitstellen."},
+        {"id": "M3T3", "description": "Erste Worker-Services (Dev, OpenHands, LOH) auslagern."}
       ],
-      "exitCriteria": "Alle Kernfeatures implementiert; kurzer manueller Test (z.B. beispielhafte Task-Ausf\u00fchrung) erfolgreich."
+      "exitCriteria": "Dispatcher greift auf Vector-Store und LLM-Service zu; mindestens ein Worker-Service arbeitet eigenst\u00e4ndig."
     },
     {
-      "name": "Qualit\u00e4tssicherung",
-      "description": "Teste und \u00fcberpr\u00fe den Code automatisch. Stelle sicher, dass alles stabil und standardkonform l\u00e4uft.",
+      "name": "MCP Phase 4: Integration & Messaging",
+      "description": "Asynchrone Kommunikation und API-Gateway erg\u00e4nzen; CLI/API auf neue Dienste umstellen.",
       "tasks": [
-        {"id": "QA1", "description": "Unit-Tests f\u00fcr alle neuen Komponenten schreiben (inkl. SupervisorAgent, neue Agents, NNManager etc.)."},
-        {"id": "QA2", "description": "Alle Testsuite ausf\u00fchren (pytest) und Fehler beheben, bis 100% der Tests erfolgreich sind."},
-        {"id": "QA3", "description": "Code-Format und Linting ausf\u00fchren (black, flake8, isort, mypy); Verst\u00f6\u00dfe korrigieren."},
-        {"id": "QA4", "description": "Integrationstest: gesamten Ablauf Nutzeranfrage -> Antwort durchspielen und Ergebnis validieren."},
-        {"id": "QA5", "description": "Optional: Performance-Test (Benchmark-Skript) ausf\u00fchren und Ergebnisse protokollieren."}
+        {"id": "M4T1", "description": "Message-Queue (Redis/Kafka) f\u00fcr Dispatcher \u2192 Worker einrichten."},
+        {"id": "M4T2", "description": "API-Gateway vor die Services schalten."},
+        {"id": "M4T3", "description": "CLI und bestehende API an Dispatcher anbinden."}
       ],
-      "exitCriteria": "Testabdeckung ausreichend (z.B. >90%); alle Qualit\u00e4tspr\u00fcfungen bestanden; keine bekannten kritischen Bugs."
+      "exitCriteria": "End-to-End-Flow \u00fcber Queue und Gateway funktioniert stabil."
     },
     {
-      "name": "Dokumentation & Abschluss",
-      "description": "Vervollst\u00e4ndige Dokumentation und bereite das Projekt f\u00fcr \u00dcbergabe/Release vor.",
+      "name": "MCP Phase 5: Abschluss & Deployment",
+      "description": "Dokumentation aktualisieren und Container-Deployment vorbereiten.",
       "tasks": [
-        {"id": "DO1", "description": "Benutzer-Dokumentation fertigstellen (Guide, Tutorials, README-Updates)."},
-        {"id": "DO2", "description": "Entwickler-Dokumentation/Architektur-Doku fertigstellen (in docs/ ausformulieren, Diagramme ggf. erg\u00e4nzen)."},
-        {"id": "DO3", "description": "CONTRIBUTING.md \u00fcberarbeiten (Beitragsrichtlinien, Entwickler-Setup, Test-Instruktionen)."},
-        {"id": "DO4", "description": "Changelog oder Roadmap aktualisieren: alle erledigten Punkte abhaken, verbleibende als Future Work notieren."},
-        {"id": "DO5", "description": "Optionale Deployment-Schritte: Docker-Setup erstellen, Version bump f\u00fcr Release."}
+        {"id": "M5T1", "description": "Architekturdokumente und README auf MCP-Stand bringen."},
+        {"id": "M5T2", "description": "Docker-Compose/Helm f\u00fcr alle Services bereitstellen."},
+        {"id": "M5T3", "description": "Roadmap abschlie\u00dfen und Ausblick notieren."}
       ],
-      "exitCriteria": "S\u00e4mtliche Doku-Seiten sind auf aktuellem Stand; Projekt kann von Dritten benutzt oder weiterentwickelt werden."
+      "exitCriteria": "Alle Dienste laufen containerisiert; Doku reflektiert finalen MCP-Aufbau."
     }
   ],
   "autoPhaseSwitch": true,

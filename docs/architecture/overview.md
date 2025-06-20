@@ -1,39 +1,23 @@
 # Architecture Overview
 
-This document summarizes the current structure of the **Agent-NN** project. The repository contains a modular multi-agent system that combines LLM components with neural networks for task routing and execution.
+Agent-NN is being refactored into a Modular Control Plane. Instead of one monolithic agent process, separate services take care of orchestration, knowledge retrieval and task execution.
 
-## Top Level Components
+## Core Repository Folders
 
-- **agents/** – implementation of all agent types (chatbot, supervisor, worker agents, OpenHands agents, etc.)
-- **llm_models/** – wrappers for different LLM backends and embeddings
-- **managers/** – system managers for agent lifecycle, models, knowledge, monitoring and more
+- **agents/** – legacy agent implementations (will evolve into worker services)
+- **llm_models/** – wrappers for various LLM backends
+- **managers/** – utilities for model and agent management
 - **datastores/** – vector store and agent specific databases
-- **training/** – training pipeline for the neural models
+- **api/** – FastAPI endpoints
 - **cli/** – command line interface utilities
-- **api/** and **openhands_api/** – FastAPI based services
-- **utils/** – helper modules (logging, prompt templates, document management)
 
-## Agent Hierarchy
+## MCP Components
 
-1. **ChatbotAgent** – user facing agent that forwards requests to the SupervisorAgent.
-2. **SupervisorAgent** – decides which WorkerAgent should handle a task using the NNManager.
-3. **WorkerAgent** – domain specific executor with its own knowledge base.
-4. **Specialized agents** – e.g. OpenHands agents for Docker/Compose operations and software development agents under `agents/software_dev`.
+1. **Task-Dispatcher** – replaces the Supervisor and delegates tasks to workers
+2. **Agent Registry** – stores available agent services and metadata
+3. **Session Manager** – keeps conversation state centrally
+4. **Worker Services** – domain specific executors running in their own processes
+5. **Vector Store Service** – provides semantic search capabilities
+6. **LLM Gateway** – unified interface to LLM providers
 
-Agents communicate via the `AgentCommunicationHub` and can ingest knowledge through the `DomainKnowledgeManager` and `WorkerAgentDB`.
-
-## Neural Components
-
-- `nn_models/agent_nn.py` – neural network used by WorkerAgents for feature extraction and performance evaluation.
-- `managers/nn_manager.py` – selects suitable agents based on embeddings and task requirements.
-- Training scripts under `training/` provide the dataset preparation and MLflow tracking.
-
-## Knowledge & Storage
-
-Vector based search is implemented via `datastores/vector_store.py`. Each WorkerAgent uses `WorkerAgentDB` for its documents and retrieval. The project also integrates MLflow for experiment tracking and model registry.
-
-## System Services
-
-FastAPI services reside in `api/` (general API) and `openhands_api/` (execution environment). Monitoring is handled by `openhands_api/monitoring.py` and additional managers under `managers/` provide caching, security, deployment and more.
-
-For a detailed description of modules, see `docs/architecture/Code-Dokumentation.md`.
+For an overview of the interaction between these services see `overview_mcp.md`.

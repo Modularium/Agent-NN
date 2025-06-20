@@ -71,6 +71,7 @@ nav:
     - Managers: api/managers.md
     - Models: api/models.md
     - Utils: api/utils.md
+    - OpenAPI Specs: api/_openapi_index.md
   - Development:
     - Contributing: development/contributing.md
     - Testing: development/testing.md
@@ -80,3 +81,6 @@ nav:
     - Docker: deployment/docker.md
     - Kubernetes: deployment/kubernetes.md
     - Cloud: deployment/cloud.md
+  - Governance:
+    - Goals: governance/goals.md
+    - Release Policy: governance/release_policy.md

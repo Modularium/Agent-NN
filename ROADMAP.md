@@ -13,9 +13,9 @@ Diese Roadmap skizziert die Migration von Agent-NN zur Modular Control Plane Arc
 - ✅ Redis-basierte Session-Verwaltung bereitstellen
 
 ## Phase 3: Wissens- und LLM-Services
-- ⬜ Eigenständiger Vector-Store-Service mit REST-API
-- ⬜ LLM-Gateway-Service für OpenAI und lokale Modelle
-- ⬜ Worker-Services aus dem Monolithen herauslösen (Dev, OpenHands, LOH)
+- ✅ Eigenständiger Vector-Store-Service mit REST-API
+- ✅ LLM-Gateway-Service für OpenAI und lokale Modelle
+- ✅ Worker-Services aus dem Monolithen herauslösen (Dev, OpenHands, LOH)
 
 ## Phase 4: Integration & Messaging
 - ⬜ Nachrichtenschicht (Redis/Kafka) für Dispatcher↔Worker etablieren

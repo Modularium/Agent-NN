@@ -17,6 +17,17 @@ async def generate(req: GenerateRequest) -> dict:
     return {"text": text}
 
 
+class QARequest(BaseModel):
+    query: str
+
+
+@router.post("/chain/qa")
+async def chain_qa(req: QARequest) -> dict:
+    """Run a retrieval augmented generation chain."""
+    text = service.qa(req.query)
+    return {"text": text}
+
+
 @router.get("/health")
 async def health() -> dict:
     return {"status": "ok"}

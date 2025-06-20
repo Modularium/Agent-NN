@@ -11,6 +11,7 @@ class AgentRegistryService:
 
     def __init__(self, config_path: str = "mcp/agents.yaml") -> None:
         self._agents: Dict[str, Dict[str, str]] = {}
+        self._plugins: Dict[str, Dict[str, str]] = {}
         if os.path.exists(config_path):
             with open(config_path, "r", encoding="utf-8") as fh:
                 cfg = yaml.safe_load(fh) or {}
@@ -22,6 +23,12 @@ class AgentRegistryService:
 
     def register_agent(self, info: Dict[str, str]) -> None:
         self._agents[info["name"]] = info
+
+    def list_plugins(self) -> List[Dict[str, str]]:
+        return list(self._plugins.values())
+
+    def register_plugin(self, info: Dict[str, str]) -> None:
+        self._plugins[info["name"]] = info
 
     def health_status(self) -> List[Dict[str, str]]:
         statuses: List[Dict[str, str]] = []

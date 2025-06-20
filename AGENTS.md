@@ -56,6 +56,16 @@ Dieses Dokument definiert die Rollen und Verhaltensregeln für den autonomen Cod
 - **Formatierung:** Achte auf saubere Formatierung in Markdown. Insbesondere in `mkdocs.yml` prüfen, dass alle neuen Seiten eingebunden sind.  
 - **Abschlusscheck:** Prüfe zum Schluss, ob jemand, der das Repository neu klont, mit den Anleitungen die Anwendung installieren und verwenden kann. Wenn möglich, selbst einmal Schritt für Schritt ausprobieren.
 
+
+## Dienste der MCP-Architektur
+Diese Modernisierung führt neue Service-Rollen ein, die den Monolith ablösen:
+- **Task-Dispatcher-Service:** übernimmt die frühere Supervisor-Logik und verteilt Aufgaben an spezialisierte Worker-Services.
+- **Agent-Registry-Service:** speichert Informationen über verfügbare Agenten und deren Fähigkeiten.
+- **Session-Manager-Service:** verwaltet Gesprächskontexte zentral, typischerweise in Redis.
+- **Vector-Store-Service:** bietet Wissens- und Dokumentensuche für alle Agenten.
+- **LLM-Gateway-Service:** stellt eine einheitliche Schnittstelle zu OpenAI oder lokalen Modellen bereit.
+- **Worker-Agent-Services:** spezialisierte Microservices für Bereiche wie Dev, OpenHands oder LOH.
+- **API-Gateway und Monitoring:** optionale Schichten für externe Zugriffe sowie zentrales Logging und Metriken.
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

@@ -29,10 +29,13 @@ class TaskDispatcherService:
     ) -> ModelContext:
         """Select agents and forward the ModelContext."""
         history: List[dict] = []
+        memory: List[dict] = []
         if session_id:
             history = self._fetch_history(session_id)
             task.preferences = task.preferences or {}
             task.preferences["history"] = history
+            if history:
+                memory = history[-1].get("memory", [])
 
         TOKENS_IN.labels("task_dispatcher").inc(len(str(task.description or "").split()))
 
@@ -41,6 +44,7 @@ class TaskDispatcherService:
             task=task.task_id,
             task_context=task,
             session_id=session_id,
+            memory=memory,
         )
         if mode == "single":
             agent = random.choice(agents) if agents else None

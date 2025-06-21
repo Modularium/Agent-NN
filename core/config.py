@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     MODELS_DIR: str = "models"
     EMBEDDINGS_CACHE_DIR: str = "embeddings_cache"
     EXPORT_DIR: str = "export"
+    MEMORY_LOG_DIR: str = "data/memory_log"
+    MEMORY_STORE_BACKEND: str = "memory"  # `memory` or `file`
+
     DEFAULT_STORE_BACKEND: str = "memory"  # ``memory`` or ``file``
     VECTOR_DB_BACKEND: str = "memory"  # ``memory`` or ``chromadb``
 
@@ -29,6 +32,7 @@ for path in [
     settings.SESSIONS_DIR,
     settings.VECTOR_DB_DIR,
     settings.LOG_DIR,
+    settings.MEMORY_LOG_DIR,
     settings.MODELS_DIR,
     settings.EMBEDDINGS_CACHE_DIR,
     settings.EXPORT_DIR,

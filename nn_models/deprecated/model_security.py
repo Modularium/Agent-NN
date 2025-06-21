@@ -1,3 +1,4 @@
+# deprecated – moved for cleanup in v1.0.0-beta
 """Security utilities for model loading and validation."""
 import os
 import hashlib

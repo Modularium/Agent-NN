@@ -6,3 +6,17 @@ export/
 embeddings_cache/
 models/
 sessions/
+
+# Runtime- und Build-Outputs
+/logs/
+/models/
+/mlruns/
+/sessions/
+/__pycache__/
+*.pyc
+*.log
+*.bak
+*.tmp
+.ipynb_checkpoints/
+/frontend/node_modules/
+*.env

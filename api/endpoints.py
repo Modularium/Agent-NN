@@ -15,6 +15,7 @@ from managers.security_manager import SecurityManager
 from managers.cache_manager import CacheManager
 from managers.knowledge_manager import KnowledgeManager
 from utils.logging_util import LoggerMixin
+from utils.api_utils import api_route
 from agents.supervisor_agent import SupervisorAgent
 from agents.chatbot_agent import ChatbotAgent
 
@@ -51,6 +52,7 @@ class APIEndpoints(LoggerMixin):
         oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
         
         # Authentication
+        @api_route(version="v1.0.0")
         @self.router.post("/token", response_model=Token)
         async def login(form_data: OAuth2PasswordRequestForm = Depends()):
             """Login and get access token."""
@@ -70,6 +72,7 @@ class APIEndpoints(LoggerMixin):
                 expires_at=datetime.now() + timedelta(days=1)
             )
             
+        @api_route(version="v1.0.0")
         @self.router.post("/users", response_model=User)
         async def create_user(user: UserCreate):
             """Create new user."""
@@ -83,6 +86,7 @@ class APIEndpoints(LoggerMixin):
                 )
                 
         # Task Management
+        @api_route(version="v1.0.0")
         @self.router.post(
             "/tasks",
             response_model=Union[TaskResponse, BatchTaskResponse],
@@ -102,6 +106,7 @@ class APIEndpoints(LoggerMixin):
                     detail=str(e)
                 )
                 
+        @api_route(version="v1.0.0")
         @self.router.get(
             "/tasks/{task_id}",
             response_model=TaskResponse,
@@ -125,6 +130,7 @@ class APIEndpoints(LoggerMixin):
                 )
                 
         # Agent Management
+        @api_route(version="v1.0.0")
         @self.router.post(
             "/agents",
             response_model=AgentConfig,
@@ -142,6 +148,7 @@ class APIEndpoints(LoggerMixin):
                     detail=str(e)
                 )
                 
+        @api_route(version="v1.0.0")
         @self.router.get(
             "/agents",
             response_model=List[AgentStatus],
@@ -158,6 +165,7 @@ class APIEndpoints(LoggerMixin):
                     detail=str(e)
                 )
                 
+        @api_route(version="v1.0.0")
         @self.router.get(
             "/agents/{agent_id}",
             response_model=AgentStatus,
@@ -181,6 +189,7 @@ class APIEndpoints(LoggerMixin):
                 )
                 
         # Model Management
+        @api_route(version="v1.0.0")
         @self.router.post(
             "/models",
             response_model=ModelConfig,
@@ -200,6 +209,7 @@ class APIEndpoints(LoggerMixin):
                     detail=str(e)
                 )
                 
+        @api_route(version="v1.0.0")
         @self.router.get(
             "/models",
             response_model=List[ModelStatus],
@@ -217,6 +227,7 @@ class APIEndpoints(LoggerMixin):
                 )
                 
         # Knowledge Base Management
+        @api_route(version="v1.0.0")
         @self.router.post(
             "/knowledge-bases",
             response_model=KnowledgeBase,
@@ -234,6 +245,7 @@ class APIEndpoints(LoggerMixin):
                     detail=str(e)
                 )
                 
+        @api_route(version="v1.0.0")
         @self.router.post(
             "/knowledge-bases/{kb_name}/documents",
             response_model=List[Document],
@@ -266,6 +278,7 @@ class APIEndpoints(LoggerMixin):
                 )
                 
         # System Management
+        @api_route(version="v1.0.0")
         @self.router.get(
             "/metrics",
             response_model=SystemMetrics,
@@ -282,6 +295,7 @@ class APIEndpoints(LoggerMixin):
                     detail=str(e)
                 )
                 
+        @api_route(version="v1.0.0")
         @self.router.post(
             "/system/config",
             response_model=SystemConfig,
@@ -299,6 +313,7 @@ class APIEndpoints(LoggerMixin):
                 )
                 
         # A/B Testing
+        @api_route(version="v1.0.0")
         @self.router.post(
             "/tests",
             response_model=TestConfig,
@@ -316,6 +331,7 @@ class APIEndpoints(LoggerMixin):
                     detail=str(e)
                 )
                 
+        @api_route(version="v1.0.0")
         @self.router.get(
             "/tests/{test_id}",
             response_model=TestResults,
@@ -333,6 +349,7 @@ class APIEndpoints(LoggerMixin):
                 )
                 
         # Smolitux UI Integration
+        @api_route(version="v1.0.0")
         @self.router.post("/smolitux/tasks")
         async def smolitux_create_task(request: TaskRequest):
             """Create and execute task for Smolitux UI."""
@@ -369,11 +386,13 @@ class APIEndpoints(LoggerMixin):
                     detail=f"Error executing task: {str(e)}"
                 )
 
+        @api_route(version="v1.0.0")
         @self.router.get("/smolitux/tasks")
         async def smolitux_get_tasks():
             """Get task history for Smolitux UI."""
             return self.task_history
 
+        @api_route(version="v1.0.0")
         @self.router.get("/smolitux/tasks/{task_id}")
         async def smolitux_get_task(task_id: str):
             """Get task details for Smolitux UI."""
@@ -385,6 +404,7 @@ class APIEndpoints(LoggerMixin):
                 detail=f"Task with ID {task_id} not found"
             )
 
+        @api_route(version="v1.0.0")
         @self.router.get("/smolitux/agents")
         async def smolitux_get_agents():
             """Get agents for Smolitux UI."""
@@ -411,6 +431,7 @@ class APIEndpoints(LoggerMixin):
             
             return agent_data
 
+        @api_route(version="v1.0.0")
         @self.router.websocket("/smolitux/ws")
         async def smolitux_websocket_endpoint(websocket: WebSocket):
             """WebSocket endpoint for Smolitux UI."""
@@ -448,6 +469,7 @@ class APIEndpoints(LoggerMixin):
                 self.active_connections.remove(websocket)
                 
         # Cache Management
+        @api_route(version="v1.0.0")
         @self.router.post(
             "/cache/config",
             response_model=CacheConfig,
@@ -464,6 +486,7 @@ class APIEndpoints(LoggerMixin):
                     detail=str(e)
                 )
                 
+        @api_route(version="v1.0.0")
         @self.router.get(
             "/cache/stats",
             response_model=CacheStats,
@@ -480,6 +503,7 @@ class APIEndpoints(LoggerMixin):
                     detail=str(e)
                 )
                 
+        @api_route(version="v1.0.0")
         @self.router.post(
             "/cache/clear",
             dependencies=[Security(oauth2_scheme)]

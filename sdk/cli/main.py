@@ -3,11 +3,20 @@ from __future__ import annotations
 
 import json
 import typer
+from .. import __version__
 
 from ..client import AgentClient
 from ..config import SDKSettings
 
 app = typer.Typer()
+
+@app.callback()
+def version_callback(ctx: typer.Context,
+                     version: bool = typer.Option(False, '--version', help='Show version and exit')):
+    """Global options."""
+    if version:
+        typer.echo(__version__)
+        ctx.exit()
 
 
 @app.command()

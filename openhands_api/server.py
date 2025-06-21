@@ -8,6 +8,7 @@ import docker
 import aioredis
 import jwt
 import os
+from utils.api_utils import api_route
 from datetime import datetime, timedelta
 from utils.logging_util import LoggerMixin
 
@@ -193,6 +194,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
                 detail="Invalid authentication token"
             )
             
+    @api_route(version="v1.0.0")
     async def execute_code(self,
                           execution: CodeExecution,
                           background_tasks: BackgroundTasks) -> Dict[str, Any]:
@@ -305,6 +307,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
                 }
             )
             
+    @api_route(version="v1.0.0")
     async def get_execution(self, execution_id: str) -> Dict[str, Any]:
         """Get execution details.
         
@@ -331,6 +334,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
             **execution
         }
         
+    @api_route(version="v1.0.0")
     async def build_image(self, build: DockerBuild) -> Dict[str, Any]:
         """Build Docker image.
         
@@ -369,6 +373,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
                 detail=str(e)
             )
             
+    @api_route(version="v1.0.0")
     async def run_container(self, config: DockerRun) -> Dict[str, Any]:
         """Run Docker container.
         
@@ -401,6 +406,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
                 detail=str(e)
             )
             
+    @api_route(version="v1.0.0")
     async def stop_container(self, container_id: str) -> Dict[str, Any]:
         """Stop Docker container.
         
@@ -426,6 +432,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
                 detail=str(e)
             )
             
+    @api_route(version="v1.0.0")
     async def get_container_logs(self, container_id: str) -> str:
         """Get container logs.
         
@@ -446,6 +453,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
                 detail=str(e)
             )
             
+    @api_route(version="v1.0.0")
     async def deploy_stack(self, deployment: ComposeDeployment) -> Dict[str, Any]:
         """Deploy Docker Compose stack.
         
@@ -481,6 +489,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
                 detail=str(e)
             )
             
+    @api_route(version="v1.0.0")
     async def get_stack_status(self, stack_name: str) -> Dict[str, Any]:
         """Get stack status.
         
@@ -514,6 +523,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
                 detail=str(e)
             )
             
+    @api_route(version="v1.0.0")
     async def scale_service(self,
                           stack_name: str,
                           scale: ServiceScale) -> Dict[str, Any]:
@@ -548,6 +558,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
                 detail=str(e)
             )
             
+    @api_route(version="v1.0.0")
     async def get_system_status(self) -> Dict[str, Any]:
         """Get system status.
         
@@ -573,6 +584,7 @@ class OpenHandsAPI(FastAPI, LoggerMixin):
                 detail=str(e)
             )
             
+    @api_route(version="v1.0.0")
     async def get_supported_languages(self) -> List[str]:
         """Get supported programming languages.
         

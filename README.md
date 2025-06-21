@@ -2,6 +2,11 @@
 
 Agent-NN ist ein Multi-Agent-System, das im Rahmen der Modular Control Plane in mehrere Microservices aufgeteilt wurde. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen.
 
+## Systemvoraussetzungen
+
+- Python 3.9 oder neuer
+- Mindestens 4 GB RAM
+
 ## Komponentenübersicht
 
 ```mermaid
@@ -41,8 +46,17 @@ graph TD
    docker-compose up dispatcher registry session-manager
    ```
 4. Testanfrage stellen
-   ```bash
-   curl -X POST http://localhost:8000/task -H "Content-Type: application/json" -d '{"task_type": "chat", "input": "Hallo"}'
-   ```
+```bash
+curl -X POST http://localhost:8000/task -H "Content-Type: application/json" -d '{"task_type": "chat", "input": "Hallo"}'
+```
+
+## CLI
+
+Das Kommando `agentnn` wird nach der Installation verfügbar. Die Version kann mit
+
+```bash
+agentnn --version
+```
+abgerufen werden.
 
 Weitere Details findest du im Ordner [docs/](docs/).

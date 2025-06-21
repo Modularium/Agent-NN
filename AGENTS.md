@@ -72,6 +72,7 @@ Diese Modernisierung führt neue Service-Rollen ein, die den Monolith ablösen:
 - **Vector-Store-Service:** bietet Wissens- und Dokumentensuche für alle Agenten.
 - **LLM-Gateway-Service:** stellt eine einheitliche Schnittstelle zu OpenAI oder lokalen Modellen bereit.
 - **Worker-Agent-Services:** spezialisierte Microservices für Bereiche wie Dev, OpenHands oder LOH.
+- **Service-Stubs:** Unter `services/` liegen die FastAPI-Grundgerüste für alle MCP-Dienste.
 - **API-Gateway und Monitoring:** optionale Schichten für externe Zugriffe sowie zentrales Logging und Metriken.
 ## Allgemeine Projekt-Richtlinien
 

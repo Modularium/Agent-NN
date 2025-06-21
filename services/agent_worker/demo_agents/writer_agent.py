@@ -3,10 +3,16 @@
 from __future__ import annotations
 
 import httpx
+from typing import Any
 
 from core.model_context import ModelContext
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 from core.agent_profile import AgentIdentity
+from core.agent_evolution import evolve_profile
+import os
+import json
+from pathlib import Path
+from datetime import datetime
 
 
 class WriterAgent:
@@ -15,6 +21,12 @@ class WriterAgent:
     def __init__(self, llm_url: str = "http://localhost:8003") -> None:
         self.llm_url = llm_url.rstrip("/")
         self.profile = AgentIdentity.load("writer_agent")
+        self._history: list[dict[str, Any]] = []
+        self._runs = 0
+        self._evolve_enabled = os.getenv("AGENT_EVOLVE", "false").lower() == "true"
+        self._evolve_interval = int(os.getenv("AGENT_EVOLVE_INTERVAL", "5"))
+        self._evolve_mode = os.getenv("AGENT_EVOLVE_MODE", "heuristic")
+        self._log_dir = Path(os.getenv("AGENT_LOG_DIR", "agent_log"))
 
     def run(self, ctx: ModelContext) -> ModelContext:
         prompt = ctx.task_context.description or ""
@@ -43,4 +55,13 @@ class WriterAgent:
         TASKS_PROCESSED.labels("writer_agent").inc()
         ctx.result = data.get("completion")
         ctx.metrics = {"tokens_used": data.get("tokens_used", 0)}
+        self._runs += 1
+        self._history.append({"rating": "good"})
+        if self._evolve_enabled and self._runs % self._evolve_interval == 0:
+            self.profile = evolve_profile(self.profile, self._history, self._evolve_mode)
+            self.profile.save()
+            self._log_dir.mkdir(parents=True, exist_ok=True)
+            log_path = self._log_dir / f"{self.profile.name}.log"
+            with open(log_path, "a", encoding="utf-8") as fh:
+                fh.write(json.dumps({"timestamp": datetime.now().isoformat(), "traits": self.profile.traits, "skills": self.profile.skills}) + "\n")
         return ctx

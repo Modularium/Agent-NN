@@ -9,6 +9,9 @@ from .. import __version__
 from ..client import AgentClient
 from ..config import SDKSettings
 from ..nn_models import ModelManager
+from core.agent_profile import AgentIdentity
+from core.agent_evolution import evolve_profile
+from dataclasses import asdict
 
 
 model_app = typer.Typer(name="model", help="Model management commands")
@@ -69,6 +72,18 @@ def agent_update(name: str, traits: str = "", skills: str = "") -> None:
     skills_list = [s.strip() for s in skills.split(",") if s.strip()] if skills else None
     result = client.update_agent_profile(name, traits=traits_data, skills=skills_list)
     typer.echo(json.dumps(result, indent=2))
+
+
+@agent_app.command("evolve")
+def agent_evolve(name: str, mode: str = "llm", preview: bool = False) -> None:
+    """Evolve an agent profile."""
+    profile = AgentIdentity.load(name)
+    updated = evolve_profile(profile, [], mode)
+    if preview:
+        typer.echo(json.dumps(asdict(updated), indent=2))
+    else:
+        updated.save()
+        typer.echo(f"profile updated: {name}")
 
 
 @config_app.command("show")

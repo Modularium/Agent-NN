@@ -1,74 +1,114 @@
 {
-    "project": "Agent-NN MCP Modernization",
-    "objective": "Schrittweise Umstellung auf eine Modular Control Plane Architektur",
-    "model": "gpt-4",
-    "approvalMode": "full-auto",
-    "fullAutoErrorMode": "ignore-and-continue",
-    "notify": false,
-    "phases": [
+  "project": "Agent-NN MCP Modernization",
+  "objective": "Schrittweise Umstellung auf eine Modular Control Plane Architektur",
+  "model": "gpt-4",
+  "approvalMode": "full-auto",
+  "fullAutoErrorMode": "ignore-and-continue",
+  "notify": false,
+  "phases": [
+    {
+      "name": "Phase 1: Architektur-Migration zu MCP",
+      "description": "ModelContext einführen und alle Grundservices als Microservices bereitstellen.",
+      "tasks": [
         {
-            "name": "Phase 1: Architektur-Migration zu MCP",
-            "description": "ModelContext einführen und alle Grundservices als Microservices bereitstellen.",
-            "tasks": [
-                {"id": "P1T1", "description": "ModelContext-Datentypen definieren."},
-                {"id": "P1T2", "description": "Dispatcher, Registry, Session-Manager, Vector-Store und LLM-Gateway als Dienste anlegen."},
-                {"id": "P1T3", "description": "Basis-Docker-Compose zum Starten aller Dienste erstellen."}
-            ],
-            "exitCriteria": "Ein einfacher End-to-End-Test läuft über die neuen Services."
+          "id": "P1T1",
+          "description": "ModelContext-Datentypen definieren."
         },
         {
-            "name": "Phase 1.6: MCP Observability",
-            "description": "Logging-Standardisierung und Metrikexport für alle Services",
-            "tasks": [
-                {"id": "P1T9", "description": "Monitoring und JSON-Logging implementieren"}
-            ],
-            "exitCriteria": "Prometheus sammelt Daten und ein Grafana-Dashboard zeigt sie an."
+          "id": "P1T2",
+          "description": "Dispatcher, Registry, Session-Manager, Vector-Store und LLM-Gateway als Dienste anlegen."
         },
         {
-            "name": "Phase 2: Agent-NN & Meta-Learning",
-            "description": "MetaLearner aktivieren und WorkerAgents mit internem Modell-Routing ausstatten.",
-            "tasks": [
-                {"id": "P2T1", "description": "Heuristische Logik im NNManager durch MetaLearner ersetzen."},
-                {"id": "P2T2", "description": "Feedbackschleife und AutoTrainer implementieren."},
-                {"id": "P2T3", "description": "Capability-basiertes Routing in einem WorkerAgent prototypisieren."}
-            ],
-            "exitCriteria": "Mindestens ein Agent nutzt das neue Lernmodell erfolgreich."
-        },
-        {
-            "name": "Phase 3: SDK & Provider-System",
-            "description": "LLM-SDK mit OpenAI, Anthropic, OpenRouter und lokalen Providern entwickeln.",
-            "tasks": [
-                {"id": "P3T1", "description": "Provider-Klassen und Factory implementieren."},
-                {"id": "P3T2", "description": "Konfiguration über llm_config.yaml ermöglichen."},
-                {"id": "P3T3", "description": "Beispiele und Tests für das SDK bereitstellen."}
-            ],
-            "exitCriteria": "SDK ist dokumentiert und wird vom LLM-Gateway genutzt."
-        },
-        {
-            "name": "Phase 4: Testing, CI/CD, Doku",
-            "description": "Umfangreiche Tests, GitHub Actions und finalisierte Dokumentation.",
-            "tasks": [
-                {"id": "P4T1", "description": "Pytest-Suite mit Mocks und Integrations-Tests erstellen."},
-                {"id": "P4T2", "description": "CI-Workflow mit ruff, black, pytest und coverage konfigurieren."},
-                {"id": "P4T3", "description": "Docker-Compose für Deployment und aktualisierte Doku veröffentlichen."}
-            ],
-            "exitCriteria": "Tests bestehen und Doku beschreibt die produktionsreife MCP-Architektur."
+          "id": "P1T3",
+          "description": "Basis-Docker-Compose zum Starten aller Dienste erstellen."
         }
-    ],
-    "autoPhaseSwitch": true,
-    "progressLog": "codex_progress.log",
-    "phase-1-security-layer": true,
-    "phase-1-persistence": true,
-    "phase-1-sdk": true,
-    "phase-1-release": true,
-    "codex/phase-1-mlflow-integration": true,
-    "codex/phase-1-release-final-part1": true,
-    "codex/phase-1-release-final-structure-clean": true,
-    "codex/phase-1-release-final-packaging": true,
-    "codex/phase-1-release-final-docs": true,
-    "codex/phase-2-multi-agent-core": true,
-    "codex/phase-2-agent-voting-feedback": true,
-    "codex/phase-2-agent-memory-sharing": true,
-    "codex/phase-2-agent-communication": true,
-    "codex/phase-2-agent-identity": true
+      ],
+      "exitCriteria": "Ein einfacher End-to-End-Test läuft über die neuen Services."
+    },
+    {
+      "name": "Phase 1.6: MCP Observability",
+      "description": "Logging-Standardisierung und Metrikexport für alle Services",
+      "tasks": [
+        {
+          "id": "P1T9",
+          "description": "Monitoring und JSON-Logging implementieren"
+        }
+      ],
+      "exitCriteria": "Prometheus sammelt Daten und ein Grafana-Dashboard zeigt sie an."
+    },
+    {
+      "name": "Phase 2: Agent-NN & Meta-Learning",
+      "description": "MetaLearner aktivieren und WorkerAgents mit internem Modell-Routing ausstatten.",
+      "tasks": [
+        {
+          "id": "P2T1",
+          "description": "Heuristische Logik im NNManager durch MetaLearner ersetzen."
+        },
+        {
+          "id": "P2T2",
+          "description": "Feedbackschleife und AutoTrainer implementieren."
+        },
+        {
+          "id": "P2T3",
+          "description": "Capability-basiertes Routing in einem WorkerAgent prototypisieren."
+        }
+      ],
+      "exitCriteria": "Mindestens ein Agent nutzt das neue Lernmodell erfolgreich."
+    },
+    {
+      "name": "Phase 3: SDK & Provider-System",
+      "description": "LLM-SDK mit OpenAI, Anthropic, OpenRouter und lokalen Providern entwickeln.",
+      "tasks": [
+        {
+          "id": "P3T1",
+          "description": "Provider-Klassen und Factory implementieren."
+        },
+        {
+          "id": "P3T2",
+          "description": "Konfiguration über llm_config.yaml ermöglichen."
+        },
+        {
+          "id": "P3T3",
+          "description": "Beispiele und Tests für das SDK bereitstellen."
+        }
+      ],
+      "exitCriteria": "SDK ist dokumentiert und wird vom LLM-Gateway genutzt."
+    },
+    {
+      "name": "Phase 4: Testing, CI/CD, Doku",
+      "description": "Umfangreiche Tests, GitHub Actions und finalisierte Dokumentation.",
+      "tasks": [
+        {
+          "id": "P4T1",
+          "description": "Pytest-Suite mit Mocks und Integrations-Tests erstellen."
+        },
+        {
+          "id": "P4T2",
+          "description": "CI-Workflow mit ruff, black, pytest und coverage konfigurieren."
+        },
+        {
+          "id": "P4T3",
+          "description": "Docker-Compose für Deployment und aktualisierte Doku veröffentlichen."
+        }
+      ],
+      "exitCriteria": "Tests bestehen und Doku beschreibt die produktionsreife MCP-Architektur."
+    }
+  ],
+  "autoPhaseSwitch": true,
+  "progressLog": "codex_progress.log",
+  "phase-1-security-layer": true,
+  "phase-1-persistence": true,
+  "phase-1-sdk": true,
+  "phase-1-release": true,
+  "codex/phase-1-mlflow-integration": true,
+  "codex/phase-1-release-final-part1": true,
+  "codex/phase-1-release-final-structure-clean": true,
+  "codex/phase-1-release-final-packaging": true,
+  "codex/phase-1-release-final-docs": true,
+  "codex/phase-2-multi-agent-core": true,
+  "codex/phase-2-agent-voting-feedback": true,
+  "codex/phase-2-agent-memory-sharing": true,
+  "codex/phase-2-agent-communication": true,
+  "codex/phase-2-agent-identity": true,
+  "codex/phase-2-agent-evolution": true
 }

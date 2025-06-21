@@ -1,11 +1,34 @@
 """Task dispatcher core logic."""
 
-from core.model_context import TaskContext
+import random
+from typing import Any
+
+import httpx
+
+from core.model_context import ModelContext, TaskContext
+from .config import settings
 
 
 class TaskDispatcherService:
     """Dispatch incoming tasks to worker agents."""
 
-    def dispatch_task(self, task: TaskContext) -> dict:
-        """Stub dispatch method returning the received payload."""
-        return {"task_id": task.task_id, "status": "queued"}
+    def dispatch_task(self, task: TaskContext) -> ModelContext:
+        """Select an agent and create a ModelContext."""
+        agents = self._fetch_agents(task.task_type)
+        agent = random.choice(agents) if agents else None
+        ctx = ModelContext(
+            task=task.task_id,
+            task_context=task,
+            agent_selection=agent["id"] if agent else None,
+        )
+        return ctx
+
+    def _fetch_agents(self, capability: str) -> list[dict[str, Any]]:
+        try:
+            with httpx.Client() as client:
+                resp = client.get(f"{settings.registry_url}/agents")
+                resp.raise_for_status()
+                agents = resp.json().get("agents", [])
+                return [a for a in agents if capability in a.get("capabilities", [])]
+        except Exception:
+            return []

@@ -2,13 +2,23 @@
 
 from typing import Dict, List
 
+from .schemas import AgentInfo
+
 
 class AgentRegistryService:
     """Maintain a list of available agents."""
 
     def __init__(self) -> None:
-        self._agents: List[Dict[str, str]] = []
+        self._agents: Dict[str, AgentInfo] = {}
 
-    def list_agents(self) -> List[Dict[str, str]]:
+    def list_agents(self) -> List[AgentInfo]:
         """Return registered agents."""
-        return self._agents
+        return list(self._agents.values())
+
+    def register_agent(self, info: AgentInfo) -> None:
+        """Register a new agent."""
+        self._agents[info.id] = info
+
+    def get_agent(self, agent_id: str) -> AgentInfo | None:
+        """Return a single agent by id."""
+        return self._agents.get(agent_id)

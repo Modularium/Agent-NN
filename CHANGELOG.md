@@ -10,6 +10,7 @@ All notable changes to this project are documented in this file.
 - Microservice-Gerüste für Dispatcher, Registry, LLM-Gateway, Vector-Store,
   Session-Manager und Example-Agent erstellt
 - MCP Python SDK eingebunden und Dispatcher-Routing implementiert
+- Sicherheitslayer mit Token-Auth, Rate-Limiting und Payload-Checks umgesetzt
 - VectorStore-Service integriert, LLM-Gateway um `/embed` erweitert
 - Sample-Agent nutzt jetzt semantische Suche
 - SessionManager speichert ModelContext-Historien und Dispatcher/Worker

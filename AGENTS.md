@@ -75,6 +75,7 @@ Diese Modernisierung führt neue Service-Rollen ein, die den Monolith ablösen:
 - **Service-Stubs:** Unter `services/` liegen die FastAPI-Grundgerüste für alle MCP-Dienste.
 - **MCP-SDK:** Offizielle Python-Bibliothek unter `mcp` dient als Basis für Kontext- und Routing-Modelle.
 - **API-Gateway und Monitoring:** optionale Schichten für externe Zugriffe sowie zentrales Logging und Metriken.
+- **Security-Layer:** Tokenbasierte Authentifizierung und Ratenbegrenzung schützen die Dienste.
 
 ### Aktuelles Agent-Setup (Phase 1.4)
 

@@ -1,0 +1,7 @@
+{
+  "name": "retriever_agent",
+  "url": "http://localhost:8101",
+  "capabilities": ["demo"],
+  "role": "retriever",
+  "version": "0.1"
+}

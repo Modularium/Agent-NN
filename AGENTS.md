@@ -76,12 +76,12 @@ Diese Modernisierung führt neue Service-Rollen ein, die den Monolith ablösen:
 - **MCP-SDK:** Offizielle Python-Bibliothek unter `mcp` dient als Basis für Kontext- und Routing-Modelle.
 - **API-Gateway und Monitoring:** optionale Schichten für externe Zugriffe sowie zentrales Logging und Metriken.
 
-### Aktuelles Agent-Setup (Phase 1.3)
+### Aktuelles Agent-Setup (Phase 1.4)
 
-Ein erster Worker-Agent befindet sich unter `services/agent_worker/sample_agent`.
-Dieser ist in der Registry mit der Capability `demo` hinterlegt und bietet die
-Route `/run`. Er ruft intern das LLM-Gateway auf und liefert sein Ergebnis als
-erweitertes `ModelContext` zurück.
+Der `sample_agent` nutzt nun optional den Vector-Store-Service, um Dokumente
+per Embedding zu durchsuchen. Der LLM-Gateway stellt dafür eine zusätzliche
+`/embed`-Route bereit. Das Ergebnis des Workers enthält neben dem generierten
+Text auch gefundene Quellen und Metriken zur Embedding-Distanz.
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

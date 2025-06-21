@@ -60,3 +60,17 @@ agentnn --version
 abgerufen werden.
 
 Weitere Details findest du im Ordner [docs/](docs/).
+
+## 🤖 Installation (Entwicklung)
+
+```bash
+git clone https://github.com/EcoSphereNetwork/Agent-NN.git
+cd Agent-NN
+pip install -e .[sdk]
+agentnn --version
+```
+
+### Empfohlene Umgebung
+
+- Python 3.9 oder neuer
+- Mindestens 4 GB RAM (8 GB empfohlen)

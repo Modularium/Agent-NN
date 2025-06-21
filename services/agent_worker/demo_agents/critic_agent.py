@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
+from core.agent_bus import publish, subscribe
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 
 
@@ -11,9 +14,26 @@ class CriticAgent:
     def vote(self, text: str, criteria: str = "", context: dict | None = None) -> dict:
         tokens = len(text.split())
         TOKENS_IN.labels("critic_agent").inc(tokens)
-        # very naive scoring based on length
         score = min(1.0, tokens / 50)
         feedback = "Well structured" if score > 0.5 else "Too short"
         TOKENS_OUT.labels("critic_agent").inc(0)
         TASKS_PROCESSED.labels("critic_agent").inc()
         return {"score": score, "feedback": feedback}
+
+    def process_bus(self) -> None:
+        """Handle queued requests via AgentBus."""
+        for msg in subscribe("critic_agent"):
+            if msg.get("type") == "request":
+                text = msg.get("payload", {}).get("text", "")
+                result = self.vote(text)
+                publish(
+                    msg["sender"],
+                    {
+                        "sender": "critic_agent",
+                        "receiver": msg["sender"],
+                        "type": "feedback",
+                        "payload": result,
+                        "timestamp": datetime.now().isoformat(),
+                    },
+                )
+

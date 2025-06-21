@@ -53,6 +53,7 @@ nav:
     - Configuration: getting-started/configuration.md
   - Core Concepts:
     - Architecture: concepts/architecture.md
+    - Multi-Agent Execution: architecture/multi_agent.md
     - Agents: concepts/agents.md
     - Neural Networks: concepts/neural-networks.md
     - Knowledge Base: concepts/knowledge-base.md
@@ -66,6 +67,8 @@ nav:
     - Evaluation: advanced/evaluation.md
     - Monitoring: advanced/monitoring.md
     - Scaling: advanced/scaling.md
+  - Use Cases:
+    - Multi-Agent RAG: use-cases/multi-agent.md
   - API Reference:
     - Agents: api/agents.md
     - Managers: api/managers.md

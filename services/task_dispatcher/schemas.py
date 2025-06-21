@@ -8,3 +8,4 @@ class TaskRequest(TaskContext):
     """Incoming task including optional session id."""
 
     session_id: str | None = Field(default=None)
+    mode: str = Field(default="single")

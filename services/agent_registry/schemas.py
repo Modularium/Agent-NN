@@ -15,6 +15,7 @@ class AgentInfo(BaseModel):
     domain: str | None = None
     version: str | None = None
     capabilities: list[str] = []
+    role: str | None = None
 
 
 class AgentList(BaseModel):

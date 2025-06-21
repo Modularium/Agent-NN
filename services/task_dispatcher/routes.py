@@ -23,4 +23,4 @@ limit_task = limiter.limit(RATE_LIMIT_TASK) if RATE_LIMITS_ENABLED else (lambda 
 @limit_task
 async def create_task(task: TaskRequest) -> ModelContext:
     """Accept a TaskContext and queue it for processing."""
-    return service.dispatch_task(task, session_id=task.session_id)
+    return service.dispatch_task(task, session_id=task.session_id, mode=task.mode)

@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     port: int = 8001
     registry_url: str = "http://localhost:8002"
     session_url: str = "http://localhost:8005"
+    coordinator_url: str = "http://localhost:8010"
 
 
 settings = Settings()

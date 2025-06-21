@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 import os
 from uuid import uuid4
 
@@ -18,6 +18,16 @@ except Exception:  # fallback to local pydantic
     from pydantic import BaseModel, Field, field_validator
 
 
+class AgentRunContext(BaseModel):
+    """Result information for a single agent run."""
+
+    agent_id: str
+    role: str | None = None
+    url: str | None = None
+    result: Any | None = None
+    metrics: Optional[Dict[str, float]] = None
+
+
 class ModelContext(BaseModel):
     """Context information for a model invocation."""
 
@@ -30,6 +40,8 @@ class ModelContext(BaseModel):
     agent_selection: Optional[str] = None
     result: Optional[Any] = None
     metrics: Optional[Dict[str, float]] = None
+    agents: List["AgentRunContext"] = []
+    aggregated_result: Optional[Any] = None
 
 
 class TaskContext(BaseModel):
@@ -52,3 +64,4 @@ class TaskContext(BaseModel):
 
 
 ModelContext.model_rebuild()
+AgentRunContext.model_rebuild()

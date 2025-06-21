@@ -1,3 +1,4 @@
+# deprecated – moved for cleanup in v1.0.0-beta
 from typing import Dict, Any, Optional, List, Union, Tuple
 import torch
 import torch.nn as nn

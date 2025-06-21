@@ -1,3 +1,4 @@
+# deprecated – moved for cleanup in v1.0.0-beta
 """Neural network for agent task prediction and performance tracking."""
 import os
 from typing import Dict, Any, Optional, List

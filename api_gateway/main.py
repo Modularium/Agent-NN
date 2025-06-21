@@ -2,6 +2,7 @@ import os
 import json
 import urllib.request
 from fastapi import FastAPI, Request, HTTPException, Depends
+from utils.api_utils import api_route
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -60,6 +61,7 @@ def check_scope(request: Request, scope: str) -> None:
     raise HTTPException(status_code=403, detail="Forbidden")
 
 
+@api_route(version="dev")  # \U0001F6A7 experimental
 @app.post("/llm/generate")
 @limiter.limit(RATE_LIMIT)
 async def llm_generate(request: Request) -> dict:
@@ -71,6 +73,7 @@ async def llm_generate(request: Request) -> dict:
         return {"text": resp.read().decode()}
 
 
+@api_route(version="dev")  # \U0001F6A7 experimental
 @app.post("/chat")
 @limiter.limit(RATE_LIMIT)
 async def chat(request: Request) -> dict:
@@ -101,6 +104,7 @@ async def chat(request: Request) -> dict:
     return {"session_id": sid, **result}
 
 
+@api_route(version="dev")  # \U0001F6A7 experimental
 @app.get("/chat/history/{sid}")
 @limiter.limit(RATE_LIMIT)
 async def chat_history(sid: str, request: Request) -> dict:
@@ -111,6 +115,7 @@ async def chat_history(sid: str, request: Request) -> dict:
     return data
 
 
+@api_route(version="dev")  # \U0001F6A7 experimental
 @app.post("/chat/feedback")
 @limiter.limit(RATE_LIMIT)
 async def chat_feedback(request: Request) -> dict:

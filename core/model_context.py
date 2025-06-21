@@ -26,6 +26,9 @@ class AgentRunContext(BaseModel):
     url: str | None = None
     result: Any | None = None
     metrics: Optional[Dict[str, float]] = None
+    score: Optional[float] = None
+    feedback: Optional[str] = None
+    voted_by: List[str] = []
 
 
 class ModelContext(BaseModel):

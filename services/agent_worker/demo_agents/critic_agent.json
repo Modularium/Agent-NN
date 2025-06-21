@@ -1,0 +1,7 @@
+{
+  "name": "critic_agent",
+  "url": "http://localhost:8103",
+  "capabilities": ["demo"],
+  "role": "critic",
+  "version": "0.1"
+}

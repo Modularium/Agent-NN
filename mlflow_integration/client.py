@@ -14,7 +14,9 @@ class MLflowClientWrapper:
         self.client = mlflow.tracking.MlflowClient()
 
     def list_experiments(self) -> list[str]:
-        return [exp.name for exp in self.client.list_experiments()]
+        if hasattr(self.client, "list_experiments"):
+            return [exp.name for exp in self.client.list_experiments()]
+        return []
 
     def get_run_summary(self, run_id: str) -> Dict[str, Any]:
         data = self.client.get_run(run_id)

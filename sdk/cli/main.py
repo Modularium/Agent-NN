@@ -10,12 +10,15 @@ from ..client import AgentClient
 from ..config import SDKSettings
 from ..nn_models import ModelManager
 
+
 model_app = typer.Typer(name="model", help="Model management commands")
+config_app = typer.Typer(name="config", help="Configuration commands")
 
 app = typer.Typer()
 app.add_typer(model_app)
+app.add_typer(config_app)
 
-@app.callback()
+@app.callback(invoke_without_command=True)
 def version_callback(ctx: typer.Context,
                      version: bool = typer.Option(False, '--version', help='Show version and exit')):
     """Global options."""
@@ -48,16 +51,16 @@ def agents() -> None:
     typer.echo(json.dumps(result, indent=2))
 
 
-@app.command()
-def config() -> None:
+@config_app.command("show")
+def config_show() -> None:
     """Show effective configuration."""
     settings = SDKSettings.load()
     typer.echo(json.dumps(settings.__dict__, indent=2))
 
 
-@model_app.command("runs-list")
-def model_runs_list():
-    """List MLflow runs."""
+@model_app.command("list")
+def model_list():
+    """List MLflow experiments."""
     mgr = ModelManager()
     experiments = mgr.list_experiments()
     typer.echo(json.dumps(experiments))

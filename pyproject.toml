@@ -1,16 +1,16 @@
 [project]
 name = "agentnn"
 version = "1.0.0-beta"
-description = "Agent-NN framework SDK and CLI"
+description = "Modular agent execution and neural orchestration framework"
 readme = "README.md"
+license = { text = "MIT" }
 requires-python = ">=3.9"
-license = {text = "MIT"}
-authors = [{name = "OpenHands", email = "openhands@all-hands.dev"}]
 dependencies = [
-    "click>=8.0.0",
-    "typer>=0.9.0",
-    "fastapi>=0.95.0",
-    "uvicorn>=0.20.0"
+  "fastapi",
+  "httpx",
+  "typer",
+  "pydantic-settings",
+  "mlflow"
 ]
 
 [tool.setuptools.packages.find]
@@ -18,4 +18,11 @@ where = ["."]
 exclude = ["tests*"]
 
 [project.scripts]
-agentnn = "sdk.cli.main:main"
+agentnn = "sdk.cli.main:app"
+
+[project.optional-dependencies]
+sdk = []
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"

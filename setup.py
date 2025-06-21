@@ -2,8 +2,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="smolit-llm-nn",
-    version="0.9.0-mcp",
+    name="agentnn",
+    version="1.0.0-beta",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[

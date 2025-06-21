@@ -6,14 +6,25 @@ from typing import List
 
 from core.model_context import ModelContext
 from core.metrics_utils import ACTIVE_SESSIONS, TASKS_PROCESSED
-from core.session_store import BaseSessionStore, InMemorySessionStore
+from core.config import settings
+from core.session_store import (
+    BaseSessionStore,
+    InMemorySessionStore,
+    FileSessionStore,
+)
 
 
 class SessionManagerService:
     """Manage ModelContext sessions via a SessionStore."""
 
     def __init__(self, store: BaseSessionStore | None = None) -> None:
-        self.store = store or InMemorySessionStore()
+        if store:
+            self.store = store
+        else:
+            if settings.DEFAULT_STORE_BACKEND.lower() == "file":
+                self.store = FileSessionStore(settings.SESSIONS_DIR)
+            else:
+                self.store = InMemorySessionStore()
 
     def start_session(self) -> str:
         """Create a new session and return its id."""

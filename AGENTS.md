@@ -85,6 +85,8 @@ per Embedding zu durchsuchen. Der LLM-Gateway stellt dafür eine zusätzliche
 Text auch gefundene Quellen und Metriken zur Embedding-Distanz.
 Der Session-Manager ermöglicht persistente Gesprächs-Kontexte über mehrere
 Aufgaben hinweg.
+Persistente Speicherpfade können nun über die `.env` konfiguriert werden, sodass
+Sessions und Vektordaten bei Neustarts erhalten bleiben.
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

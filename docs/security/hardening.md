@@ -1,23 +1,21 @@
 # Security Hardening
 
-This document explains how to secure the Agent‑NN services.
+Dieses Dokument beschreibt empfohlene Sicherheitsmaßnahmen für die Agent-NN-Services.
 
-## Token Authentication
+## Token-Authentifizierung
 
-Enable the middleware by setting `AUTH_ENABLED=true` in the environment. Valid bearer tokens are defined via `API_TOKENS` as a comma separated list. Rotate the tokens by updating the variable and restarting the services.
+Aktiviere die Middleware mit `AUTH_ENABLED=true`. Gültige Tokens werden über `API_TOKENS` als kommagetrennte Liste gesetzt. Bei Austausch der Tokens müssen die Services neu gestartet werden.
 
-## Rate Limiting
+## Rate-Limiting
 
-Endpoints can be rate limited using the `slowapi` middleware. `RATE_LIMIT_TASK` controls the limits for the task dispatcher (default `10/minute`). Limits are only active when `RATE_LIMITS_ENABLED=true`.
+Über `slowapi` lassen sich Aufrufe begrenzen. Der Parameter `RATE_LIMIT_TASK` definiert z.B. das Limit für den Dispatcher (Standard `10/minute`). Limiter sind nur aktiv, wenn `RATE_LIMITS_ENABLED=true` gesetzt ist.
 
-When a client exceeds the limit a `429` response is returned and the `Retry-After` header indicates when the next request is allowed.
+## Input-Validierung
 
-## Payload Protection
+Alle Anfragen werden validiert. Text in `task_context.input_data.text` darf maximal 4096 Zeichen enthalten. Fehlerhafte Payloads führen zu einem `422` Response.
 
-Input payloads are validated. Text inside `task_context.input_data.text` may contain at most 4096 characters. Invalid requests result in a 422 error.
+## Deployment-Tipps
 
-## Deployment Tips
-
-- Use a reverse proxy with TLS termination.
-- Keep secrets such as API tokens outside of source control and load them via `.env` or your container orchestrator.
-- Harden Docker images by using minimal base images and dropping privileges where possible.
+- Reverse Proxy mit TLS verwenden
+- API-Tokens nie im Repository ablegen, sondern per `.env` oder Orchestrierung setzen
+- Docker-Images härten und falls möglich mit nicht privilegierten Nutzern ausführen

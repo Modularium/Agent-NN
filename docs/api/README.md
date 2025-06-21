@@ -1,11 +1,11 @@
-# API Overview
+# API Einstieg
 
-Die Agent-NN-Services stellen REST-Schnittstellen bereit. Die wichtigsten Endpunkte sind in den OpenAPI-Spezifikationen dokumentiert.
+Die REST-Schnittstellen der Agent-NN-Services sind in OpenAPI beschrieben. Die wichtigsten Endpunkte sind unter `openapi/` dokumentiert.
 
-- Agent Registry: `/agents`, `/register`
-- Task Dispatcher: `/task`
-- Session Manager: `/start_session`, `/update_context`, `/context/{session_id}`
+- Registry: `/agents`, `/register`
+- Dispatcher: `/task`
+- Session Manager: `/start_session`, `/update_context`, `/context/{id}`
 - Vector Store: `/add_document`, `/vector_search`
 - LLM Gateway: `/generate`, `/embed`
 
-Weitere Details finden sich in `openapi/` sowie im Dokument `openapi-overview.md`.
+Einen Gesamtüberblick liefert [openapi-overview.md](openapi-overview.md).

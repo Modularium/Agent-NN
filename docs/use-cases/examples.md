@@ -1,13 +1,40 @@
 # Anwendungsbeispiele
 
-## Chat mit Session und Vector Search
+## 1. Textgenerierung
 
-1. Starte einen Session-Manager und den Vector-Store.
-2. Füge Dokumente via `/add_document` hinzu.
-3. Beginne eine Session mit `/start_session` und sende Fragen an den Dispatcher.
+```bash
+agentnn submit --prompt "Write a poem about stars"
+```
 
-## Search + LLM Workflow
+Erwartete Ausgabe (gekürzt):
 
-1. Die CLI `agentnn submit "Was ist Agent-NN?"` ruft den Dispatcher auf.
-2. Der Worker nutzt den Vector-Store und das LLM-Gateway.
-3. Die Antwort wird zusammen mit Quellen zurückgegeben.
+```json
+{
+  "provider": "openai",
+  "tokens": 42,
+  "result": "..."
+}
+```
+
+## 2. Semantische Suche
+
+Listen verfügbare Modelle und führe dann eine Anfrage aus:
+
+```bash
+agentnn model list
+agentnn submit --task semantic --prompt "Suche Artikel zu Energie"
+```
+
+Die Antwort enthält passende Dokumente inklusive Distanzwerten.
+
+## 3. Dialog-Sitzung
+
+Starte eine Sitzung und schicke Folgefragen:
+
+```bash
+agentnn session start
+agentnn submit --session <id> --prompt "Wie funktioniert das Routing?"
+agentnn submit --session <id> --prompt "Gibt es ein Beispiel?"
+```
+
+Der Kontext bleibt erhalten, so dass der zweite Aufruf auf der vorherigen Frage aufbaut.

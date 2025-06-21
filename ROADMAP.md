@@ -14,6 +14,7 @@ Diese Datei orientiert sich am *Entwicklungsplan für das Agent-NN Framework*. D
 - [ ] **P1T9** Monitoring- und Logging-Infrastruktur einführen
 - [ ] **P1T10** Sicherheitslayer mit Authentifizierung und Rate-Limits (#phase-1-security-layer)
 - [ ] **P1T11** Persistente Speicherpfade & portable Datenverzeichnisse (#phase-1-persistence)
+- [ ] **P1T12** Developer SDK und CLI (#phase-1-sdk)
 
 ## Phase 2 – Agent-NN & Meta-Learning (#phase-2)
 - [ ] **P2T1** MetaLearner im NNManager aktivieren

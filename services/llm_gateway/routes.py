@@ -12,4 +12,7 @@ service = LLMGatewayService()
 @router.post("/generate", response_model=GenerateResponse)
 async def generate(req: GenerateRequest) -> GenerateResponse:
     """Generate text based on a prompt."""
-    return GenerateResponse(**service.generate(req.prompt))
+    result = service.generate(
+        req.prompt, model_name=req.model_name, temperature=req.temperature or 0.7
+    )
+    return GenerateResponse(**result)

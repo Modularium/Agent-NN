@@ -3,9 +3,9 @@
 1. A user sends a request via CLI or Web UI to the **API Gateway**.
 2. The gateway forwards the task to the **Task-Dispatcher**.
 3. The dispatcher checks the **Session Manager** for context and queries the **Agent Registry** for suitable workers.
-4. If additional knowledge is required, the dispatcher or worker queries the **Vector Store Service**.
-5. Worker services use the **LLM Gateway** to generate answers or code.
-6. Results are returned to the dispatcher and from there to the user.
+4. Anschließend sendet er ein `ModelContext`-Objekt an den gewählten **AgentWorker**.
+5. Der Worker ruft das **LLM Gateway** auf (und optional den **Vector Store**), um eine Antwort zu generieren.
+6. Der Worker gibt das aktualisierte `ModelContext` an den Dispatcher zurück, der es an den Nutzer weiterleitet.
 
 This flow decouples responsibilities and allows each service to evolve independently.
 
@@ -19,7 +19,9 @@ sequenceDiagram
     U->>TD: POST /task
     TD->>SM: fetch session
     TD->>AR: query agents
-    TD->>W: delegate task
-    W-->>TD: result
+    TD->>W: /run with ModelContext
+    W->>L: /generate
+    L-->>W: completion
+    W-->>TD: updated context
     TD-->>U: response
 ```

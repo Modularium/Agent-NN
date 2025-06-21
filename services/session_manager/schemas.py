@@ -1,9 +1,15 @@
-"""Data models for Session Manager."""
+"""Pydantic models for the Session Manager API."""
 
-from typing import Dict
+from typing import List
 
 from pydantic import BaseModel
 
+from core.model_context import ModelContext
 
-class SessionData(BaseModel):
-    data: Dict
+
+class SessionId(BaseModel):
+    session_id: str
+
+
+class SessionHistory(BaseModel):
+    context: List[ModelContext]

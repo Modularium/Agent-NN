@@ -82,6 +82,8 @@ Der `sample_agent` nutzt nun optional den Vector-Store-Service, um Dokumente
 per Embedding zu durchsuchen. Der LLM-Gateway stellt dafür eine zusätzliche
 `/embed`-Route bereit. Das Ergebnis des Workers enthält neben dem generierten
 Text auch gefundene Quellen und Metriken zur Embedding-Distanz.
+Der Session-Manager ermöglicht persistente Gesprächs-Kontexte über mehrere
+Aufgaben hinweg.
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

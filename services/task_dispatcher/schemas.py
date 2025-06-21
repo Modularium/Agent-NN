@@ -1,6 +1,10 @@
 """Pydantic models for Task Dispatcher API."""
 
 from core.model_context import TaskContext
+from pydantic import Field
 
-# Re-export TaskContext for convenience
-TaskRequest = TaskContext
+
+class TaskRequest(TaskContext):
+    """Incoming task including optional session id."""
+
+    session_id: str | None = Field(default=None)

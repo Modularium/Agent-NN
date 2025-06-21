@@ -25,7 +25,7 @@ class ModelContext(BaseModel):
     uuid: str = Field(default_factory=lambda: str(uuid4()))
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     user_id: Optional[str] = None
-    session: Optional[str] = None
+    session_id: Optional[str] = None
     task: Optional[str] = None
     task_context: "TaskContext | None" = None
     agent_selection: Optional[str] = None

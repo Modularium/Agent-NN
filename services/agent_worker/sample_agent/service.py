@@ -16,9 +16,11 @@ class SampleAgentService:
         self,
         llm_url: str = "http://localhost:8003",
         vector_url: str = "http://localhost:8004",
+        session_url: str = "http://localhost:8005",
     ) -> None:
         self.llm_url = llm_url.rstrip("/")
         self.vector_url = vector_url.rstrip("/")
+        self.session_url = session_url.rstrip("/")
 
     def run(self, ctx: ModelContext) -> ModelContext:
         """Invoke the LLM Gateway and return the updated context."""
@@ -67,5 +69,15 @@ class SampleAgentService:
             "embedding_distance_avg": avg_dist,
         }
         ctx.metrics = {"tokens_used": data.get("tokens_used", 0)}
+        if ctx.session_id:
+            try:
+                with httpx.Client() as client:
+                    client.post(
+                        f"{self.session_url}/update_context",
+                        json=ctx.model_dump(),
+                        timeout=5,
+                    )
+            except Exception:
+                pass
         return ctx
 

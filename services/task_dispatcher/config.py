@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 8001
     registry_url: str = "http://localhost:8002"
+    session_url: str = "http://localhost:8005"
 
 
 settings = Settings()

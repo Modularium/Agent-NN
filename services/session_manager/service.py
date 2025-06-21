@@ -1,18 +1,30 @@
-"""Session storage stub."""
+from __future__ import annotations
 
-from typing import Dict
+"""Session manager backed by a pluggable session store."""
+
+from typing import List
+
+from core.model_context import ModelContext
+from core.session_store import BaseSessionStore, InMemorySessionStore
 
 
 class SessionManagerService:
-    """Manage simple in-memory sessions."""
+    """Manage ModelContext sessions via a SessionStore."""
 
-    def __init__(self) -> None:
-        self._sessions: Dict[str, Dict] = {}
+    def __init__(self, store: BaseSessionStore | None = None) -> None:
+        self.store = store or InMemorySessionStore()
 
-    def get_session(self, session_id: str) -> Dict | None:
-        """Return a session by id."""
-        return self._sessions.get(session_id)
+    def start_session(self) -> str:
+        """Create a new session and return its id."""
+        return self.store.start_session()
 
-    def save_session(self, session_id: str, data: Dict) -> None:
-        """Persist a session payload."""
-        self._sessions[session_id] = data
+    def update_context(self, ctx: ModelContext) -> None:
+        """Append the given context to its session."""
+        if not ctx.session_id:
+            ctx.session_id = self.start_session()
+        self.store.update_context(ctx.session_id, ctx.model_dump())
+
+    def get_context(self, session_id: str) -> List[ModelContext]:
+        """Return all contexts stored for a session."""
+        data = self.store.get_context(session_id)
+        return [ModelContext(**d) for d in data]

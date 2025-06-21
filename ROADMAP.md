@@ -10,6 +10,7 @@ Diese Datei orientiert sich am *Entwicklungsplan für das Agent-NN Framework*. D
 - [ ] **P1T5** MCP-SDK integrieren und Basis-Routing implementieren
 - [ ] **P1T6** LLM-Gateway-Anbindung und Weitergabe des ModelContext an Worker
 - [ ] **P1T7** VectorStore-Service und embedding-basierte Agent-Erweiterung
+- [ ] **P1T8** SessionManager mit persistentem Kontext
 
 ## Phase 2 – Agent-NN & Meta-Learning (#phase-2)
 - [ ] **P2T1** MetaLearner im NNManager aktivieren

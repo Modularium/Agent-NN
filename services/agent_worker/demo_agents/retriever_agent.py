@@ -6,6 +6,7 @@ import httpx
 
 from core.model_context import ModelContext
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
+from core.agent_profile import AgentIdentity
 
 
 class RetrieverAgent:
@@ -13,6 +14,7 @@ class RetrieverAgent:
 
     def __init__(self, vector_url: str = "http://localhost:8004") -> None:
         self.vector_url = vector_url.rstrip("/")
+        self.profile = AgentIdentity.load("retriever_agent")
 
     def run(self, ctx: ModelContext) -> ModelContext:
         query = ctx.task_context.description or ""

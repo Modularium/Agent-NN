@@ -69,5 +69,6 @@
     "codex/phase-2-multi-agent-core": true,
     "codex/phase-2-agent-voting-feedback": true,
     "codex/phase-2-agent-memory-sharing": true,
-    "codex/phase-2-agent-communication": true
+    "codex/phase-2-agent-communication": true,
+    "codex/phase-2-agent-identity": true
 }

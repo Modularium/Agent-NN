@@ -40,3 +40,18 @@ class AgentClient:
         resp = self._client.post("/vector_search", json=payload, headers=self._headers())
         resp.raise_for_status()
         return resp.json()
+
+    def get_agent_profile(self, name: str) -> Dict[str, Any]:
+        resp = self._client.get(f"/agent_profile/{name}", headers=self._headers())
+        resp.raise_for_status()
+        return resp.json()
+
+    def update_agent_profile(self, name: str, traits: Dict[str, Any] | None = None, skills: list[str] | None = None) -> Dict[str, Any]:
+        payload: Dict[str, Any] = {}
+        if traits is not None:
+            payload["traits"] = traits
+        if skills is not None:
+            payload["skills"] = skills
+        resp = self._client.post(f"/agent_profile/{name}", json=payload, headers=self._headers())
+        resp.raise_for_status()
+        return resp.json()

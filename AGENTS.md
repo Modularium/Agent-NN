@@ -97,3 +97,5 @@ Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-A
 - **Kommunikation:** Da der Agent autonom agiert, sollte er seine Fortschritte im Log (`codex_progress.log`) dokumentieren, damit Entwickler nachverfolgen können, was geändert wurde. Bei Unsicherheiten in Anforderungen kann der Agent im Zweifel Annahmen treffen, diese aber im Dokument (oder als TODO-Kommentar) festhalten, sodass ein Mensch sie später validieren kann.
 
 *Ende der AGENTS.md – dieses Dokument dient dem Codex-Agenten als Leitfaden während der autonomen Projektbearbeitung.*
+
+<!-- codex/phase-1-sdk -->

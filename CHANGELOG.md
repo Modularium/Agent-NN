@@ -20,6 +20,10 @@ All notable changes to this project are documented in this file.
 - Persistente Speicherpfade über `.env` konfigurierbar
 - VectorStore und SessionManager unterstützen Dateispeicherung
 
+## v1.0.0-beta
+- Erste Beta-Version mit stabilem SDK und CLI
+- HTTP-Schnittstellen eingefroren
+
 ## v1.0.0
 - Erste stabile Version
 - SDKs und Release-Dokumente

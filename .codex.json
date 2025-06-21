@@ -94,7 +94,7 @@
     "autoPhaseSwitch": true,
     "progressLog": "codex_progress.log",
     "phase-1-security-layer": true,
-    "phase-1-persistence": true
-,
-    "phase-1-sdk": true
+    "phase-1-persistence": true,
+    "phase-1-sdk": true,
+    "phase-1-release": true
 }

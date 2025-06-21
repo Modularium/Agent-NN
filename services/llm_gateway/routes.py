@@ -1,6 +1,7 @@
 """API routes for the LLM Gateway service."""
 
 from fastapi import APIRouter
+from utils.api_utils import api_route
 
 from .schemas import (
     GenerateRequest,
@@ -14,6 +15,7 @@ router = APIRouter()
 service = LLMGatewayService()
 
 
+@api_route(version="v1.0.0")
 @router.post("/generate", response_model=GenerateResponse)
 async def generate(req: GenerateRequest) -> GenerateResponse:
     """Generate text based on a prompt."""
@@ -23,6 +25,7 @@ async def generate(req: GenerateRequest) -> GenerateResponse:
     return GenerateResponse(**result)
 
 
+@api_route(version="v1.0.0")
 @router.post("/embed", response_model=EmbedResponse)
 async def embed(req: EmbedRequest) -> EmbedResponse:
     """Return an embedding for the given text."""

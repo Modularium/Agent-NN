@@ -1,6 +1,7 @@
 """API routes for the Task Dispatcher service."""
 
 from fastapi import APIRouter
+from utils.api_utils import api_route
 import os
 from slowapi.util import get_remote_address
 from slowapi import Limiter
@@ -17,6 +18,7 @@ limiter = Limiter(key_func=get_remote_address)
 limit_task = limiter.limit(RATE_LIMIT_TASK) if RATE_LIMITS_ENABLED else (lambda f: f)
 
 
+@api_route(version="v1.0.0")
 @router.post("/task", response_model=ModelContext)
 @limit_task
 async def create_task(task: TaskRequest) -> ModelContext:

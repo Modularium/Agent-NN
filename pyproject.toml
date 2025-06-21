@@ -1,0 +1,21 @@
+[project]
+name = "agentnn"
+version = "1.0.0-beta"
+description = "Agent-NN framework SDK and CLI"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name = "OpenHands", email = "openhands@all-hands.dev"}]
+dependencies = [
+    "click>=8.0.0",
+    "typer>=0.9.0",
+    "fastapi>=0.95.0",
+    "uvicorn>=0.20.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*"]
+
+[project.scripts]
+agentnn = "sdk.cli.main:main"

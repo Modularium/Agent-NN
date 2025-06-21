@@ -3,12 +3,17 @@ from __future__ import annotations
 
 import json
 import typer
+import mlflow
 from .. import __version__
 
 from ..client import AgentClient
 from ..config import SDKSettings
+from ..nn_models import ModelManager
+
+model_app = typer.Typer(name="model", help="Model management commands")
 
 app = typer.Typer()
+app.add_typer(model_app)
 
 @app.callback()
 def version_callback(ctx: typer.Context,
@@ -48,6 +53,45 @@ def config() -> None:
     """Show effective configuration."""
     settings = SDKSettings.load()
     typer.echo(json.dumps(settings.__dict__, indent=2))
+
+
+@model_app.command("runs-list")
+def model_runs_list():
+    """List MLflow runs."""
+    mgr = ModelManager()
+    experiments = mgr.list_experiments()
+    typer.echo(json.dumps(experiments))
+
+
+@model_app.command("runs-view")
+def model_runs_view(run_id: str):
+    """Show details for a run."""
+    mgr = ModelManager()
+    info = mgr.get_run_summary(run_id)
+    typer.echo(json.dumps(info, indent=2))
+
+
+@model_app.command("register")
+def model_register(name: str, run_id: str):
+    """Register a model from a run."""
+    client = mlflow.tracking.MlflowClient()
+    model_uri = f"runs:/{run_id}/model"
+    client.create_registered_model(name)
+    client.create_model_version(name, model_uri, run_id)
+    typer.echo("registered")
+
+
+@model_app.command("stage")
+def model_stage(name: str, stage: str):
+    """Transition the latest version of a model."""
+    client = mlflow.tracking.MlflowClient()
+    versions = client.search_model_versions(f"name='{name}'")
+    if not versions:
+        typer.echo("no versions")
+        return
+    version = versions[0].version
+    client.transition_model_version_stage(name, version, stage)
+    typer.echo(f"{name} -> {stage}")
 
 
 def main() -> None:

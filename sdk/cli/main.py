@@ -15,6 +15,8 @@ model_app = typer.Typer(name="model", help="Model management commands")
 config_app = typer.Typer(name="config", help="Configuration commands")
 
 app = typer.Typer()
+agent_app = typer.Typer(name="agent", help="Agent management")
+app.add_typer(agent_app)
 app.add_typer(model_app)
 app.add_typer(config_app)
 
@@ -43,11 +45,29 @@ def sessions() -> None:
     typer.echo(json.dumps(result, indent=2))
 
 
-@app.command(name="agent")
+@agent_app.command("list")
 def agents() -> None:
     """List available agents."""
     client = AgentClient()
     result = client.list_agents()
+    typer.echo(json.dumps(result, indent=2))
+
+
+@agent_app.command("profile")
+def agent_profile(name: str) -> None:
+    """Show profile information for an agent."""
+    client = AgentClient()
+    result = client.get_agent_profile(name)
+    typer.echo(json.dumps(result, indent=2))
+
+
+@agent_app.command("update")
+def agent_update(name: str, traits: str = "", skills: str = "") -> None:
+    """Update an agent profile."""
+    client = AgentClient()
+    traits_data = json.loads(traits) if traits else None
+    skills_list = [s.strip() for s in skills.split(",") if s.strip()] if skills else None
+    result = client.update_agent_profile(name, traits=traits_data, skills=skills_list)
     typer.echo(json.dumps(result, indent=2))
 
 

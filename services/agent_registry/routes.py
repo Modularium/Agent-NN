@@ -5,7 +5,9 @@ from utils.api_utils import api_route
 
 from fastapi import HTTPException
 
+from dataclasses import asdict
 from .schemas import AgentInfo, AgentList
+from core.agent_profile import AgentIdentity
 from .service import AgentRegistryService
 
 router = APIRouter()
@@ -15,8 +17,15 @@ service = AgentRegistryService()
 @api_route(version="v1.0.0")
 @router.get("/agents", response_model=AgentList)
 async def list_agents() -> AgentList:
-    """Return all registered agents."""
-    return AgentList(agents=service.list_agents())
+    """Return all registered agents with profile summary."""
+    agents = []
+    for info in service.list_agents():
+        profile = AgentIdentity.load(info.name)
+        info.role = profile.role or info.role
+        info.traits = {"summary": profile.traits.get("summary", "")}
+        info.skills = profile.skills[:3]
+        agents.append(info)
+    return AgentList(agents=agents)
 
 
 @api_route(version="v1.0.0")
@@ -35,3 +44,26 @@ async def get_agent(agent_id: str) -> AgentInfo:
     if not agent:
         raise HTTPException(status_code=404, detail="Agent not found")
     return agent
+
+
+@api_route(version="v1.0.0")
+@router.get("/agent_profile/{agent_name}")
+async def get_agent_profile(agent_name: str) -> dict:
+    """Return stored profile for an agent."""
+    profile = AgentIdentity.load(agent_name)
+    return asdict(profile)
+
+
+@api_route(version="v1.0.0")
+@router.post("/agent_profile/{agent_name}")
+async def update_agent_profile(agent_name: str, data: dict) -> dict:
+    """Update profile traits or skills."""
+    profile = AgentIdentity.load(agent_name)
+    traits = data.get("traits")
+    if isinstance(traits, dict):
+        profile.traits.update(traits)
+    skills = data.get("skills")
+    if isinstance(skills, list):
+        profile.skills = skills
+    profile.save()
+    return asdict(profile)

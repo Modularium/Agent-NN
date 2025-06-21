@@ -6,6 +6,7 @@ import httpx
 
 from core.model_context import ModelContext
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
+from core.agent_profile import AgentIdentity
 
 
 class WriterAgent:
@@ -13,6 +14,7 @@ class WriterAgent:
 
     def __init__(self, llm_url: str = "http://localhost:8003") -> None:
         self.llm_url = llm_url.rstrip("/")
+        self.profile = AgentIdentity.load("writer_agent")
 
     def run(self, ctx: ModelContext) -> ModelContext:
         prompt = ctx.task_context.description or ""

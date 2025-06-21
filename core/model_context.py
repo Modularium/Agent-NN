@@ -44,6 +44,7 @@ class ModelContext(BaseModel):
     result: Optional[Any] = None
     metrics: Optional[Dict[str, float]] = None
     agents: List["AgentRunContext"] = []
+    memory: Optional[List[Dict[str, Any]]] = None
     aggregated_result: Optional[Any] = None
 
 

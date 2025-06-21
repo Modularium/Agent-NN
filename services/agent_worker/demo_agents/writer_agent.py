@@ -16,6 +16,10 @@ class WriterAgent:
 
     def run(self, ctx: ModelContext) -> ModelContext:
         prompt = ctx.task_context.description or ""
+        if ctx.memory:
+            recent = [m.get("output", "") for m in ctx.memory[-2:] if isinstance(m.get("output"), str)]
+            if recent:
+                prompt = " ".join(recent) + "\n" + prompt
         if ctx.task_context.input_data:
             prompt = f"{prompt}\n{ctx.task_context.input_data}"
         if isinstance(ctx.result, list):

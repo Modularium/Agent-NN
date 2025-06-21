@@ -16,6 +16,14 @@ class RetrieverAgent:
 
     def run(self, ctx: ModelContext) -> ModelContext:
         query = ctx.task_context.description or ""
+        used_ids = set()
+        if ctx.memory:
+            for m in ctx.memory:
+                out = m.get("output")
+                if isinstance(out, list):
+                    for d in out:
+                        if isinstance(d, dict) and "id" in d:
+                            used_ids.add(d["id"])
         TOKENS_IN.labels("retriever_agent").inc(len(query.split()))
         try:
             with httpx.Client() as client:
@@ -28,8 +36,9 @@ class RetrieverAgent:
                 data = resp.json()
         except Exception:
             data = {"matches": []}
-        TOKENS_OUT.labels("retriever_agent").inc(len(data.get("matches", [])))
+        matches = [m for m in data.get("matches", []) if m.get("id") not in used_ids]
+        TOKENS_OUT.labels("retriever_agent").inc(len(matches))
         TASKS_PROCESSED.labels("retriever_agent").inc()
-        ctx.result = data.get("matches", [])
+        ctx.result = matches
         ctx.metrics = {"tokens_used": len(data.get("matches", []))}
         return ctx

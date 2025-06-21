@@ -103,5 +103,6 @@
     "codex/phase-1-release-final-packaging": true,
     "codex/phase-1-release-final-docs": true,
     "codex/phase-2-multi-agent-core": true,
-    "codex/phase-2-agent-voting-feedback": true
+    "codex/phase-2-agent-voting-feedback": true,
+    "codex/phase-2-agent-memory-sharing": true
 }

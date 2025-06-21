@@ -6,6 +6,8 @@ from typing import Any
 
 import httpx
 
+from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
+
 from core.model_context import ModelContext
 
 
@@ -42,6 +44,8 @@ class SampleAgentService:
             doc_text = "\n".join(d.get("text", "") for d in documents)
             prompt = f"{prompt}\n\n{doc_text}" if doc_text else prompt
 
+        TOKENS_IN.labels("sample_agent").inc(len(prompt.split()))
+
         try:
             with httpx.Client() as client:
                 resp = client.post(
@@ -57,6 +61,8 @@ class SampleAgentService:
                 "tokens_used": 0,
                 "provider": "dummy",
             }
+        TOKENS_OUT.labels("sample_agent").inc(data.get("tokens_used", 0))
+        TASKS_PROCESSED.labels("sample_agent").inc()
 
         avg_dist = (
             sum(d.get("distance", 0.0) for d in documents) / len(documents)

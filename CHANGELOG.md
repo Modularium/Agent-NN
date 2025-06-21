@@ -14,6 +14,7 @@ All notable changes to this project are documented in this file.
 - Sample-Agent nutzt jetzt semantische Suche
 - SessionManager speichert ModelContext-Historien und Dispatcher/Worker
   unterstützen optionale `session_id`
+- Einheitliches JSON-Logging und Prometheus-Metriken für alle Services
 
 ## v1.0.0
 - Erste stabile Version

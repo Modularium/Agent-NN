@@ -17,6 +17,14 @@
       "exitCriteria": "Ein einfacher End-to-End-Test l\u00e4uft \u00fcber die neuen Services."
     },
     {
+      "name": "Phase 1.6: MCP Observability",
+      "description": "Logging-Standardisierung und Metrikexport f\u00fcr alle Services",
+      "tasks": [
+        {"id": "P1T9", "description": "Monitoring und JSON-Logging implementieren"}
+      ],
+      "exitCriteria": "Prometheus sammelt Daten und ein Grafana-Dashboard zeigt sie an."
+    },
+    {
       "name": "Phase 2: Agent-NN & Meta-Learning",
       "description": "MetaLearner aktivieren und WorkerAgents mit internem Modell-Routing ausstatten.",
       "tasks": [

@@ -35,3 +35,4 @@ prometheus_fastapi_instrumentator
 
 httpx
 mcp
+structlog>=23.0.0

@@ -6,6 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from prometheus_fastapi_instrumentator import Instrumentator
+
+from core.logging_utils import LoggingMiddleware, exception_handler, init_logging
+from core.metrics_utils import MetricsMiddleware, metrics_router
 from jose import JWTError, jwt
 
 
@@ -20,11 +23,16 @@ SESSION_MANAGER_URL = os.getenv("SESSION_MANAGER_URL", "http://session_manager:8
 RATE_LIMIT = os.getenv("RATE_LIMIT", "60/minute")
 CORS_ALLOW_ORIGINS = os.getenv("CORS_ALLOW_ORIGINS", "*")
 
+logger = init_logging("api_gateway")
 limiter = Limiter(key_func=get_remote_address, default_limits=[RATE_LIMIT])
 app = FastAPI(title="API Gateway")
+app.add_middleware(LoggingMiddleware, logger=logger)
+app.add_middleware(MetricsMiddleware, service="api_gateway")
+app.add_exception_handler(Exception, exception_handler(logger))
 app.state.limiter = limiter
 app.add_middleware(CORSMiddleware, allow_origins=CORS_ALLOW_ORIGINS.split(","), allow_methods=["*"], allow_headers=["*"])
 Instrumentator().instrument(app).expose(app)
+app.include_router(metrics_router())
 
 
 def _decode_token(token: str) -> dict | None:

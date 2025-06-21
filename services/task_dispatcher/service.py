@@ -5,6 +5,8 @@ from typing import Any, List
 
 import httpx
 
+from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
+
 from core.model_context import ModelContext, TaskContext
 from .config import settings
 
@@ -24,6 +26,8 @@ class TaskDispatcherService:
             task.preferences = task.preferences or {}
             task.preferences["history"] = history
 
+        TOKENS_IN.labels("task_dispatcher").inc(len(str(task.description or "").split()))
+
         agents = self._fetch_agents(task.task_type)
         agent = random.choice(agents) if agents else None
         ctx = ModelContext(
@@ -34,6 +38,9 @@ class TaskDispatcherService:
         )
         if agent:
             ctx = self._send_to_worker(agent, ctx)
+        TASKS_PROCESSED.labels("task_dispatcher").inc()
+        tokens = ctx.metrics.get("tokens_used", 0) if ctx.metrics else 0
+        TOKENS_OUT.labels("task_dispatcher").inc(tokens)
         return ctx
 
     def _fetch_agents(self, capability: str) -> list[dict[str, Any]]:

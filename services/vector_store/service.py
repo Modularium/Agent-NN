@@ -9,6 +9,8 @@ from typing import Any, Dict, List
 import httpx
 import numpy as np
 
+from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
+
 
 class VectorStoreService:
     """Store documents and perform similarity search using embeddings."""
@@ -27,9 +29,14 @@ class VectorStoreService:
                 resp.raise_for_status()
                 data = resp.json()
                 self.provider = data.get("provider", self.provider)
-                return data.get("embedding", [])
+                emb = data.get("embedding", [])
+                TOKENS_IN.labels("vector_store").inc(len(text.split()))
+                TOKENS_OUT.labels("vector_store").inc(len(emb))
+                return emb
         except Exception:  # pragma: no cover - network or service failure
             self.provider = "dummy"
+            TOKENS_IN.labels("vector_store").inc(len(text.split()))
+            TOKENS_OUT.labels("vector_store").inc(1)
             return [float(len(text))]
 
     def add_document(self, text: str, collection: str) -> str:
@@ -40,6 +47,7 @@ class VectorStoreService:
         store["ids"].append(doc_id)
         store["texts"].append(text)
         store["embeddings"].append(emb)
+        TASKS_PROCESSED.labels("vector_store").inc()
         return doc_id
 
     def search(self, query: str, collection: str, top_k: int = 3) -> Dict[str, Any]:
@@ -61,5 +69,6 @@ class VectorStoreService:
             }
             for i in idxs
         ]
+        TASKS_PROCESSED.labels("vector_store").inc()
         return {"matches": matches, "model": self.provider}
 

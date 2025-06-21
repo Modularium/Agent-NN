@@ -1,13 +1,23 @@
 """Schemas for the Vector Store API."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from pydantic import BaseModel
 
 
-class VectorSearchRequest(BaseModel):
+class AddDocumentRequest(BaseModel):
     text: str
-    embedding_model: Optional[str] = None
+    collection: str
+
+
+class AddDocumentResponse(BaseModel):
+    id: str
+
+
+class VectorSearchRequest(BaseModel):
+    query: str
+    collection: str
+    top_k: int = 3
 
 
 class VectorSearchResponse(BaseModel):

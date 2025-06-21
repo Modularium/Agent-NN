@@ -2,7 +2,12 @@
 
 from fastapi import APIRouter
 
-from .schemas import GenerateRequest, GenerateResponse
+from .schemas import (
+    GenerateRequest,
+    GenerateResponse,
+    EmbedRequest,
+    EmbedResponse,
+)
 from .service import LLMGatewayService
 
 router = APIRouter()
@@ -16,3 +21,10 @@ async def generate(req: GenerateRequest) -> GenerateResponse:
         req.prompt, model_name=req.model_name, temperature=req.temperature or 0.7
     )
     return GenerateResponse(**result)
+
+
+@router.post("/embed", response_model=EmbedResponse)
+async def embed(req: EmbedRequest) -> EmbedResponse:
+    """Return an embedding for the given text."""
+    data = service.embed(req.text, model_name=req.model_name)
+    return EmbedResponse(**data)

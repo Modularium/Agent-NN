@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, List
+
+try:
+    from sentence_transformers import SentenceTransformer
+except Exception:  # pragma: no cover - optional dependency
+    SentenceTransformer = None
 
 try:
     from transformers import pipeline
@@ -16,12 +21,19 @@ class LLMGatewayService:
     def __init__(self) -> None:
         self.provider = "dummy"
         self.generator = None
+        self.embedder = None
         if pipeline is not None:
             try:  # load lightweight default model
                 self.generator = pipeline("text-generation", model="distilgpt2")
                 self.provider = "local"
             except Exception:  # pragma: no cover - model load can fail
                 self.generator = None
+        if SentenceTransformer is not None:
+            try:
+                self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
+                self.provider = "local"
+            except Exception:  # pragma: no cover - model load can fail
+                self.embedder = None
 
     def generate(
         self, prompt: str, model_name: str | None = None, temperature: float = 0.7
@@ -47,3 +59,12 @@ class LLMGatewayService:
             "tokens_used": len(prompt.split()),
             "provider": self.provider,
         }
+
+    def embed(self, text: str, model_name: str | None = None) -> dict[str, Any]:
+        """Return an embedding for the given text."""
+        if self.embedder:
+            vec = self.embedder.encode(text)
+            emb: List[float] = [float(v) for v in vec]
+            return {"embedding": emb, "provider": self.provider}
+        return {"embedding": [float(len(text))], "provider": self.provider}
+

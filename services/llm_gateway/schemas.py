@@ -13,3 +13,13 @@ class GenerateResponse(BaseModel):
     completion: str
     tokens_used: int
     provider: str
+
+
+class EmbedRequest(BaseModel):
+    text: str
+    model_name: str | None = None
+
+
+class EmbedResponse(BaseModel):
+    embedding: list[float]
+    provider: str

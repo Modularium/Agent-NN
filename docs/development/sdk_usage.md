@@ -1,6 +1,6 @@
 # Developer SDK
 
-Dieses SDK erleichtert den Zugriff auf Agent‑NN über REST‑Schnittstellen.
+Das SDK ermöglicht einfachen Zugriff auf die Agent-NN-Services.
 
 ## Installation
 
@@ -8,21 +8,23 @@ Dieses SDK erleichtert den Zugriff auf Agent‑NN über REST‑Schnittstellen.
 pip install -e .[sdk]
 ```
 
-## Beispiel
+## AgentClient Beispiel
 
 ```python
 from sdk import AgentClient
 
 client = AgentClient()
-result = client.submit_task("Erstelle ein Beispiel")
-print(result)
+print(client.submit_task("Hallo Welt"))
 ```
 
-Eine Beispielkonfiguration in `~/.agentnnrc`:
+## ModelManager Beispiel
 
-```json
-{
-  "host": "http://localhost:8000",
-  "api_token": "secret-token"
-}
+```python
+from sdk import ModelManager
+
+manager = ModelManager()
+for m in manager.available_models():
+    print(m)
 ```
+
+Eine Beispielkonfiguration liegt in `~/.agentnnrc`.

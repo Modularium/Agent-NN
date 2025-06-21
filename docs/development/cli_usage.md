@@ -1,16 +1,20 @@
 # AgentNN CLI
 
-Das Kommando `agentnn` ermöglicht den schnellen Zugriff auf einen
-Agent‑NN‑Dienst.
+`agentnn` bietet verschiedene Unterbefehle zum Aufrufen der Services.
 
-## Beispiele
+## Häufig genutzte Befehle
 
 ```bash
-agentnn submit --task "Hallo Welt"
-agentnn agents
-agentnn sessions
-agentnn config
+agentnn --version
+agentnn config show
+agentnn model list
+agentnn submit --prompt "Beispiel"
 ```
 
-Mit `AGENTNN_API_TOKEN` und `AGENTNN_HOST` lassen sich Host und Token
-konfigurieren. Alternativ kann eine Datei `~/.agentnnrc` genutzt werden.
+### Optionen
+
+- `--host` legt den API-Endpunkt fest
+- `--token` übergibt das API-Token
+- `--session` erlaubt das Weiterführen einer bestehenden Sitzung
+
+Host und Token können dauerhaft über `~/.agentnnrc` konfiguriert werden.

@@ -1,6 +1,6 @@
 """Config for Example Agent Worker."""
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):

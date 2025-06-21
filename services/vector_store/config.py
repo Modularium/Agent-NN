@@ -1,6 +1,6 @@
 """Configuration for the Vector Store service."""
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):

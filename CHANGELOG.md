@@ -9,6 +9,7 @@ All notable changes to this project are documented in this file.
 - Basisdatenstrukturen `ModelContext` und `TaskContext` hinzugefügt
 - Microservice-Gerüste für Dispatcher, Registry, LLM-Gateway, Vector-Store,
   Session-Manager und Example-Agent erstellt
+- MCP Python SDK eingebunden und Dispatcher-Routing implementiert
 
 ## v1.0.0
 - Erste stabile Version

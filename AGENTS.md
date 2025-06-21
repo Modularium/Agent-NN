@@ -75,6 +75,13 @@ Diese Modernisierung führt neue Service-Rollen ein, die den Monolith ablösen:
 - **Service-Stubs:** Unter `services/` liegen die FastAPI-Grundgerüste für alle MCP-Dienste.
 - **MCP-SDK:** Offizielle Python-Bibliothek unter `mcp` dient als Basis für Kontext- und Routing-Modelle.
 - **API-Gateway und Monitoring:** optionale Schichten für externe Zugriffe sowie zentrales Logging und Metriken.
+
+### Aktuelles Agent-Setup (Phase 1.3)
+
+Ein erster Worker-Agent befindet sich unter `services/agent_worker/sample_agent`.
+Dieser ist in der Registry mit der Capability `demo` hinterlegt und bietet die
+Route `/run`. Er ruft intern das LLM-Gateway auf und liefert sein Ergebnis als
+erweitertes `ModelContext` zurück.
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

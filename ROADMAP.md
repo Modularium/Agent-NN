@@ -8,6 +8,7 @@ Diese Datei orientiert sich am *Entwicklungsplan für das Agent-NN Framework*. D
 - [ ] **P1T3** Docker Compose für alle Services erstellen
 - [ ] **P1T4** End-to-End-Test über die neuen Services
 - [ ] **P1T5** MCP-SDK integrieren und Basis-Routing implementieren
+- [ ] **P1T6** LLM-Gateway-Anbindung und Weitergabe des ModelContext an Worker
 
 ## Phase 2 – Agent-NN & Meta-Learning (#phase-2)
 - [ ] **P2T1** MetaLearner im NNManager aktivieren

@@ -13,7 +13,7 @@ class TaskDispatcherService:
     """Dispatch incoming tasks to worker agents."""
 
     def dispatch_task(self, task: TaskContext) -> ModelContext:
-        """Select an agent and create a ModelContext."""
+        """Select an agent and forward the ModelContext to it."""
         agents = self._fetch_agents(task.task_type)
         agent = random.choice(agents) if agents else None
         ctx = ModelContext(
@@ -21,6 +21,8 @@ class TaskDispatcherService:
             task_context=task,
             agent_selection=agent["id"] if agent else None,
         )
+        if agent:
+            ctx = self._send_to_worker(agent, ctx)
         return ctx
 
     def _fetch_agents(self, capability: str) -> list[dict[str, Any]]:
@@ -32,3 +34,17 @@ class TaskDispatcherService:
                 return [a for a in agents if capability in a.get("capabilities", [])]
         except Exception:
             return []
+
+    def _send_to_worker(self, agent: dict[str, Any], ctx: ModelContext) -> ModelContext:
+        """Call the worker's /run endpoint with the context."""
+        try:
+            with httpx.Client() as client:
+                resp = client.post(
+                    f"{agent['url'].rstrip('/')}/run",
+                    json=ctx.model_dump(),
+                    timeout=10,
+                )
+                resp.raise_for_status()
+                return ModelContext(**resp.json())
+        except Exception:
+            return ctx

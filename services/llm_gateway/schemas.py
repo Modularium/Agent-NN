@@ -5,7 +5,11 @@ from pydantic import BaseModel
 
 class GenerateRequest(BaseModel):
     prompt: str
+    model_name: str | None = None
+    temperature: float | None = 0.7
 
 
 class GenerateResponse(BaseModel):
-    text: str
+    completion: str
+    tokens_used: int
+    provider: str

@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Dict, Optional
+import os
 from uuid import uuid4
 
-"""MCP-compatible context models."""
-
-from importlib import metadata, util
+from importlib import metadata
 import sys
 
 try:
@@ -16,7 +15,7 @@ try:
 
     sys.path.pop(0)
 except Exception:  # fallback to local pydantic
-    from pydantic import BaseModel, Field
+    from pydantic import BaseModel, Field, field_validator
 
 
 class ModelContext(BaseModel):
@@ -41,6 +40,15 @@ class TaskContext(BaseModel):
     description: Optional[str] = None
     input_data: Any | None = None
     preferences: Optional[Dict[str, Any]] = None
+
+    @field_validator("input_data")
+    @classmethod
+    def validate_input(cls, v: Any) -> Any:
+        limit = int(os.getenv("INPUT_LIMIT_BYTES", "4096"))
+        if isinstance(v, dict) and "text" in v and isinstance(v["text"], str):
+            if len(v["text"]) > limit:
+                raise ValueError("text too long")
+        return v
 
 
 ModelContext.model_rebuild()

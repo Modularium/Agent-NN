@@ -1,1 +1,7 @@
 models/llama-2-7b.gguf
+# runtime data
+logs/
+data/
+export/
+embeddings_cache/
+models/

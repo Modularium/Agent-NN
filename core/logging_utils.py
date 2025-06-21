@@ -1,4 +1,5 @@
 import logging
+from logging.handlers import RotatingFileHandler
 import os
 import sys
 import time
@@ -10,6 +11,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 import structlog
+from core.config import settings
 
 
 def init_logging(service: str) -> structlog.BoundLogger:
@@ -33,7 +35,13 @@ def init_logging(service: str) -> structlog.BoundLogger:
         logger_factory=structlog.PrintLoggerFactory(),
         cache_logger_on_first_use=True,
     )
-    logging.basicConfig(stream=sys.stdout, level=level)
+
+    log_dir = os.getenv("LOG_DIR", settings.LOG_DIR)
+    os.makedirs(log_dir, exist_ok=True)
+    handlers: list[logging.Handler] = [logging.StreamHandler(sys.stdout)]
+    file_path = os.path.join(log_dir, f"{service}.log")
+    handlers.append(RotatingFileHandler(file_path, maxBytes=1_048_576, backupCount=3))
+    logging.basicConfig(level=level, handlers=handlers)
     return structlog.get_logger().bind(service=service)
 
 

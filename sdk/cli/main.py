@@ -21,10 +21,12 @@ config_app = typer.Typer(name="config", help="Configuration commands")
 app = typer.Typer()
 agent_app = typer.Typer(name="agent", help="Agent management")
 team_app = typer.Typer(name="team", help="Team management")
+session_app = typer.Typer(name="session", help="Session utilities")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
 app.add_typer(config_app)
+app.add_typer(session_app)
 
 
 @app.callback(invoke_without_command=True)
@@ -39,10 +41,14 @@ def version_callback(
 
 
 @app.command()
-def submit(task: str) -> None:
+def submit(
+    task: str,
+    value: float = typer.Option(None, "--value"),
+    max_tokens: int = typer.Option(None, "--max-tokens"),
+) -> None:
     """Submit a task to the dispatcher."""
     client = AgentClient()
-    result = client.submit_task(task)
+    result = client.submit_task(task, value=value, max_tokens=max_tokens)
     typer.echo(json.dumps(result, indent=2))
 
 
@@ -52,6 +58,17 @@ def sessions() -> None:
     client = AgentClient()
     result = client.list_sessions()
     typer.echo(json.dumps(result, indent=2))
+
+
+@session_app.command("budget")
+def session_budget(session_id: str) -> None:
+    """Show consumed tokens for a session."""
+    client = AgentClient()
+    data = client.get_session_history(session_id)
+    tokens = 0
+    for ctx in data.get("context", []):
+        tokens += int(ctx.get("metrics", {}).get("tokens_used", 0))
+    typer.echo(json.dumps({"session_id": session_id, "tokens_used": tokens}))
 
 
 @agent_app.command("list")

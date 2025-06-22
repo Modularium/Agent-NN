@@ -9,3 +9,5 @@ class TaskRequest(TaskContext):
 
     session_id: str | None = Field(default=None)
     mode: str = Field(default="single")
+    task_value: float | None = Field(default=None)
+    max_tokens: int | None = Field(default=None)

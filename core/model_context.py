@@ -47,6 +47,10 @@ class ModelContext(BaseModel):
     agents: List["AgentRunContext"] = []
     memory: Optional[List[Dict[str, Any]]] = None
     aggregated_result: Optional[Any] = None
+    task_value: Optional[float] = None
+    max_tokens: Optional[int] = None
+    token_spent: int = 0
+    warning: Optional[str] = None
 
 
 class TaskContext(BaseModel):

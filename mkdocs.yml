@@ -69,10 +69,12 @@ nav:
     - Monitoring: advanced/monitoring.md
     - Scaling: advanced/scaling.md
     - Dynamic Roles: architecture/dynamic_roles.md
+    - Reputation System: architecture/reputation_system.md
   - Use Cases:
     - Multi-Agent RAG: use-cases/multi-agent.md
     - Voting: use-cases/voting.md
     - Trust Driven Authorization: use-cases/trust_driven_authorization.md
+    - Community Quality Feedback: use-cases/community_quality_feedback.md
   - API Reference:
     - Agents: api/agents.md
     - Managers: api/managers.md

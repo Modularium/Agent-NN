@@ -31,6 +31,8 @@ class AgentIdentity:
     shared_memory_scope: Optional[str] = None
     active_missions: List[str] = field(default_factory=list)
     mission_progress: Dict[str, Any] = field(default_factory=dict)
+    reputation_score: float = 0.0
+    feedback_log: List[Dict[str, Any]] = field(default_factory=list)
 
     @classmethod
     def load(cls, name: str) -> "AgentIdentity":
@@ -57,6 +59,8 @@ class AgentIdentity:
                     shared_memory_scope=None,
                     active_missions=[],
                     mission_progress={},
+                    reputation_score=0.0,
+                    feedback_log=[],
                 )
             )
             defaults.update(data)
@@ -78,6 +82,8 @@ class AgentIdentity:
             shared_memory_scope=None,
             active_missions=[],
             mission_progress={},
+            reputation_score=0.0,
+            feedback_log=[],
         )
 
     def save(self) -> None:

@@ -25,6 +25,7 @@ class AgentRunContext(BaseModel):
     role: str | None = None
     url: str | None = None
     result: Any | None = None
+    subtask_result: Any | None = None
     metrics: Optional[Dict[str, float]] = None
     score: Optional[float] = None
     feedback: Optional[str] = None

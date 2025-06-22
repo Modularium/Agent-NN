@@ -19,7 +19,9 @@ config_app = typer.Typer(name="config", help="Configuration commands")
 
 app = typer.Typer()
 agent_app = typer.Typer(name="agent", help="Agent management")
+team_app = typer.Typer(name="team", help="Team management")
 app.add_typer(agent_app)
+app.add_typer(team_app)
 app.add_typer(model_app)
 app.add_typer(config_app)
 
@@ -84,6 +86,31 @@ def agent_evolve(name: str, mode: str = "llm", preview: bool = False) -> None:
     else:
         updated.save()
         typer.echo(f"profile updated: {name}")
+
+
+@team_app.command("create")
+def team_create(goal: str = typer.Option(..., "--goal"), leader: str = "", members: str = "", strategy: str = "plan-then-split") -> None:
+    """Create a new agent coalition."""
+    client = AgentClient()
+    member_list = [m.strip() for m in members.split(",") if m.strip()]
+    result = client.create_coalition(goal, leader, member_list, strategy)
+    typer.echo(json.dumps(result, indent=2))
+
+
+@team_app.command("assign")
+def team_assign(coalition_id: str, to: str = typer.Option(..., "--to"), task: str = typer.Option(..., "--task")) -> None:
+    """Assign a subtask to a member."""
+    client = AgentClient()
+    result = client.assign_subtask(coalition_id, to, task)
+    typer.echo(json.dumps(result, indent=2))
+
+
+@team_app.command("status")
+def team_status(coalition_id: str) -> None:
+    """Show coalition status."""
+    client = AgentClient()
+    result = client.get_coalition(coalition_id)
+    typer.echo(json.dumps(result, indent=2))
 
 
 @config_app.command("show")

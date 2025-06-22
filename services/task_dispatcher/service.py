@@ -2,6 +2,7 @@
 
 import time
 import logging
+import os
 from datetime import datetime
 from typing import Any, List
 
@@ -14,6 +15,7 @@ from core.audit_log import AuditLog, AuditEntry
 from core.governance import AgentContract
 from core.privacy_filter import redact_context
 from core.trust_evaluator import calculate_trust
+from core.crypto import verify_signature
 
 from .config import settings
 
@@ -324,6 +326,33 @@ class TaskDispatcherService:
                 )
                 resp.raise_for_status()
                 data = ModelContext(**resp.json())
+                verify = (
+                    os.getenv("DISABLE_SIGNATURE_VALIDATION", "false").lower() != "true"
+                )
+                valid = True
+                if verify:
+                    if data.signed_by and data.signature:
+                        payload = data.model_dump(exclude={"signature", "signed_by"})
+                        valid = verify_signature(
+                            data.signed_by, payload, data.signature
+                        )
+                    else:
+                        valid = False
+                    if not valid:
+                        log_id = self.audit.write(
+                            AuditEntry(
+                                timestamp=datetime.utcnow().isoformat(),
+                                actor="dispatcher",
+                                action="signature_invalid",
+                                context_id=ctx.uuid,
+                                detail={"agent": agent["name"]},
+                            )
+                        )
+                        ctx.audit_trace.append(log_id)
+                        if contract.require_signature:
+                            ctx.warning = "missing_signature"
+                ctx.signed_by = data.signed_by
+                ctx.signature = data.signature
                 arc = AgentRunContext(
                     agent_id=agent["id"],
                     role=agent.get("role"),

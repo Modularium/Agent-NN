@@ -3,23 +3,23 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import asdict
 from pathlib import Path
-import os
 
 import mlflow
 import typer
 
+from core.access_control import is_authorized
 from core.agent_evolution import evolve_profile
 from core.agent_profile import AgentIdentity
-from core.governance import AgentContract
-from core.trust_evaluator import calculate_trust
-from core.model_context import ModelContext, TaskContext
-from core.privacy_filter import redact_context
-from core.access_control import is_authorized
-from core.privacy import AccessLevel
 from core.audit_log import AuditLog
-from core.crypto import verify_signature, generate_keypair
+from core.crypto import generate_keypair, verify_signature
+from core.governance import AgentContract
+from core.model_context import ModelContext, TaskContext
+from core.privacy import AccessLevel
+from core.privacy_filter import redact_context
+from core.trust_evaluator import calculate_trust, eligible_for_role
 
 from .. import __version__
 from ..client import AgentClient
@@ -203,6 +203,20 @@ def agent_role(name: str, set_role: str = typer.Option(None, "--set")) -> None:
         typer.echo(profile.role)
 
 
+@agent_app.command("elevate")
+def agent_elevate(name: str, to: str = typer.Option(..., "--to")) -> None:
+    """Grant a new role if trust requirements are met."""
+
+    if not eligible_for_role(name, to):
+        typer.echo("not eligible")
+        raise typer.Exit(code=1)
+    contract = AgentContract.load(name)
+    if to not in contract.allowed_roles:
+        contract.allowed_roles.append(to)
+        contract.save()
+    typer.echo("elevated")
+
+
 @team_app.command("create")
 def team_create(
     goal: str = typer.Option(..., "--goal"),
@@ -312,11 +326,33 @@ def contract_audit() -> None:
     typer.echo(json.dumps({"violations": violations}, indent=2))
 
 
+@contract_app.command("temp-role")
+def contract_temp_role(agent: str, grant: str = typer.Option(..., "--grant")) -> None:
+    """Grant a temporary role valid for one task."""
+
+    contract = AgentContract.load(agent)
+    contract.temp_roles = contract.temp_roles or []
+    if grant not in contract.temp_roles:
+        contract.temp_roles.append(grant)
+        contract.save()
+    typer.echo("granted")
+
+
 @trust_app.command("score")
 def trust_score(agent: str) -> None:
     """Calculate trust score for an agent."""
     score = calculate_trust(agent, [])
     typer.echo(json.dumps({"agent": agent, "score": score}, indent=2))
+
+
+@trust_app.command("eligible")
+def trust_eligible(agent: str, for_role: str = typer.Option(..., "--for")) -> None:
+    """Check if AGENT may be elevated to FOR_ROLE."""
+
+    allowed = eligible_for_role(agent, for_role)
+    typer.echo(
+        json.dumps({"agent": agent, "role": for_role, "eligible": allowed}, indent=2)
+    )
 
 
 @privacy_app.command("preview")

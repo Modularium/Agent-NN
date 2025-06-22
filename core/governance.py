@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+import json
+import os
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, List
 
 from .privacy import AccessLevel
-import json
-import os
 
 CONTRACT_DIR = Path(os.getenv("CONTRACT_DIR", "contracts"))
 
@@ -20,6 +20,7 @@ class AgentContract:
     max_tokens: int
     trust_level_required: float
     constraints: Dict[str, Any]
+    temp_roles: List[str] | None = None
     max_access_level: AccessLevel = AccessLevel.INTERNAL
     require_signature: bool = False
 
@@ -37,6 +38,7 @@ class AgentContract:
                     max_tokens=0,
                     trust_level_required=0.0,
                     constraints={},
+                    temp_roles=None,
                     max_access_level=AccessLevel.INTERNAL,
                     require_signature=False,
                 )
@@ -49,6 +51,7 @@ class AgentContract:
             max_tokens=0,
             trust_level_required=0.0,
             constraints={},
+            temp_roles=None,
             max_access_level=AccessLevel.INTERNAL,
             require_signature=False,
         )

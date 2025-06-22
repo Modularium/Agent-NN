@@ -1,22 +1,23 @@
 """Task dispatcher core logic."""
 
-import time
 import logging
 import os
+import time
 from datetime import datetime
 from typing import Any, List
 
 import httpx
 
+from core.access_control import is_authorized
+from core.audit_log import AuditEntry, AuditLog
+from core.crypto import verify_signature
 from core.dispatch_queue import DispatchQueue
+from core.governance import AgentContract
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 from core.model_context import AgentRunContext, ModelContext, TaskContext
-from core.audit_log import AuditLog, AuditEntry
-from core.governance import AgentContract
-from core.privacy_filter import redact_context, filter_permissions
-from core.access_control import is_authorized
+from core.privacy_filter import filter_permissions, redact_context
+from core.roles import resolve_roles
 from core.trust_evaluator import calculate_trust
-from core.crypto import verify_signature
 
 from .config import settings
 
@@ -60,7 +61,8 @@ class TaskDispatcherService:
             )
             ctx.audit_trace.append(log_id)
             return False
-        if contract.allowed_roles and agent.get("role") not in contract.allowed_roles:
+        allowed_roles = resolve_roles(agent["name"])
+        if allowed_roles and agent.get("role") not in allowed_roles:
             ctx.warning = "role not allowed"
             log_id = self.audit.write(
                 AuditEntry(
@@ -73,8 +75,25 @@ class TaskDispatcherService:
             )
             ctx.audit_trace.append(log_id)
             return False
+        if contract.temp_roles and agent.get("role") in contract.temp_roles:
+            ctx.elevated_roles.append(agent.get("role"))
+            contract.temp_roles.remove(agent.get("role"))
+            contract.save()
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="temp_role_used",
+                    context_id=ctx.uuid,
+                    detail={"agent": agent["name"], "role": agent.get("role")},
+                )
+            )
+            ctx.audit_trace.append(log_id)
         if not is_authorized(
-            agent["name"], agent.get("role", ""), "submit_task", ctx.task_context.task_type
+            agent["name"],
+            agent.get("role", ""),
+            "submit_task",
+            ctx.task_context.task_type,
         ):
             ctx.warning = "unauthorized"
             log_id = self.audit.write(

@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from .governance import AgentContract
+from .roles import resolve_roles
+
 
 def calculate_trust(agent_id: str, context: List[Dict[str, Any]]) -> float:
     """Return trust score between 0.0 and 1.0 based on past context."""
@@ -35,3 +38,16 @@ def calculate_trust(agent_id: str, context: List[Dict[str, Any]]) -> float:
     reliability = reliability_sum / total
     trust = (success_rate + feedback_score + token_efficiency + reliability) / 4
     return max(0.0, min(1.0, trust))
+
+
+def eligible_for_role(agent_id: str, target_role: str) -> bool:
+    """Return True if the agent qualifies for ``target_role``."""
+
+    contract = AgentContract.load(agent_id)
+    history = contract.constraints.get("task_history", [])
+    trust = calculate_trust(agent_id, history)
+    standing = float(contract.constraints.get("standing", 1.0))
+    if target_role in resolve_roles(agent_id):
+        return False
+    score = trust * standing
+    return score >= contract.trust_level_required and len(history) >= 5

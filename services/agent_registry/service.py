@@ -11,6 +11,7 @@ class AgentRegistryService:
 
     def __init__(self) -> None:
         self._agents: Dict[str, AgentInfo] = {}
+        self._status: Dict[str, Dict[str, float | int | bool]] = {}
 
     def list_agents(self) -> List[AgentInfo]:
         """Return registered agents."""
@@ -26,3 +27,11 @@ class AgentRegistryService:
         """Return a single agent by id."""
         TASKS_PROCESSED.labels("agent_registry").inc()
         return self._agents.get(agent_id)
+
+    def update_status(self, name: str, status: Dict[str, float | int | bool]) -> None:
+        """Update status info for an agent."""
+        self._status[name] = status
+
+    def get_status(self, name: str) -> Dict[str, float | int | bool] | None:
+        """Return current status for agent."""
+        return self._status.get(name)

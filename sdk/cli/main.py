@@ -1,4 +1,5 @@
 """Command line tool for Agent-NN."""
+
 from __future__ import annotations
 
 import json
@@ -25,9 +26,12 @@ app.add_typer(team_app)
 app.add_typer(model_app)
 app.add_typer(config_app)
 
+
 @app.callback(invoke_without_command=True)
-def version_callback(ctx: typer.Context,
-                     version: bool = typer.Option(False, '--version', help='Show version and exit')):
+def version_callback(
+    ctx: typer.Context,
+    version: bool = typer.Option(False, "--version", help="Show version and exit"),
+):
     """Global options."""
     if version:
         typer.echo(__version__)
@@ -71,9 +75,35 @@ def agent_update(name: str, traits: str = "", skills: str = "") -> None:
     """Update an agent profile."""
     client = AgentClient()
     traits_data = json.loads(traits) if traits else None
-    skills_list = [s.strip() for s in skills.split(",") if s.strip()] if skills else None
+    skills_list = (
+        [s.strip() for s in skills.split(",") if s.strip()] if skills else None
+    )
     result = client.update_agent_profile(name, traits=traits_data, skills=skills_list)
     typer.echo(json.dumps(result, indent=2))
+
+
+@agent_app.command("status")
+def agent_status(name: str) -> None:
+    """Show live status for an agent."""
+    client = AgentClient()
+    result = client.get_agent_status(name)
+    typer.echo(json.dumps(result, indent=2))
+
+
+@agent_app.command("top")
+def agent_top(
+    metric: str = typer.Option("cost", "--metric", help="Sort metric")
+) -> None:
+    """List agents sorted by metric."""
+    client = AgentClient()
+    data = client.list_agents().get("agents", [])
+    if metric == "skill":
+        data.sort(key=lambda a: len(a.get("skills", [])), reverse=True)
+    elif metric == "load":
+        data.sort(key=lambda a: a.get("load_factor", 0))
+    else:
+        data.sort(key=lambda a: a.get("estimated_cost_per_token", 0))
+    typer.echo(json.dumps(data, indent=2))
 
 
 @agent_app.command("evolve")
@@ -89,7 +119,12 @@ def agent_evolve(name: str, mode: str = "llm", preview: bool = False) -> None:
 
 
 @team_app.command("create")
-def team_create(goal: str = typer.Option(..., "--goal"), leader: str = "", members: str = "", strategy: str = "plan-then-split") -> None:
+def team_create(
+    goal: str = typer.Option(..., "--goal"),
+    leader: str = "",
+    members: str = "",
+    strategy: str = "plan-then-split",
+) -> None:
     """Create a new agent coalition."""
     client = AgentClient()
     member_list = [m.strip() for m in members.split(",") if m.strip()]
@@ -98,7 +133,11 @@ def team_create(goal: str = typer.Option(..., "--goal"), leader: str = "", membe
 
 
 @team_app.command("assign")
-def team_assign(coalition_id: str, to: str = typer.Option(..., "--to"), task: str = typer.Option(..., "--task")) -> None:
+def team_assign(
+    coalition_id: str,
+    to: str = typer.Option(..., "--to"),
+    task: str = typer.Option(..., "--task"),
+) -> None:
     """Assign a subtask to a member."""
     client = AgentClient()
     result = client.assign_subtask(coalition_id, to, task)

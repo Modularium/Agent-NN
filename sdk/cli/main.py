@@ -51,6 +51,7 @@ coach_app = typer.Typer(name="coach", help="Coach utilities")
 track_app = typer.Typer(name="track", help="Training track info")
 mission_app = typer.Typer(name="mission", help="Mission management")
 rep_app = typer.Typer(name="rep", help="Reputation utilities")
+delegate_app = typer.Typer(name="delegate", help="Delegation management")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -69,6 +70,7 @@ app.add_typer(coach_app)
 app.add_typer(track_app)
 app.add_typer(mission_app)
 app.add_typer(rep_app)
+app.add_typer(delegate_app)
 
 agent_app.add_typer(agent_contract_app)
 
@@ -885,6 +887,60 @@ def rep_leaderboard() -> None:
         results.append({"agent": name, "score": round(score, 3)})
     results.sort(key=lambda x: x["score"], reverse=True)
     typer.echo(json.dumps(results, indent=2))
+
+
+@delegate_app.command("grant")
+def delegate_grant(
+    from_agent: str,
+    to_agent: str,
+    role: str = typer.Option(..., "--role"),
+    scope: str = typer.Option("task", "--scope"),
+    reason: str = typer.Option(None, "--reason"),
+    expires_at: str = typer.Option(None, "--expires-at"),
+) -> None:
+    """Grant delegation from FROM_AGENT to TO_AGENT."""
+    from core.delegation import grant_delegation
+
+    grant_delegation(from_agent, to_agent, role, scope, expires_at, reason)
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor=from_agent,
+            action="delegation_granted",
+            context_id=to_agent,
+            detail={"role": role, "scope": scope},
+        )
+    )
+    typer.echo("granted")
+
+
+@delegate_app.command("revoke")
+def delegate_revoke(from_agent: str, to_agent: str, role: str = typer.Option(..., "--role")) -> None:
+    """Revoke delegation."""
+    from core.delegation import revoke_grant
+
+    revoke_grant(from_agent, to_agent, role)
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor=from_agent,
+            action="delegation_revoked",
+            context_id=to_agent,
+            detail={"role": role},
+        )
+    )
+    typer.echo("revoked")
+
+
+@delegate_app.command("list")
+def delegate_list(agent: str) -> None:
+    """List delegations issued by AGENT."""
+    from core.delegation import load_grants
+
+    grants = load_grants(agent)
+    typer.echo(json.dumps([asdict(g) for g in grants], indent=2))
 
 
 def main() -> None:

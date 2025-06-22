@@ -3,6 +3,7 @@
 import logging
 import os
 import time
+from dataclasses import asdict
 from datetime import datetime
 from typing import Any, List
 
@@ -129,18 +130,40 @@ class TaskDispatcherService:
             "submit_task",
             ctx.task_context.task_type,
         ):
-            ctx.warning = "unauthorized"
-            log_id = self.audit.write(
-                AuditEntry(
-                    timestamp=datetime.utcnow().isoformat(),
-                    actor="dispatcher",
-                    action="unauthorized",
-                    context_id=ctx.uuid,
-                    detail={"agent": agent["name"], "action": "submit_task"},
-                )
+            from core.delegation import has_valid_delegation
+
+            grant = has_valid_delegation(
+                agent["name"], agent.get("role", ""), ctx.require_endorsement
             )
-            ctx.audit_trace.append(log_id)
-            return False
+            if grant:
+                ctx.delegate_info = asdict(grant)
+                log_id = self.audit.write(
+                    AuditEntry(
+                        timestamp=datetime.utcnow().isoformat(),
+                        actor="dispatcher",
+                        action="delegation_used",
+                        context_id=ctx.uuid,
+                        detail={
+                            "agent": agent["name"],
+                            "delegator": grant.delegator,
+                            "role": grant.role,
+                        },
+                    )
+                )
+                ctx.audit_trace.append(log_id)
+            else:
+                ctx.warning = "unauthorized"
+                log_id = self.audit.write(
+                    AuditEntry(
+                        timestamp=datetime.utcnow().isoformat(),
+                        actor="dispatcher",
+                        action="unauthorized",
+                        context_id=ctx.uuid,
+                        detail={"agent": agent["name"], "action": "submit_task"},
+                    )
+                )
+                ctx.audit_trace.append(log_id)
+                return False
         if (
             ctx.max_tokens
             and contract.max_tokens

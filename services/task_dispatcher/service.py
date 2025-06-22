@@ -2,6 +2,7 @@
 
 import random
 import time
+import logging
 from typing import Any, List
 
 import httpx
@@ -10,6 +11,8 @@ from core.dispatch_queue import DispatchQueue
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 from core.model_context import AgentRunContext, ModelContext, TaskContext
 from core.governance import AgentContract
+from core.privacy_filter import redact_context
+from core.privacy import AccessLevel
 from core.trust_evaluator import calculate_trust
 
 from .config import settings
@@ -30,10 +33,15 @@ class TaskDispatcherService:
         self.coordinator_url = (coordinator_url or settings.coordinator_url).rstrip("/")
         self.coalition_url = (coalition_url or settings.coalition_url).rstrip("/")
         self.queue = DispatchQueue()
+        self.log = logging.getLogger(__name__)
 
     def _governance_allowed(self, agent: dict[str, Any], ctx: ModelContext) -> bool:
         contract = AgentContract.load(agent["name"])
-        history = ctx.task_context.preferences.get("history", []) if ctx.task_context and ctx.task_context.preferences else []
+        history = (
+            ctx.task_context.preferences.get("history", [])
+            if ctx.task_context and ctx.task_context.preferences
+            else []
+        )
         trust = calculate_trust(agent["name"], history)
         if trust < contract.trust_level_required:
             ctx.warning = "trust level too low"
@@ -41,7 +49,11 @@ class TaskDispatcherService:
         if contract.allowed_roles and agent.get("role") not in contract.allowed_roles:
             ctx.warning = "role not allowed"
             return False
-        if ctx.max_tokens and contract.max_tokens and ctx.max_tokens > contract.max_tokens:
+        if (
+            ctx.max_tokens
+            and contract.max_tokens
+            and ctx.max_tokens > contract.max_tokens
+        ):
             ctx.warning = "token limit exceeded"
             return False
         return True
@@ -220,11 +232,19 @@ class TaskDispatcherService:
     def _run_agent(self, agent: dict[str, Any], ctx: ModelContext) -> AgentRunContext:
         """Call the worker's /run endpoint and return AgentRunContext."""
         start = time.perf_counter()
+        contract = AgentContract.load(agent["name"])
+        send_ctx = redact_context(ctx, contract.max_access_level)
+        if send_ctx.metrics and send_ctx.metrics.get("context_redacted_fields"):
+            self.log.info(
+                "context_redacted",
+                agent=agent["name"],
+                fields=send_ctx.metrics["context_redacted_fields"],
+            )
         try:
             with httpx.Client() as client:
                 resp = client.post(
                     f"{agent['url'].rstrip('/')}/run",
-                    json=ctx.model_dump(),
+                    json=send_ctx.model_dump(),
                     timeout=10,
                 )
                 resp.raise_for_status()

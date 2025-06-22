@@ -16,6 +16,7 @@ from core.governance import AgentContract
 from core.trust_evaluator import calculate_trust
 from core.model_context import ModelContext, TaskContext
 from core.privacy_filter import redact_context
+from core.access_control import is_authorized
 from core.privacy import AccessLevel
 from core.audit_log import AuditLog
 from core.crypto import verify_signature, generate_keypair
@@ -38,6 +39,7 @@ contract_app = typer.Typer(name="contract", help="Governance contracts")
 trust_app = typer.Typer(name="trust", help="Trust management")
 privacy_app = typer.Typer(name="privacy", help="Privacy tools")
 audit_app = typer.Typer(name="audit", help="Audit utilities")
+auth_app = typer.Typer(name="auth", help="Authorization utilities")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -48,6 +50,7 @@ app.add_typer(contract_app)
 app.add_typer(trust_app)
 app.add_typer(privacy_app)
 app.add_typer(audit_app)
+app.add_typer(auth_app)
 
 agent_app.add_typer(agent_contract_app)
 
@@ -185,6 +188,19 @@ def agent_keypair(name: str) -> None:
     """Generate or replace a keypair for an agent."""
     generate_keypair(name)
     typer.echo("keypair generated")
+
+
+@agent_app.command("role")
+def agent_role(name: str, set_role: str = typer.Option(None, "--set")) -> None:
+    """Show or update the role for an agent."""
+
+    profile = AgentIdentity.load(name)
+    if set_role:
+        profile.role = set_role
+        profile.save()
+        typer.echo("updated")
+    else:
+        typer.echo(profile.role)
 
 
 @team_app.command("create")
@@ -340,6 +356,14 @@ def audit_violations() -> None:
             if e.get("detail", {}).get("access_violated")
         )
     typer.echo(json.dumps(entries, indent=2))
+
+
+@auth_app.command("check")
+def auth_check(agent: str, role: str, action: str, resource: str) -> None:
+    """Check if AGENT with ROLE may perform ACTION."""
+
+    allowed = is_authorized(agent, role, action, resource)
+    typer.echo(json.dumps({"authorized": allowed}))
 
 
 @agent_contract_app.command("set-access")

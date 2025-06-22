@@ -13,7 +13,8 @@ from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 from core.model_context import AgentRunContext, ModelContext, TaskContext
 from core.audit_log import AuditLog, AuditEntry
 from core.governance import AgentContract
-from core.privacy_filter import redact_context
+from core.privacy_filter import redact_context, filter_permissions
+from core.access_control import is_authorized
 from core.trust_evaluator import calculate_trust
 from core.crypto import verify_signature
 
@@ -68,6 +69,21 @@ class TaskDispatcherService:
                     action="role_rejected",
                     context_id=ctx.uuid,
                     detail={"agent": agent["name"], "role": agent.get("role")},
+                )
+            )
+            ctx.audit_trace.append(log_id)
+            return False
+        if not is_authorized(
+            agent["name"], agent.get("role", ""), "submit_task", ctx.task_context.task_type
+        ):
+            ctx.warning = "unauthorized"
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="unauthorized",
+                    context_id=ctx.uuid,
+                    detail={"agent": agent["name"], "action": "submit_task"},
                 )
             )
             ctx.audit_trace.append(log_id)
@@ -298,6 +314,7 @@ class TaskDispatcherService:
         start = time.perf_counter()
         contract = AgentContract.load(agent["name"])
         send_ctx = redact_context(ctx, contract.max_access_level)
+        send_ctx = filter_permissions(send_ctx, agent.get("role", ""))
         if send_ctx.metrics and send_ctx.metrics.get("context_redacted_fields"):
             self.log.info(
                 "context_redacted",

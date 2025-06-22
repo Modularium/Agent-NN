@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-"""Utilities to filter context data according to access levels."""
-
-from typing import Tuple
-
-from .model_context import ModelContext, AccessText
+from .model_context import ModelContext
 from .privacy import AccessLevel
+
+"""Utilities to filter context data according to access levels."""
 
 
 _LEVEL_ORDER = [
@@ -48,4 +46,22 @@ def redact_context(ctx: ModelContext, max_access: AccessLevel) -> ModelContext:
 
     new_ctx.metrics = new_ctx.metrics or {}
     new_ctx.metrics["context_redacted_fields"] = redacted
+    return new_ctx
+
+
+def filter_permissions(ctx: ModelContext, role: str) -> ModelContext:
+    """Redact fields the given role is not permitted to view."""
+
+    new_ctx = ctx.model_copy(deep=True)
+    redacted = 0
+    if new_ctx.task_context and new_ctx.task_context.input_data:
+        item = new_ctx.task_context.input_data
+        if item.permissions and role not in item.permissions:
+            item.text = "[REDACTED]"
+            redacted += 1
+    if redacted:
+        new_ctx.metrics = new_ctx.metrics or {}
+        new_ctx.metrics["context_redacted_fields"] = (
+            new_ctx.metrics.get("context_redacted_fields", 0) + redacted
+        )
     return new_ctx

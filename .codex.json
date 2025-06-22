@@ -116,4 +116,5 @@
     "codex/phase-3-agent-privacy": true,
     "codex/phase-3-agent-auditlog": true,
     "codex/phase-3-agent-signatures": true,
+    "codex/phase-3-agent-access-control": true
 }

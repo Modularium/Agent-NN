@@ -20,6 +20,7 @@ class TrainingPath:
     certifier_agent: str
     mentor_required: bool
     min_trust: float
+    team_mode: Literal["solo", "cooperative", "mentored"] = "solo"
 
 
 def load_training_path(path_id: str) -> TrainingPath | None:

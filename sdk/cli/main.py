@@ -394,36 +394,88 @@ def task_limits(context_file: str, role: str = typer.Option(..., "--role")) -> N
 
 @team_app.command("create")
 def team_create(
-    goal: str = typer.Option(..., "--goal"),
-    leader: str = "",
-    members: str = "",
-    strategy: str = "plan-then-split",
+    name: str,
+    coordinator: str = typer.Option(None, "--coordinator"),
 ) -> None:
-    """Create a new agent coalition."""
-    client = AgentClient()
-    member_list = [m.strip() for m in members.split(",") if m.strip()]
-    result = client.create_coalition(goal, leader, member_list, strategy)
-    typer.echo(json.dumps(result, indent=2))
+    """Create a new team."""
+    from uuid import uuid4
+    from dataclasses import asdict
+    from datetime import datetime
+    from core.teams import AgentTeam
+
+    team_id = str(uuid4())
+    team = AgentTeam(
+        id=team_id,
+        name=name,
+        members=[coordinator] if coordinator else [],
+        shared_goal=None,
+        skills_focus=[],
+        coordinator=coordinator,
+        created_at=datetime.utcnow().isoformat(),
+    )
+    team.save()
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor="cli",
+            action="team_created",
+            context_id=team_id,
+            detail={"name": name},
+        )
+    )
+    typer.echo(json.dumps(asdict(team), indent=2))
 
 
-@team_app.command("assign")
-def team_assign(
-    coalition_id: str,
-    to: str = typer.Option(..., "--to"),
-    task: str = typer.Option(..., "--task"),
+@team_app.command("join")
+def team_join(
+    team_id: str,
+    agent: str = typer.Option(..., "--agent"),
+    role: str = typer.Option("peer", "--role"),
 ) -> None:
-    """Assign a subtask to a member."""
-    client = AgentClient()
-    result = client.assign_subtask(coalition_id, to, task)
-    typer.echo(json.dumps(result, indent=2))
+    """Join an existing team."""
+    from core.teams import AgentTeam
+    profile = AgentIdentity.load(agent)
+    profile.team_id = team_id
+    profile.team_role = role
+    profile.save()
+    team = AgentTeam.load(team_id)
+    if agent not in team.members:
+        team.members.append(agent)
+        team.save()
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor="cli",
+            action="joined_team",
+            context_id=team_id,
+            detail={"agent": agent, "role": role},
+        )
+    )
+    typer.echo("joined")
 
 
-@team_app.command("status")
-def team_status(coalition_id: str) -> None:
-    """Show coalition status."""
-    client = AgentClient()
-    result = client.get_coalition(coalition_id)
-    typer.echo(json.dumps(result, indent=2))
+@team_app.command("show")
+def team_show(team_id: str) -> None:
+    """Show team information."""
+    from dataclasses import asdict
+    from core.teams import AgentTeam
+
+    team = AgentTeam.load(team_id)
+    typer.echo(json.dumps(asdict(team), indent=2))
+
+
+@team_app.command("share-skill")
+def team_share_skill(
+    agent: str,
+    skill: str = typer.Option(..., "--skill"),
+) -> None:
+    """Share a skill insight with the agent's team."""
+    from core.team_knowledge import broadcast_insight
+
+    broadcast_insight(agent, skill, {"event": "share"})
+    typer.echo("shared")
 
 
 @config_app.command("show")

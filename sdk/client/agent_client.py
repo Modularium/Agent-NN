@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
+from core.model_context import ModelContext
+
 import httpx
 
 from ..config import SDKSettings
@@ -126,3 +128,19 @@ class AgentClient:
         resp = self._client.get(f"/coalition/{coalition_id}", headers=self._headers())
         resp.raise_for_status()
         return resp.json()
+
+    def dispatch_task(self, context: "ModelContext") -> Dict[str, Any]:
+        """Send a ModelContext to the dispatcher."""
+        resp = self._client.post(
+            "/dispatch", json=context.model_dump(), headers=self._headers()
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    def chat(self, message: str, task_type: str = "dev") -> Dict[str, Any]:
+        """High-level helper for simple task dispatch."""
+        from ..utils.context_builder import build_context
+
+        ctx = build_context(message)
+        ctx.task_context.task_type = task_type
+        return self.dispatch_task(ctx)

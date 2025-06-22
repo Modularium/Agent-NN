@@ -109,6 +109,17 @@ def submit(
 
 
 @app.command()
+def ask(
+    message: str,
+    task_type: str = typer.Option("dev", "--task-type"),
+) -> None:
+    """Send a quick task to the dispatcher."""
+    client = AgentClient()
+    result = client.chat(message, task_type=task_type)
+    typer.echo(json.dumps(result, indent=2))
+
+
+@app.command()
 def sessions() -> None:
     """List active sessions."""
     client = AgentClient()

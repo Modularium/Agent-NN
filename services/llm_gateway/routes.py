@@ -31,3 +31,13 @@ async def embed(req: EmbedRequest) -> EmbedResponse:
     """Return an embedding for the given text."""
     data = service.embed(req.text, model_name=req.model_name)
     return EmbedResponse(**data)
+
+
+@api_route(version="v1.0.0")
+@router.post("/chat", response_model=GenerateResponse)
+async def chat(req: GenerateRequest) -> GenerateResponse:
+    """Chat-style generation alias for /generate."""
+    result = service.generate(
+        req.prompt, model_name=req.model_name, temperature=req.temperature or 0.7
+    )
+    return GenerateResponse(**result)

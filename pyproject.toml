@@ -10,6 +10,11 @@ dependencies = [
   "httpx",
   "typer",
   "pydantic-settings",
+  "pydantic",
+  "uvicorn",
+  "slowapi",
+  "aiofiles",
+  "prometheus-fastapi-instrumentator",
   "mlflow"
 ]
 

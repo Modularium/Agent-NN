@@ -7,10 +7,10 @@ torch
 transformers
 chromadb
 
-Pydantic
-Pydantic Settings
-Python Dotenv
-FastAPI
+pydantic
+pydantic-settings
+python-dotenv
+fastapi
 Celery
 PostgreSQL
 psycopg2
@@ -36,3 +36,4 @@ prometheus_fastapi_instrumentator
 httpx
 mcp
 structlog>=23.0.0
+aiofiles

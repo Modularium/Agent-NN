@@ -98,6 +98,12 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Erste REST-Routen wie `/dispatch`, `/chat` und `/agents` umgesetzt
 - Vector-Store um `embed`, `search` und `add_document` erweitert
 - Aktualisierter End-to-End-Test erfolgreich
+
+### Fortschritt Phase 1.3
+- API-Gateway konsolidiert alle externen Endpunkte
+- Authentifizierung über API-Key oder JWT optional
+- Interne Service-Requests nutzen Retry-Mechanismen
+- Fehlende Abhängigkeiten in Build-Skripten ergänzt
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

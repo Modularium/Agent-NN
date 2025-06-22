@@ -9,7 +9,7 @@ curl -sSL https://install.python-poetry.org | python3 - --version 1.8.2
 sudo npm install -g pnpm
 # Python dev tools
 python3.11 -m pip install --upgrade pip
-python3.11 -m pip install poetry ruff black pytest httpx fastapi uvicorn mypy bandit tox coverage
+python3.11 -m pip install poetry ruff black pytest httpx fastapi uvicorn mypy bandit tox coverage pydantic slowapi prometheus-fastapi-instrumentator aiofiles
 # Frontend testing tools
 sudo npm install -g playwright jest
 # Optional diagram tool

@@ -6,6 +6,7 @@ export/
 embeddings_cache/
 models/
 sessions/
+keys/
 
 # Runtime- und Build-Outputs
 /logs/

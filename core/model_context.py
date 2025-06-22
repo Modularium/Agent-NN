@@ -59,6 +59,8 @@ class ModelContext(BaseModel):
     max_tokens: Optional[int] = None
     token_spent: int = 0
     warning: Optional[str] = None
+    signed_by: Optional[str] = None
+    signature: Optional[str] = None
     deadline: Optional[str] = None
     priority: Optional[int] = None
     submitted_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())

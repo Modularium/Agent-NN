@@ -18,6 +18,7 @@ from core.model_context import ModelContext, TaskContext
 from core.privacy_filter import redact_context
 from core.privacy import AccessLevel
 from core.audit_log import AuditLog
+from core.crypto import verify_signature, generate_keypair
 
 from .. import __version__
 from ..client import AgentClient
@@ -88,6 +89,20 @@ def sessions() -> None:
     client = AgentClient()
     result = client.list_sessions()
     typer.echo(json.dumps(result, indent=2))
+
+
+@app.command("verify")
+def verify_ctx(context_json: str) -> None:
+    """Verify the signature of a ModelContext JSON file."""
+    with open(context_json, "r", encoding="utf-8") as fh:
+        data = json.load(fh)
+    ctx = ModelContext(**data)
+    if ctx.signed_by and ctx.signature:
+        payload = ctx.model_dump(exclude={"signature", "signed_by"})
+        valid = verify_signature(ctx.signed_by, payload, ctx.signature)
+    else:
+        valid = False
+    typer.echo(json.dumps({"valid": valid}))
 
 
 @session_app.command("budget")
@@ -163,6 +178,13 @@ def agent_evolve(name: str, mode: str = "llm", preview: bool = False) -> None:
     else:
         updated.save()
         typer.echo(f"profile updated: {name}")
+
+
+@agent_app.command("keypair")
+def agent_keypair(name: str) -> None:
+    """Generate or replace a keypair for an agent."""
+    generate_keypair(name)
+    typer.echo("keypair generated")
 
 
 @team_app.command("create")

@@ -11,6 +11,7 @@ from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 
 from core.model_context import ModelContext
 from core.audit_log import AuditLog, AuditEntry
+from core.crypto import sign_payload
 
 
 class SampleAgentService:
@@ -119,4 +120,9 @@ class SampleAgentService:
             )
         )
         ctx.audit_trace.append(end_id)
+        sig = sign_payload(
+            "sample_agent", ctx.model_dump(exclude={"signature", "signed_by"})
+        )
+        ctx.signed_by = sig["signed_by"]
+        ctx.signature = sig["signature"]
         return ctx

@@ -21,6 +21,7 @@ class AgentContract:
     trust_level_required: float
     constraints: Dict[str, Any]
     max_access_level: AccessLevel = AccessLevel.INTERNAL
+    require_signature: bool = False
 
     @classmethod
     def load(cls, agent: str) -> "AgentContract":
@@ -37,6 +38,7 @@ class AgentContract:
                     trust_level_required=0.0,
                     constraints={},
                     max_access_level=AccessLevel.INTERNAL,
+                    require_signature=False,
                 )
             )
             defaults.update(data)
@@ -48,6 +50,7 @@ class AgentContract:
             trust_level_required=0.0,
             constraints={},
             max_access_level=AccessLevel.INTERNAL,
+            require_signature=False,
         )
 
     def save(self) -> None:

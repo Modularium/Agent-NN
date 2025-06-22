@@ -8,7 +8,7 @@
     "phases": [
         {
             "name": "Phase 1: Architektur-Migration zu MCP",
-            "description": "ModelContext einführen und alle Grundservices als Microservices bereitstellen.",
+            "description": "ModelContext einf\u00fchren und alle Grundservices als Microservices bereitstellen.",
             "tasks": [
                 {"id": "P1T1", "description": "ModelContext-Datentypen definieren."},
                 {
@@ -20,11 +20,11 @@
                     "description": "Basis-Docker-Compose zum Starten aller Dienste erstellen.",
                 },
             ],
-            "exitCriteria": "Ein einfacher End-to-End-Test läuft über die neuen Services.",
+            "exitCriteria": "Ein einfacher End-to-End-Test l\u00e4uft \u00fcber die neuen Services.",
         },
         {
             "name": "Phase 1.6: MCP Observability",
-            "description": "Logging-Standardisierung und Metrikexport für alle Services",
+            "description": "Logging-Standardisierung und Metrikexport f\u00fcr alle Services",
             "tasks": [
                 {
                     "id": "P1T9",
@@ -62,11 +62,11 @@
                 },
                 {
                     "id": "P3T2",
-                    "description": "Konfiguration über llm_config.yaml ermöglichen.",
+                    "description": "Konfiguration \u00fcber llm_config.yaml erm\u00f6glichen.",
                 },
                 {
                     "id": "P3T3",
-                    "description": "Beispiele und Tests für das SDK bereitstellen.",
+                    "description": "Beispiele und Tests f\u00fcr das SDK bereitstellen.",
                 },
             ],
             "exitCriteria": "SDK ist dokumentiert und wird vom LLM-Gateway genutzt.",
@@ -85,7 +85,7 @@
                 },
                 {
                     "id": "P4T3",
-                    "description": "Docker-Compose für Deployment und aktualisierte Doku veröffentlichen.",
+                    "description": "Docker-Compose f\u00fcr Deployment und aktualisierte Doku ver\u00f6ffentlichen.",
                 },
             ],
             "exitCriteria": "Tests bestehen und Doku beschreibt die produktionsreife MCP-Architektur.",
@@ -115,4 +115,5 @@
     "codex/phase-3-governance-contracts": true,
     "codex/phase-3-agent-privacy": true,
     "codex/phase-3-agent-auditlog": true,
+    "codex/phase-3-agent-signatures": true,
 }

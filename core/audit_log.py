@@ -18,6 +18,7 @@ class AuditEntry:
     action: str
     context_id: str
     detail: Dict[str, Any]
+    signature: str | None = None
 
 
 class AuditLog:

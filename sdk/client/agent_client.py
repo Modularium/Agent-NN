@@ -20,9 +20,16 @@ class AgentClient:
             return {"Authorization": f"Bearer {self.settings.api_token}"}
         return {}
 
-    def submit_task(self, text: str) -> Dict[str, Any]:
+    def submit_task(
+        self, text: str, value: float | None = None, max_tokens: int | None = None
+    ) -> Dict[str, Any]:
         """Submit a task description and return the response."""
-        resp = self._client.post("/task", json={"task": text}, headers=self._headers())
+        payload: Dict[str, Any] = {"task": text}
+        if value is not None:
+            payload["task_value"] = value
+        if max_tokens is not None:
+            payload["max_tokens"] = max_tokens
+        resp = self._client.post("/task", json=payload, headers=self._headers())
         resp.raise_for_status()
         return resp.json()
 
@@ -33,6 +40,11 @@ class AgentClient:
 
     def list_sessions(self) -> Dict[str, Any]:
         resp = self._client.get("/sessions", headers=self._headers())
+        resp.raise_for_status()
+        return resp.json()
+
+    def get_session_history(self, session_id: str) -> Dict[str, Any]:
+        resp = self._client.get(f"/context/{session_id}", headers=self._headers())
         resp.raise_for_status()
         return resp.json()
 

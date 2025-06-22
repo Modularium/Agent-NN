@@ -28,29 +28,48 @@ class TaskDispatcherService:
         self.coalition_url = (coalition_url or settings.coalition_url).rstrip("/")
 
     def dispatch_task(
-        self, task: TaskContext, session_id: str | None = None, mode: str = "single"
+        self,
+        task: TaskContext,
+        session_id: str | None = None,
+        mode: str = "single",
+        task_value: float | None = None,
+        max_tokens: int | None = None,
     ) -> ModelContext:
         """Select agents and forward the ModelContext."""
         history: List[dict] = []
         memory: List[dict] = []
+        token_spent = 0
         if session_id:
             history = self._fetch_history(session_id)
             task.preferences = task.preferences or {}
             task.preferences["history"] = history
             if history:
                 memory = history[-1].get("memory", [])
+            for h in history:
+                token_spent += int(h.get("metrics", {}).get("tokens_used", 0))
 
         TOKENS_IN.labels("task_dispatcher").inc(
             len(str(task.description or "").split())
         )
 
         agents = self._fetch_agents(task.task_type)
+        if task_value is not None:
+            for a in agents:
+                cost = a.get("estimated_cost_per_token", 0.0) or 1e-6
+                a["_score"] = task_value / cost
+            agents.sort(key=lambda a: (-a["_score"], a.get("load_factor", 0)))
         ctx = ModelContext(
             task=task.task_id,
             task_context=task,
             session_id=session_id,
             memory=memory,
+            task_value=task_value,
+            max_tokens=max_tokens,
+            token_spent=token_spent,
         )
+        if ctx.max_tokens is not None and ctx.token_spent >= ctx.max_tokens:
+            ctx.warning = "budget exceeded"
+            return ctx
         if mode == "single":
             agent = agents[0] if agents else None
             ctx.agent_selection = agent["id"] if agent else None
@@ -58,6 +77,7 @@ class TaskDispatcherService:
                 arc = self._run_agent(agent, ctx)
                 ctx.agents.append(arc)
                 ctx.result = arc.result
+                ctx.metrics = arc.metrics
         elif mode == "coalition":
             coalition = self._init_coalition(
                 task.description or "", [a["id"] for a in agents]
@@ -79,6 +99,10 @@ class TaskDispatcherService:
                 for a in agents
             ]
             ctx = self._send_to_coordinator(ctx, mode)
+        if ctx.metrics:
+            ctx.token_spent += int(ctx.metrics.get("tokens_used", 0))
+        if ctx.max_tokens is not None and ctx.token_spent > ctx.max_tokens:
+            ctx.warning = "budget exceeded"
         TASKS_PROCESSED.labels("task_dispatcher").inc()
         tokens = ctx.metrics.get("tokens_used", 0) if ctx.metrics else 0
         TOKENS_OUT.labels("task_dispatcher").inc(tokens)

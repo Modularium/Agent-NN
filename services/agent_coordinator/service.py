@@ -76,12 +76,15 @@ class AgentCoordinatorService:
             if a.metrics:
                 tokens += int(a.metrics.get("tokens_used", 0))
         TOKENS_OUT.labels("agent_coordinator").inc(tokens)
+        ctx.metrics = {"tokens_used": tokens}
         return ctx
 
     def _call_agent(self, url: str, ctx: ModelContext) -> ModelContext:
         try:
             with httpx.Client() as client:
-                resp = client.post(f"{url.rstrip('/')}/run", json=ctx.model_dump(), timeout=10)
+                resp = client.post(
+                    f"{url.rstrip('/')}/run", json=ctx.model_dump(), timeout=10
+                )
                 resp.raise_for_status()
                 return ModelContext(**resp.json())
         except Exception:
@@ -94,7 +97,11 @@ class AgentCoordinatorService:
             with httpx.Client() as client:
                 resp = client.post(
                     f"{url.rstrip('/')}/vote",
-                    json={"text": text, "criteria": criteria, "context": ctx.model_dump()},
+                    json={
+                        "text": text,
+                        "criteria": criteria,
+                        "context": ctx.model_dump(),
+                    },
                     timeout=10,
                 )
                 resp.raise_for_status()

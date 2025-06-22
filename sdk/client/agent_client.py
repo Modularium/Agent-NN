@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import httpx
 from typing import Any, Dict, Optional
+
+import httpx
 
 from ..config import SDKSettings
 
@@ -21,7 +22,12 @@ class AgentClient:
         return {}
 
     def submit_task(
-        self, text: str, value: float | None = None, max_tokens: int | None = None
+        self,
+        text: str,
+        value: float | None = None,
+        max_tokens: int | None = None,
+        priority: int | None = None,
+        deadline: str | None = None,
     ) -> Dict[str, Any]:
         """Submit a task description and return the response."""
         payload: Dict[str, Any] = {"task": text}
@@ -29,6 +35,10 @@ class AgentClient:
             payload["task_value"] = value
         if max_tokens is not None:
             payload["max_tokens"] = max_tokens
+        if priority is not None:
+            payload["priority"] = priority
+        if deadline is not None:
+            payload["deadline"] = deadline
         resp = self._client.post("/task", json=payload, headers=self._headers())
         resp.raise_for_status()
         return resp.json()

@@ -3,17 +3,18 @@
 from __future__ import annotations
 
 import json
-import typer
-import mlflow
-from .. import __version__
+from dataclasses import asdict
 
+import mlflow
+import typer
+
+from core.agent_evolution import evolve_profile
+from core.agent_profile import AgentIdentity
+
+from .. import __version__
 from ..client import AgentClient
 from ..config import SDKSettings
 from ..nn_models import ModelManager
-from core.agent_profile import AgentIdentity
-from core.agent_evolution import evolve_profile
-from dataclasses import asdict
-
 
 model_app = typer.Typer(name="model", help="Model management commands")
 config_app = typer.Typer(name="config", help="Configuration commands")
@@ -22,11 +23,13 @@ app = typer.Typer()
 agent_app = typer.Typer(name="agent", help="Agent management")
 team_app = typer.Typer(name="team", help="Team management")
 session_app = typer.Typer(name="session", help="Session utilities")
+queue_app = typer.Typer(name="queue", help="Queue management")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
 app.add_typer(config_app)
 app.add_typer(session_app)
+app.add_typer(queue_app)
 
 
 @app.callback(invoke_without_command=True)
@@ -45,10 +48,18 @@ def submit(
     task: str,
     value: float = typer.Option(None, "--value"),
     max_tokens: int = typer.Option(None, "--max-tokens"),
+    priority: int = typer.Option(None, "--priority"),
+    deadline: str = typer.Option(None, "--deadline"),
 ) -> None:
     """Submit a task to the dispatcher."""
     client = AgentClient()
-    result = client.submit_task(task, value=value, max_tokens=max_tokens)
+    result = client.submit_task(
+        task,
+        value=value,
+        max_tokens=max_tokens,
+        priority=priority,
+        deadline=deadline,
+    )
     typer.echo(json.dumps(result, indent=2))
 
 
@@ -213,6 +224,24 @@ def model_stage(name: str, stage: str):
     version = versions[0].version
     client.transition_model_version_stage(name, version, stage)
     typer.echo(f"{name} -> {stage}")
+
+
+@queue_app.command("status")
+def queue_status() -> None:
+    """Show current dispatch queue status."""
+    client = AgentClient()
+    resp = client._client.get("/queue/status")
+    resp.raise_for_status()
+    typer.echo(resp.text)
+
+
+@app.command("promote")
+def task_promote(task_id: str) -> None:
+    """Promote a queued task by id."""
+    client = AgentClient()
+    resp = client._client.post(f"/queue/promote/{task_id}")
+    resp.raise_for_status()
+    typer.echo(resp.text)
 
 
 def main() -> None:

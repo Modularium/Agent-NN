@@ -6,9 +6,10 @@ from typing import Any, List
 
 import httpx
 
+from core.dispatch_queue import DispatchQueue
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
+from core.model_context import AgentRunContext, ModelContext, TaskContext
 
-from core.model_context import ModelContext, TaskContext, AgentRunContext
 from .config import settings
 
 
@@ -26,16 +27,17 @@ class TaskDispatcherService:
         self.session_url = (session_url or settings.session_url).rstrip("/")
         self.coordinator_url = (coordinator_url or settings.coordinator_url).rstrip("/")
         self.coalition_url = (coalition_url or settings.coalition_url).rstrip("/")
+        self.queue = DispatchQueue()
 
-    def dispatch_task(
+    def _prepare_context(
         self,
         task: TaskContext,
-        session_id: str | None = None,
-        mode: str = "single",
-        task_value: float | None = None,
-        max_tokens: int | None = None,
+        session_id: str | None,
+        task_value: float | None,
+        max_tokens: int | None,
+        priority: int | None = None,
+        deadline: str | None = None,
     ) -> ModelContext:
-        """Select agents and forward the ModelContext."""
         history: List[dict] = []
         memory: List[dict] = []
         token_spent = 0
@@ -52,12 +54,6 @@ class TaskDispatcherService:
             len(str(task.description or "").split())
         )
 
-        agents = self._fetch_agents(task.task_type)
-        if task_value is not None:
-            for a in agents:
-                cost = a.get("estimated_cost_per_token", 0.0) or 1e-6
-                a["_score"] = task_value / cost
-            agents.sort(key=lambda a: (-a["_score"], a.get("load_factor", 0)))
         ctx = ModelContext(
             task=task.task_id,
             task_context=task,
@@ -66,10 +62,23 @@ class TaskDispatcherService:
             task_value=task_value,
             max_tokens=max_tokens,
             token_spent=token_spent,
+            priority=priority,
+            deadline=deadline,
         )
+        return ctx
+
+    def _execute_context(self, ctx: ModelContext, mode: str) -> ModelContext:
+        agents = self._fetch_agents(ctx.task_context.task_type)
+        if ctx.task_value is not None:
+            for a in agents:
+                cost = a.get("estimated_cost_per_token", 0.0) or 1e-6
+                a["_score"] = ctx.task_value / cost
+            agents.sort(key=lambda a: (-a["_score"], a.get("load_factor", 0)))
+
         if ctx.max_tokens is not None and ctx.token_spent >= ctx.max_tokens:
             ctx.warning = "budget exceeded"
             return ctx
+
         if mode == "single":
             agent = agents[0] if agents else None
             ctx.agent_selection = agent["id"] if agent else None
@@ -80,13 +89,14 @@ class TaskDispatcherService:
                 ctx.metrics = arc.metrics
         elif mode == "coalition":
             coalition = self._init_coalition(
-                task.description or "", [a["id"] for a in agents]
+                ctx.task_context.description or "",
+                [a["id"] for a in agents],
             )
-            task.preferences = task.preferences or {}
-            task.preferences["coalition_id"] = coalition.get("id")
+            ctx.task_context.preferences = ctx.task_context.preferences or {}
+            ctx.task_context.preferences["coalition_id"] = coalition.get("id")
             for a in agents:
                 self._assign_subtask(
-                    coalition.get("id"), task.description or "", a["id"]
+                    coalition.get("id"), ctx.task_context.description or "", a["id"]
                 )
             ctx.agents = [
                 AgentRunContext(agent_id=a["id"], role=a.get("role"), url=a.get("url"))
@@ -99,6 +109,7 @@ class TaskDispatcherService:
                 for a in agents
             ]
             ctx = self._send_to_coordinator(ctx, mode)
+
         if ctx.metrics:
             ctx.token_spent += int(ctx.metrics.get("tokens_used", 0))
         if ctx.max_tokens is not None and ctx.token_spent > ctx.max_tokens:
@@ -106,6 +117,51 @@ class TaskDispatcherService:
         TASKS_PROCESSED.labels("task_dispatcher").inc()
         tokens = ctx.metrics.get("tokens_used", 0) if ctx.metrics else 0
         TOKENS_OUT.labels("task_dispatcher").inc(tokens)
+        return ctx
+
+    def dispatch_task(
+        self,
+        task: TaskContext,
+        session_id: str | None = None,
+        mode: str = "single",
+        task_value: float | None = None,
+        max_tokens: int | None = None,
+        priority: int | None = None,
+        deadline: str | None = None,
+    ) -> ModelContext:
+        """Select agents and forward the ModelContext."""
+        ctx = self._prepare_context(
+            task, session_id, task_value, max_tokens, priority, deadline
+        )
+        ctx.dispatch_state = "running"
+        ctx = self._execute_context(ctx, mode)
+        ctx.dispatch_state = "completed"
+        return ctx
+
+    def enqueue_task(
+        self,
+        task: TaskContext,
+        session_id: str | None = None,
+        mode: str = "single",
+        task_value: float | None = None,
+        max_tokens: int | None = None,
+        priority: int | None = None,
+        deadline: str | None = None,
+    ) -> ModelContext:
+        ctx = self._prepare_context(
+            task, session_id, task_value, max_tokens, priority, deadline
+        )
+        ctx.dispatch_state = "queued"
+        self.queue.enqueue(ctx)
+        return ctx
+
+    def process_queue_once(self, mode: str = "single") -> ModelContext | None:
+        self.queue.expire_old_tasks()
+        ctx = self.queue.dequeue()
+        if not ctx:
+            return None
+        ctx = self._execute_context(ctx, mode)
+        ctx.dispatch_state = "completed"
         return ctx
 
     def _fetch_agents(self, capability: str) -> list[dict[str, Any]]:

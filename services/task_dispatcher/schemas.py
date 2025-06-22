@@ -1,7 +1,8 @@
 """Pydantic models for Task Dispatcher API."""
 
-from core.model_context import TaskContext
 from pydantic import Field
+
+from core.model_context import TaskContext
 
 
 class TaskRequest(TaskContext):
@@ -11,3 +12,5 @@ class TaskRequest(TaskContext):
     mode: str = Field(default="single")
     task_value: float | None = Field(default=None)
     max_tokens: int | None = Field(default=None)
+    priority: int | None = Field(default=None)
+    deadline: str | None = Field(default=None)

@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Any, Dict, Optional, List
 import os
-from uuid import uuid4
-
-from importlib import metadata
 import sys
+from datetime import datetime
+from importlib import metadata
+from typing import Any, Dict, List, Literal, Optional
+from uuid import uuid4
 
 try:
     dist_path = metadata.distribution("mcp").locate_file("mcp")
@@ -51,6 +50,10 @@ class ModelContext(BaseModel):
     max_tokens: Optional[int] = None
     token_spent: int = 0
     warning: Optional[str] = None
+    deadline: Optional[str] = None
+    priority: Optional[int] = None
+    submitted_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    dispatch_state: Literal["queued", "running", "expired", "completed"] = "queued"
 
 
 class TaskContext(BaseModel):

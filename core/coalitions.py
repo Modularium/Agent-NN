@@ -20,6 +20,7 @@ class AgentCoalition:
     members: List[str]
     strategy: str
     subtasks: List[Dict[str, Any]]
+    ruleset: Dict[str, Any] | None = None
 
     @classmethod
     def load(cls, coalition_id: str) -> "AgentCoalition":
@@ -36,6 +37,7 @@ class AgentCoalition:
             members=[],
             strategy="plan-then-split",
             subtasks=[],
+            ruleset=None,
         )
 
     def save(self) -> None:
@@ -50,6 +52,7 @@ def create_coalition(
     leader: str,
     members: List[str] | None = None,
     strategy: str = "plan-then-split",
+    ruleset: Dict[str, Any] | None = None,
 ) -> AgentCoalition:
     """Helper to create and persist a new coalition."""
     coalition_id = str(uuid4())
@@ -60,6 +63,7 @@ def create_coalition(
         members=members or [],
         strategy=strategy,
         subtasks=[],
+        ruleset=ruleset,
     )
     coal.save()
     return coal

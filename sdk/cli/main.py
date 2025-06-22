@@ -4,12 +4,16 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict
+from pathlib import Path
+import os
 
 import mlflow
 import typer
 
 from core.agent_evolution import evolve_profile
 from core.agent_profile import AgentIdentity
+from core.governance import AgentContract
+from core.trust_evaluator import calculate_trust
 
 from .. import __version__
 from ..client import AgentClient
@@ -24,12 +28,16 @@ agent_app = typer.Typer(name="agent", help="Agent management")
 team_app = typer.Typer(name="team", help="Team management")
 session_app = typer.Typer(name="session", help="Session utilities")
 queue_app = typer.Typer(name="queue", help="Queue management")
+contract_app = typer.Typer(name="contract", help="Governance contracts")
+trust_app = typer.Typer(name="trust", help="Trust management")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
 app.add_typer(config_app)
 app.add_typer(session_app)
 app.add_typer(queue_app)
+app.add_typer(contract_app)
+app.add_typer(trust_app)
 
 
 @app.callback(invoke_without_command=True)
@@ -233,6 +241,33 @@ def queue_status() -> None:
     resp = client._client.get("/queue/status")
     resp.raise_for_status()
     typer.echo(resp.text)
+
+
+@contract_app.command("view")
+def contract_view(agent: str) -> None:
+    """Show contract for an agent."""
+    contract = AgentContract.load(agent)
+    typer.echo(json.dumps(asdict(contract), indent=2))
+
+
+@contract_app.command("audit")
+def contract_audit() -> None:
+    """List agents violating trust requirements."""
+    path = Path(os.getenv("CONTRACT_DIR", "contracts"))
+    violations = []
+    for file in path.glob("*.json"):
+        c = AgentContract.load(file.stem)
+        score = calculate_trust(c.agent, [])
+        if score < c.trust_level_required:
+            violations.append(c.agent)
+    typer.echo(json.dumps({"violations": violations}, indent=2))
+
+
+@trust_app.command("score")
+def trust_score(agent: str) -> None:
+    """Calculate trust score for an agent."""
+    score = calculate_trust(agent, [])
+    typer.echo(json.dumps({"agent": agent, "score": score}, indent=2))
 
 
 @app.command("promote")

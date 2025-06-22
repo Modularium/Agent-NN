@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict, field
+import json
+import os
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-import json
-import os
 
 PROFILE_DIR = Path(os.getenv("AGENT_PROFILE_DIR", "agent_profiles"))
 
@@ -22,6 +22,8 @@ class AgentIdentity:
     avg_response_time: float = 0.0
     load_factor: float = 0.0
     certified_skills: List[Dict[str, Any]] = field(default_factory=list)
+    training_progress: Dict[str, str] = field(default_factory=dict)
+    training_log: List[Dict[str, Any]] = field(default_factory=list)
 
     @classmethod
     def load(cls, name: str) -> "AgentIdentity":
@@ -39,6 +41,8 @@ class AgentIdentity:
                     memory_index=None,
                     created_at=datetime.now().isoformat(),
                     certified_skills=[],
+                    training_progress={},
+                    training_log=[],
                 )
             )
             defaults.update(data)
@@ -51,6 +55,8 @@ class AgentIdentity:
             memory_index=None,
             created_at=datetime.now().isoformat(),
             certified_skills=[],
+            training_progress={},
+            training_log=[],
         )
 
     def save(self) -> None:

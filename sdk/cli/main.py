@@ -15,13 +15,14 @@ from core.access_control import is_authorized
 from core.agent_evolution import evolve_profile
 from core.agent_profile import AgentIdentity
 from core.audit_log import AuditEntry, AuditLog
-from core.skills import load_skill
 from core.crypto import generate_keypair, verify_signature
 from core.governance import AgentContract
 from core.model_context import ModelContext, TaskContext
 from core.privacy import AccessLevel
 from core.privacy_filter import redact_context
-from core.trust_evaluator import calculate_trust, eligible_for_role
+from core.skills import load_skill
+from core.training import load_training_path
+from core.trust_evaluator import auto_certify, calculate_trust, eligible_for_role
 
 from .. import __version__
 from ..client import AgentClient
@@ -44,6 +45,8 @@ audit_app = typer.Typer(name="audit", help="Audit utilities")
 auth_app = typer.Typer(name="auth", help="Authorization utilities")
 role_app = typer.Typer(name="role", help="Role utilities")
 task_app = typer.Typer(name="task", help="Task utilities")
+training_app = typer.Typer(name="training", help="Training management")
+coach_app = typer.Typer(name="coach", help="Coach utilities")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -57,6 +60,8 @@ app.add_typer(audit_app)
 app.add_typer(auth_app)
 app.add_typer(role_app)
 app.add_typer(task_app)
+app.add_typer(training_app)
+app.add_typer(coach_app)
 
 agent_app.add_typer(agent_contract_app)
 
@@ -261,6 +266,64 @@ def agent_certify(name: str, skill: str = typer.Option(..., "--skill")) -> None:
         )
     )
     typer.echo("granted")
+
+
+@training_app.command("start")
+def training_start(agent: str, path: str = typer.Option(..., "--path")) -> None:
+    """Start a training path for an agent."""
+    profile = AgentIdentity.load(agent)
+    profile.training_progress[path] = "in_progress"
+    profile.save()
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor="cli",
+            action="training_started",
+            context_id=agent,
+            detail={"path": path},
+        )
+    )
+    typer.echo("started")
+
+
+@training_app.command("progress")
+def training_progress(agent: str) -> None:
+    """Show training progress for AGENT."""
+    profile = AgentIdentity.load(agent)
+    typer.echo(json.dumps(profile.training_progress, indent=2))
+
+
+@coach_app.command("evaluate")
+def coach_evaluate(
+    agent: str,
+    skill: str = typer.Option(..., "--skill"),
+    score: float = typer.Option(1.0, "--score"),
+) -> None:
+    """Submit evaluation result for a skill."""
+    profile = AgentIdentity.load(agent)
+    profile.training_log.append(
+        {
+            "skill": skill,
+            "evaluation_score": score,
+            "last_attempted": datetime.utcnow().isoformat(),
+        }
+    )
+    if score >= 0.8:
+        profile.training_progress[skill] = "complete"
+        auto_certify(agent, skill)
+    profile.save()
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor="cli",
+            action="evaluation_submitted",
+            context_id=agent,
+            detail={"skill": skill, "score": score},
+        )
+    )
+    typer.echo("recorded")
 
 
 @role_app.command("limits")

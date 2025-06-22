@@ -10,6 +10,7 @@ class AgentRole(str, Enum):
     ANALYST = "analyst"
     REVIEWER = "reviewer"
     COORDINATOR = "coordinator"
+    COACH = "coach"
 
 
 ROLE_HIERARCHY: dict[str, list[str]] = {
@@ -17,6 +18,7 @@ ROLE_HIERARCHY: dict[str, list[str]] = {
     "critic": ["reviewer"],
     "analyst": ["critic", "reader"],
     "coordinator": ["analyst", "writer", "retriever"],
+    "coach": ["reviewer"],
 }
 
 

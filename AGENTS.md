@@ -91,6 +91,13 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 ### Fortschritt Phase 1.1
 - Grundlegende Dienste und `ModelContext` implementiert
 - Docker-Compose Setup erstellt und einfacher End-to-End-Test erfolgreich
+
+### Fortschritt Phase 1.2
+- MCP-SDK als Zugriffsschicht eingebunden
+- Dispatcher ruft Registry, Session-Manager und LLM-Gateway über HTTP
+- Erste REST-Routen wie `/dispatch`, `/chat` und `/agents` umgesetzt
+- Vector-Store um `embed`, `search` und `add_document` erweitert
+- Aktualisierter End-to-End-Test erfolgreich
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

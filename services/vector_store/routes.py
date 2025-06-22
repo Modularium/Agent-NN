@@ -8,6 +8,8 @@ from .schemas import (
     AddDocumentResponse,
     VectorSearchRequest,
     VectorSearchResponse,
+    EmbedRequest,
+    EmbedResponse,
 )
 from .service import VectorStoreService
 
@@ -29,3 +31,11 @@ async def vector_search(req: VectorSearchRequest) -> VectorSearchResponse:
     """Perform a vector search over the knowledge base."""
     data = service.search(req.query, req.collection, top_k=req.top_k)
     return VectorSearchResponse(**data)
+
+
+@api_route(version="v1.0.0")
+@router.post("/embed", response_model=EmbedResponse)
+async def embed(req: EmbedRequest) -> EmbedResponse:
+    """Return embedding for text."""
+    data = service.embed(req.text)
+    return EmbedResponse(**data)

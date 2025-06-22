@@ -213,6 +213,7 @@
     "phase-1-persistence": true,
     "phase-1-sdk": true,
     "phase-1-release": true,
+    "phase-1.2-service-routing": true,
     "codex/phase-1-mlflow-integration": true,
     "codex/phase-1-release-final-part1": true,
     "codex/phase-1-release-final-structure-clean": true,

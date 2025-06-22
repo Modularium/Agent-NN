@@ -28,3 +28,11 @@ def test_cli_submit(monkeypatch):
     result = runner.invoke(app, ["submit", "test"])
     assert result.exit_code == 0
     assert "ok" in result.stdout
+
+
+def test_cli_ask(monkeypatch):
+    monkeypatch.setattr("httpx.Client", lambda base_url: DummyClient())
+    runner = CliRunner()
+    result = runner.invoke(app, ["ask", "hi", "--task-type=dev"])
+    assert result.exit_code == 0
+    assert "ok" in result.stdout

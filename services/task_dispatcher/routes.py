@@ -6,7 +6,7 @@ from fastapi import APIRouter
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
-from core.model_context import ModelContext
+from core.model_context import ModelContext, TaskContext
 from utils.api_utils import api_route
 
 from .schemas import TaskRequest
@@ -33,6 +33,33 @@ async def create_task(task: TaskRequest) -> ModelContext:
         max_tokens=task.max_tokens,
         priority=task.priority,
         deadline=task.deadline,
+    )
+
+
+@api_route(version="v1.0.0")
+@router.post("/dispatch", response_model=ModelContext)
+@limit_task
+async def dispatch(ctx: ModelContext) -> ModelContext:
+    """Accept a ModelContext and process it immediately."""
+    mode = (
+        ctx.task_context.preferences.get("mode", "single")
+        if ctx.task_context and ctx.task_context.preferences
+        else "single"
+    )
+    return service.dispatch_task(
+        ctx.task_context or TaskContext(task_type="generic"),
+        session_id=ctx.session_id,
+        mode=mode,
+        task_value=ctx.task_value,
+        max_tokens=ctx.max_tokens,
+        priority=ctx.priority,
+        deadline=ctx.deadline,
+        required_skills=ctx.required_skills,
+        enforce_certification=ctx.enforce_certification,
+        require_endorsement=ctx.require_endorsement,
+        mission_id=ctx.mission_id,
+        mission_step=ctx.mission_step,
+        mission_role=ctx.mission_role,
     )
 
 

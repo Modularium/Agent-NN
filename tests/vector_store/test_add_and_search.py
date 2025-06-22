@@ -33,3 +33,10 @@ def test_add_and_search(monkeypatch):
     res = service.search("foo", "test", top_k=2)
     ids = {m["id"] for m in res["matches"]}
     assert {a, b}.issubset(ids)
+
+
+def test_embed(monkeypatch):
+    monkeypatch.setattr("httpx.Client", lambda: DummyClient())
+    service = VectorStoreService(llm_url="http://llm")
+    data = service.embed("foo")
+    assert data["embedding"] == [3.0]

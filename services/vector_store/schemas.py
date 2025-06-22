@@ -23,3 +23,12 @@ class VectorSearchRequest(BaseModel):
 class VectorSearchResponse(BaseModel):
     matches: List[Dict[str, Any]]
     model: str
+
+
+class EmbedRequest(BaseModel):
+    text: str
+
+
+class EmbedResponse(BaseModel):
+    embedding: List[float]
+    model: str

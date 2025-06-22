@@ -47,6 +47,11 @@ class VectorStoreService:
             TOKENS_OUT.labels("vector_store").inc(1)
             return [float(len(text))]
 
+    def embed(self, text: str) -> Dict[str, Any]:
+        """Return embedding and provider for given text."""
+        emb = self._embed(text)
+        return {"embedding": emb, "model": self.provider}
+
     def add_document(self, text: str, collection: str) -> str:
         """Add a document to the given collection."""
         emb = self._embed(text)

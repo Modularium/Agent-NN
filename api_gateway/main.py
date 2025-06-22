@@ -1,8 +1,9 @@
 import os
 import json
-import urllib.request
 from fastapi import FastAPI, Request, HTTPException
 from utils.api_utils import api_route
+from .connectors import ServiceConnector
+import httpx
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -21,6 +22,8 @@ API_KEY_SCOPES = os.getenv("API_KEY_SCOPES", "*").split(",")
 LLM_GATEWAY_URL = os.getenv("LLM_GATEWAY_URL", "http://llm_gateway:8004")
 DISPATCHER_URL = os.getenv("DISPATCHER_URL", "http://task_dispatcher:8000")
 SESSION_MANAGER_URL = os.getenv("SESSION_MANAGER_URL", "http://session_manager:8000")
+AGENT_REGISTRY_URL = os.getenv("AGENT_REGISTRY_URL", "http://agent_registry:8001")
+VECTOR_STORE_URL = os.getenv("VECTOR_STORE_URL", "http://vector_store:8002")
 RATE_LIMIT = os.getenv("RATE_LIMIT", "60/minute")
 CORS_ALLOW_ORIGINS = os.getenv("CORS_ALLOW_ORIGINS", "*")
 
@@ -31,9 +34,21 @@ app.add_middleware(LoggingMiddleware, logger=logger)
 app.add_middleware(MetricsMiddleware, service="api_gateway")
 app.add_exception_handler(Exception, exception_handler(logger))
 app.state.limiter = limiter
-app.add_middleware(CORSMiddleware, allow_origins=CORS_ALLOW_ORIGINS.split(","), allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ALLOW_ORIGINS.split(","),
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 Instrumentator().instrument(app).expose(app)
 app.include_router(metrics_router())
+
+# service connectors
+dispatcher_conn = ServiceConnector(DISPATCHER_URL)
+session_conn = ServiceConnector(SESSION_MANAGER_URL)
+llm_conn = ServiceConnector(LLM_GATEWAY_URL)
+registry_conn = ServiceConnector(AGENT_REGISTRY_URL)
+vector_conn = ServiceConnector(VECTOR_STORE_URL)
 
 
 def _decode_token(token: str) -> dict | None:
@@ -66,11 +81,8 @@ def check_scope(request: Request, scope: str) -> None:
 @limiter.limit(RATE_LIMIT)
 async def llm_generate(request: Request) -> dict:
     check_scope(request, "llm:generate")
-    payload = await request.body()
-    url = f"{LLM_GATEWAY_URL}/generate"
-    req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req) as resp:
-        return {"text": resp.read().decode()}
+    payload = await request.json()
+    return await llm_conn.post("/generate", payload)
 
 
 @api_route(version="dev")  # \U0001F6A7 experimental
@@ -81,26 +93,15 @@ async def chat(request: Request) -> dict:
     payload = await request.json()
     sid = payload.get("session_id")
     if not sid:
-        req = urllib.request.Request(
-            f"{SESSION_MANAGER_URL}/session",
-            data=json.dumps({"data": {}}).encode(),
-            headers={"Content-Type": "application/json"},
-        )
-        with urllib.request.urlopen(req) as resp:
-            sid = json.loads(resp.read().decode())["session_id"]
+        resp = await session_conn.post("/start_session", {})
+        sid = resp.get("session_id")
 
     data = {
         "task_type": "chat",
         "input": payload.get("message", ""),
         "session_id": sid,
     }
-    req = urllib.request.Request(
-        f"{DISPATCHER_URL}/task",
-        data=json.dumps(data).encode(),
-        headers={"Content-Type": "application/json"},
-    )
-    with urllib.request.urlopen(req) as resp:
-        result = json.loads(resp.read().decode())
+    result = await dispatcher_conn.post("/task", data)
     return {"session_id": sid, **result}
 
 
@@ -109,10 +110,7 @@ async def chat(request: Request) -> dict:
 @limiter.limit(RATE_LIMIT)
 async def chat_history(sid: str, request: Request) -> dict:
     check_scope(request, "chat:read")
-    url = f"{SESSION_MANAGER_URL}/session/{sid}/history"
-    with urllib.request.urlopen(url) as resp:
-        data = json.loads(resp.read().decode())
-    return data
+    return await session_conn.get(f"/context/{sid}")
 
 
 @api_route(version="dev")  # \U0001F6A7 experimental
@@ -122,11 +120,41 @@ async def chat_feedback(request: Request) -> dict:
     check_scope(request, "feedback:write")
     payload = await request.json()
     sid = payload.get("session_id")
-    url = f"{SESSION_MANAGER_URL}/session/{sid}/feedback"
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
-    )
-    with urllib.request.urlopen(req) as resp:
-        return json.loads(resp.read().decode())
+    return await session_conn.post(f"/session/{sid}/feedback", payload)
+
+
+@api_route(version="dev")
+@app.post("/sessions")
+@limiter.limit(RATE_LIMIT)
+async def start_session_route(request: Request) -> dict:
+    """Public route to start a new session."""
+    check_scope(request, "session:write")
+    return await session_conn.post("/start_session", {})
+
+
+@api_route(version="dev")
+@app.get("/sessions/{sid}/history")
+@limiter.limit(RATE_LIMIT)
+async def session_history_route(sid: str, request: Request) -> dict:
+    """Return conversation history for a session."""
+    check_scope(request, "session:read")
+    return await session_conn.get(f"/context/{sid}")
+
+
+@api_route(version="dev")
+@app.get("/agents")
+@limiter.limit(RATE_LIMIT)
+async def list_agents_route(request: Request) -> dict:
+    """List available agents."""
+    check_scope(request, "agents:read")
+    return await registry_conn.get("/agents")
+
+
+@api_route(version="dev")
+@app.post("/embed")
+@limiter.limit(RATE_LIMIT)
+async def embed_route(request: Request) -> dict:
+    """Return embedding for provided text."""
+    check_scope(request, "embed:write")
+    payload = await request.json()
+    return await vector_conn.post("/embed", payload)

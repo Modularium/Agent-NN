@@ -54,6 +54,7 @@ class ModelContext(BaseModel):
     metrics: Optional[Dict[str, float]] = None
     audit_trace: List[str] = []
     agents: List["AgentRunContext"] = []
+    elevated_roles: List[str] = []
     memory: Optional[List[AccessText]] = None
     aggregated_result: Optional[Any] = None
     task_value: Optional[float] = None

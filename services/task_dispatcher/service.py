@@ -1,8 +1,8 @@
 """Task dispatcher core logic."""
 
-import random
 import time
 import logging
+from datetime import datetime
 from typing import Any, List
 
 import httpx
@@ -10,9 +10,9 @@ import httpx
 from core.dispatch_queue import DispatchQueue
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 from core.model_context import AgentRunContext, ModelContext, TaskContext
+from core.audit_log import AuditLog, AuditEntry
 from core.governance import AgentContract
 from core.privacy_filter import redact_context
-from core.privacy import AccessLevel
 from core.trust_evaluator import calculate_trust
 
 from .config import settings
@@ -34,6 +34,7 @@ class TaskDispatcherService:
         self.coalition_url = (coalition_url or settings.coalition_url).rstrip("/")
         self.queue = DispatchQueue()
         self.log = logging.getLogger(__name__)
+        self.audit = AuditLog()
 
     def _governance_allowed(self, agent: dict[str, Any], ctx: ModelContext) -> bool:
         contract = AgentContract.load(agent["name"])
@@ -45,9 +46,29 @@ class TaskDispatcherService:
         trust = calculate_trust(agent["name"], history)
         if trust < contract.trust_level_required:
             ctx.warning = "trust level too low"
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="trust_rejected",
+                    context_id=ctx.uuid,
+                    detail={"agent": agent["name"], "trust": trust},
+                )
+            )
+            ctx.audit_trace.append(log_id)
             return False
         if contract.allowed_roles and agent.get("role") not in contract.allowed_roles:
             ctx.warning = "role not allowed"
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="role_rejected",
+                    context_id=ctx.uuid,
+                    detail={"agent": agent["name"], "role": agent.get("role")},
+                )
+            )
+            ctx.audit_trace.append(log_id)
             return False
         if (
             ctx.max_tokens
@@ -55,6 +76,16 @@ class TaskDispatcherService:
             and ctx.max_tokens > contract.max_tokens
         ):
             ctx.warning = "token limit exceeded"
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="token_limit_exceeded",
+                    context_id=ctx.uuid,
+                    detail={"agent": agent["name"], "max": contract.max_tokens},
+                )
+            )
+            ctx.audit_trace.append(log_id)
             return False
         return True
 
@@ -94,6 +125,16 @@ class TaskDispatcherService:
             priority=priority,
             deadline=deadline,
         )
+        log_id = self.audit.write(
+            AuditEntry(
+                timestamp=datetime.utcnow().isoformat(),
+                actor="dispatcher",
+                action="task_accepted",
+                context_id=ctx.uuid,
+                detail={"task_type": task.task_type},
+            )
+        )
+        ctx.audit_trace.append(log_id)
         return ctx
 
     def _execute_context(self, ctx: ModelContext, mode: str) -> ModelContext:
@@ -116,6 +157,17 @@ class TaskDispatcherService:
             agent = agents[0] if agents else None
             ctx.agent_selection = agent["id"] if agent else None
             if agent:
+                log_id = self.audit.write(
+                    AuditEntry(
+                        timestamp=datetime.utcnow().isoformat(),
+                        actor="dispatcher",
+                        action="agent_selected",
+                        context_id=ctx.uuid,
+                        detail={"agent": agent["name"]},
+                    )
+                )
+                ctx.audit_trace.append(log_id)
+            if agent:
                 arc = self._run_agent(agent, ctx)
                 ctx.agents.append(arc)
                 ctx.result = arc.result
@@ -125,6 +177,16 @@ class TaskDispatcherService:
                 ctx.task_context.description or "",
                 [a["id"] for a in agents],
             )
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="coalition_created",
+                    context_id=ctx.uuid,
+                    detail={"coalition": coalition.get("id")},
+                )
+            )
+            ctx.audit_trace.append(log_id)
             ctx.task_context.preferences = ctx.task_context.preferences or {}
             ctx.task_context.preferences["coalition_id"] = coalition.get("id")
             for a in agents:
@@ -240,6 +302,19 @@ class TaskDispatcherService:
                 agent=agent["name"],
                 fields=send_ctx.metrics["context_redacted_fields"],
             )
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="context_redacted",
+                    context_id=ctx.uuid,
+                    detail={
+                        "agent": agent["name"],
+                        "fields": send_ctx.metrics["context_redacted_fields"],
+                    },
+                )
+            )
+            ctx.audit_trace.append(log_id)
         try:
             with httpx.Client() as client:
                 resp = client.post(

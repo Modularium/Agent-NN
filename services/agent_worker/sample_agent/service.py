@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 from typing import Any
+from datetime import datetime
 
 import httpx
 
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 
 from core.model_context import ModelContext
+from core.audit_log import AuditLog, AuditEntry
 
 
 class SampleAgentService:
@@ -23,9 +25,20 @@ class SampleAgentService:
         self.llm_url = llm_url.rstrip("/")
         self.vector_url = vector_url.rstrip("/")
         self.session_url = session_url.rstrip("/")
+        self.audit = AuditLog()
 
     def run(self, ctx: ModelContext) -> ModelContext:
         """Invoke the LLM Gateway and return the updated context."""
+        start_id = self.audit.write(
+            AuditEntry(
+                timestamp=datetime.utcnow().isoformat(),
+                actor="sample_agent",
+                action="task_started",
+                context_id=ctx.uuid,
+                detail={},
+            )
+        )
+        ctx.audit_trace.append(start_id)
         prompt = ctx.task_context.description or str(ctx.task_context.input_data)
         task_type = ctx.task_context.task_type if ctx.task_context else ""
         if ctx.task_context and ctx.task_context.preferences:
@@ -96,5 +109,14 @@ class SampleAgentService:
                     )
             except Exception:
                 pass
+        end_id = self.audit.write(
+            AuditEntry(
+                timestamp=datetime.utcnow().isoformat(),
+                actor="sample_agent",
+                action="task_completed",
+                context_id=ctx.uuid,
+                detail={"tokens": data.get("tokens_used", 0)},
+            )
+        )
+        ctx.audit_trace.append(end_id)
         return ctx
-

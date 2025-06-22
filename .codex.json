@@ -114,4 +114,5 @@
     "codex/phase-2-dispatch-queue": true,
     "codex/phase-3-governance-contracts": true,
     "codex/phase-3-agent-privacy": true,
+    "codex/phase-3-agent-auditlog": true,
 }

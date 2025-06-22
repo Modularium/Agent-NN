@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from typing import List, Tuple
+from datetime import datetime
 
 import httpx
 
-from core.model_context import ModelContext, AgentRunContext
+from core.model_context import ModelContext
+from core.audit_log import AuditLog, AuditEntry
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_OUT
 
 
@@ -14,13 +16,23 @@ class AgentCoordinatorService:
     """Run agents in parallel or orchestrated mode."""
 
     def __init__(self) -> None:
-        pass
+        self.audit = AuditLog()
 
     def coordinate(self, ctx: ModelContext, mode: str = "parallel") -> ModelContext:
         if mode == "parallel":
             for arc in ctx.agents:
                 if arc.url:
                     res = self._call_agent(arc.url, ctx)
+                    log_id = self.audit.write(
+                        AuditEntry(
+                            timestamp=datetime.utcnow().isoformat(),
+                            actor="coordinator",
+                            action="agent_executed",
+                            context_id=ctx.uuid,
+                            detail={"agent_url": arc.url},
+                        )
+                    )
+                    ctx.audit_trace.append(log_id)
                     arc.subtask_result = res.result
                     arc.metrics = res.metrics
                     arc.result = res.result
@@ -45,6 +57,19 @@ class AgentCoordinatorService:
                             ctx.task_context.description or "",
                             ctx,
                         )
+                        log_id = self.audit.write(
+                            AuditEntry(
+                                timestamp=datetime.utcnow().isoformat(),
+                                actor="coordinator",
+                                action="vote_cast",
+                                context_id=ctx.uuid,
+                                detail={
+                                    "critic": critic.agent_id,
+                                    "candidate": cand.agent_id,
+                                },
+                            )
+                        )
+                        ctx.audit_trace.append(log_id)
                         if score is not None:
                             scores.append(score)
                         if fb:

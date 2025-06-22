@@ -55,3 +55,22 @@ class AgentClient:
         resp = self._client.post(f"/agent_profile/{name}", json=payload, headers=self._headers())
         resp.raise_for_status()
         return resp.json()
+
+    def create_coalition(
+        self, goal: str, leader: str, members: list[str] | None = None, strategy: str = "plan-then-split"
+    ) -> Dict[str, Any]:
+        payload = {"goal": goal, "leader": leader, "members": members or [], "strategy": strategy}
+        resp = self._client.post("/coalition/init", json=payload, headers=self._headers())
+        resp.raise_for_status()
+        return resp.json()
+
+    def assign_subtask(self, coalition_id: str, assigned_to: str, title: str) -> Dict[str, Any]:
+        payload = {"title": title, "assigned_to": assigned_to}
+        resp = self._client.post(f"/coalition/{coalition_id}/assign", json=payload, headers=self._headers())
+        resp.raise_for_status()
+        return resp.json()
+
+    def get_coalition(self, coalition_id: str) -> Dict[str, Any]:
+        resp = self._client.get(f"/coalition/{coalition_id}", headers=self._headers())
+        resp.raise_for_status()
+        return resp.json()

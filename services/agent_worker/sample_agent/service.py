@@ -28,6 +28,13 @@ class SampleAgentService:
         """Invoke the LLM Gateway and return the updated context."""
         prompt = ctx.task_context.description or str(ctx.task_context.input_data)
         task_type = ctx.task_context.task_type if ctx.task_context else ""
+        if ctx.task_context and ctx.task_context.preferences:
+            cid = ctx.task_context.preferences.get("coalition_id")
+            title = ctx.task_context.preferences.get("subtask_title")
+            if cid:
+                prompt = f"[Coalition {cid}] {prompt}"
+            if title:
+                prompt = f"[{title}] {prompt}"
         documents: list[dict[str, Any]] = []
         semantic = task_type in {"semantic", "qa", "search"}
         if semantic:

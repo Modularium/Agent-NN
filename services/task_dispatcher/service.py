@@ -19,10 +19,12 @@ class TaskDispatcherService:
         registry_url: str | None = None,
         session_url: str | None = None,
         coordinator_url: str | None = None,
+        coalition_url: str | None = None,
     ) -> None:
         self.registry_url = (registry_url or settings.registry_url).rstrip("/")
         self.session_url = (session_url or settings.session_url).rstrip("/")
         self.coordinator_url = (coordinator_url or settings.coordinator_url).rstrip("/")
+        self.coalition_url = (coalition_url or settings.coalition_url).rstrip("/")
 
     def dispatch_task(
         self, task: TaskContext, session_id: str | None = None, mode: str = "single"
@@ -53,6 +55,17 @@ class TaskDispatcherService:
                 arc = self._run_agent(agent, ctx)
                 ctx.agents.append(arc)
                 ctx.result = arc.result
+        elif mode == "coalition":
+            coalition = self._init_coalition(task.description or "", [a["id"] for a in agents])
+            task.preferences = task.preferences or {}
+            task.preferences["coalition_id"] = coalition.get("id")
+            for a in agents:
+                self._assign_subtask(coalition.get("id"), task.description or "", a["id"])
+            ctx.agents = [
+                AgentRunContext(agent_id=a["id"], role=a.get("role"), url=a.get("url"))
+                for a in agents
+            ]
+            ctx = self._send_to_coordinator(ctx, "parallel")
         else:
             ctx.agents = [
                 AgentRunContext(agent_id=a["id"], role=a.get("role"), url=a.get("url"))
@@ -116,3 +129,27 @@ class TaskDispatcherService:
                 return ModelContext(**resp.json())
         except Exception:
             return ctx
+
+    def _init_coalition(self, goal: str, members: List[str]) -> dict:
+        try:
+            with httpx.Client() as client:
+                resp = client.post(
+                    f"{self.coalition_url}/coalition/init",
+                    json={"goal": goal, "leader": members[0] if members else "", "members": members},
+                    timeout=5,
+                )
+                resp.raise_for_status()
+                return resp.json()
+        except Exception:
+            return {"id": "local", "goal": goal, "leader": members[0] if members else "", "members": members, "strategy": "parallel-expert", "subtasks": []}
+
+    def _assign_subtask(self, coalition_id: str, title: str, assigned_to: str) -> None:
+        try:
+            with httpx.Client() as client:
+                client.post(
+                    f"{self.coalition_url}/coalition/{coalition_id}/assign",
+                    json={"title": title, "assigned_to": assigned_to},
+                    timeout=5,
+                )
+        except Exception:
+            pass

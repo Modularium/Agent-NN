@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     registry_url: str = "http://localhost:8002"
     session_url: str = "http://localhost:8005"
     coordinator_url: str = "http://localhost:8010"
+    coalition_url: str = "http://localhost:8012"
 
 
 settings = Settings()

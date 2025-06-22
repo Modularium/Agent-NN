@@ -21,8 +21,9 @@ class AgentCoordinatorService:
             for arc in ctx.agents:
                 if arc.url:
                     res = self._call_agent(arc.url, ctx)
-                    arc.result = res.result
+                    arc.subtask_result = res.result
                     arc.metrics = res.metrics
+                    arc.result = res.result
             ctx.aggregated_result = [a.result for a in ctx.agents]
         elif mode == "voting":
             candidates = [a for a in ctx.agents if a.role != "critic"]
@@ -30,8 +31,9 @@ class AgentCoordinatorService:
             for arc in candidates:
                 if arc.url:
                     res = self._call_agent(arc.url, ctx)
-                    arc.result = res.result
+                    arc.subtask_result = res.result
                     arc.metrics = res.metrics
+                    arc.result = res.result
             for cand in candidates:
                 scores: List[float] = []
                 feedbacks: List[str] = []
@@ -63,8 +65,9 @@ class AgentCoordinatorService:
                 if not arc or not arc.url:
                     continue
                 res = self._call_agent(arc.url, data_ctx)
-                arc.result = res.result
+                arc.subtask_result = res.result
                 arc.metrics = res.metrics
+                arc.result = res.result
                 data_ctx = res
             ctx.aggregated_result = data_ctx.result
         TASKS_PROCESSED.labels("agent_coordinator").inc()

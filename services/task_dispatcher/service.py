@@ -20,7 +20,7 @@ from core.roles import resolve_roles
 from core.trust_evaluator import calculate_trust, update_trust_usage
 from core.agent_profile import AgentIdentity
 from core.skill_matcher import match_agent_to_task
-from core.role_capabilities import apply_role_capabilities, ROLE_CAPABILITIES
+from core.role_capabilities import apply_role_capabilities
 
 from .config import settings
 
@@ -92,6 +92,19 @@ class TaskDispatcherService:
                     action="role_rejected",
                     context_id=ctx.uuid,
                     detail={"agent": agent["name"], "role": agent.get("role")},
+                )
+            )
+            ctx.audit_trace.append(log_id)
+            return False
+        if ctx.mission_role and agent.get("role") != ctx.mission_role:
+            ctx.warning = "mission_role_mismatch"
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="mission_role_mismatch",
+                    context_id=ctx.uuid,
+                    detail={"required": ctx.mission_role, "agent": agent["name"]},
                 )
             )
             ctx.audit_trace.append(log_id)
@@ -174,6 +187,9 @@ class TaskDispatcherService:
         deadline: str | None = None,
         required_skills: list[str] | None = None,
         enforce_certification: bool = False,
+        mission_id: str | None = None,
+        mission_step: int | None = None,
+        mission_role: str | None = None,
     ) -> ModelContext:
         history: List[dict] = []
         memory: List[dict] = []
@@ -191,6 +207,16 @@ class TaskDispatcherService:
             len(str(task.description or "").split())
         )
 
+        if mission_id:
+            from core.missions import AgentMission
+
+            mission = AgentMission.load(mission_id)
+            if mission and mission_step is not None and 0 <= mission_step < len(mission.steps):
+                step = mission.steps[mission_step]
+                required_skills = required_skills or step.get("skill_required")
+                deadline = deadline or step.get("deadline")
+                mission_role = mission_role or step.get("role")
+
         ctx = ModelContext(
             task=task.task_id,
             task_context=task,
@@ -203,6 +229,9 @@ class TaskDispatcherService:
             deadline=deadline,
             required_skills=required_skills,
             enforce_certification=enforce_certification,
+            mission_id=mission_id,
+            mission_step=mission_step,
+            mission_role=mission_role,
         )
         log_id = self.audit.write(
             AuditEntry(
@@ -307,6 +336,8 @@ class TaskDispatcherService:
         TASKS_PROCESSED.labels("task_dispatcher").inc()
         tokens = ctx.metrics.get("tokens_used", 0) if ctx.metrics else 0
         TOKENS_OUT.labels("task_dispatcher").inc(tokens)
+        if ctx.mission_id is not None:
+            self._record_mission_progress(ctx)
         return ctx
 
     def dispatch_task(
@@ -320,6 +351,9 @@ class TaskDispatcherService:
         deadline: str | None = None,
         required_skills: list[str] | None = None,
         enforce_certification: bool = False,
+        mission_id: str | None = None,
+        mission_step: int | None = None,
+        mission_role: str | None = None,
     ) -> ModelContext:
         """Select agents and forward the ModelContext."""
         ctx = self._prepare_context(
@@ -331,6 +365,9 @@ class TaskDispatcherService:
             deadline,
             required_skills,
             enforce_certification,
+            mission_id,
+            mission_step,
+            mission_role,
         )
         ctx.dispatch_state = "running"
         ctx = self._execute_context(ctx, mode, enforce_certification)
@@ -348,6 +385,9 @@ class TaskDispatcherService:
         deadline: str | None = None,
         required_skills: list[str] | None = None,
         enforce_certification: bool = False,
+        mission_id: str | None = None,
+        mission_step: int | None = None,
+        mission_role: str | None = None,
     ) -> ModelContext:
         ctx = self._prepare_context(
             task,
@@ -358,6 +398,9 @@ class TaskDispatcherService:
             deadline,
             required_skills,
             enforce_certification,
+            mission_id,
+            mission_step,
+            mission_role,
         )
         ctx.dispatch_state = "queued"
         self.queue.enqueue(ctx)
@@ -527,6 +570,50 @@ class TaskDispatcherService:
                 )
         except Exception:
             pass
+
+    def _record_mission_progress(self, ctx: ModelContext) -> None:
+        from datetime import datetime
+        from core.missions import AgentMission
+        from core.rewards import grant_rewards
+
+        mission = AgentMission.load(ctx.mission_id or "")
+        if not mission or not ctx.agents:
+            return
+        agent_id = ctx.agents[0].agent_id
+        profile = AgentIdentity.load(agent_id)
+        progress = profile.mission_progress.get(ctx.mission_id, {"step": 0, "status": "in_progress"})
+        if ctx.mission_step is not None and ctx.mission_step + 1 > progress.get("step", 0):
+            progress["step"] = ctx.mission_step + 1
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="mission_step_completed",
+                    context_id=ctx.uuid,
+                    detail={"mission": ctx.mission_id, "agent": agent_id, "step": ctx.mission_step},
+                )
+            )
+            ctx.audit_trace.append(log_id)
+        if progress.get("step", 0) >= len(mission.steps):
+            progress["status"] = "complete"
+            if ctx.mission_id in profile.active_missions:
+                profile.active_missions.remove(ctx.mission_id)
+            grant_rewards(agent_id, mission.rewards)
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="mission_completed",
+                    context_id=ctx.uuid,
+                    detail={"mission": ctx.mission_id, "agent": agent_id},
+                )
+            )
+            ctx.audit_trace.append(log_id)
+        else:
+            if ctx.mission_id not in profile.active_missions:
+                profile.active_missions.append(ctx.mission_id)
+        profile.mission_progress[ctx.mission_id] = progress
+        profile.save()
 
     def _update_status(self, agent_name: str, duration: float) -> None:
         """Send runtime metrics to the registry."""

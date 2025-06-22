@@ -70,6 +70,9 @@ class ModelContext(BaseModel):
     priority: Optional[int] = None
     submitted_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
     dispatch_state: Literal["queued", "running", "expired", "completed"] = "queued"
+    mission_id: str | None = None
+    mission_step: int | None = None
+    mission_role: str | None = None
 
 
 class TaskContext(BaseModel):

@@ -35,6 +35,8 @@ class AgentIdentity:
     feedback_log: List[Dict[str, Any]] = field(default_factory=list)
     trusted_by: List[str] = field(default_factory=list)
     endorsements: List[Dict[str, Any]] = field(default_factory=list)
+    active_delegations: List[Dict[str, Any]] = field(default_factory=list)
+    delegated_by: List[str] = field(default_factory=list)
 
     @classmethod
     def load(cls, name: str) -> "AgentIdentity":
@@ -65,6 +67,8 @@ class AgentIdentity:
                     feedback_log=[],
                     trusted_by=[],
                     endorsements=[],
+                    active_delegations=[],
+                    delegated_by=[],
                 )
             )
             defaults.update(data)
@@ -90,6 +94,8 @@ class AgentIdentity:
             feedback_log=[],
             trusted_by=[],
             endorsements=[],
+            active_delegations=[],
+            delegated_by=[],
         )
 
     def save(self) -> None:

@@ -74,6 +74,7 @@ class ModelContext(BaseModel):
     mission_id: str | None = None
     mission_step: int | None = None
     mission_role: str | None = None
+    delegate_info: Dict[str, Any] | None = None
 
 
 class TaskContext(BaseModel):

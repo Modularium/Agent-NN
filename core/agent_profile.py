@@ -26,6 +26,9 @@ class AgentIdentity:
     training_log: List[Dict[str, Any]] = field(default_factory=list)
     current_level: Optional[str] = None
     level_progress: Dict[str, Any] = field(default_factory=dict)
+    team_id: Optional[str] = None
+    team_role: Optional[str] = None
+    shared_memory_scope: Optional[str] = None
 
     @classmethod
     def load(cls, name: str) -> "AgentIdentity":
@@ -47,6 +50,9 @@ class AgentIdentity:
                     training_log=[],
                     current_level=None,
                     level_progress={},
+                    team_id=None,
+                    team_role=None,
+                    shared_memory_scope=None,
                 )
             )
             defaults.update(data)
@@ -63,6 +69,9 @@ class AgentIdentity:
             training_log=[],
             current_level=None,
             level_progress={},
+            team_id=None,
+            team_role=None,
+            shared_memory_scope=None,
         )
 
     def save(self) -> None:

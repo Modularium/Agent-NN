@@ -19,10 +19,11 @@ from .privacy import AccessLevel
 
 
 class AccessText(BaseModel):
-    """Text content tagged with an access level."""
+    """Text content tagged with an access level and permissions."""
 
     text: str
     access: AccessLevel = AccessLevel.PUBLIC
+    permissions: list[str] = Field(default_factory=list)
 
 
 class AgentRunContext(BaseModel):
@@ -83,7 +84,9 @@ class TaskContext(BaseModel):
             return AccessText(text=v)
         if isinstance(v, dict) and "text" in v:
             return AccessText(
-                text=v.get("text", ""), access=AccessLevel(v.get("access", "public"))
+                text=v.get("text", ""),
+                access=AccessLevel(v.get("access", "public")),
+                permissions=v.get("permissions", []),
             )
         return v
 
@@ -100,7 +103,11 @@ class TaskContext(BaseModel):
             text = v.get("text", "")
             if len(text) > limit:
                 raise ValueError("text too long")
-            return AccessText(text=text, access=AccessLevel(v.get("access", "public")))
+            return AccessText(
+                text=text,
+                access=AccessLevel(v.get("access", "public")),
+                permissions=v.get("permissions", []),
+            )
         return v
 
 

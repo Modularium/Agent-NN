@@ -12,6 +12,8 @@ from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 from core.model_context import ModelContext
 from core.audit_log import AuditLog, AuditEntry
 from core.crypto import sign_payload
+from core.access_control import is_authorized
+from core.agent_profile import AgentIdentity
 
 
 class SampleAgentService:
@@ -30,6 +32,15 @@ class SampleAgentService:
 
     def run(self, ctx: ModelContext) -> ModelContext:
         """Invoke the LLM Gateway and return the updated context."""
+        profile = AgentIdentity.load("sample_agent")
+        if not is_authorized(
+            "sample_agent",
+            profile.role,
+            "write_output",
+            ctx.task_context.task_type if ctx.task_context else "",
+        ):
+            ctx.warning = "unauthorized"
+            return ctx
         start_id = self.audit.write(
             AuditEntry(
                 timestamp=datetime.utcnow().isoformat(),

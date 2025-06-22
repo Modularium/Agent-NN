@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -21,6 +21,7 @@ class AgentIdentity:
     estimated_cost_per_token: float = 0.0
     avg_response_time: float = 0.0
     load_factor: float = 0.0
+    certified_skills: List[Dict[str, Any]] = field(default_factory=list)
 
     @classmethod
     def load(cls, name: str) -> "AgentIdentity":
@@ -37,6 +38,7 @@ class AgentIdentity:
                     skills=[],
                     memory_index=None,
                     created_at=datetime.now().isoformat(),
+                    certified_skills=[],
                 )
             )
             defaults.update(data)
@@ -48,6 +50,7 @@ class AgentIdentity:
             skills=[],
             memory_index=None,
             created_at=datetime.now().isoformat(),
+            certified_skills=[],
         )
 
     def save(self) -> None:

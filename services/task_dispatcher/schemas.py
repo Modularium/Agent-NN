@@ -14,3 +14,5 @@ class TaskRequest(TaskContext):
     max_tokens: int | None = Field(default=None)
     priority: int | None = Field(default=None)
     deadline: str | None = Field(default=None)
+    required_skills: list[str] | None = Field(default=None)
+    enforce_certification: bool = Field(default=False)

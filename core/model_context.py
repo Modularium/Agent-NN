@@ -62,6 +62,8 @@ class ModelContext(BaseModel):
     token_spent: int = 0
     applied_limits: Dict[str, Any] = Field(default_factory=dict)
     warning: Optional[str] = None
+    required_skills: List[str] | None = None
+    enforce_certification: bool = False
     signed_by: Optional[str] = None
     signature: Optional[str] = None
     deadline: Optional[str] = None

@@ -18,6 +18,8 @@ from core.model_context import AgentRunContext, ModelContext, TaskContext
 from core.privacy_filter import filter_permissions, redact_context
 from core.roles import resolve_roles
 from core.trust_evaluator import calculate_trust, update_trust_usage
+from core.agent_profile import AgentIdentity
+from core.skill_matcher import match_agent_to_task
 from core.role_capabilities import apply_role_capabilities, ROLE_CAPABILITIES
 
 from .config import settings
@@ -145,6 +147,23 @@ class TaskDispatcherService:
             return False
         return True
 
+    def _skills_allowed(self, agent: dict[str, Any], ctx: ModelContext) -> bool:
+        profile = AgentIdentity.load(agent["name"])
+        allowed = match_agent_to_task(profile, ctx.required_skills or [])
+        if not allowed:
+            ctx.warning = "missing_skills"
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="skill_check_failed",
+                    context_id=ctx.uuid,
+                    detail={"agent": agent["name"], "skills": ctx.required_skills},
+                )
+            )
+            ctx.audit_trace.append(log_id)
+        return allowed
+
     def _prepare_context(
         self,
         task: TaskContext,
@@ -153,6 +172,8 @@ class TaskDispatcherService:
         max_tokens: int | None,
         priority: int | None = None,
         deadline: str | None = None,
+        required_skills: list[str] | None = None,
+        enforce_certification: bool = False,
     ) -> ModelContext:
         history: List[dict] = []
         memory: List[dict] = []
@@ -180,6 +201,8 @@ class TaskDispatcherService:
             token_spent=token_spent,
             priority=priority,
             deadline=deadline,
+            required_skills=required_skills,
+            enforce_certification=enforce_certification,
         )
         log_id = self.audit.write(
             AuditEntry(
@@ -193,9 +216,15 @@ class TaskDispatcherService:
         ctx.audit_trace.append(log_id)
         return ctx
 
-    def _execute_context(self, ctx: ModelContext, mode: str) -> ModelContext:
+    def _execute_context(
+        self, ctx: ModelContext, mode: str, enforce_certification: bool = False
+    ) -> ModelContext:
         agents = self._fetch_agents(ctx.task_context.task_type)
         agents = [a for a in agents if self._governance_allowed(a, ctx)]
+        if ctx.required_skills:
+            agents = [a for a in agents if self._skills_allowed(a, ctx)]
+            if enforce_certification and not agents:
+                return ctx
         if not agents:
             ctx.warning = "no eligible agents"
             return ctx
@@ -231,7 +260,9 @@ class TaskDispatcherService:
                 ctx.metrics = arc.metrics
                 if arc.metrics:
                     limit = ctx.applied_limits.get("max_tokens", ctx.max_tokens or 0)
-                    update_trust_usage(agent["name"], int(arc.metrics.get("tokens_used", 0)), limit)
+                    update_trust_usage(
+                        agent["name"], int(arc.metrics.get("tokens_used", 0)), limit
+                    )
         elif mode == "coalition":
             coalition = self._init_coalition(
                 ctx.task_context.description or "",
@@ -287,13 +318,22 @@ class TaskDispatcherService:
         max_tokens: int | None = None,
         priority: int | None = None,
         deadline: str | None = None,
+        required_skills: list[str] | None = None,
+        enforce_certification: bool = False,
     ) -> ModelContext:
         """Select agents and forward the ModelContext."""
         ctx = self._prepare_context(
-            task, session_id, task_value, max_tokens, priority, deadline
+            task,
+            session_id,
+            task_value,
+            max_tokens,
+            priority,
+            deadline,
+            required_skills,
+            enforce_certification,
         )
         ctx.dispatch_state = "running"
-        ctx = self._execute_context(ctx, mode)
+        ctx = self._execute_context(ctx, mode, enforce_certification)
         ctx.dispatch_state = "completed"
         return ctx
 
@@ -306,9 +346,18 @@ class TaskDispatcherService:
         max_tokens: int | None = None,
         priority: int | None = None,
         deadline: str | None = None,
+        required_skills: list[str] | None = None,
+        enforce_certification: bool = False,
     ) -> ModelContext:
         ctx = self._prepare_context(
-            task, session_id, task_value, max_tokens, priority, deadline
+            task,
+            session_id,
+            task_value,
+            max_tokens,
+            priority,
+            deadline,
+            required_skills,
+            enforce_certification,
         )
         ctx.dispatch_state = "queued"
         self.queue.enqueue(ctx)
@@ -319,7 +368,7 @@ class TaskDispatcherService:
         ctx = self.queue.dequeue()
         if not ctx:
             return None
-        ctx = self._execute_context(ctx, mode)
+        ctx = self._execute_context(ctx, mode, ctx.enforce_certification)
         ctx.dispatch_state = "completed"
         return ctx
 

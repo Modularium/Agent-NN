@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 from dataclasses import asdict
+from datetime import datetime
 from pathlib import Path
 
 import mlflow
@@ -13,7 +14,8 @@ import typer
 from core.access_control import is_authorized
 from core.agent_evolution import evolve_profile
 from core.agent_profile import AgentIdentity
-from core.audit_log import AuditLog
+from core.audit_log import AuditEntry, AuditLog
+from core.skills import load_skill
 from core.crypto import generate_keypair, verify_signature
 from core.governance import AgentContract
 from core.model_context import ModelContext, TaskContext
@@ -219,6 +221,46 @@ def agent_elevate(name: str, to: str = typer.Option(..., "--to")) -> None:
         contract.allowed_roles.append(to)
         contract.save()
     typer.echo("elevated")
+
+
+@agent_app.command("skill")
+def agent_skill(name: str) -> None:
+    """Show certified skills for an agent."""
+
+    profile = AgentIdentity.load(name)
+    typer.echo(json.dumps(profile.certified_skills, indent=2))
+
+
+@agent_app.command("certify")
+def agent_certify(name: str, skill: str = typer.Option(..., "--skill")) -> None:
+    """Grant SKILL certification to AGENT."""
+
+    profile = AgentIdentity.load(name)
+    skill_def = load_skill(skill)
+    if not skill_def:
+        typer.echo("skill not found")
+        raise typer.Exit(code=1)
+    cert = {
+        "id": skill_def.id,
+        "granted_at": datetime.utcnow().isoformat() + "Z",
+        "expires_at": skill_def.expires_at,
+    }
+    profile.certified_skills = [
+        c for c in profile.certified_skills if c.get("id") != skill_def.id
+    ]
+    profile.certified_skills.append(cert)
+    profile.save()
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor="cli",
+            action="certification_granted",
+            context_id=name,
+            detail={"skill": skill_def.id},
+        )
+    )
+    typer.echo("granted")
 
 
 @role_app.command("limits")

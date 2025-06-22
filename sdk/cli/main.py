@@ -48,6 +48,7 @@ task_app = typer.Typer(name="task", help="Task utilities")
 training_app = typer.Typer(name="training", help="Training management")
 coach_app = typer.Typer(name="coach", help="Coach utilities")
 track_app = typer.Typer(name="track", help="Training track info")
+mission_app = typer.Typer(name="mission", help="Mission management")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -64,6 +65,7 @@ app.add_typer(task_app)
 app.add_typer(training_app)
 app.add_typer(coach_app)
 app.add_typer(track_app)
+app.add_typer(mission_app)
 
 agent_app.add_typer(agent_contract_app)
 
@@ -322,6 +324,99 @@ def training_progress(agent: str) -> None:
     """Show training progress for AGENT."""
     profile = AgentIdentity.load(agent)
     typer.echo(json.dumps(profile.training_progress, indent=2))
+
+
+@mission_app.command("start")
+def mission_start(mission_id: str, agent: str = typer.Option(..., "--agent")) -> None:
+    """Assign MISSION_ID to AGENT."""
+    profile = AgentIdentity.load(agent)
+    profile.active_missions.append(mission_id)
+    profile.mission_progress[mission_id] = {"step": 0, "status": "in_progress"}
+    profile.save()
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor="cli",
+            action="mission_started",
+            context_id=agent,
+            detail={"mission": mission_id},
+        )
+    )
+    typer.echo("started")
+
+
+@mission_app.command("progress")
+def mission_progress(agent: str) -> None:
+    """Show mission progress for AGENT."""
+    profile = AgentIdentity.load(agent)
+    typer.echo(json.dumps(profile.mission_progress, indent=2))
+
+
+@mission_app.command("step")
+def mission_step(agent: str) -> None:
+    """Display next mission step for AGENT."""
+    profile = AgentIdentity.load(agent)
+    if not profile.active_missions:
+        typer.echo("no mission")
+        raise typer.Exit(code=1)
+    mid = profile.active_missions[0]
+    from core.missions import AgentMission
+    from core.mission_prompts import render_prompt
+
+    mission = AgentMission.load(mid)
+    if not mission:
+        typer.echo("missing mission")
+        raise typer.Exit(code=1)
+    step_idx = profile.mission_progress.get(mid, {}).get("step", 0)
+    if step_idx >= len(mission.steps):
+        typer.echo("mission complete")
+        return
+    prompt = render_prompt(profile, mission.steps[step_idx], {"goal": mission.title})
+    typer.echo(prompt)
+
+
+@mission_app.command("complete")
+def mission_complete(agent: str) -> None:
+    """Complete active mission if finished."""
+    from core.missions import AgentMission
+    from core.rewards import grant_rewards
+
+    profile = AgentIdentity.load(agent)
+    if not profile.active_missions:
+        typer.echo("no mission")
+        raise typer.Exit(code=1)
+    mid = profile.active_missions[0]
+    mission = AgentMission.load(mid)
+    progress = profile.mission_progress.get(mid, {"step": 0})
+    if progress.get("step", 0) >= len(mission.steps):
+        grant_rewards(agent, mission.rewards)
+        profile.active_missions.remove(mid)
+        progress["status"] = "complete"
+        profile.mission_progress[mid] = progress
+        profile.save()
+        log = AuditLog()
+        log.write(
+            AuditEntry(
+                timestamp=datetime.utcnow().isoformat(),
+                actor="cli",
+                action="mission_completed",
+                context_id=agent,
+                detail={"mission": mid},
+            )
+        )
+        log.write(
+            AuditEntry(
+                timestamp=datetime.utcnow().isoformat(),
+                actor="cli",
+                action="reward_unlocked",
+                context_id=agent,
+                detail=mission.rewards,
+            )
+        )
+        typer.echo("completed")
+    else:
+        typer.echo("not finished")
 
 
 @track_app.command("show")

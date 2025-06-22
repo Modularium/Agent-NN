@@ -29,6 +29,8 @@ class AgentIdentity:
     team_id: Optional[str] = None
     team_role: Optional[str] = None
     shared_memory_scope: Optional[str] = None
+    active_missions: List[str] = field(default_factory=list)
+    mission_progress: Dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def load(cls, name: str) -> "AgentIdentity":
@@ -53,6 +55,8 @@ class AgentIdentity:
                     team_id=None,
                     team_role=None,
                     shared_memory_scope=None,
+                    active_missions=[],
+                    mission_progress={},
                 )
             )
             defaults.update(data)
@@ -72,6 +76,8 @@ class AgentIdentity:
             team_id=None,
             team_role=None,
             shared_memory_scope=None,
+            active_missions=[],
+            mission_progress={},
         )
 
     def save(self) -> None:

@@ -51,6 +51,7 @@ class ModelContext(BaseModel):
     agent_selection: Optional[str] = None
     result: Optional[Any] = None
     metrics: Optional[Dict[str, float]] = None
+    audit_trace: List[str] = []
     agents: List["AgentRunContext"] = []
     memory: Optional[List[AccessText]] = None
     aggregated_result: Optional[Any] = None

@@ -17,6 +17,7 @@ from core.trust_evaluator import calculate_trust
 from core.model_context import ModelContext, TaskContext
 from core.privacy_filter import redact_context
 from core.privacy import AccessLevel
+from core.audit_log import AuditLog
 
 from .. import __version__
 from ..client import AgentClient
@@ -35,6 +36,7 @@ queue_app = typer.Typer(name="queue", help="Queue management")
 contract_app = typer.Typer(name="contract", help="Governance contracts")
 trust_app = typer.Typer(name="trust", help="Trust management")
 privacy_app = typer.Typer(name="privacy", help="Privacy tools")
+audit_app = typer.Typer(name="audit", help="Audit utilities")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -44,6 +46,7 @@ app.add_typer(queue_app)
 app.add_typer(contract_app)
 app.add_typer(trust_app)
 app.add_typer(privacy_app)
+app.add_typer(audit_app)
 
 agent_app.add_typer(agent_contract_app)
 
@@ -287,6 +290,34 @@ def privacy_preview(agent: str, task_file: str) -> None:
     contract = AgentContract.load(agent)
     filtered = redact_context(ctx, contract.max_access_level)
     typer.echo(json.dumps(filtered.model_dump(), indent=2))
+
+
+@audit_app.command("view")
+def audit_view(context_id: str) -> None:
+    """Show audit entries for a context."""
+    log = AuditLog()
+    typer.echo(json.dumps(log.by_context(context_id), indent=2))
+
+
+@audit_app.command("log")
+def audit_log(date: str) -> None:
+    """Print all entries for a date."""
+    log = AuditLog()
+    typer.echo(json.dumps(log.read_file(date), indent=2))
+
+
+@audit_app.command("violations")
+def audit_violations() -> None:
+    """Show logged access violations."""
+    log = AuditLog()
+    entries = []
+    for file in log.log_dir.glob("audit_*.log.jsonl"):
+        entries.extend(
+            e
+            for e in log.read_file(file.stem.replace("audit_", ""))
+            if e.get("detail", {}).get("access_violated")
+        )
+    typer.echo(json.dumps(entries, indent=2))
 
 
 @agent_contract_app.command("set-access")

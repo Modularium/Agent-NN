@@ -18,9 +18,9 @@ class AgentContract:
     agent: str
     allowed_roles: List[str]
     max_tokens: int
-    max_access_level: AccessLevel = AccessLevel.INTERNAL
     trust_level_required: float
     constraints: Dict[str, Any]
+    max_access_level: AccessLevel = AccessLevel.INTERNAL
 
     @classmethod
     def load(cls, agent: str) -> "AgentContract":

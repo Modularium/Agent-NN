@@ -121,4 +121,5 @@
     "codex/phase-3-role-resource-limits": true,
     "codex/phase-3-skill-certification": true,
     "codex/phase-3-agent-learning": true,
+    "codex/phase-3-agent-career-tracks": true
 }

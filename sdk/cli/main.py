@@ -21,8 +21,8 @@ from core.model_context import ModelContext, TaskContext
 from core.privacy import AccessLevel
 from core.privacy_filter import redact_context
 from core.skills import load_skill
-from core.training import load_training_path
 from core.trust_evaluator import auto_certify, calculate_trust, eligible_for_role
+from core.level_evaluator import check_level_up
 
 from .. import __version__
 from ..client import AgentClient
@@ -47,6 +47,7 @@ role_app = typer.Typer(name="role", help="Role utilities")
 task_app = typer.Typer(name="task", help="Task utilities")
 training_app = typer.Typer(name="training", help="Training management")
 coach_app = typer.Typer(name="coach", help="Coach utilities")
+track_app = typer.Typer(name="track", help="Training track info")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -62,6 +63,7 @@ app.add_typer(role_app)
 app.add_typer(task_app)
 app.add_typer(training_app)
 app.add_typer(coach_app)
+app.add_typer(track_app)
 
 agent_app.add_typer(agent_contract_app)
 
@@ -268,6 +270,34 @@ def agent_certify(name: str, skill: str = typer.Option(..., "--skill")) -> None:
     typer.echo("granted")
 
 
+@agent_app.command("level")
+def agent_level(name: str) -> None:
+    """Show level information for AGENT."""
+
+    profile = AgentIdentity.load(name)
+    typer.echo(
+        json.dumps(
+            {
+                "current_level": profile.current_level,
+                "progress": profile.level_progress,
+            },
+            indent=2,
+        )
+    )
+
+
+@agent_app.command("promote")
+def agent_promote(name: str) -> None:
+    """Manually trigger level evaluation."""
+
+    profile = AgentIdentity.load(name)
+    new_level = check_level_up(profile)
+    if new_level:
+        typer.echo(f"promoted to {new_level}")
+    else:
+        typer.echo("no change")
+
+
 @training_app.command("start")
 def training_start(agent: str, path: str = typer.Option(..., "--path")) -> None:
     """Start a training path for an agent."""
@@ -292,6 +322,19 @@ def training_progress(agent: str) -> None:
     """Show training progress for AGENT."""
     profile = AgentIdentity.load(agent)
     typer.echo(json.dumps(profile.training_progress, indent=2))
+
+
+@track_app.command("show")
+def track_show() -> None:
+    """List available training paths."""
+
+    from core.training import TRAINING_DIR
+
+    paths = []
+    for file in TRAINING_DIR.glob("*.json"):
+        with open(file, "r", encoding="utf-8") as fh:
+            paths.append(json.load(fh))
+    typer.echo(json.dumps(paths, indent=2))
 
 
 @coach_app.command("evaluate")

@@ -24,6 +24,8 @@ class AgentIdentity:
     certified_skills: List[Dict[str, Any]] = field(default_factory=list)
     training_progress: Dict[str, str] = field(default_factory=dict)
     training_log: List[Dict[str, Any]] = field(default_factory=list)
+    current_level: Optional[str] = None
+    level_progress: Dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def load(cls, name: str) -> "AgentIdentity":
@@ -43,6 +45,8 @@ class AgentIdentity:
                     certified_skills=[],
                     training_progress={},
                     training_log=[],
+                    current_level=None,
+                    level_progress={},
                 )
             )
             defaults.update(data)
@@ -57,6 +61,8 @@ class AgentIdentity:
             certified_skills=[],
             training_progress={},
             training_log=[],
+            current_level=None,
+            level_progress={},
         )
 
     def save(self) -> None:

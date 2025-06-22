@@ -18,6 +18,9 @@ class AgentIdentity:
     skills: List[str]
     memory_index: Optional[str]
     created_at: str
+    estimated_cost_per_token: float = 0.0
+    avg_response_time: float = 0.0
+    load_factor: float = 0.0
 
     @classmethod
     def load(cls, name: str) -> "AgentIdentity":
@@ -26,7 +29,18 @@ class AgentIdentity:
         if path.exists():
             with open(path, encoding="utf-8") as fh:
                 data = json.load(fh)
-            return cls(**data)
+            defaults = asdict(
+                cls(
+                    name=name,
+                    role="",
+                    traits={},
+                    skills=[],
+                    memory_index=None,
+                    created_at=datetime.now().isoformat(),
+                )
+            )
+            defaults.update(data)
+            return cls(**defaults)
         return cls(
             name=name,
             role="",
@@ -41,3 +55,21 @@ class AgentIdentity:
         path = PROFILE_DIR / f"{self.name}.json"
         with open(path, "w", encoding="utf-8") as fh:
             json.dump(asdict(self), fh, indent=2)
+
+    def update_metrics(
+        self,
+        cost_per_token: float | None = None,
+        response_time: float | None = None,
+        tasks_in_progress: int | None = None,
+    ) -> None:
+        """Update economic metrics and persist profile."""
+        if cost_per_token is not None:
+            self.estimated_cost_per_token = cost_per_token
+        if response_time is not None:
+            if self.avg_response_time:
+                self.avg_response_time = (self.avg_response_time + response_time) / 2
+            else:
+                self.avg_response_time = response_time
+        if tasks_in_progress is not None:
+            self.load_factor = min(1.0, tasks_in_progress / 10)
+        self.save()

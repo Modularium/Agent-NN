@@ -111,5 +111,6 @@
   "codex/phase-2-agent-communication": true,
   "codex/phase-2-agent-identity": true,
   "codex/phase-2-agent-evolution": true,
-  "codex/phase-2-agent-coalition": true
+  "codex/phase-2-agent-coalition": true,
+  "codex/phase-2-agent-economy": true
 }

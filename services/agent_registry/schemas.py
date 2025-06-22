@@ -18,6 +18,9 @@ class AgentInfo(BaseModel):
     role: str | None = None
     traits: Dict[str, Any] = Field(default_factory=dict)
     skills: list[str] = Field(default_factory=list)
+    estimated_cost_per_token: float = 0.0
+    avg_response_time: float = 0.0
+    load_factor: float = 0.0
 
 
 class AgentList(BaseModel):

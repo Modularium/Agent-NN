@@ -24,6 +24,9 @@ async def list_agents() -> AgentList:
         info.role = profile.role or info.role
         info.traits = {"summary": profile.traits.get("summary", "")}
         info.skills = profile.skills[:3]
+        info.estimated_cost_per_token = profile.estimated_cost_per_token
+        info.avg_response_time = profile.avg_response_time
+        info.load_factor = profile.load_factor
         agents.append(info)
     return AgentList(agents=agents)
 
@@ -67,3 +70,32 @@ async def update_agent_profile(agent_name: str, data: dict) -> dict:
         profile.skills = skills
     profile.save()
     return asdict(profile)
+
+
+@api_route(version="v1.0.0")
+@router.post("/agent_status/{agent_name}")
+async def update_agent_status(agent_name: str, data: dict) -> dict:
+    """Update runtime status for an agent."""
+    service.update_status(agent_name, data)
+    profile = AgentIdentity.load(agent_name)
+    profile.update_metrics(
+        response_time=data.get("last_response_duration"),
+        tasks_in_progress=data.get("tasks_in_progress"),
+    )
+    return {"status": "ok"}
+
+
+@api_route(version="v1.0.0")
+@router.get("/agent_status/{agent_name}")
+async def get_agent_status(agent_name: str) -> dict:
+    """Return current runtime status for an agent."""
+    status = service.get_status(agent_name) or {}
+    profile = AgentIdentity.load(agent_name)
+    status.update(
+        {
+            "estimated_cost_per_token": profile.estimated_cost_per_token,
+            "avg_response_time": profile.avg_response_time,
+            "load_factor": profile.load_factor,
+        }
+    )
+    return status

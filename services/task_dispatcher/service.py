@@ -9,6 +9,8 @@ import httpx
 from core.dispatch_queue import DispatchQueue
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 from core.model_context import AgentRunContext, ModelContext, TaskContext
+from core.governance import AgentContract
+from core.trust_evaluator import calculate_trust
 
 from .config import settings
 
@@ -28,6 +30,21 @@ class TaskDispatcherService:
         self.coordinator_url = (coordinator_url or settings.coordinator_url).rstrip("/")
         self.coalition_url = (coalition_url or settings.coalition_url).rstrip("/")
         self.queue = DispatchQueue()
+
+    def _governance_allowed(self, agent: dict[str, Any], ctx: ModelContext) -> bool:
+        contract = AgentContract.load(agent["name"])
+        history = ctx.task_context.preferences.get("history", []) if ctx.task_context and ctx.task_context.preferences else []
+        trust = calculate_trust(agent["name"], history)
+        if trust < contract.trust_level_required:
+            ctx.warning = "trust level too low"
+            return False
+        if contract.allowed_roles and agent.get("role") not in contract.allowed_roles:
+            ctx.warning = "role not allowed"
+            return False
+        if ctx.max_tokens and contract.max_tokens and ctx.max_tokens > contract.max_tokens:
+            ctx.warning = "token limit exceeded"
+            return False
+        return True
 
     def _prepare_context(
         self,
@@ -69,6 +86,10 @@ class TaskDispatcherService:
 
     def _execute_context(self, ctx: ModelContext, mode: str) -> ModelContext:
         agents = self._fetch_agents(ctx.task_context.task_type)
+        agents = [a for a in agents if self._governance_allowed(a, ctx)]
+        if not agents:
+            ctx.warning = "no eligible agents"
+            return ctx
         if ctx.task_value is not None:
             for a in agents:
                 cost = a.get("estimated_cost_per_token", 0.0) or 1e-6

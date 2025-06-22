@@ -64,6 +64,7 @@ class ModelContext(BaseModel):
     warning: Optional[str] = None
     required_skills: List[str] | None = None
     enforce_certification: bool = False
+    require_endorsement: bool = False
     signed_by: Optional[str] = None
     signature: Optional[str] = None
     deadline: Optional[str] = None

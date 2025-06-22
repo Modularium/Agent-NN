@@ -33,6 +33,8 @@ class AgentIdentity:
     mission_progress: Dict[str, Any] = field(default_factory=dict)
     reputation_score: float = 0.0
     feedback_log: List[Dict[str, Any]] = field(default_factory=list)
+    trusted_by: List[str] = field(default_factory=list)
+    endorsements: List[Dict[str, Any]] = field(default_factory=list)
 
     @classmethod
     def load(cls, name: str) -> "AgentIdentity":
@@ -61,6 +63,8 @@ class AgentIdentity:
                     mission_progress={},
                     reputation_score=0.0,
                     feedback_log=[],
+                    trusted_by=[],
+                    endorsements=[],
                 )
             )
             defaults.update(data)
@@ -84,6 +88,8 @@ class AgentIdentity:
             mission_progress={},
             reputation_score=0.0,
             feedback_log=[],
+            trusted_by=[],
+            endorsements=[],
         )
 
     def save(self) -> None:

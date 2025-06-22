@@ -177,6 +177,26 @@ class TaskDispatcherService:
             ctx.audit_trace.append(log_id)
         return allowed
 
+    def _endorsement_allowed(self, agent: dict[str, Any], ctx: ModelContext) -> bool:
+        if not ctx.require_endorsement:
+            return True
+        from core.trust_circle import is_trusted_for
+
+        if is_trusted_for(agent["name"], agent.get("role", "")):
+            return True
+        ctx.warning = "endorsement_missing"
+        log_id = self.audit.write(
+            AuditEntry(
+                timestamp=datetime.utcnow().isoformat(),
+                actor="dispatcher",
+                action="endorsement_missing",
+                context_id=ctx.uuid,
+                detail={"agent": agent["name"], "role": agent.get("role")},
+            )
+        )
+        ctx.audit_trace.append(log_id)
+        return False
+
     def _prepare_context(
         self,
         task: TaskContext,
@@ -187,6 +207,7 @@ class TaskDispatcherService:
         deadline: str | None = None,
         required_skills: list[str] | None = None,
         enforce_certification: bool = False,
+        require_endorsement: bool = False,
         mission_id: str | None = None,
         mission_step: int | None = None,
         mission_role: str | None = None,
@@ -211,7 +232,11 @@ class TaskDispatcherService:
             from core.missions import AgentMission
 
             mission = AgentMission.load(mission_id)
-            if mission and mission_step is not None and 0 <= mission_step < len(mission.steps):
+            if (
+                mission
+                and mission_step is not None
+                and 0 <= mission_step < len(mission.steps)
+            ):
                 step = mission.steps[mission_step]
                 required_skills = required_skills or step.get("skill_required")
                 deadline = deadline or step.get("deadline")
@@ -229,6 +254,7 @@ class TaskDispatcherService:
             deadline=deadline,
             required_skills=required_skills,
             enforce_certification=enforce_certification,
+            require_endorsement=require_endorsement,
             mission_id=mission_id,
             mission_step=mission_step,
             mission_role=mission_role,
@@ -250,6 +276,7 @@ class TaskDispatcherService:
     ) -> ModelContext:
         agents = self._fetch_agents(ctx.task_context.task_type)
         agents = [a for a in agents if self._governance_allowed(a, ctx)]
+        agents = [a for a in agents if self._endorsement_allowed(a, ctx)]
         if ctx.required_skills:
             agents = [a for a in agents if self._skills_allowed(a, ctx)]
             if enforce_certification and not agents:
@@ -351,6 +378,7 @@ class TaskDispatcherService:
         deadline: str | None = None,
         required_skills: list[str] | None = None,
         enforce_certification: bool = False,
+        require_endorsement: bool = False,
         mission_id: str | None = None,
         mission_step: int | None = None,
         mission_role: str | None = None,
@@ -365,6 +393,7 @@ class TaskDispatcherService:
             deadline,
             required_skills,
             enforce_certification,
+            require_endorsement,
             mission_id,
             mission_step,
             mission_role,
@@ -385,6 +414,7 @@ class TaskDispatcherService:
         deadline: str | None = None,
         required_skills: list[str] | None = None,
         enforce_certification: bool = False,
+        require_endorsement: bool = False,
         mission_id: str | None = None,
         mission_step: int | None = None,
         mission_role: str | None = None,
@@ -398,6 +428,7 @@ class TaskDispatcherService:
             deadline,
             required_skills,
             enforce_certification,
+            require_endorsement,
             mission_id,
             mission_step,
             mission_role,
@@ -581,8 +612,12 @@ class TaskDispatcherService:
             return
         agent_id = ctx.agents[0].agent_id
         profile = AgentIdentity.load(agent_id)
-        progress = profile.mission_progress.get(ctx.mission_id, {"step": 0, "status": "in_progress"})
-        if ctx.mission_step is not None and ctx.mission_step + 1 > progress.get("step", 0):
+        progress = profile.mission_progress.get(
+            ctx.mission_id, {"step": 0, "status": "in_progress"}
+        )
+        if ctx.mission_step is not None and ctx.mission_step + 1 > progress.get(
+            "step", 0
+        ):
             progress["step"] = ctx.mission_step + 1
             log_id = self.audit.write(
                 AuditEntry(
@@ -590,7 +625,11 @@ class TaskDispatcherService:
                     actor="dispatcher",
                     action="mission_step_completed",
                     context_id=ctx.uuid,
-                    detail={"mission": ctx.mission_id, "agent": agent_id, "step": ctx.mission_step},
+                    detail={
+                        "mission": ctx.mission_id,
+                        "agent": agent_id,
+                        "step": ctx.mission_step,
+                    },
                 )
             )
             ctx.audit_trace.append(log_id)

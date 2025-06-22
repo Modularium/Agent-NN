@@ -11,7 +11,7 @@ Der begleitende *Entwicklungsplan für das Agent-NN Framework* beschreibt vier a
 
 ## Rollen und Zuständigkeiten
 
-### 🏗 Architekt-Agent (Phase 1: Analyse)  
+### 🏗 Architect (Architekt-Agent, Phase 1: Analyse)
 **Aufgaben:** Versteht die bestehende Systemarchitektur vollständig. Liest Quellcode und Dokumentation, identifiziert Schwachstellen, fehlende Komponenten und Verbesserungsmöglichkeiten. Dokumentiert die Analyseergebnisse (z.B. in Form eines Berichts oder Kommentaren im Code).  
 **Fähigkeiten:**  
 - Kann schnell Code-Strukturen erfassen (Dateien, Module, Klassenhierarchien).  
@@ -19,7 +19,7 @@ Der begleitende *Entwicklungsplan für das Agent-NN Framework* beschreibt vier a
 - Formuliert klar Verbesserungsvorschläge (in Deutsch) und begründet diese.  
 **Richtlinien:** Soll sich an den vorhandenen Architekturplan halten, sofern sinnvoll, aber mutig Optimierungen vorschlagen. Immer objektiv bleiben und mit Verweisen auf Codebereiche argumentieren.
 
-### 📋 Planer-Agent (Phase 2: Planung)  
+### 📋 Planner (Planer-Agent, Phase 2: Planung)
 **Aufgaben:** Erstellt einen strukturierten Plan, um das MVP zu erreichen. Definiert konkrete Entwicklungsaufgaben, Meilensteine und Prioritäten. Aktualisiert die Roadmap (`ROADMAP.md`) und ggf. Tickets/Tasks.  
 **Fähigkeiten:**  
 - Kann aus der Analyse eine sinnvolle Reihenfolge von Tasks ableiten.  
@@ -27,7 +27,7 @@ Der begleitende *Entwicklungsplan für das Agent-NN Framework* beschreibt vier a
 - Dokumentiert den Plan verständlich und übersichtlich (Listen, Checkboxen, Abschnitte pro Meilenstein).  
 **Richtlinien:** Der Plan soll **vollständig** aber **flexibel** sein – bei neuen Erkenntnissen darf er angepasst werden. Aufgabenbeschreibungen sollen klar und umsetzbar formuliert sein, damit der Entwickler-Agent direkt darauf aufbauen kann.
 
-### 💻 Entwickler-Agent (Phase 3: Umsetzung)  
+### 💻 Developer (Entwickler-Agent, Phase 3: Umsetzung)
 **Aufgaben:** Implementiert den Code für alle fehlenden Features und Verbesserungen. Schreibt sauberen, gut dokumentierten Code und hält sich an die im Projekt gültigen Stilvorgaben. Löst auftretende technische Probleme während der Implementierung.  
 **Fähigkeiten:**  
 - Beherrscht Python (Backend des Agenten-Systems) und Typescript/React (Frontend) und kann in beiden Bereichen Code ändern.  
@@ -39,7 +39,7 @@ Der begleitende *Entwicklungsplan für das Agent-NN Framework* beschreibt vier a
 - **Keine sensiblen Daten:** Achte darauf, keine Schlüssel oder Passwörter ins Repository zu schreiben; verwende Konfigurationsdateien oder Umgebungsvariablen (das Projekt nutzt z.B. `llm_config.yaml` für API-Keys).  
 - **Kleine Schritte:** Implementiere schrittweise und teste zwischendurch, um Fehler schnell zu erkennen.
 
-### 🧪 Test-Agent (Phase 4: Qualitätssicherung)  
+### 🧪 Tester (Test-Agent, Phase 4: Qualitätssicherung)
 **Aufgaben:** Prüft den Code mittels automatisierter Tests und Analysen. Schreibt fehlende Tests, führt die Test-Suite aus und behebt Fehler. Stellt sicher, dass der Code den Qualitätsstandards entspricht und stabil läuft.  
 **Fähigkeiten:**  
 - Sehr gute Kenntnisse in **pytest** und ggf. anderen Testing-Tools. Kann sinnvolle **Testfälle** formulieren, inkl. Randfälle.  
@@ -51,7 +51,7 @@ Der begleitende *Entwicklungsplan für das Agent-NN Framework* beschreibt vier a
 - **Keine Regressionen:** Beim Fixen von Bugs immer prüfen, ob andere Tests dadurch fehlschlagen (kontinuierlich testen nach Änderungen).  
 - **Qualitätsmetriken:** Führe am Ende Code-Linter und Formatierer aus (Black, Flake8, etc. gemäß `CONTRIBUTING.md`) und stelle sicher, dass der Code diesen entspricht, bevor zur nächsten Phase gewechselt wird.
 
-### 📖 Dokumentations-Agent (Phase 5: Dokumentation & Abschluss)  
+### 📖 Documentor (Dokumentations-Agent, Phase 5: Dokumentation & Abschluss)
 **Aufgaben:** Vervollständigt alle Dokumente und bereitet das Projekt für die Übergabe vor. Schreibt verständliche Anleitungen und aktualisiert Übersichten. Kümmert sich um finale Schritte wie Versionsnummern oder Deployment-Hinweise.  
 **Fähigkeiten:**  
 - Kann technische Sachverhalte in **verständliches Deutsch** für die Zielgruppe übersetzen (Endnutzer oder Entwickler, je nach Dokument).  

@@ -7,89 +7,205 @@
     "notify": false,
     "phases": [
         {
-            "name": "Phase 1: Architektur-Migration zu MCP",
-            "description": "ModelContext einf\u00fchren und alle Grundservices als Microservices bereitstellen.",
+            "name": "Phase 1: Codebase-Konsolidierung & Architektur-Refaktor",
+            "description": "Grundlegende MCP-Services aufsetzen und Legacy-Code migrieren.",
             "tasks": [
-                {"id": "P1T1", "description": "ModelContext-Datentypen definieren."},
+                {
+                    "id": "P1T1",
+                    "description": "Legacy-Code in archive verschieben und Struktur vorbereiten."
+                },
                 {
                     "id": "P1T2",
-                    "description": "Dispatcher, Registry, Session-Manager, Vector-Store und LLM-Gateway als Dienste anlegen.",
+                    "description": "ModelContext-Datentyp definieren."
                 },
                 {
                     "id": "P1T3",
-                    "description": "Basis-Docker-Compose zum Starten aller Dienste erstellen.",
+                    "description": "Grundservices als Microservices anlegen."
                 },
-            ],
-            "exitCriteria": "Ein einfacher End-to-End-Test l\u00e4uft \u00fcber die neuen Services.",
-        },
-        {
-            "name": "Phase 1.6: MCP Observability",
-            "description": "Logging-Standardisierung und Metrikexport f\u00fcr alle Services",
-            "tasks": [
+                {
+                    "id": "P1T4",
+                    "description": "Docker-Compose f\u00fcr alle Dienste einrichten."
+                },
+                {
+                    "id": "P1T5",
+                    "description": "Ersten End-to-End-Test \u00fcber alle Services."
+                },
+                {
+                    "id": "P1T6",
+                    "description": "MCP-SDK integrieren und Basis-Routing."
+                },
+                {
+                    "id": "P1T7",
+                    "description": "LLM-Gateway-Anbindung umsetzen."
+                },
+                {
+                    "id": "P1T8",
+                    "description": "VectorStore-Service integrieren."
+                },
                 {
                     "id": "P1T9",
-                    "description": "Monitoring und JSON-Logging implementieren",
+                    "description": "Session-Manager mit persistentem Kontext."
+                },
+                {
+                    "id": "P1T10",
+                    "description": "Monitoring- und Logging-Infrastruktur einf\u00fchren."
+                },
+                {
+                    "id": "P1T11",
+                    "description": "Sicherheits-Layer implementieren."
+                },
+                {
+                    "id": "P1T12",
+                    "description": "Persistente Speicherpfade und Konfiguration festlegen."
+                },
+                {
+                    "id": "P1T13",
+                    "description": "Developer-SDK und CLI bereitstellen."
+                },
+                {
+                    "id": "P1T14",
+                    "description": "Erste Beta-Release vorbereiten."
                 }
             ],
-            "exitCriteria": "Prometheus sammelt Daten und ein Grafana-Dashboard zeigt sie an.",
+            "exitCriteria": "Ein einfacher End-to-End-Test l\u00e4uft \u00fcber die neuen Services."
         },
         {
-            "name": "Phase 2: Agent-NN & Meta-Learning",
-            "description": "MetaLearner aktivieren und WorkerAgents mit internem Modell-Routing ausstatten.",
+            "name": "Phase 2: Feature-Integration & Harmonisierung",
+            "description": "Meta-Learning aktivieren und Alt-Funktionen migrieren.",
             "tasks": [
                 {
                     "id": "P2T1",
-                    "description": "Heuristische Logik im NNManager durch MetaLearner ersetzen.",
+                    "description": "MetaLearner aktivieren."
                 },
                 {
                     "id": "P2T2",
-                    "description": "Feedbackschleife und AutoTrainer implementieren.",
+                    "description": "AutoTrainer und Feedback-Schleife implementieren."
                 },
                 {
                     "id": "P2T3",
-                    "description": "Capability-basiertes Routing in einem WorkerAgent prototypisieren.",
+                    "description": "Capability-basiertes Routing prototypisieren."
                 },
+                {
+                    "id": "P2T4",
+                    "description": "Evaluationsmetriken sammeln."
+                },
+                {
+                    "id": "P2T5",
+                    "description": "Provider-System erweitern."
+                },
+                {
+                    "id": "P2T6",
+                    "description": "Dynamische Konfiguration \u00fcber llm_config.yaml."
+                },
+                {
+                    "id": "P2T7",
+                    "description": "SDK-Beispiele und Tests hinzuf\u00fcgen."
+                },
+                {
+                    "id": "P2T8",
+                    "description": "Bestehende Funktionen angleichen."
+                },
+                {
+                    "id": "P2T9",
+                    "description": "Konsistenz und Abw\u00e4rtskompatibilit\u00e4t pr\u00fcfen."
+                },
+                {
+                    "id": "P2T10",
+                    "description": "Legacy-Code schrittweise stilllegen."
+                }
             ],
-            "exitCriteria": "Mindestens ein Agent nutzt das neue Lernmodell erfolgreich.",
+            "exitCriteria": "Mindestens ein Agent nutzt das neue Lernmodell erfolgreich."
         },
         {
-            "name": "Phase 3: SDK & Provider-System",
-            "description": "LLM-SDK mit OpenAI, Anthropic, LiteLLM, OpenRouter und lokalen Providern entwickeln.",
+            "name": "Phase 3: Konsolidiertes Frontend & User Experience",
+            "description": "Frontend vervollst\u00e4ndigen und Nutzererlebnis optimieren.",
             "tasks": [
                 {
                     "id": "P3T1",
-                    "description": "Provider-Klassen und Factory implementieren.",
+                    "description": "Alle UI-Seiten und Panels fertigstellen."
                 },
                 {
                     "id": "P3T2",
-                    "description": "Konfiguration \u00fcber llm_config.yaml erm\u00f6glichen.",
+                    "description": "Frontend mit Backend-APIs verbinden."
                 },
                 {
                     "id": "P3T3",
-                    "description": "Beispiele und Tests f\u00fcr das SDK bereitstellen.",
+                    "description": "Einheitliche Benutzeroberfl\u00e4che konsolidieren."
                 },
+                {
+                    "id": "P3T4",
+                    "description": "Authentifizierungs-Flow verbessern."
+                },
+                {
+                    "id": "P3T5",
+                    "description": "Fehlerbehandlung und Ladeindikatoren."
+                },
+                {
+                    "id": "P3T6",
+                    "description": "Responsive Design und Dark-Mode sicherstellen."
+                },
+                {
+                    "id": "P3T7",
+                    "description": "Zug\u00e4nglichkeit erh\u00f6hen."
+                },
+                {
+                    "id": "P3T8",
+                    "description": "Formularvalidierung und Usability verbessern."
+                },
+                {
+                    "id": "P3T9",
+                    "description": "Optionale erweiterte UI-Funktionen."
+                }
             ],
-            "exitCriteria": "SDK ist dokumentiert und wird vom LLM-Gateway genutzt.",
+            "exitCriteria": "Alle Panels nutzen echte APIs und die UI ist responsiv."
         },
         {
-            "name": "Phase 4: Testing, CI/CD, Doku",
-            "description": "Umfangreiche Tests, GitHub Actions und finalisierte Dokumentation.",
+            "name": "Phase 4: Testabdeckung, CI/CD und Dokumentation",
+            "description": "Projekt finalisieren und Release vorbereiten.",
             "tasks": [
                 {
                     "id": "P4T1",
-                    "description": "Pytest-Suite mit Mocks und Integrations-Tests erstellen.",
+                    "description": "Umfassende Test-Suite entwickeln."
                 },
                 {
                     "id": "P4T2",
-                    "description": "CI-Workflow mit ruff, black, pytest und coverage konfigurieren.",
+                    "description": "Regressionspr\u00fcfung und Bugfixing."
                 },
                 {
                     "id": "P4T3",
-                    "description": "Docker-Compose f\u00fcr Deployment und aktualisierte Doku ver\u00f6ffentlichen.",
+                    "description": "Continuous Integration einrichten."
                 },
+                {
+                    "id": "P4T4",
+                    "description": "Qualit\u00e4tsmetriken beobachten."
+                },
+                {
+                    "id": "P4T5",
+                    "description": "Deployment-Skripte finalisieren."
+                },
+                {
+                    "id": "P4T6",
+                    "description": "Dokumentation aktualisieren."
+                },
+                {
+                    "id": "P4T7",
+                    "description": "SDK- und API-Dokumentation erg\u00e4nzen."
+                },
+                {
+                    "id": "P4T8",
+                    "description": "Abschlie\u00dfender Usability-Test."
+                },
+                {
+                    "id": "P4T9",
+                    "description": "Release-Vorbereitung."
+                },
+                {
+                    "id": "P4T10",
+                    "description": "Legacy-Code endg\u00fcltig archivieren."
+                }
             ],
-            "exitCriteria": "Tests bestehen und Doku beschreibt die produktionsreife MCP-Architektur.",
-        },
+            "exitCriteria": "Tests bestehen und Doku beschreibt die produktionsreife MCP-Architektur."
+        }
     ],
     "autoPhaseSwitch": true,
     "progressLog": "codex_progress.log",

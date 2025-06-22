@@ -60,6 +60,7 @@ class ModelContext(BaseModel):
     task_value: Optional[float] = None
     max_tokens: Optional[int] = None
     token_spent: int = 0
+    applied_limits: Dict[str, Any] = Field(default_factory=dict)
     warning: Optional[str] = None
     signed_by: Optional[str] = None
     signature: Optional[str] = None

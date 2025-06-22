@@ -40,6 +40,8 @@ trust_app = typer.Typer(name="trust", help="Trust management")
 privacy_app = typer.Typer(name="privacy", help="Privacy tools")
 audit_app = typer.Typer(name="audit", help="Audit utilities")
 auth_app = typer.Typer(name="auth", help="Authorization utilities")
+role_app = typer.Typer(name="role", help="Role utilities")
+task_app = typer.Typer(name="task", help="Task utilities")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -51,6 +53,8 @@ app.add_typer(trust_app)
 app.add_typer(privacy_app)
 app.add_typer(audit_app)
 app.add_typer(auth_app)
+app.add_typer(role_app)
+app.add_typer(task_app)
 
 agent_app.add_typer(agent_contract_app)
 
@@ -215,6 +219,29 @@ def agent_elevate(name: str, to: str = typer.Option(..., "--to")) -> None:
         contract.allowed_roles.append(to)
         contract.save()
     typer.echo("elevated")
+
+
+@role_app.command("limits")
+def role_limits(role: str) -> None:
+    """Show resource limits for ROLE."""
+    from core.role_capabilities import ROLE_CAPABILITIES
+
+    typer.echo(json.dumps({role: ROLE_CAPABILITIES.get(role, {})}, indent=2))
+
+
+@task_app.command("limits")
+def task_limits(context_file: str, role: str = typer.Option(..., "--role")) -> None:
+    """Preview applied limits for CONTEXT_FILE and ROLE."""
+    from core.role_capabilities import apply_role_capabilities
+
+    with open(context_file, "r", encoding="utf-8") as fh:
+        data = json.load(fh)
+    if "task_type" in data:
+        ctx = ModelContext(task_context=TaskContext(**data))
+    else:
+        ctx = ModelContext(**data)
+    apply_role_capabilities(ctx, role)
+    typer.echo(json.dumps(ctx.applied_limits, indent=2))
 
 
 @team_app.command("create")

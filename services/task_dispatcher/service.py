@@ -17,7 +17,8 @@ from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 from core.model_context import AgentRunContext, ModelContext, TaskContext
 from core.privacy_filter import filter_permissions, redact_context
 from core.roles import resolve_roles
-from core.trust_evaluator import calculate_trust
+from core.trust_evaluator import calculate_trust, update_trust_usage
+from core.role_capabilities import apply_role_capabilities, ROLE_CAPABILITIES
 
 from .config import settings
 
@@ -39,6 +40,24 @@ class TaskDispatcherService:
         self.queue = DispatchQueue()
         self.log = logging.getLogger(__name__)
         self.audit = AuditLog()
+
+    def _apply_role_limits(self, ctx: ModelContext, role: str) -> None:
+        """Limit context according to ROLE_CAPABILITIES."""
+        before_tokens = ctx.max_tokens
+        before_mem = len(ctx.memory or [])
+        apply_role_capabilities(ctx, role)
+        if ctx.max_tokens != before_tokens or len(ctx.memory or []) != before_mem:
+            ctx.warning = ctx.warning or "role_limits_applied"
+            log_id = self.audit.write(
+                AuditEntry(
+                    timestamp=datetime.utcnow().isoformat(),
+                    actor="dispatcher",
+                    action="role_limits_applied",
+                    context_id=ctx.uuid,
+                    detail={"role": role},
+                )
+            )
+            ctx.audit_trace.append(log_id)
 
     def _governance_allowed(self, agent: dict[str, Any], ctx: ModelContext) -> bool:
         contract = AgentContract.load(agent["name"])
@@ -205,10 +224,14 @@ class TaskDispatcherService:
                 )
                 ctx.audit_trace.append(log_id)
             if agent:
+                self._apply_role_limits(ctx, agent.get("role", ""))
                 arc = self._run_agent(agent, ctx)
                 ctx.agents.append(arc)
                 ctx.result = arc.result
                 ctx.metrics = arc.metrics
+                if arc.metrics:
+                    limit = ctx.applied_limits.get("max_tokens", ctx.max_tokens or 0)
+                    update_trust_usage(agent["name"], int(arc.metrics.get("tokens_used", 0)), limit)
         elif mode == "coalition":
             coalition = self._init_coalition(
                 ctx.task_context.description or "",
@@ -234,12 +257,16 @@ class TaskDispatcherService:
                 AgentRunContext(agent_id=a["id"], role=a.get("role"), url=a.get("url"))
                 for a in agents
             ]
+            for arc in ctx.agents:
+                self._apply_role_limits(ctx, arc.role or "")
             ctx = self._send_to_coordinator(ctx, "parallel")
         else:
             ctx.agents = [
                 AgentRunContext(agent_id=a["id"], role=a.get("role"), url=a.get("url"))
                 for a in agents
             ]
+            for arc in ctx.agents:
+                self._apply_role_limits(ctx, arc.role or "")
             ctx = self._send_to_coordinator(ctx, mode)
 
         if ctx.metrics:

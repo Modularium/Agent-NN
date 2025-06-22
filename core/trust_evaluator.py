@@ -51,3 +51,18 @@ def eligible_for_role(agent_id: str, target_role: str) -> bool:
         return False
     score = trust * standing
     return score >= contract.trust_level_required and len(history) >= 5
+
+
+def update_trust_usage(agent_id: str, tokens_used: int, limit: int) -> None:
+    """Adjust trust_score based on token usage."""
+    contract = AgentContract.load(agent_id)
+    score = float(contract.constraints.get("trust_score", 1.0))
+    ratio = tokens_used / limit if limit else 0.0
+    if ratio and ratio <= 0.8:
+        score = min(1.0, score + 0.05)
+    elif ratio and ratio > 1.0:
+        score = max(0.0, score - 0.1)
+        if score < contract.trust_level_required and contract.allowed_roles:
+            contract.allowed_roles = contract.allowed_roles[:1]
+    contract.constraints["trust_score"] = score
+    contract.save()

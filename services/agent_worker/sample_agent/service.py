@@ -41,6 +41,10 @@ class SampleAgentService:
         ):
             ctx.warning = "unauthorized"
             return ctx
+        limits = ctx.applied_limits or {}
+        if limits.get("can_modify_output") is False and ctx.result is not None:
+            ctx.warning = "output_modification_forbidden"
+            return ctx
         start_id = self.audit.write(
             AuditEntry(
                 timestamp=datetime.utcnow().isoformat(),
@@ -96,6 +100,8 @@ class SampleAgentService:
             }
         TOKENS_OUT.labels("sample_agent").inc(data.get("tokens_used", 0))
         TASKS_PROCESSED.labels("sample_agent").inc()
+        if limits.get("max_tokens") and data.get("tokens_used", 0) > limits["max_tokens"]:
+            ctx.warning = "token_limit_exceeded"
 
         if semantic:
             avg_dist = (

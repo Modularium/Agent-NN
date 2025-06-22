@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any, Dict, List
 
+from .agent_profile import AgentIdentity
+from .audit_log import AuditEntry, AuditLog
 from .governance import AgentContract
 from .roles import resolve_roles
 
@@ -66,3 +69,40 @@ def update_trust_usage(agent_id: str, tokens_used: int, limit: int) -> None:
             contract.allowed_roles = contract.allowed_roles[:1]
     contract.constraints["trust_score"] = score
     contract.save()
+
+
+def auto_certify(agent_id: str, skill_id: str) -> bool:
+    """Grant ``skill_id`` automatically if training is complete and trust high."""
+
+    profile = AgentIdentity.load(agent_id)
+    if profile.training_progress.get(skill_id) != "complete":
+        return False
+
+    contract = AgentContract.load(agent_id)
+    history = contract.constraints.get("task_history", [])
+    trust = calculate_trust(agent_id, history)
+    if trust < contract.trust_level_required:
+        return False
+
+    if any(c.get("id") == skill_id for c in profile.certified_skills):
+        return False
+
+    profile.certified_skills.append(
+        {
+            "id": skill_id,
+            "granted_at": datetime.utcnow().isoformat() + "Z",
+            "expires_at": None,
+        }
+    )
+    profile.save()
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor="auto",
+            action="certification_auto_granted",
+            context_id=agent_id,
+            detail={"skill": skill_id},
+        )
+    )
+    return True

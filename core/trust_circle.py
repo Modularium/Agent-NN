@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-from typing import Dict
 
 from .agent_profile import AgentIdentity
 from .reputation import aggregate_score

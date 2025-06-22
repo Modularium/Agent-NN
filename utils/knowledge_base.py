@@ -1,6 +1,6 @@
 """Utilities for managing domain-specific knowledge bases."""
 import os
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 import json
 from langchain.document_loaders import (

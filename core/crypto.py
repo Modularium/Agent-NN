@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Utility helpers for digital signatures."""
+
+from __future__ import annotations
 
 import json
 import os

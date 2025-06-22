@@ -19,6 +19,33 @@ exclude = ["tests*"]
 
 [project.scripts]
 agentnn = "sdk.cli.main:app"
+mcp_cli = "mcp.cli:app"
+
+[tool.ruff]
+line-length = 120
+extend-exclude = [
+  "archive",
+  "agents",
+  "api",
+  "cli",
+  "openhands_api",
+  "llm_models",
+  "nn_models",
+  "managers",
+  "plugins",
+  "training",
+  "datastores",
+  "monitoring",
+  "evaluation",
+  "security",
+  "rag",
+  "mlflow_integration",
+  "tests",
+  "scripts",
+  "benchmarks",
+  "frontend",
+  "docs",
+]
 
 [project.optional-dependencies]
 sdk = []

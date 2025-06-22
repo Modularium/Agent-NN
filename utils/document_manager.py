@@ -1,6 +1,6 @@
 """Manager for domain-specific documents."""
 import os
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 import json
 from pathlib import Path

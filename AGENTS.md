@@ -87,6 +87,10 @@ Der Session-Manager ermöglicht persistente Gesprächs-Kontexte über mehrere
 Aufgaben hinweg.
 Persistente Speicherpfade können nun über die `.env` konfiguriert werden, sodass
 Sessions und Vektordaten bei Neustarts erhalten bleiben.
+
+### Fortschritt Phase 1.1
+- Grundlegende Dienste und `ModelContext` implementiert
+- Docker-Compose Setup erstellt und einfacher End-to-End-Test erfolgreich
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

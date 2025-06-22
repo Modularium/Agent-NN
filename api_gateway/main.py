@@ -1,7 +1,7 @@
 import os
 import json
 import urllib.request
-from fastapi import FastAPI, Request, HTTPException, Depends
+from fastapi import FastAPI, Request, HTTPException
 from utils.api_utils import api_route
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter

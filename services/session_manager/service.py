@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Session manager backed by a pluggable session store."""
+
+from __future__ import annotations
 
 from typing import List
 

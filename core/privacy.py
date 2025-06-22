@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Privacy-related utilities and access level definitions."""
+
+from __future__ import annotations
 
 from enum import Enum
 

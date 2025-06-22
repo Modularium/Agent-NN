@@ -1,7 +1,7 @@
 """Manage agent coalitions."""
 from __future__ import annotations
 
-from typing import List, Dict, Any
+from typing import List
 
 from core.coalitions import AgentCoalition, create_coalition
 

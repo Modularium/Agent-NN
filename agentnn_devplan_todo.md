@@ -3,11 +3,11 @@
 ## Phase 1: Codebase-Konsolidierung & Architektur-Refaktor
 
 ### 1.1 Architektur-Grundlagen
-- [ ] Legacy-Code identifizieren und Struktur vorbereiten: Alte Module analysieren und in `archive/` verschieben.
-- [ ] ModelContext-Datentyp definieren: zentralen Typ für Modell- und Kontextinformationen erstellen.
-- [ ] Grundservices als Microservices anlegen: Dispatcher-, Registry-, Session-Manager-, Vector-Store- und LLM-Gateway-Service.
-- [ ] Docker-Umgebung einrichten: `docker-compose.yml` für alle Services.
-- [ ] Ersten End-to-End-Test durchführen: Dummy-Request über alle Services schleusen.
+- [x] Legacy-Code identifizieren und Struktur vorbereiten: Alte Module analysieren und in `archive/` verschieben.
+- [x] ModelContext-Datentyp definieren: zentralen Typ für Modell- und Kontextinformationen erstellen.
+- [x] Grundservices als Microservices anlegen: Dispatcher-, Registry-, Session-Manager-, Vector-Store- und LLM-Gateway-Service.
+- [x] Docker-Umgebung einrichten: `docker-compose.yml` für alle Services.
+- [x] Ersten End-to-End-Test durchführen: Dummy-Request über alle Services schleusen.
 
 ### 1.2 Kernservices & Kontext-Integration
 - [ ] MCP-SDK integrieren & Basis-Routing implementieren.

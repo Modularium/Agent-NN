@@ -127,4 +127,5 @@
     "codex/phase-4-agent-reputation": true,
     "codex/phase-4-agent-trust-network": true,
     "codex/phase-4-agent-delegation": true,
+    "codex/phase-4-agent-feedback-loop": true
 }

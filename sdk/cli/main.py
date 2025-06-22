@@ -52,6 +52,7 @@ track_app = typer.Typer(name="track", help="Training track info")
 mission_app = typer.Typer(name="mission", help="Mission management")
 rep_app = typer.Typer(name="rep", help="Reputation utilities")
 delegate_app = typer.Typer(name="delegate", help="Delegation management")
+feedback_app = typer.Typer(name="feedback", help="Feedback utilities")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -71,6 +72,7 @@ app.add_typer(track_app)
 app.add_typer(mission_app)
 app.add_typer(rep_app)
 app.add_typer(delegate_app)
+app.add_typer(feedback_app)
 
 agent_app.add_typer(agent_contract_app)
 
@@ -384,6 +386,47 @@ def agent_endorsements(name: str) -> None:
 
     recs = load_recommendations(name)
     typer.echo(json.dumps([asdict(r) for r in recs], indent=2))
+
+
+@agent_app.command("reflect")
+def agent_reflect(name: str) -> None:
+    """Analyse feedback and suggest adaptations."""
+    from core.feedback_loop import load_feedback
+    from core.self_reflection import reflect_and_adapt
+
+    profile = AgentIdentity.load(name)
+    feedback = load_feedback(name)
+    suggestions = reflect_and_adapt(profile, feedback)
+    typer.echo(json.dumps(suggestions, indent=2))
+
+
+@agent_app.command("adapt")
+def agent_adapt(name: str) -> None:
+    """Apply recommended adaptations."""
+    from core.feedback_loop import load_feedback
+    from core.self_reflection import reflect_and_adapt
+    from core.audit_log import AuditLog, AuditEntry
+
+    profile = AgentIdentity.load(name)
+    feedback = load_feedback(name)
+    result = reflect_and_adapt(profile, feedback)
+    profile.traits.update(result.get("traits", {}))
+    for skill in result.get("skills", []):
+        if skill not in profile.skills:
+            profile.skills.append(skill)
+    profile.adaptation_history.extend(result.get("notes", []))
+    profile.save()
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor="cli",
+            action="adaptation_applied",
+            context_id=name,
+            detail={},
+        )
+    )
+    typer.echo("adapted")
 
 
 @training_app.command("start")
@@ -916,7 +959,9 @@ def delegate_grant(
 
 
 @delegate_app.command("revoke")
-def delegate_revoke(from_agent: str, to_agent: str, role: str = typer.Option(..., "--role")) -> None:
+def delegate_revoke(
+    from_agent: str, to_agent: str, role: str = typer.Option(..., "--role")
+) -> None:
     """Revoke delegation."""
     from core.delegation import revoke_grant
 
@@ -941,6 +986,15 @@ def delegate_list(agent: str) -> None:
 
     grants = load_grants(agent)
     typer.echo(json.dumps([asdict(g) for g in grants], indent=2))
+
+
+@feedback_app.command("log")
+def feedback_log(agent: str) -> None:
+    """Show feedback entries for AGENT."""
+    from core.feedback_loop import load_feedback
+
+    entries = load_feedback(agent)
+    typer.echo(json.dumps([asdict(e) for e in entries], indent=2))
 
 
 def main() -> None:

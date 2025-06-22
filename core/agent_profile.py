@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from .feedback_loop import FeedbackLoopEntry
+
 PROFILE_DIR = Path(os.getenv("AGENT_PROFILE_DIR", "agent_profiles"))
 
 
@@ -37,6 +39,8 @@ class AgentIdentity:
     endorsements: List[Dict[str, Any]] = field(default_factory=list)
     active_delegations: List[Dict[str, Any]] = field(default_factory=list)
     delegated_by: List[str] = field(default_factory=list)
+    feedback_memory: List[FeedbackLoopEntry] = field(default_factory=list)
+    adaptation_history: List[str] = field(default_factory=list)
 
     @classmethod
     def load(cls, name: str) -> "AgentIdentity":
@@ -69,9 +73,14 @@ class AgentIdentity:
                     endorsements=[],
                     active_delegations=[],
                     delegated_by=[],
+                    feedback_memory=[],
+                    adaptation_history=[],
                 )
             )
             defaults.update(data)
+            defaults["feedback_memory"] = [
+                FeedbackLoopEntry(**e) for e in defaults.get("feedback_memory", [])
+            ]
             return cls(**defaults)
         return cls(
             name=name,
@@ -96,13 +105,17 @@ class AgentIdentity:
             endorsements=[],
             active_delegations=[],
             delegated_by=[],
+            feedback_memory=[],
+            adaptation_history=[],
         )
 
     def save(self) -> None:
         PROFILE_DIR.mkdir(parents=True, exist_ok=True)
         path = PROFILE_DIR / f"{self.name}.json"
+        data = asdict(self)
+        data["feedback_memory"] = [asdict(e) for e in self.feedback_memory]
         with open(path, "w", encoding="utf-8") as fh:
-            json.dump(asdict(self), fh, indent=2)
+            json.dump(data, fh, indent=2)
 
     def update_metrics(
         self,

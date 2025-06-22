@@ -424,6 +424,30 @@ class TaskDispatcherService:
         ctx.dispatch_state = "running"
         ctx = self._execute_context(ctx, mode, enforce_certification)
         ctx.dispatch_state = "completed"
+        if ctx.warning or any(
+            (a.metrics or {}).get("rating", 1.0) < 0.5 for a in ctx.agents
+        ):
+            from core.feedback_loop import FeedbackLoopEntry, record_feedback
+
+            agent_id = ctx.agents[0].agent_id if ctx.agents else ""
+            if agent_id:
+                record_feedback(
+                    FeedbackLoopEntry(
+                        agent_id=agent_id,
+                        event_type="task_failed" if ctx.warning else "low_rating",
+                        data={"warning": ctx.warning} if ctx.warning else {},
+                        created_at=datetime.utcnow().isoformat(),
+                    )
+                )
+                self.audit.write(
+                    AuditEntry(
+                        timestamp=datetime.utcnow().isoformat(),
+                        actor="dispatcher",
+                        action="feedback_recorded",
+                        context_id=agent_id,
+                        detail={"type": "task_failed"},
+                    )
+                )
         return ctx
 
     def enqueue_task(

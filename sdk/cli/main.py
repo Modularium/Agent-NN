@@ -14,6 +14,9 @@ from core.agent_evolution import evolve_profile
 from core.agent_profile import AgentIdentity
 from core.governance import AgentContract
 from core.trust_evaluator import calculate_trust
+from core.model_context import ModelContext, TaskContext
+from core.privacy_filter import redact_context
+from core.privacy import AccessLevel
 
 from .. import __version__
 from ..client import AgentClient
@@ -25,11 +28,13 @@ config_app = typer.Typer(name="config", help="Configuration commands")
 
 app = typer.Typer()
 agent_app = typer.Typer(name="agent", help="Agent management")
+agent_contract_app = typer.Typer(name="contract", help="Agent contract management")
 team_app = typer.Typer(name="team", help="Team management")
 session_app = typer.Typer(name="session", help="Session utilities")
 queue_app = typer.Typer(name="queue", help="Queue management")
 contract_app = typer.Typer(name="contract", help="Governance contracts")
 trust_app = typer.Typer(name="trust", help="Trust management")
+privacy_app = typer.Typer(name="privacy", help="Privacy tools")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -38,6 +43,9 @@ app.add_typer(session_app)
 app.add_typer(queue_app)
 app.add_typer(contract_app)
 app.add_typer(trust_app)
+app.add_typer(privacy_app)
+
+agent_app.add_typer(agent_contract_app)
 
 
 @app.callback(invoke_without_command=True)
@@ -268,6 +276,26 @@ def trust_score(agent: str) -> None:
     """Calculate trust score for an agent."""
     score = calculate_trust(agent, [])
     typer.echo(json.dumps({"agent": agent, "score": score}, indent=2))
+
+
+@privacy_app.command("preview")
+def privacy_preview(agent: str, task_file: str) -> None:
+    """Show context after privacy filtering for an agent."""
+    with open(task_file, "r", encoding="utf-8") as fh:
+        data = json.load(fh)
+    ctx = ModelContext(task_context=TaskContext(**data))
+    contract = AgentContract.load(agent)
+    filtered = redact_context(ctx, contract.max_access_level)
+    typer.echo(json.dumps(filtered.model_dump(), indent=2))
+
+
+@agent_contract_app.command("set-access")
+def set_access_level(agent: str, max_level: AccessLevel) -> None:
+    """Update max access level for an agent contract."""
+    contract = AgentContract.load(agent)
+    contract.max_access_level = max_level
+    contract.save()
+    typer.echo("updated")
 
 
 @app.command("promote")

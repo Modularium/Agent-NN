@@ -112,5 +112,6 @@
     "codex/phase-2-agent-economy": true,
     "codex/phase-2-agent-budgeting": true,
     "codex/phase-2-dispatch-queue": true,
-    "codex/phase-3-governance-contracts": true
+    "codex/phase-3-governance-contracts": true,
+    "codex/phase-3-agent-privacy": true,
 }

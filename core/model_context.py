@@ -15,6 +15,14 @@ try:
     sys.path.pop(0)
 except Exception:  # fallback to local pydantic
     from pydantic import BaseModel, Field, field_validator
+from .privacy import AccessLevel
+
+
+class AccessText(BaseModel):
+    """Text content tagged with an access level."""
+
+    text: str
+    access: AccessLevel = AccessLevel.PUBLIC
 
 
 class AgentRunContext(BaseModel):
@@ -44,7 +52,7 @@ class ModelContext(BaseModel):
     result: Optional[Any] = None
     metrics: Optional[Dict[str, float]] = None
     agents: List["AgentRunContext"] = []
-    memory: Optional[List[Dict[str, Any]]] = None
+    memory: Optional[List[AccessText]] = None
     aggregated_result: Optional[Any] = None
     task_value: Optional[float] = None
     max_tokens: Optional[int] = None
@@ -61,17 +69,35 @@ class TaskContext(BaseModel):
 
     task_id: str = Field(default_factory=lambda: str(uuid4()))
     task_type: str
-    description: Optional[str] = None
-    input_data: Any | None = None
+    description: Optional[AccessText] = None
+    input_data: Optional[AccessText] = None
     preferences: Optional[Dict[str, Any]] = None
 
-    @field_validator("input_data")
+    @field_validator("description", mode="before")
+    @classmethod
+    def validate_description(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            return AccessText(text=v)
+        if isinstance(v, dict) and "text" in v:
+            return AccessText(
+                text=v.get("text", ""), access=AccessLevel(v.get("access", "public"))
+            )
+        return v
+
+    @field_validator("input_data", mode="before")
     @classmethod
     def validate_input(cls, v: Any) -> Any:
         limit = int(os.getenv("INPUT_LIMIT_BYTES", "4096"))
-        if isinstance(v, dict) and "text" in v and isinstance(v["text"], str):
-            if len(v["text"]) > limit:
+        if isinstance(v, str):
+            text = v
+            if len(text) > limit:
                 raise ValueError("text too long")
+            return AccessText(text=text)
+        if isinstance(v, dict) and "text" in v:
+            text = v.get("text", "")
+            if len(text) > limit:
+                raise ValueError("text too long")
+            return AccessText(text=text, access=AccessLevel(v.get("access", "public")))
         return v
 
 

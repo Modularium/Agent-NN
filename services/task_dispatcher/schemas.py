@@ -16,3 +16,4 @@ class TaskRequest(TaskContext):
     deadline: str | None = Field(default=None)
     required_skills: list[str] | None = Field(default=None)
     enforce_certification: bool = Field(default=False)
+    require_endorsement: bool = Field(default=False)

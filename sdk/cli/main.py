@@ -364,8 +364,24 @@ def agent_rep(name: str) -> None:
     """Show reputation information for an agent."""
     profile = AgentIdentity.load(name)
     typer.echo(
-        json.dumps({"agent": name, "reputation": profile.reputation_score, "feedback": profile.feedback_log}, indent=2)
+        json.dumps(
+            {
+                "agent": name,
+                "reputation": profile.reputation_score,
+                "feedback": profile.feedback_log,
+            },
+            indent=2,
+        )
     )
+
+
+@agent_app.command("endorsements")
+def agent_endorsements(name: str) -> None:
+    """Show received endorsements for AGENT."""
+    from core.trust_network import load_recommendations
+
+    recs = load_recommendations(name)
+    typer.echo(json.dumps([asdict(r) for r in recs], indent=2))
 
 
 @training_app.command("start")
@@ -598,6 +614,7 @@ def team_join(
 ) -> None:
     """Join an existing team."""
     from core.teams import AgentTeam
+
     profile = AgentIdentity.load(agent)
     profile.team_id = team_id
     profile.team_role = role
@@ -743,6 +760,54 @@ def trust_eligible(agent: str, for_role: str = typer.Option(..., "--for")) -> No
     typer.echo(
         json.dumps({"agent": agent, "role": for_role, "eligible": allowed}, indent=2)
     )
+
+
+@trust_app.command("endorse")
+def trust_endorse(
+    from_agent: str,
+    to_agent: str,
+    role: str = typer.Option(..., "--role"),
+    confidence: float = typer.Option(1.0, "--confidence"),
+    comment: str = typer.Option(None, "--comment"),
+) -> None:
+    """Record a recommendation from FROM_AGENT to TO_AGENT."""
+    from core.trust_network import AgentRecommendation, record_recommendation
+
+    if not 0.0 <= confidence <= 1.0:
+        typer.echo("invalid confidence")
+        raise typer.Exit(code=1)
+    rec = AgentRecommendation(
+        from_agent=from_agent,
+        to_agent=to_agent,
+        role=role,
+        confidence=confidence,
+        comment=comment,
+        created_at=datetime.utcnow().isoformat(),
+    )
+    record_recommendation(rec)
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor=from_agent,
+            action="collective_endorsement_granted",
+            context_id=to_agent,
+            detail={"role": role, "confidence": confidence},
+        )
+    )
+    typer.echo("recorded")
+
+
+@trust_app.command("circle")
+def trust_circle(name: str) -> None:
+    """Show roles for which AGENT is trusted."""
+    from core.trust_circle import is_trusted_for
+    from core.trust_network import load_recommendations
+
+    recs = load_recommendations(name)
+    roles = {r.role for r in recs}
+    result = {role: is_trusted_for(name, role) for role in roles}
+    typer.echo(json.dumps(result, indent=2))
 
 
 @privacy_app.command("preview")

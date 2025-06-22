@@ -124,4 +124,5 @@
     "codex/phase-3-agent-career-tracks": true,
     "codex/phase-4-agent-network": true,
     "codex/phase-4-agent-missions": true,
+    "codex/phase-4-agent-reputation": true,
 }

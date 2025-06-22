@@ -7,6 +7,7 @@ from .agent_profile import AgentIdentity
 from .audit_log import AuditEntry, AuditLog
 from .governance import AgentContract
 from .roles import resolve_roles
+from .reputation import aggregate_score
 
 
 def calculate_trust(agent_id: str, context: List[Dict[str, Any]]) -> float:
@@ -106,3 +107,8 @@ def auto_certify(agent_id: str, skill_id: str) -> bool:
         )
     )
     return True
+
+
+def aggregate_reputation(agent_id: str) -> float:
+    """Return aggregated reputation score for ``agent_id``."""
+    return round(aggregate_score(agent_id), 3)

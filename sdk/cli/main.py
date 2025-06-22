@@ -13,7 +13,7 @@ import typer
 
 from core.access_control import is_authorized
 from core.agent_evolution import evolve_profile
-from core.agent_profile import AgentIdentity
+from core.agent_profile import AgentIdentity, PROFILE_DIR
 from core.audit_log import AuditEntry, AuditLog
 from core.crypto import generate_keypair, verify_signature
 from core.governance import AgentContract
@@ -22,6 +22,7 @@ from core.privacy import AccessLevel
 from core.privacy_filter import redact_context
 from core.skills import load_skill
 from core.trust_evaluator import auto_certify, calculate_trust, eligible_for_role
+from core.reputation import AgentRating, save_rating, update_reputation, aggregate_score
 from core.level_evaluator import check_level_up
 
 from .. import __version__
@@ -49,6 +50,7 @@ training_app = typer.Typer(name="training", help="Training management")
 coach_app = typer.Typer(name="coach", help="Coach utilities")
 track_app = typer.Typer(name="track", help="Training track info")
 mission_app = typer.Typer(name="mission", help="Mission management")
+rep_app = typer.Typer(name="rep", help="Reputation utilities")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -66,6 +68,7 @@ app.add_typer(training_app)
 app.add_typer(coach_app)
 app.add_typer(track_app)
 app.add_typer(mission_app)
+app.add_typer(rep_app)
 
 agent_app.add_typer(agent_contract_app)
 
@@ -107,6 +110,62 @@ def sessions() -> None:
     client = AgentClient()
     result = client.list_sessions()
     typer.echo(json.dumps(result, indent=2))
+
+
+@app.command("rate")
+def rate_agent(
+    from_agent: str,
+    to_agent: str,
+    score: float = typer.Option(..., "--score"),
+    tags: str = typer.Option("", "--tags"),
+    mission_id: str = typer.Option(None, "--mission-id"),
+    feedback: str = typer.Option(None, "--feedback"),
+) -> None:
+    """Submit a peer rating."""
+    if not 0.0 <= score <= 1.0:
+        log = AuditLog()
+        log.write(
+            AuditEntry(
+                timestamp=datetime.utcnow().isoformat(),
+                actor=from_agent,
+                action="rating_declined",
+                context_id=to_agent,
+                detail={"score": score},
+            )
+        )
+        typer.echo("invalid score")
+        raise typer.Exit(code=1)
+    rating = AgentRating(
+        from_agent=from_agent,
+        to_agent=to_agent,
+        mission_id=mission_id,
+        rating=score,
+        feedback=feedback,
+        context_tags=[t.strip() for t in tags.split(",") if t.strip()],
+        created_at=datetime.utcnow().isoformat(),
+    )
+    save_rating(rating)
+    log = AuditLog()
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor=from_agent,
+            action="peer_rated",
+            context_id=to_agent,
+            detail={"score": score},
+        )
+    )
+    new_score = update_reputation(to_agent)
+    log.write(
+        AuditEntry(
+            timestamp=datetime.utcnow().isoformat(),
+            actor="system",
+            action="reputation_updated",
+            context_id=to_agent,
+            detail={"score": new_score},
+        )
+    )
+    typer.echo("recorded")
 
 
 @app.command("verify")
@@ -298,6 +357,15 @@ def agent_promote(name: str) -> None:
         typer.echo(f"promoted to {new_level}")
     else:
         typer.echo("no change")
+
+
+@agent_app.command("rep")
+def agent_rep(name: str) -> None:
+    """Show reputation information for an agent."""
+    profile = AgentIdentity.load(name)
+    typer.echo(
+        json.dumps({"agent": name, "reputation": profile.reputation_score, "feedback": profile.feedback_log}, indent=2)
+    )
 
 
 @training_app.command("start")
@@ -740,6 +808,18 @@ def task_promote(task_id: str) -> None:
     resp = client._client.post(f"/queue/promote/{task_id}")
     resp.raise_for_status()
     typer.echo(resp.text)
+
+
+@rep_app.command("leaderboard")
+def rep_leaderboard() -> None:
+    """Show top agents by reputation."""
+    results = []
+    for file in PROFILE_DIR.glob("*.json"):
+        name = file.stem
+        score = aggregate_score(name)
+        results.append({"agent": name, "score": round(score, 3)})
+    results.sort(key=lambda x: x["score"], reverse=True)
+    typer.echo(json.dumps(results, indent=2))
 
 
 def main() -> None:

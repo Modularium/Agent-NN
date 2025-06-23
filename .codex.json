@@ -171,4 +171,5 @@
     ,"phase/2.6-feature-consolidation": true
     ,"phase/3.1-frontend-chat-ui": true
     ,"phase/3.2-ui-migration-complete": true
+    ,"phase/3.3-ux-a11y-optimization": true
 }

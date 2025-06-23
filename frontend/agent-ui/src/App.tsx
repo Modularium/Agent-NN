@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
+import { useState } from 'react'
 import ChatPage from './pages/ChatPage'
 import RoutingPage from './pages/RoutingPage'
 import FeedbackPage from './pages/FeedbackPage'
@@ -12,11 +13,20 @@ import AdminPage from './pages/AdminPage'
 import DebugPage from './pages/DebugPage'
 
 export default function App() {
+  const [menuOpen, setMenuOpen] = useState(false)
   return (
     <BrowserRouter>
       <div className="flex h-screen">
-        <Sidebar />
-        <div className="flex-1 overflow-hidden">
+        <button
+          className="sm:hidden p-2 m-2 border"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Open menu"
+          aria-controls="sidebar"
+        >
+          ☰
+        </button>
+        <Sidebar open={menuOpen} setOpen={setMenuOpen} />
+        <div className="flex-1 overflow-hidden ml-0 sm:ml-48">
           <Routes>
             <Route path="/" element={<ChatPage />} />
             <Route path="/agents" element={<AgentsPage />} />

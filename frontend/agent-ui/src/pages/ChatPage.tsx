@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -10,25 +10,38 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [taskType, setTaskType] = useState('default')
   const [sessionId] = useState(() => localStorage.getItem('sessionId') || '')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const sendMessage = async () => {
     if (!input.trim()) return
     const userMessage: Message = { role: 'user', content: input }
     setMessages(prev => [...prev, userMessage])
     setInput('')
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: input, task_type: taskType, session_id: sessionId }),
-    })
-    const data = await res.json()
-    const assistantMessage: Message = { role: 'assistant', content: data.text || data.message }
-    setMessages(prev => [...prev, assistantMessage])
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: input, task_type: taskType, session_id: sessionId }),
+      })
+      if (!res.ok) throw new Error('Request failed')
+      const data = await res.json()
+      const assistantMessage: Message = { role: 'assistant', content: data.text || data.message }
+      setMessages(prev => [...prev, assistantMessage])
+    } catch {
+      setError('Fehler beim Abrufen')
+    } finally {
+      setLoading(false)
+      inputRef.current?.focus()
+    }
   }
 
   return (
     <div className="p-4 flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto mb-4">
+      <div className="flex-1 overflow-y-auto mb-4" aria-live="polite">
         {messages.map((m, idx) => (
           <div key={idx} className={m.role === 'user' ? 'text-right' : 'text-left'}>
             <div className="inline-block px-3 py-2 my-1 rounded bg-gray-200 text-gray-800 max-w-xl">
@@ -37,20 +50,28 @@ export default function ChatPage() {
           </div>
         ))}
       </div>
-      <div className="flex gap-2">
-        <select value={taskType} onChange={e => setTaskType(e.target.value)} className="border p-2">
+      {error && <div className="text-red-600 mb-2" role="alert">{error}</div>}
+      <div className="flex gap-2 items-start">
+        <select value={taskType} onChange={e => setTaskType(e.target.value)} className="border p-2" aria-label="Task type">
           <option value="default">default</option>
           <option value="docker">docker</option>
           <option value="container_ops">container_ops</option>
         </select>
         <input
+          ref={inputRef}
           className="flex-1 border p-2"
           value={input}
           onChange={e => setInput(e.target.value)}
           placeholder="Enter prompt..."
+          aria-label="Prompt"
         />
-        <button className="bg-blue-600 text-white px-4" onClick={sendMessage}>
-          Send
+        <button
+          className="bg-blue-600 text-white px-4 disabled:opacity-50"
+          onClick={sendMessage}
+          disabled={loading}
+          aria-label="Send message"
+        >
+          {loading ? 'Wird geladen…' : 'Send'}
         </button>
       </div>
     </div>

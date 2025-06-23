@@ -7,6 +7,7 @@ from typing import Dict, List
 import yaml
 
 from .config import settings
+from core.metrics_utils import ROUTING_DECISIONS
 
 try:
     from nn_models.meta_learner import MetaLearner
@@ -50,4 +51,6 @@ class RoutingAgentService:
         ctx = {"task_type": task_type, "required_tools": required_tools}
         if context:
             ctx.update(context)
-        return {"target_worker": self.predict_agent(ctx)}
+        worker = self.predict_agent(ctx)
+        ROUTING_DECISIONS.labels(task_type, worker).inc()
+        return {"target_worker": worker}

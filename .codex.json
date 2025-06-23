@@ -167,4 +167,5 @@
     "phase-1.4-observability-logging": true,
     "phase/1.final-core-consistency": true,
     "phase/2.3-system-harmonization": true,
+    "phase/2.5-feedback-autotrainer": true
 }

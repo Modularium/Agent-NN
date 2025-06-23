@@ -28,9 +28,9 @@
 
 ### 2.1 Meta-Learning-Integration
 - [x] MetaLearner aktivieren.
-- [ ] AutoTrainer und Feedback-Schleife implementieren.
+- [x] AutoTrainer und Feedback-Schleife implementieren.
 - [x] Capability-basiertes Routing prototypisieren.
-- [ ] Evaluationsmetriken sammeln.
+- [x] Evaluationsmetriken sammeln.
 
 ### 2.2 LLM-Provider-Integration & konfigurierbare KI
 - [ ] Provider-System erweitern.

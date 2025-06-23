@@ -21,3 +21,4 @@ keys/
 .ipynb_checkpoints/
 /frontend/node_modules/
 *.env
+frontend/agent-ui/dist/

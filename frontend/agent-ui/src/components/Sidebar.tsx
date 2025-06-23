@@ -13,6 +13,16 @@ export default function Sidebar() {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/agents" className={linkClass}>
+            Agents
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/tasks" className={linkClass}>
+            Tasks
+          </NavLink>
+        </li>
+        <li>
           <NavLink to="/routing" className={linkClass}>
             Routing
           </NavLink>
@@ -25,6 +35,26 @@ export default function Sidebar() {
         <li>
           <NavLink to="/monitoring" className={linkClass}>
             Monitoring
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/metrics" className={linkClass}>
+            Metrics
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/settings" className={linkClass}>
+            Settings
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/admin" className={linkClass}>
+            Admin
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/debug" className={linkClass}>
+            Debug
           </NavLink>
         </li>
       </ul>

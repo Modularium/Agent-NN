@@ -128,6 +128,8 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Module konsolidiert und Konfigurationsprüfung implementiert
 ### Fortschritt Phase 3.1
 - Erste React-basierte Chat-UI unter `frontend/agent-ui` angebunden
+### Fortschritt Phase 3.2
+- Legacy-Frontend in `archive/ui_legacy` verschoben und neue UI konsolidiert
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

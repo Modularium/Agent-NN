@@ -102,7 +102,8 @@ agentnn --version
 
 ## Frontend Development
 
-The React based chat UI resides in `frontend/agent-ui`.
+The consolidated React interface lives in `frontend/agent-ui`. All legacy
+components have been archived under `archive/ui_legacy`.
 
 ```bash
 cd frontend/agent-ui

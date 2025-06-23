@@ -2,6 +2,8 @@
 
 from fastapi import FastAPI
 
+from core.run_service import run_service
+
 from core.logging_utils import LoggingMiddleware, exception_handler, init_logging
 from core.metrics_utils import MetricsMiddleware, metrics_router
 from core.auth_utils import AuthMiddleware
@@ -21,6 +23,4 @@ app.include_router(health_router)
 app.include_router(session_router)
 
 if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host=settings.host, port=settings.port)
+    run_service(app, host=settings.host, port=settings.port)

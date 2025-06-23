@@ -112,3 +112,10 @@ npm run dev
 ```
 
 Run `npm run build` to create the static files in `frontend/dist/`.
+
+## Monitoring & Maintenance
+
+Prometheus scrapes metrics from each service at `/metrics`. A sample configuration
+is provided in `monitoring/prometheus.yml`. Logs are persisted under `/data/logs/`
+and can be mounted as a volume in production. See `docs/maintenance.md` for
+backup and update recommendations.

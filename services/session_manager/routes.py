@@ -14,6 +14,7 @@ from .schemas import (
     FeedbackList,
 )
 from .service import SessionManagerService
+from core.audit import audit_action
 from core.feedback_utils import FeedbackEntry
 
 router = APIRouter()
@@ -48,6 +49,12 @@ async def get_context(session_id: str) -> SessionHistory:
 @router.post("/model", response_model=StatusResponse)
 async def set_model(selection: ModelSelection) -> StatusResponse:
     service.set_model(selection.user_id, selection.model_id)
+    audit_action(
+        actor=selection.user_id,
+        action="set_model",
+        context_id=selection.user_id,
+        detail={"model": selection.model_id},
+    )
     return StatusResponse(status="ok")
 
 
@@ -70,6 +77,12 @@ async def add_feedback(session_id: str, fb: Feedback) -> StatusResponse:
         timestamp=fb.timestamp,
     )
     service.add_feedback(entry)
+    audit_action(
+        actor=fb.user_id,
+        action="feedback_submit",
+        context_id=session_id,
+        detail={"score": fb.score, "agent_id": fb.agent_id},
+    )
     return StatusResponse(status="ok")
 
 

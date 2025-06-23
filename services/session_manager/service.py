@@ -4,16 +4,23 @@ from __future__ import annotations
 
 from typing import List
 
-from core.model_context import ModelContext
-from core.metrics_utils import ACTIVE_SESSIONS, TASKS_PROCESSED
 from core.config import settings
+from core.memory_store import (
+    BaseMemoryStore,
+)
+from core.memory_store import FileMemoryStore as FileMemoryLogStore
+from core.memory_store import (
+    InMemoryMemoryStore,
+    NoOpMemoryStore,
+)
+from core.metrics_utils import ACTIVE_SESSIONS, TASKS_PROCESSED
+from core.model_context import ModelContext
 from core.session_store import (
     BaseSessionStore,
-    InMemorySessionStore,
     FileSessionStore,
+    InMemorySessionStore,
 )
 
-from core.memory_store import BaseMemoryStore, InMemoryMemoryStore, FileMemoryStore as FileMemoryLogStore, NoOpMemoryStore
 
 class SessionManagerService:
     """Manage ModelContext sessions via a SessionStore."""
@@ -40,6 +47,7 @@ class SessionManagerService:
                 self.memory = NoOpMemoryStore()
             else:
                 self.memory = InMemoryMemoryStore()
+        self._user_models: dict[str, str] = {}
 
     def start_session(self) -> str:
         """Create a new session and return its id."""
@@ -71,3 +79,11 @@ class SessionManagerService:
         memory = self.memory.get_memory(session_id)
         TASKS_PROCESSED.labels("session_manager").inc()
         return [ModelContext(**{**d, "memory": memory}) for d in data]
+
+    def set_model(self, user_id: str, model_id: str) -> None:
+        self._user_models[user_id] = model_id
+
+    def get_model(self, user_id: str | None) -> str | None:
+        if not user_id:
+            return None
+        return self._user_models.get(user_id)

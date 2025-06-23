@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from core.model_context import ModelContext
-
 import httpx
+
+from core.model_context import ModelContext
 
 from ..config import SDKSettings
 
@@ -79,9 +79,7 @@ class AgentClient:
 
     def get_embeddings(self, text: str) -> Dict[str, Any]:
         """Return embeddings using the vector store."""
-        resp = self._client.post(
-            "/embed", json={"text": text}, headers=self._headers()
-        )
+        resp = self._client.post("/embed", json={"text": text}, headers=self._headers())
         resp.raise_for_status()
         return resp.json()
 
@@ -161,3 +159,14 @@ class AgentClient:
         ctx = build_context(message)
         ctx.task_context.task_type = task_type
         return self.dispatch_task(ctx)
+
+    def get_models(self) -> Dict[str, Any]:
+        resp = self._client.get("/models", headers=self._headers())
+        resp.raise_for_status()
+        return resp.json()
+
+    def set_model(self, model_id: str, user_id: str = "default") -> Dict[str, Any]:
+        payload = {"user_id": user_id, "model_id": model_id}
+        resp = self._client.post("/model", json=payload, headers=self._headers())
+        resp.raise_for_status()
+        return resp.json()

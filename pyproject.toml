@@ -1,6 +1,6 @@
 [project]
 name = "agentnn"
-version = "1.0.0-beta"
+version = "1.0.0"
 description = "Modular agent execution and neural orchestration framework"
 readme = "README.md"
 license = { text = "MIT" }

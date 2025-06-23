@@ -2,6 +2,7 @@
     "project": "Agent-NN MCP Modernization",
     "objective": "Schrittweise Umstellung auf eine Modular Control Plane Architektur",
     "model": "gpt-4",
+    "version": "1.0.0",
     "approvalMode": "full-auto",
     "fullAutoErrorMode": "ignore-and-continue",
     "notify": false,
@@ -168,9 +169,10 @@
     "phase/1.final-core-consistency": true,
     "phase/2.3-system-harmonization": true,
     "phase/2.5-feedback-autotrainer": true
-    ,"phase/2.6-feature-consolidation": true
-    ,"phase/3.1-frontend-chat-ui": true
-    ,"phase/3.2-ui-migration-complete": true
-    ,"phase/3.3-ux-a11y-optimization": true
-    ,"phase/4.1-ci-tests-complete": true
+    "phase/2.6-feature-consolidation": true
+    "phase/3.1-frontend-chat-ui": true
+    "phase/3.2-ui-migration-complete": true
+    "phase/3.3-ux-a11y-optimization": true
+    "phase/4.1-ci-tests-complete": true
+    "phase/4.2-deploy-ready": true
 }

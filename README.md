@@ -43,14 +43,14 @@ graph TD
    cp .env.example .env  # lokale Konfiguration
    ```
 3. Basis-Services starten
-   ```bash
-   docker-compose up dispatcher registry session-manager vector_store llm_gateway
+   ./scripts/deploy/start_services.sh
    ```
 4. Testanfrage stellen
 ```bash
 curl -X POST http://localhost:8000/task -H "Content-Type: application/json" -d '{"task_type": "chat", "input": "Hallo"}'
 ```
 
+Weitere Details zur Einrichtung findest du in [docs/deployment.md](docs/deployment.md).
 ## CLI
 
 Das Kommando `agentnn` wird nach der Installation verfügbar. Die Version kann mit

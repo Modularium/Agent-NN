@@ -134,6 +134,8 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - UX-Optimierung, responsive Navigation und Accessibility-Prüfung abgeschlossen
 ### Fortschritt Phase 4.1
 - Testabdeckung und CI-Workflow initialisiert
+### Fortschritt Phase 4.2
+- Deployment-Skripte und Dokumentation für Version 1.0.0 erstellt
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:
@@ -146,3 +148,4 @@ Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-A
 *Ende der AGENTS.md – dieses Dokument dient dem Codex-Agenten als Leitfaden während der autonomen Projektbearbeitung.*
 
 <!-- codex/phase-1-sdk -->
+<!-- phase/4.2-deploy-ready -->

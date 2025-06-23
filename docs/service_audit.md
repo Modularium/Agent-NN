@@ -11,4 +11,4 @@ This document lists available services and their current status.
 | llm_gateway | Productive |
 | routing_agent | Productive |
 | agent_coordinator | Productive |
-| agent_worker/sample_agent | Prototype |
+| agent_worker/sample_agent | Archived |

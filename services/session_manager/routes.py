@@ -1,10 +1,12 @@
 """API routes for the Session Manager service."""
 
 from fastapi import APIRouter
-from utils.api_utils import api_route
 
 from core.model_context import ModelContext
-from .schemas import SessionId, SessionHistory
+from core.schemas import StatusResponse
+from utils.api_utils import api_route
+
+from .schemas import SessionHistory, SessionId
 from .service import SessionManagerService
 
 router = APIRouter()
@@ -20,11 +22,11 @@ async def start_session() -> SessionId:
 
 
 @api_route(version="v1.0.0")
-@router.post("/update_context")
-async def update_context(ctx: ModelContext) -> dict:
+@router.post("/update_context", response_model=StatusResponse)
+async def update_context(ctx: ModelContext) -> StatusResponse:
     """Store or extend a session context."""
     service.update_context(ctx)
-    return {"status": "ok"}
+    return StatusResponse(status="ok")
 
 
 @api_route(version="v1.0.0")

@@ -1,13 +1,14 @@
 """API routes for the Agent Registry service."""
 
-from fastapi import APIRouter
+from dataclasses import asdict
+
+from fastapi import APIRouter, HTTPException
+
+from core.agent_profile import AgentIdentity
+from core.schemas import StatusResponse
 from utils.api_utils import api_route
 
-from fastapi import HTTPException
-
-from dataclasses import asdict
 from .schemas import AgentInfo, AgentList
-from core.agent_profile import AgentIdentity
 from .service import AgentRegistryService
 
 router = APIRouter()
@@ -73,8 +74,8 @@ async def update_agent_profile(agent_name: str, data: dict) -> dict:
 
 
 @api_route(version="v1.0.0")
-@router.post("/agent_status/{agent_name}")
-async def update_agent_status(agent_name: str, data: dict) -> dict:
+@router.post("/agent_status/{agent_name}", response_model=StatusResponse)
+async def update_agent_status(agent_name: str, data: dict) -> StatusResponse:
     """Update runtime status for an agent."""
     service.update_status(agent_name, data)
     profile = AgentIdentity.load(agent_name)
@@ -82,7 +83,7 @@ async def update_agent_status(agent_name: str, data: dict) -> dict:
         response_time=data.get("last_response_duration"),
         tasks_in_progress=data.get("tasks_in_progress"),
     )
-    return {"status": "ok"}
+    return StatusResponse(status="ok")
 
 
 @api_route(version="v1.0.0")

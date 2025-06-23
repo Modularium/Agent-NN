@@ -116,6 +116,8 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 ### Fortschritt Phase 2.2
 - OpenHands-Worker greift produktiv auf API zu
 - Tasks mit `task_type` `docker` oder `container_ops` werden an `worker_openhands` geroutet
+### Fortschritt Phase 2.3
+- Legacy-Komponenten archiviert und Response-Schemata vereinheitlicht
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

@@ -1,17 +1,18 @@
 import logging
-from logging.handlers import RotatingFileHandler
 import os
 import sys
 import time
 import uuid
 from datetime import datetime
+from logging.handlers import RotatingFileHandler
 from typing import Callable
 
-from fastapi import Request
-from fastapi.responses import JSONResponse
-from fastapi.exceptions import HTTPException
-from starlette.middleware.base import BaseHTTPMiddleware
 import structlog
+from fastapi import Request
+from fastapi.exceptions import HTTPException
+from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
+
 from core.config import settings
 
 
@@ -79,9 +80,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
         level = (
             logging.INFO
             if response.status_code < 400
-            else logging.WARNING
-            if response.status_code < 500
-            else logging.ERROR
+            else logging.WARNING if response.status_code < 500 else logging.ERROR
         )
         log.log(
             level,
@@ -103,7 +102,11 @@ def exception_handler(logger: structlog.BoundLogger):
 
     async def handle(request: Request, exc: Exception):
         status = exc.status_code if isinstance(exc, HTTPException) else 500
-        level = logging.ERROR if status >= 500 else logging.WARNING if status >= 400 else logging.INFO
+        level = (
+            logging.ERROR
+            if status >= 500
+            else logging.WARNING if status >= 400 else logging.INFO
+        )
         logger.log(
             level,
             "exception",
@@ -115,6 +118,7 @@ def exception_handler(logger: structlog.BoundLogger):
         return JSONResponse(
             status_code=status,
             content={
+                "status": "error",
                 "error": exc.__class__.__name__,
                 "detail": str(exc),
                 "timestamp": datetime.utcnow().isoformat(),

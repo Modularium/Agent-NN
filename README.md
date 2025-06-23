@@ -1,6 +1,6 @@
 # Agent-NN MCP ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
-Agent-NN ist ein Multi-Agent-System, das im Rahmen der Modular Control Plane in mehrere Microservices aufgeteilt wurde. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen.
+Agent-NN ist ein Multi-Agent-System, das im Rahmen der Modular Control Plane in mehrere Microservices aufgeteilt wurde. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen. Neben den Backend-Diensten stellt das Projekt ein Python‑SDK, eine CLI und ein React-basiertes Frontend bereit. Weitere Dokumentation befindet sich im Ordner [docs/](docs/).
 
 ## Systemvoraussetzungen
 
@@ -49,6 +49,15 @@ graph TD
 ```bash
 curl -X POST http://localhost:8000/task -H "Content-Type: application/json" -d '{"task_type": "chat", "input": "Hallo"}'
 ```
+
+Alternativ lassen sich alle Dienste per Docker Compose starten:
+```bash
+docker compose up --build
+```
+
+## Konfiguration
+
+Eine Beispielkonfiguration steht in `.env.example`. Kopiere die Datei bei Bedarf nach `.env` und passe die Werte an. Eine vollständige Liste aller Variablen ist in [docs/config_reference.md](docs/config_reference.md) beschrieben.
 
 Weitere Details zur Einrichtung findest du in [docs/deployment.md](docs/deployment.md).
 ## CLI
@@ -112,6 +121,10 @@ npm run dev
 ```
 
 Run `npm run build` to create the static files in `frontend/dist/`.
+
+## Tests & Beiträge
+
+Bevor du einen Pull Request erstellst, führe bitte `ruff`, `mypy` und `pytest` aus. Details zum Entwicklungsprozess findest du in [CONTRIBUTING.md](CONTRIBUTING.md) sowie im Dokument [docs/test_strategy.md](docs/test_strategy.md).
 
 ## Monitoring & Maintenance
 

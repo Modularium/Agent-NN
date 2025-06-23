@@ -99,3 +99,15 @@ agentnn --version
 
 - Python 3.9 oder neuer
 - Mindestens 4 GB RAM (8 GB empfohlen)
+
+## Frontend Development
+
+The React based chat UI resides in `frontend/agent-ui`.
+
+```bash
+cd frontend/agent-ui
+npm install
+npm run dev
+```
+
+Run `npm run build` to create the static files in `frontend/dist/`.

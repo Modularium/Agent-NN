@@ -21,6 +21,7 @@ dependencies = [
   "python-json-logger",
   "aiohttp",
   "structlog",
+  "cryptography",
   "mlflow"
 ]
 
@@ -63,6 +64,11 @@ description = "Modular agent execution and neural orchestration framework"
 authors = ["OpenHands <openhands@all-hands.dev>"]
 license = "MIT"
 readme = "README.md"
+packages = [
+  { include = "agentnn" },
+  { include = "sdk" },
+  { include = "mcp" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
@@ -81,6 +87,7 @@ loguru = "*"
 python-json-logger = "*"
 aiohttp = "*"
 structlog = "*"
+cryptography = "*"
 mlflow = "*"
 
 [tool.poetry.extras]

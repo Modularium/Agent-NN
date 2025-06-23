@@ -136,6 +136,10 @@ git clone https://github.com/EcoSphereNetwork/Agent-NN.git
 cd Agent-NN
 poetry install
 poetry run agentnn --version
+
+# Falls der Installationsschritt scheitert, kann `poetry install --no-root`
+# verwendet werden. Alternativ lässt sich der Paketmodus in der
+# `pyproject.toml` mit `package-mode = false` deaktivieren.
 ```
 
 ### Empfohlene Umgebung

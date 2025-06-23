@@ -24,13 +24,7 @@ dependencies = [
   "mlflow"
 ]
 
-[tool.setuptools.packages.find]
-where = ["."]
-exclude = ["tests*"]
 
-[project.scripts]
-agentnn = "sdk.cli.main:app"
-mcp_cli = "mcp.cli:app"
 
 [tool.ruff]
 line-length = 120
@@ -61,6 +55,41 @@ extend-exclude = [
 [project.optional-dependencies]
 sdk = []
 
+
+[tool.poetry]
+name = "agentnn"
+version = "1.0.0"
+description = "Modular agent execution and neural orchestration framework"
+authors = ["OpenHands <openhands@all-hands.dev>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+fastapi = "*"
+httpx = "*"
+typer = "*"
+pydantic-settings = "*"
+pydantic = "*"
+PyYAML = "*"
+tqdm = "*"
+uvicorn = "*"
+slowapi = "*"
+aiofiles = "*"
+prometheus-client = "*"
+loguru = "*"
+python-json-logger = "*"
+aiohttp = "*"
+structlog = "*"
+mlflow = "*"
+
+[tool.poetry.extras]
+sdk = []
+
+[tool.poetry.scripts]
+agentnn = "sdk.cli.main:app"
+mcp_cli = "mcp.cli:app"
+
 [build-system]
-requires = ["setuptools>=61", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.7.0"]
+build-backend = "poetry.core.masonry.api"

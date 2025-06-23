@@ -136,6 +136,8 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Testabdeckung und CI-Workflow initialisiert
 ### Fortschritt Phase 4.2
 - Deployment-Skripte und Dokumentation für Version 1.0.0 erstellt
+### Fortschritt Phase 4.3
+- Betriebsmetriken, Audit-Logs und produktive Umgebungsdateien hinzugefügt
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:
@@ -149,3 +151,4 @@ Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-A
 
 <!-- codex/phase-1-sdk -->
 <!-- phase/4.2-deploy-ready -->
+<!-- phase/4.3-longterm-maintenance -->

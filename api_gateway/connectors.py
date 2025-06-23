@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import Any, Optional
 
 import httpx
@@ -8,9 +9,12 @@ from fastapi import HTTPException
 class ServiceConnector:
     """Helper for internal service requests with retry and timeout."""
 
-    def __init__(self, base_url: str, timeout: float = 10.0, retries: int = 2) -> None:
+    def __init__(
+        self, base_url: str, timeout: float | None = None, retries: int = 2
+    ) -> None:
         self.base_url = base_url.rstrip("/")
-        self.timeout = timeout
+        default_timeout = float(os.getenv("TIMEOUT_DEFAULT", "10"))
+        self.timeout = timeout or default_timeout
         self.retries = retries
         self.client = httpx.AsyncClient()
 

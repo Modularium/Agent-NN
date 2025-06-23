@@ -113,6 +113,9 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Routing-Agent mit `rules.yaml` aktiviert
 - Dispatcher nutzt Routing-Agent für generische Tasks
 - Optionaler MetaLearner vorbereitet
+### Fortschritt Phase 2.2
+- OpenHands-Worker greift produktiv auf API zu
+- Tasks mit `task_type` `docker` oder `container_ops` werden an `worker_openhands` geroutet
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

@@ -36,6 +36,7 @@
 - [ ] Provider-System erweitern.
 - [ ] Dynamische Konfiguration über `llm_config.yaml`.
 - [ ] SDK-Beispiele und Tests hinzufügen.
+- [x] OpenHands API Anbindung produktiv aktivieren.
 
 ### 2.3 System-Harmonisierung & Legacy-Migration
 - [ ] Bestehende Funktionen angleichen.

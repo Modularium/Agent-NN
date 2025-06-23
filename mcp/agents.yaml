@@ -5,3 +5,6 @@ agents:
     url: http://worker_loh:8000
   - name: worker_openhands
     url: http://worker_openhands:8000
+    capabilities:
+      - docker
+      - container_ops

@@ -10,13 +10,19 @@ This document explains how to run Agent-NN locally and in production.
 
 ## Building the Frontend
 
-Execute:
+Execute the build script which installs dependencies and runs the Vite build:
 
 ```bash
 ./scripts/deploy/build_frontend.sh
 ```
 
-The compiled files are stored in `frontend/dist/`.
+The compiled files are stored in `frontend/dist/`. The script creates the
+directory if it does not exist and copies the build output there. On success it
+prints a short confirmation message.
+
+If you see an error like `cp: cannot stat 'dist/*'`, ensure the build actually
+produced a `dist` directory. In that case remove any stale folders and rerun the
+script.
 
 ## Starting Services
 

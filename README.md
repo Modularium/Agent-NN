@@ -65,6 +65,7 @@ Wichtige Befehle:
 agentnn agents     # verfügbare Agents auflisten
 agentnn sessions   # aktive Sessions anzeigen
 agentnn feedback   # Feedback-Tools
+agentnn config check  # geladene Konfiguration anzeigen
 ```
 
 Weitere Details findest du im Ordner [docs/](docs/).

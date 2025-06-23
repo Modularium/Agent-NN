@@ -8,3 +8,8 @@ The following Prometheus metrics are exported by Agent-NN services.
 - `agentnn_routing_decisions_total{task_type,worker}` – distribution of routing decisions
 
 Use `/metrics` on each service to scrape these values.
+
+## Test Coverage
+
+All metrics-related utilities and services are covered by automated tests in
+`tests/test_metrics.py` and related modules, ensuring stable behaviour.

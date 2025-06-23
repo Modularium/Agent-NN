@@ -1,6 +1,6 @@
 from core.auto_trainer import AutoTrainer
 from services.session_manager.service import SessionManagerService
-from services.session_manager.feedback_store import FeedbackEntry
+from core.feedback_utils import FeedbackEntry
 from core.model_context import ModelContext, TaskContext
 
 

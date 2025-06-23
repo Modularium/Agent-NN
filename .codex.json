@@ -176,4 +176,5 @@
     "phase/4.1-ci-tests-complete": true
     "phase/4.2-deploy-ready": true
     "phase/4.4-project-closure": true
+    "phase/4.6-local-install-fix": true
 }

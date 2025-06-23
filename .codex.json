@@ -169,4 +169,5 @@
     "phase/2.3-system-harmonization": true,
     "phase/2.5-feedback-autotrainer": true
     ,"phase/2.6-feature-consolidation": true
+    ,"phase/3.1-frontend-chat-ui": true
 }

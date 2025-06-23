@@ -35,25 +35,48 @@ graph TD
    ```bash
    git clone https://github.com/EcoSphereNetwork/Agent-NN.git
    cd Agent-NN
-
    ```
-2. Abhängigkeiten installieren
+2. Abhängigkeiten installieren und Beispielkonfiguration kopieren
    ```bash
    pip install -r requirements.txt
-   cp .env.example .env  # lokale Konfiguration
+   cp .env.example .env
    ```
-3. Basis-Services starten
+3. (Optional) Lokale Modelle herunterladen
+   ```bash
+   python scripts/setup_local_models.py --model all
+   ```
+4. Frontend bauen
+   ```bash
+   ./scripts/deploy/build_frontend.sh
+   ```
+5. Dienste starten
+   ```bash
    ./scripts/deploy/start_services.sh
    ```
-4. Testanfrage stellen
-```bash
-curl -X POST http://localhost:8000/task -H "Content-Type: application/json" -d '{"task_type": "chat", "input": "Hallo"}'
-```
+6. Erste Anfrage stellen oder UI öffnen
+   ```bash
+   curl -X POST http://localhost:8000/task -H "Content-Type: application/json" \
+     -d '{"task_type": "chat", "input": "Hallo"}'
+   # UI: http://localhost:3000
+   ```
 
 Alternativ lassen sich alle Dienste per Docker Compose starten:
 ```bash
 docker compose up --build
 ```
+
+## Hilfreiche Skripte
+
+| Script | Zweck |
+|---|---|
+| `scripts/deploy/build_frontend.sh` | Baut die React-Oberfläche in `frontend/dist/` |
+| `scripts/deploy/start_services.sh` | Startet alle Container nach einem Port- und .env-Check |
+| `scripts/deploy/dev_reset.sh` | Entfernt Volumes und lokale Daten für einen Neustart |
+| `scripts/setup_local_models.py` | Lädt optionale Llamafile-Modelle herunter |
+| `scripts/build_and_test.sh` | Erstellt ein Docker-Image und führt Tests aus |
+| `scripts/deploy_to_registry.sh` | Publiziert Images in ein Container-Registry |
+| `scripts/start_mcp.sh` | Startet das Microservice-Compose-Setup |
+
 
 ## Konfiguration
 

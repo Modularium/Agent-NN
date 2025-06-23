@@ -7,4 +7,14 @@
 | 500 | Interner Fehler im Service           |
 | 503 | Abhängiger Dienst nicht erreichbar   |
 
-Alle Endpunkte liefern ein JSON-Objekt der Form `{"error": "message"}` im Fehlerfall.
+Alle Endpunkte liefern ein JSON-Objekt mit folgenden Feldern:
+
+```json
+{
+  "status": "error",
+  "detail": "Fehlerbeschreibung",
+  "code": 400
+}
+```
+
+`code` ist optional und entspricht dem HTTP-Status, falls angegeben.

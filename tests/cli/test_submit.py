@@ -1,5 +1,37 @@
 from typer.testing import CliRunner
-from sdk.cli.main import app
+import sys
+import types
+from contextlib import contextmanager
+
+
+@contextmanager
+def _dummy_run(*args, **kwargs):
+    yield types.SimpleNamespace(
+        info=types.SimpleNamespace(run_id="dummy", status="FINISHED")
+    )
+
+
+sys.modules.setdefault(
+    "mlflow",
+    types.SimpleNamespace(
+        start_run=_dummy_run,
+        set_tag=lambda *a, **k: None,
+        log_param=lambda *a, **k: None,
+        log_metric=lambda *a, **k: None,
+        set_tracking_uri=lambda *a, **k: None,
+        tracking=types.SimpleNamespace(
+            MlflowClient=lambda: types.SimpleNamespace(
+                list_experiments=lambda: [],
+                get_run=lambda run_id: types.SimpleNamespace(
+                    info=types.SimpleNamespace(run_id=run_id, status="FINISHED"),
+                    data=types.SimpleNamespace(metrics={}, params={}),
+                ),
+            )
+        ),
+    ),
+)
+
+from sdk.cli.main import app  # noqa: E402
 
 
 class DummyResp:

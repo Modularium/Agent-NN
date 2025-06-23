@@ -132,6 +132,8 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Legacy-Frontend in `archive/ui_legacy` verschoben und neue UI konsolidiert
 ### Fortschritt Phase 3.3
 - UX-Optimierung, responsive Navigation und Accessibility-Prüfung abgeschlossen
+### Fortschritt Phase 4.1
+- Testabdeckung und CI-Workflow initialisiert
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

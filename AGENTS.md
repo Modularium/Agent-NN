@@ -104,6 +104,11 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Authentifizierung über API-Key oder JWT optional
 - Interne Service-Requests nutzen Retry-Mechanismen
 - Fehlende Abhängigkeiten in Build-Skripten ergänzt
+
+### Fortschritt Phase 1.4
+- Einheitliches Logging über alle Services mit JSON-Option
+- Prometheus-Metriken pro Service unter `/metrics`
+- Docker-Compose beinhaltet nun einen Prometheus-Container
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

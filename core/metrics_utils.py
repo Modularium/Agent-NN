@@ -21,6 +21,11 @@ TOKENS_OUT = Counter("agentnn_tokens_out_total", "Tokens sent", ["service"])
 RESPONSE_TIME = Histogram(
     "agentnn_response_seconds", "Response time in seconds", ["service", "path"]
 )
+REQUEST_ERRORS = Counter(
+    "agentnn_request_errors_total",
+    "Total error responses",
+    ["service", "path", "status"],
+)
 
 
 def metrics_router() -> APIRouter:
@@ -43,7 +48,19 @@ class MetricsMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
         start = time.perf_counter()
-        response = await call_next(request)
+        try:
+            response = await call_next(request)
+        except Exception:
+            duration = time.perf_counter() - start
+            RESPONSE_TIME.labels(self.service, request.url.path).observe(duration)
+            REQUEST_ERRORS.labels(self.service, request.url.path, "500").inc()
+            raise
         duration = time.perf_counter() - start
         RESPONSE_TIME.labels(self.service, request.url.path).observe(duration)
+        if response.status_code >= 400:
+            REQUEST_ERRORS.labels(
+                self.service,
+                request.url.path,
+                str(response.status_code),
+            ).inc()
         return response

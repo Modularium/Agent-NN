@@ -38,7 +38,7 @@ graph TD
    ```
 2. Abhängigkeiten mit Poetry installieren und Beispielkonfiguration kopieren
    ```bash
-   poetry install --with sdk
+   poetry install
    cp .env.example .env
    ```
 3. (Optional) Lokale Modelle herunterladen
@@ -83,7 +83,7 @@ Das Projekt nutzt [Poetry](https://python-poetry.org/) zur Verwaltung der Python
 Nach dem Klonen installierst du alle Pakete und aktivierst die virtuelle Umgebung mit:
 
 ```bash
-poetry install --with sdk
+poetry install
 poetry shell
 ```
 
@@ -134,7 +134,7 @@ providers:
 ```bash
 git clone https://github.com/EcoSphereNetwork/Agent-NN.git
 cd Agent-NN
-poetry install --with sdk
+poetry install
 poetry run agentnn --version
 ```
 

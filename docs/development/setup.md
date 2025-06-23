@@ -18,7 +18,7 @@ cd Agent-NN
 ## Abhängigkeiten installieren
 
 ```bash
-poetry install --with sdk,test
+poetry install
 ```
 
 ## Services starten

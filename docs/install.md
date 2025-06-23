@@ -3,7 +3,7 @@
 ## From Source
 
 ```bash
-poetry install --with sdk
+poetry install
 poetry run agentnn --version
 ```
 

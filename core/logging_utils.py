@@ -3,6 +3,7 @@ from logging.handlers import RotatingFileHandler
 import os
 import sys
 import time
+import uuid
 from datetime import datetime
 from typing import Callable
 
@@ -45,15 +46,17 @@ def init_logging(service: str) -> structlog.BoundLogger:
     return structlog.get_logger().bind(service=service)
 
 
-class LoggingMiddleware(BaseHTTPMiddleware):
-    """Middleware to log requests in a structured format."""
+class RequestLoggingMiddleware(BaseHTTPMiddleware):
+    """Middleware to log incoming requests with a request id."""
 
     def __init__(self, app, logger: structlog.BoundLogger):
         super().__init__(app)
         self.logger = logger
 
     async def dispatch(self, request: Request, call_next: Callable):
+        request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
         log = self.logger.bind(
+            request_id=request_id,
             context_id=request.headers.get("x-context-id"),
             session_id=request.headers.get("x-session-id"),
             agent_id=request.headers.get("x-agent-id"),
@@ -73,10 +76,15 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             )
             raise
         duration = time.perf_counter() - start
-        level = "info" if response.status_code < 400 else "warning" if response.status_code < 500 else "error"
+        level = (
+            logging.INFO
+            if response.status_code < 400
+            else logging.WARNING
+            if response.status_code < 500
+            else logging.ERROR
+        )
         log.log(
             level,
-            "request",
             event="request",
             path=request.url.path,
             method=request.method,
@@ -84,6 +92,10 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             duration=duration,
         )
         return response
+
+
+# backwards compatibility alias
+LoggingMiddleware = RequestLoggingMiddleware
 
 
 def exception_handler(logger: structlog.BoundLogger):

@@ -1,13 +1,10 @@
 import os
-import json
 from fastapi import FastAPI, Request, HTTPException
 from utils.api_utils import api_route
 from .connectors import ServiceConnector
-import httpx
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from prometheus_fastapi_instrumentator import Instrumentator
 
 from core.logging_utils import LoggingMiddleware, exception_handler, init_logging
 from core.metrics_utils import MetricsMiddleware, metrics_router
@@ -40,7 +37,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-Instrumentator().instrument(app).expose(app)
 app.include_router(metrics_router())
 
 # service connectors

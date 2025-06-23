@@ -14,7 +14,11 @@ dependencies = [
   "uvicorn",
   "slowapi",
   "aiofiles",
-  "prometheus-fastapi-instrumentator",
+  "prometheus-client",
+  "loguru",
+  "python-json-logger",
+  "aiohttp",
+  "structlog",
   "mlflow"
 ]
 

@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'agent_services'
+    static_configs:
+      - targets:
+          - 'task_dispatcher:8000'
+          - 'agent_registry:8001'
+          - 'vector_store:8002'
+          - 'llm_gateway:8003'
+          - 'session_manager:8005'
+          - 'coalition_manager:8012'
+          - 'agent_coordinator:8010'
+          - 'api_gateway:8000'

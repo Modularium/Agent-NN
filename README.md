@@ -1,4 +1,4 @@
-# Agent-NN MCP
+# Agent-NN MCP ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
 Agent-NN ist ein Multi-Agent-System, das im Rahmen der Modular Control Plane in mehrere Microservices aufgeteilt wurde. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen.
 

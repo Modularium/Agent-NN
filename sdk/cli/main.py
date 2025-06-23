@@ -12,6 +12,15 @@ import httpx
 import mlflow
 import typer
 
+
+def _handle_http_error(err: httpx.HTTPStatusError) -> None:
+    """Show a friendly message for HTTP errors."""
+    if err.response.status_code == 401:
+        typer.secho("\u26d4 Nicht autorisiert – überprüfe deinen API-Key", fg=typer.colors.RED)
+    else:
+        typer.secho(f"HTTP Error: {err.response.status_code}", fg=typer.colors.RED)
+    raise typer.Exit(1)
+
 from core.access_control import is_authorized
 from core.agent_evolution import evolve_profile
 from core.agent_profile import PROFILE_DIR, AgentIdentity
@@ -82,11 +91,14 @@ agent_app.add_typer(agent_contract_app)
 def version_callback(
     ctx: typer.Context,
     version: bool = typer.Option(False, "--version", help="Show version and exit"),
+    token: str = typer.Option(None, "--token", help="API token"),
 ):
     """Global options."""
     if version:
         typer.echo(__version__)
         ctx.exit()
+    if token:
+        os.environ["AGENTNN_API_TOKEN"] = token
 
 
 @app.command()
@@ -138,7 +150,11 @@ def ask(
 def sessions() -> None:
     """List active sessions."""
     client = AgentClient()
-    result = client.list_sessions()
+    try:
+        result = client.list_sessions()
+    except httpx.HTTPStatusError as err:
+        _handle_http_error(err)
+        return
     typer.echo(json.dumps(result, indent=2))
 
 
@@ -227,8 +243,18 @@ def session_budget(session_id: str) -> None:
 def agents() -> None:
     """List available agents."""
     client = AgentClient()
-    result = client.list_agents()
+    try:
+        result = client.list_agents()
+    except httpx.HTTPStatusError as err:
+        _handle_http_error(err)
+        return
     typer.echo(json.dumps(result, indent=2))
+
+
+@app.command("agents")
+def agents_root() -> None:
+    """List available agents (alias)."""
+    agents()
 
 
 @agent_app.command("profile")
@@ -1050,7 +1076,11 @@ def feedback_submit(
         "comment": comment or None,
         "timestamp": datetime.utcnow().isoformat(),
     }
-    resp = client.post_feedback(session, payload)
+    try:
+        resp = client.post_feedback(session, payload)
+    except httpx.HTTPStatusError as err:
+        _handle_http_error(err)
+        return
     typer.echo(json.dumps(resp, indent=2))
 
 

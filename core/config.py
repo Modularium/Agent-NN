@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from pathlib import Path
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
     """Application configuration loaded from ``.env``."""
+
+    model_config = ConfigDict(extra="allow")
 
     DATA_DIR: str = "data"
     SESSIONS_DIR: str = "data/sessions"

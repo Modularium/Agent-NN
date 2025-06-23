@@ -35,11 +35,13 @@ class TaskDispatcherService:
         session_url: str | None = None,
         coordinator_url: str | None = None,
         coalition_url: str | None = None,
+        routing_url: str | None = None,
     ) -> None:
         self.registry_url = (registry_url or settings.registry_url).rstrip("/")
         self.session_url = (session_url or settings.session_url).rstrip("/")
         self.coordinator_url = (coordinator_url or settings.coordinator_url).rstrip("/")
         self.coalition_url = (coalition_url or settings.coalition_url).rstrip("/")
+        self.routing_url = (routing_url or settings.routing_url).rstrip("/")
         self.queue = DispatchQueue()
         self.log = logging.getLogger(__name__)
         self.audit = AuditLog()
@@ -499,22 +501,41 @@ class TaskDispatcherService:
                 resp = client.get(f"{self.registry_url}/agents")
                 resp.raise_for_status()
                 agents = resp.json().get("agents", [])
-                candidates = [
-                    a
-                    for a in agents
-                    if capability in a.get("capabilities", [])
-                    or capability in a.get("skills", [])
-                ]
-                candidates.sort(
-                    key=lambda a: (
-                        a.get("load_factor", 0),
-                        a.get("estimated_cost_per_token", 0),
-                        a.get("avg_response_time", 0),
-                    )
-                )
-                return candidates
         except Exception:
             return []
+
+        candidates = [
+            a
+            for a in agents
+            if capability in a.get("capabilities", [])
+            or capability in a.get("skills", [])
+        ]
+        if (not candidates) or capability == "chat":
+            target = self._route_agent(capability)
+            if target:
+                candidates = [a for a in agents if a["name"] == target]
+        if not candidates:
+            candidates = [a for a in agents if a["name"] == "worker_dev"]
+
+        candidates.sort(
+            key=lambda a: (
+                a.get("load_factor", 0),
+                a.get("estimated_cost_per_token", 0),
+                a.get("avg_response_time", 0),
+            )
+        )
+        return candidates
+
+    def _route_agent(self, task_type: str) -> str | None:
+        """Call routing-agent service to get target worker."""
+        payload = {"task_type": task_type}
+        try:
+            with httpx.Client() as client:
+                resp = client.post(f"{self.routing_url}/route", json=payload, timeout=5)
+                resp.raise_for_status()
+                return resp.json().get("target_worker")
+        except Exception:
+            return None
 
     def _fetch_history(self, session_id: str) -> list[dict]:
         try:

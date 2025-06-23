@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     session_url: str = "http://localhost:8005"
     coordinator_url: str = "http://localhost:8010"
     coalition_url: str = "http://localhost:8012"
+    routing_url: str = "http://localhost:8111"
 
 
 settings = Settings()

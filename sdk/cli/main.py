@@ -10,6 +10,7 @@ from pathlib import Path
 
 import mlflow
 import typer
+import httpx
 
 from core.access_control import is_authorized
 from core.agent_evolution import evolve_profile
@@ -112,9 +113,21 @@ def submit(
 def ask(
     message: str,
     task_type: str = typer.Option("dev", "--task-type"),
+    verbose_routing: bool = typer.Option(False, "--verbose-routing", help="Show routing decisions"),
 ) -> None:
     """Send a quick task to the dispatcher."""
     client = AgentClient()
+    if verbose_routing:
+        try:
+            resp = httpx.post(
+                "http://localhost:8111/route",
+                json={"task_type": task_type},
+                timeout=5,
+            )
+            resp.raise_for_status()
+            typer.echo(f"Routing to: {resp.json().get('target_worker')}")
+        except Exception:
+            typer.echo("Routing info unavailable")
     result = client.chat(message, task_type=task_type)
     typer.echo(json.dumps(result, indent=2))
 

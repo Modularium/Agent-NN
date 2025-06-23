@@ -109,6 +109,10 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Einheitliches Logging über alle Services mit JSON-Option
 - Prometheus-Metriken pro Service unter `/metrics`
 - Docker-Compose beinhaltet nun einen Prometheus-Container
+### Fortschritt Phase 2.1
+- Routing-Agent mit `rules.yaml` aktiviert
+- Dispatcher nutzt Routing-Agent für generische Tasks
+- Optionaler MetaLearner vorbereitet
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

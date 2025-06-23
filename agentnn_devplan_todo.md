@@ -43,6 +43,10 @@
 - [ ] Konsistenz und Abwärtskompatibilität prüfen.
 - [ ] Legacy-Code schrittweise stilllegen.
 
+### 2.6 Feature-Konsolidierung
+- [x] Gemeinsame Module in `core/` überführt.
+- [x] Konfigurationsvalidierung implementiert.
+
 ## Phase 3: Konsolidiertes Frontend & User Experience
 
 ### 3.1 Vollständige Frontend-Implementierung

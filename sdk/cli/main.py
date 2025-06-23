@@ -738,6 +738,14 @@ def config_show() -> None:
     typer.echo(json.dumps(settings.__dict__, indent=2))
 
 
+@config_app.command("check")
+def config_check() -> None:
+    """Validate and display core configuration."""
+    from core.config import settings as core_settings
+
+    typer.echo(json.dumps(core_settings.model_dump(), indent=2))
+
+
 @model_app.command("list")
 def model_list():
     """List available models."""

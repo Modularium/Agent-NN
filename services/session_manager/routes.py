@@ -14,7 +14,7 @@ from .schemas import (
     FeedbackList,
 )
 from .service import SessionManagerService
-from .feedback_store import FeedbackEntry
+from core.feedback_utils import FeedbackEntry
 
 router = APIRouter()
 service = SessionManagerService()

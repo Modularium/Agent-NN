@@ -20,6 +20,25 @@ class Settings(BaseSettings):
     DEFAULT_STORE_BACKEND: str = "memory"  # ``memory`` or ``file``
     VECTOR_DB_BACKEND: str = "memory"  # ``memory`` or ``chromadb``
 
+    # LLM configuration
+    LLM_BACKEND: str = "openai"
+    LLM_MODEL: str = "gpt-3.5-turbo"
+    LLM_TEMPERATURE: float = 0.7
+    LLM_MAX_TOKENS: int = 1000
+
+    # Logging / feedback
+    LOG_LEVEL: str = "INFO"
+    LOG_FORMAT: str = "json"
+    LOG_JSON: bool = False
+
+    # AutoTrainer
+    AUTOTRAINER_FREQUENCY_HOURS: int = 24
+
+    # Security / Auth
+    AUTH_ENABLED: bool = False
+    API_AUTH_ENABLED: bool = False
+    RATE_LIMITS_ENABLED: bool = True
+
     class Config:
         env_file = ".env"
         case_sensitive = False

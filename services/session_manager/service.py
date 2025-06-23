@@ -23,7 +23,7 @@ from core.metrics_utils import (
 )
 from core.model_context import ModelContext
 from core.session_store import BaseSessionStore, FileSessionStore, InMemorySessionStore
-from .feedback_store import (
+from core.feedback_utils import (
     BaseFeedbackStore,
     FeedbackEntry,
     FileFeedbackStore,

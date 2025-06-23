@@ -124,6 +124,8 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 ### Fortschritt Phase 2.5
 - Feedback-Schleife und AutoTrainer aktiv
 - Metriken zu Feedback und Routing unter `/metrics`
+### Fortschritt Phase 2.6
+- Module konsolidiert und Konfigurationsprüfung implementiert
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

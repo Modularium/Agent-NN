@@ -25,17 +25,25 @@ def cli() -> None:
 
 @cli.command()
 @click.option("--agent", default="dev", help="Agent name")
+@click.option("--task-type", default="chat", help="Task type")
 @click.option("--session-id", help="Session id")
 @click.option("--input", "message", help="Question text")
 @click.option("--interactive", is_flag=True, help="Interactive mode")
-def ask(agent: str, session_id: str | None, message: str | None, interactive: bool) -> None:
+def ask(agent: str, task_type: str, session_id: str | None, message: str | None, interactive: bool) -> None:
     """Send a message to an agent."""
     sid = session_id
     def send(msg: str) -> None:
         nonlocal sid
-        result = post("/chat", {"message": msg, "agent": agent, "session_id": sid})
+        payload = {"task_type": task_type, "input": msg, "agent": agent}
+        if sid:
+            payload["session_id"] = sid
+        result = post("/task", payload)
         sid = result.get("session_id", sid)
-        click.echo(result.get("response"))
+        resp = result.get("result")
+        if isinstance(resp, dict) and resp.get("operation_id"):
+            click.echo(f"{resp.get('status')} - ID {resp.get('operation_id')}")
+        else:
+            click.echo(resp)
     if interactive:
         while True:
             msg = click.prompt(">>") if message is None else message

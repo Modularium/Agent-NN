@@ -1,33 +1,80 @@
-"""OpenHands worker mocking Docker container control."""
+"""Worker calling the OpenHands API for container operations."""
 
 from __future__ import annotations
 
 import json
 import os
-import urllib.request
+import asyncio
+from typing import Any, Dict
+
+from agents.openhands.docker_agent import DockerAgent
 
 
 class WorkerService:
-    """Interact with LLM gateway to respond to container tasks."""
+    """Interact with OpenHands API to perform container tasks."""
 
     def __init__(self) -> None:
-        self.llm_url = os.getenv("LLM_GATEWAY_URL", "http://llm_gateway:8000")
-
-    def _call_llm(self, prompt: str) -> str:
-        url = self.llm_url.rstrip("/") + "/generate"
-        data = json.dumps({"prompt": prompt}).encode()
-        req = urllib.request.Request(
-            url, data=data, headers={"Content-Type": "application/json"}
+        self.enabled = os.getenv("ENABLE_OPENHANDS", "false").lower() == "true"
+        api_url = os.getenv("OPENHANDS_API_URL", "http://openhands_api:8000")
+        token = os.getenv("OPENHANDS_JWT")
+        self.agent = DockerAgent(
+            name="worker_openhands",
+            api_url=api_url,
+            github_token=token,
         )
+
+    def _run_async(self, coro: asyncio.coroutines) -> Dict[str, Any]:
+        return asyncio.run(coro)
+
+    def execute_task(self, task: str) -> Dict[str, Any]:
+        """Execute docker related task via OpenHands."""
+        if not self.enabled:
+            return {
+                "status": "disabled",
+                "operation_id": None,
+                "logs": "",
+                "error": "OpenHands disabled",
+            }
+
+        async def run() -> Dict[str, Any]:
+            await self.agent.initialize()
+            try:
+                payload = json.loads(task)
+            except json.JSONDecodeError:
+                payload = {"operation": "start_container", "image": task}
+
+            op = payload.get("operation")
+
+            if op == "start_container":
+                result = await self.agent.run_container(
+                    image=payload.get("image", "busybox"),
+                    command=payload.get("command"),
+                    environment=payload.get("environment"),
+                    ports=payload.get("ports"),
+                    volumes=payload.get("volumes"),
+                )
+                return {
+                    "status": result.get("status", "running"),
+                    "operation_id": result.get("container_id"),
+                    "logs": result.get("logs", ""),
+                    "error": None,
+                }
+
+            raise ValueError(f"Unsupported operation: {op}")
+
         try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                payload = json.loads(resp.read().decode())
-                return payload.get("text", "")
-        except Exception as exc:  # pragma: no cover
-            return f"error: {exc}"
-
-    def execute_task(self, task: str) -> str:
-        prompt = (
-            f"Bestätige das Starten eines Docker-Containers {task} als kurze Meldung."
-        )
-        return self._call_llm(prompt)
+            return self._run_async(asyncio.wait_for(run(), timeout=30))
+        except asyncio.TimeoutError:
+            return {
+                "status": "error",
+                "operation_id": None,
+                "logs": "",
+                "error": "timeout",
+            }
+        except Exception as exc:  # pragma: no cover - network errors
+            return {
+                "status": "error",
+                "operation_id": None,
+                "logs": "",
+                "error": str(exc),
+            }

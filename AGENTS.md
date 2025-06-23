@@ -118,6 +118,12 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Tasks mit `task_type` `docker` oder `container_ops` werden an `worker_openhands` geroutet
 ### Fortschritt Phase 2.3
 - Legacy-Komponenten archiviert und Response-Schemata vereinheitlicht
+### Fortschritt Phase 2.4
+- Provider-System mit dynamischer Modellwahl implementiert
+- Session-Manager speichert das aktive Modell pro Nutzer
+### Fortschritt Phase 2.5
+- Feedback-Schleife und AutoTrainer aktiv
+- Metriken zu Feedback und Routing unter `/metrics`
 ## Allgemeine Projekt-Richtlinien
 
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:

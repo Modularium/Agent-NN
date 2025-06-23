@@ -1024,6 +1024,28 @@ def delegate_list(agent: str) -> None:
     typer.echo(json.dumps([asdict(g) for g in grants], indent=2))
 
 
+@feedback_app.command("submit")
+def feedback_submit(
+    session: str,
+    score: int = typer.Option(..., "--score"),
+    comment: str = typer.Option("", "--comment"),
+    agent: str = typer.Option(None, "--agent"),
+    user: str = typer.Option("default", "--user"),
+) -> None:
+    """Send feedback for a session entry."""
+    client = AgentClient()
+    payload = {
+        "session_id": session,
+        "user_id": user,
+        "agent_id": agent or "",
+        "score": score,
+        "comment": comment or None,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+    resp = client.post_feedback(session, payload)
+    typer.echo(json.dumps(resp, indent=2))
+
+
 @feedback_app.command("log")
 def feedback_log(agent: str) -> None:
     """Show feedback entries for AGENT."""

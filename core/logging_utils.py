@@ -7,6 +7,8 @@ from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from typing import Callable
 
+from fastapi import FastAPI
+
 import structlog
 from fastapi import Request
 from fastapi.exceptions import HTTPException
@@ -127,3 +129,14 @@ def exception_handler(logger: structlog.BoundLogger):
         )
 
     return handle
+
+
+def register_shutdown_task(app: FastAPI, func: Callable[[], None]) -> None:
+    """Run ``func`` when the FastAPI app shuts down."""
+
+    @app.on_event("shutdown")
+    async def _run() -> None:  # pragma: no cover - best effort
+        try:
+            func()
+        except Exception:
+            logging.getLogger(__name__).exception("shutdown_task_failed")

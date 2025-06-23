@@ -27,6 +27,28 @@ REQUEST_ERRORS = Counter(
     ["service", "path", "status"],
 )
 
+# additional metrics for feedback and routing
+FEEDBACK_POSITIVE = Counter(
+    "agentnn_feedback_positive_total",
+    "Positive feedback entries",
+    ["agent"],
+)
+FEEDBACK_NEGATIVE = Counter(
+    "agentnn_feedback_negative_total",
+    "Negative feedback entries",
+    ["agent"],
+)
+TASK_SUCCESS = Counter(
+    "agentnn_task_success_total",
+    "Successful tasks per type",
+    ["task_type"],
+)
+ROUTING_DECISIONS = Counter(
+    "agentnn_routing_decisions_total",
+    "Routing decisions",
+    ["task_type", "worker"],
+)
+
 
 def metrics_router() -> APIRouter:
     router = APIRouter()

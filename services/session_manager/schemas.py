@@ -18,3 +18,16 @@ class SessionHistory(BaseModel):
 class ModelSelection(BaseModel):
     user_id: str
     model_id: str
+
+
+class Feedback(BaseModel):
+    session_id: str
+    user_id: str
+    agent_id: str
+    score: int
+    comment: str | None = None
+    timestamp: str
+
+
+class FeedbackList(BaseModel):
+    items: List[Feedback]

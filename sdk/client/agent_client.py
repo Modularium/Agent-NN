@@ -170,3 +170,20 @@ class AgentClient:
         resp = self._client.post("/model", json=payload, headers=self._headers())
         resp.raise_for_status()
         return resp.json()
+
+    def post_feedback(self, session_id: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+        resp = self._client.post(
+            f"/session/{session_id}/feedback",
+            json=payload,
+            headers=self._headers(),
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    def get_feedback(self, session_id: str) -> Dict[str, Any]:
+        resp = self._client.get(
+            f"/session/{session_id}/feedback",
+            headers=self._headers(),
+        )
+        resp.raise_for_status()
+        return resp.json()

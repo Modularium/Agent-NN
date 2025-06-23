@@ -6,8 +6,15 @@ from core.model_context import ModelContext
 from core.schemas import StatusResponse
 from utils.api_utils import api_route
 
-from .schemas import ModelSelection, SessionHistory, SessionId
+from .schemas import (
+    ModelSelection,
+    SessionHistory,
+    SessionId,
+    Feedback,
+    FeedbackList,
+)
 from .service import SessionManagerService
+from .feedback_store import FeedbackEntry
 
 router = APIRouter()
 service = SessionManagerService()
@@ -49,3 +56,31 @@ async def set_model(selection: ModelSelection) -> StatusResponse:
 async def get_model(user_id: str) -> ModelSelection:
     model = service.get_model(user_id) or ""
     return ModelSelection(user_id=user_id, model_id=model)
+
+
+@api_route(version="v1.0.0")
+@router.post("/session/{session_id}/feedback", response_model=StatusResponse)
+async def add_feedback(session_id: str, fb: Feedback) -> StatusResponse:
+    entry = FeedbackEntry(
+        session_id=session_id,
+        user_id=fb.user_id,
+        agent_id=fb.agent_id,
+        score=fb.score,
+        comment=fb.comment,
+        timestamp=fb.timestamp,
+    )
+    service.add_feedback(entry)
+    return StatusResponse(status="ok")
+
+
+@api_route(version="v1.0.0")
+@router.get("/session/{session_id}/feedback", response_model=FeedbackList)
+async def get_feedback(session_id: str) -> FeedbackList:
+    data = service.get_feedback(session_id)
+    return FeedbackList(items=data)
+
+
+@api_route(version="v1.0.0")
+@router.get("/feedback/stats", response_model=dict)
+async def feedback_stats() -> dict:
+    return service.get_feedback_stats()

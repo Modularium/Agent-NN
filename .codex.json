@@ -170,4 +170,5 @@
     "phase/2.5-feedback-autotrainer": true
     ,"phase/2.6-feature-consolidation": true
     ,"phase/3.1-frontend-chat-ui": true
+    ,"phase/3.2-ui-migration-complete": true
 }

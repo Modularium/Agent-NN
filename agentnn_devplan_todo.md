@@ -10,19 +10,19 @@
 - [x] Ersten End-to-End-Test durchführen: Dummy-Request über alle Services schleusen.
 
 ### 1.2 Kernservices & Kontext-Integration
-- [ ] MCP-SDK integrieren & Basis-Routing implementieren.
-- [ ] LLM-Gateway-Anbindung umsetzen.
-- [ ] VectorStore-Service integrieren.
-- [ ] Session-Manager mit persistentem Kontext.
+- [x] MCP-SDK integrieren & Basis-Routing implementieren.
+- [x] LLM-Gateway-Anbindung umsetzen.
+- [x] VectorStore-Service integrieren.
+- [x] Session-Manager mit persistentem Kontext.
 
 ### 1.3 Infrastruktur & Sicherheit
-- [ ] Monitoring- und Logging-Infrastruktur einführen.
-- [ ] Sicherheits-Layer implementieren.
-- [ ] Persistente Speicherpfade & Konfiguration festlegen.
+- [x] Monitoring- und Logging-Infrastruktur einführen.
+- [x] Sicherheits-Layer implementieren.
+- [x] Persistente Speicherpfade & Konfiguration festlegen.
 
 ### 1.4 Entwickler-Tools & Release-Vorbereitung
-- [ ] Developer-SDK und CLI bereitstellen.
-- [ ] Erste Beta-Release vorbereiten.
+- [x] Developer-SDK und CLI bereitstellen.
+- [x] Erste Beta-Release vorbereiten.
 
 ## Phase 2: Feature-Integration & Harmonisierung
 

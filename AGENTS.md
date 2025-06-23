@@ -93,21 +93,21 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Docker-Compose Setup erstellt und einfacher End-to-End-Test erfolgreich
 
 ### Fortschritt Phase 1.2
-- MCP-SDK als Zugriffsschicht eingebunden
-- Dispatcher ruft Registry, Session-Manager und LLM-Gateway über HTTP
-- Erste REST-Routen wie `/dispatch`, `/chat` und `/agents` umgesetzt
-- Vector-Store um `embed`, `search` und `add_document` erweitert
-- Aktualisierter End-to-End-Test erfolgreich
+- ✓ MCP-SDK als Zugriffsschicht eingebunden
+- ✓ Dispatcher ruft Registry, Session-Manager und LLM-Gateway über HTTP
+- ✓ Erste REST-Routen wie `/dispatch`, `/chat` und `/agents` umgesetzt
+- ✓ Vector-Store um `embed`, `search` und `add_document` erweitert
+- ✓ Aktualisierter End-to-End-Test erfolgreich
 
 ### Fortschritt Phase 1.3
-- API-Gateway konsolidiert alle externen Endpunkte
-- Authentifizierung über API-Key oder JWT optional
-- Interne Service-Requests nutzen Retry-Mechanismen
-- Fehlende Abhängigkeiten in Build-Skripten ergänzt
+- ✓ API-Gateway konsolidiert alle externen Endpunkte
+- ✓ Authentifizierung über API-Key oder JWT optional
+- ✓ Interne Service-Requests nutzen Retry-Mechanismen
+- ✓ Fehlende Abhängigkeiten in Build-Skripten ergänzt
 
 ### Fortschritt Phase 1.4
-- Einheitliches Logging über alle Services mit JSON-Option
-- Prometheus-Metriken pro Service unter `/metrics`
+- ✓ Einheitliches Logging über alle Services mit JSON-Option
+- ✓ Prometheus-Metriken pro Service unter `/metrics`
 - Docker-Compose beinhaltet nun einen Prometheus-Container
 ### Fortschritt Phase 2.1
 - Routing-Agent mit `rules.yaml` aktiviert

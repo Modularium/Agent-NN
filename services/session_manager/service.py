@@ -57,6 +57,8 @@ class SessionManagerService:
             "input": ctx.task_context.description if ctx.task_context else None,
             "output": ctx.result,
             "score": ctx.agents[-1].score if ctx.agents else None,
+            "user_id": ctx.user_id,
+            "feedback": ctx.agents[-1].feedback if ctx.agents else None,
             "timestamp": ctx.timestamp.isoformat(),
         }
         self.memory.append_memory(ctx.session_id, entry)

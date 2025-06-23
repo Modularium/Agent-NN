@@ -248,5 +248,6 @@
   "codex/phase-4-agent-feedback-loop": true,
   "phase/2.1-dynamic-routing-metabase": true,
   "phase/2.2-openhands-execution": true,
-  "phase-1.4-observability-logging": true
+  "phase-1.4-observability-logging": true,
+  "phase/1.final-core-consistency": true
 }

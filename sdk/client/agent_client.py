@@ -50,10 +50,19 @@ class AgentClient:
         resp.raise_for_status()
         return resp.json()
 
+    # backwards compatibility helpers
+    def get_agents(self) -> Dict[str, Any]:
+        """Alias for :meth:`list_agents`."""
+        return self.list_agents()
+
     def list_sessions(self) -> Dict[str, Any]:
         resp = self._client.get("/sessions", headers=self._headers())
         resp.raise_for_status()
         return resp.json()
+
+    def get_sessions(self) -> Dict[str, Any]:
+        """Alias for :meth:`list_sessions`."""
+        return self.list_sessions()
 
     def get_session_history(self, session_id: str) -> Dict[str, Any]:
         resp = self._client.get(f"/context/{session_id}", headers=self._headers())
@@ -64,6 +73,14 @@ class AgentClient:
         payload = {"query": query, "collection": collection}
         resp = self._client.post(
             "/vector_search", json=payload, headers=self._headers()
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    def get_embeddings(self, text: str) -> Dict[str, Any]:
+        """Return embeddings using the vector store."""
+        resp = self._client.post(
+            "/embed", json={"text": text}, headers=self._headers()
         )
         resp.raise_for_status()
         return resp.json()

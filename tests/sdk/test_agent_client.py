@@ -42,3 +42,19 @@ def test_list_agents(monkeypatch):
     client = AgentClient()
     client.list_agents()
     assert dummy.sent[0][0].endswith("/agents")
+
+
+def test_new_helpers(monkeypatch):
+    dummy = DummyClient()
+    monkeypatch.setattr("httpx.Client", lambda base_url: dummy)
+    client = AgentClient()
+    client.get_agents()
+    client.get_sessions()
+    client.get_embeddings("hi")
+    ctx = type("C", (), {"model_dump": lambda self: {"a": 1}})()
+    client.dispatch_task(ctx)
+    paths = [call[0] for call in dummy.sent]
+    assert "/agents" in paths[0]
+    assert "/sessions" in paths[1]
+    assert "/embed" in paths[2]
+    assert "/dispatch" in paths[3]

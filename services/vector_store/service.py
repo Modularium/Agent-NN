@@ -23,7 +23,7 @@ class VectorStoreService:
         backend = settings.VECTOR_DB_BACKEND.lower()
         if backend == "chromadb":
             self.client = chromadb.PersistentClient(path=settings.VECTOR_DB_DIR)
-            self.collections = {}
+            self.collections: Dict[str, Any] = {}
         else:
             self.client = None
             self.collections: Dict[str, Dict[str, List]] = defaultdict(

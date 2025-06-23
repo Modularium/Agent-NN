@@ -40,10 +40,11 @@ graph TD
 2. Abhängigkeiten installieren
    ```bash
    pip install -r requirements.txt
+   cp .env.example .env  # lokale Konfiguration
    ```
 3. Basis-Services starten
    ```bash
-   docker-compose up dispatcher registry session-manager
+   docker-compose up dispatcher registry session-manager vector_store llm_gateway
    ```
 4. Testanfrage stellen
 ```bash
@@ -58,6 +59,13 @@ Das Kommando `agentnn` wird nach der Installation verfügbar. Die Version kann m
 agentnn --version
 ```
 abgerufen werden.
+
+Wichtige Befehle:
+```bash
+agentnn agents     # verfügbare Agents auflisten
+agentnn sessions   # aktive Sessions anzeigen
+agentnn feedback   # Feedback-Tools
+```
 
 Weitere Details findest du im Ordner [docs/](docs/).
 

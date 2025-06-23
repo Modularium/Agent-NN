@@ -119,3 +119,7 @@ Prometheus scrapes metrics from each service at `/metrics`. A sample configurati
 is provided in `monitoring/prometheus.yml`. Logs are persisted under `/data/logs/`
 and can be mounted as a volume in production. See `docs/maintenance.md` for
 backup and update recommendations.
+
+## 🔭 Zukunft & Weiterentwicklung
+
+Die aktuelle Version bildet einen stabilen Grundstock für Agent-NN. Weitere Ideen und geplante Schritte sind in [docs/roadmap.md](docs/roadmap.md) beschrieben.

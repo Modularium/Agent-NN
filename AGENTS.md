@@ -152,3 +152,5 @@ Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-A
 <!-- codex/phase-1-sdk -->
 <!-- phase/4.2-deploy-ready -->
 <!-- phase/4.3-longterm-maintenance -->
+
+<!-- phase/4.4-project-closure -->

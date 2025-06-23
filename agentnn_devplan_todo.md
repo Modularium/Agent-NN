@@ -33,15 +33,15 @@
 - [x] Evaluationsmetriken sammeln.
 
 ### 2.2 LLM-Provider-Integration & konfigurierbare KI
-- [ ] Provider-System erweitern.
-- [ ] Dynamische Konfiguration über `llm_config.yaml`.
-- [ ] SDK-Beispiele und Tests hinzufügen.
+- [x] Provider-System erweitern.
+- [x] Dynamische Konfiguration über `llm_config.yaml`.
+- [x] SDK-Beispiele und Tests hinzufügen.
 - [x] OpenHands API Anbindung produktiv aktivieren.
 
 ### 2.3 System-Harmonisierung & Legacy-Migration
-- [ ] Bestehende Funktionen angleichen.
-- [ ] Konsistenz und Abwärtskompatibilität prüfen.
-- [ ] Legacy-Code schrittweise stilllegen.
+- [x] Bestehende Funktionen angleichen.
+- [x] Konsistenz und Abwärtskompatibilität prüfen.
+- [x] Legacy-Code schrittweise stilllegen.
 
 ### 2.6 Feature-Konsolidierung
 - [x] Gemeinsame Module in `core/` überführt.
@@ -55,25 +55,25 @@
 - [x] Einheitliche Benutzeroberfläche konsolidieren.
 
 ### 3.2 UX-Optimierungen
-- [ ] Authentifizierungs-Flow verbessern.
-- [ ] Fehlerbehandlung und Ladeindikatoren.
-- [ ] Responsive Design & Dark-Mode sicherstellen.
-- [ ] Zugänglichkeit (Accessibility) erhöhen.
-- [ ] Formularvalidierung und Usability verbessern.
-- [ ] (Optional) Erweiterte UI-Funktionen integrieren.
+- [x] Authentifizierungs-Flow verbessern.
+- [x] Fehlerbehandlung und Ladeindikatoren.
+- [x] Responsive Design & Dark-Mode sicherstellen.
+- [x] Zugänglichkeit (Accessibility) erhöhen.
+- [x] Formularvalidierung und Usability verbessern.
+- [x] (Optional) Erweiterte UI-Funktionen integrieren.
 
 ## Phase 4: Testabdeckung, CI/CD und Dokumentation
 
 ### 4.1 Testabdeckung & CI-Pipeline
-- [ ] Umfassende Test-Suite entwickeln.
-- [ ] Regressionsprüfung & Bugfixing.
-- [ ] Continuous Integration einrichten.
-- [ ] Qualitätsmetriken beobachten.
+- [x] Umfassende Test-Suite entwickeln.
+- [x] Regressionsprüfung & Bugfixing.
+- [x] Continuous Integration einrichten.
+- [x] Qualitätsmetriken beobachten.
 
 ### 4.2 Deployment & Dokumentation
-- [ ] Deployment-Skripte finalisieren.
-- [ ] Dokumentation aktualisieren.
-- [ ] SDK- und API-Dokumentation ergänzen.
-- [ ] Abschließender Usability-Test.
-- [ ] Release-Vorbereitung.
-- [ ] Legacy-Code endgültig archivieren.
+- [x] Deployment-Skripte finalisieren.
+- [x] Dokumentation aktualisieren.
+- [x] SDK- und API-Dokumentation ergänzen.
+- [x] Abschließender Usability-Test.
+- [x] Release-Vorbereitung.
+- [x] Legacy-Code endgültig archivieren.

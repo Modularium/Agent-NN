@@ -1,0 +1,5 @@
+# Configuration for MetaLearner model
+model_path: models/meta_learner.pt
+training_data:
+  - context: ModelContext fields
+  - target_worker: str

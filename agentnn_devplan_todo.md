@@ -27,9 +27,9 @@
 ## Phase 2: Feature-Integration & Harmonisierung
 
 ### 2.1 Meta-Learning-Integration
-- [ ] MetaLearner aktivieren.
+- [x] MetaLearner aktivieren.
 - [ ] AutoTrainer und Feedback-Schleife implementieren.
-- [ ] Capability-basiertes Routing prototypisieren.
+- [x] Capability-basiertes Routing prototypisieren.
 - [ ] Evaluationsmetriken sammeln.
 
 ### 2.2 LLM-Provider-Integration & konfigurierbare KI

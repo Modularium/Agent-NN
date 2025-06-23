@@ -8,23 +8,23 @@ from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 
+import httpx
 import mlflow
 import typer
-import httpx
 
 from core.access_control import is_authorized
 from core.agent_evolution import evolve_profile
-from core.agent_profile import AgentIdentity, PROFILE_DIR
+from core.agent_profile import PROFILE_DIR, AgentIdentity
 from core.audit_log import AuditEntry, AuditLog
 from core.crypto import generate_keypair, verify_signature
 from core.governance import AgentContract
+from core.level_evaluator import check_level_up
 from core.model_context import ModelContext, TaskContext
 from core.privacy import AccessLevel
 from core.privacy_filter import redact_context
+from core.reputation import AgentRating, aggregate_score, save_rating, update_reputation
 from core.skills import load_skill
 from core.trust_evaluator import auto_certify, calculate_trust, eligible_for_role
-from core.reputation import AgentRating, save_rating, update_reputation, aggregate_score
-from core.level_evaluator import check_level_up
 
 from .. import __version__
 from ..client import AgentClient
@@ -113,7 +113,9 @@ def submit(
 def ask(
     message: str,
     task_type: str = typer.Option("dev", "--task-type"),
-    verbose_routing: bool = typer.Option(False, "--verbose-routing", help="Show routing decisions"),
+    verbose_routing: bool = typer.Option(
+        False, "--verbose-routing", help="Show routing decisions"
+    ),
 ) -> None:
     """Send a quick task to the dispatcher."""
     client = AgentClient()
@@ -427,9 +429,9 @@ def agent_reflect(name: str) -> None:
 @agent_app.command("adapt")
 def agent_adapt(name: str) -> None:
     """Apply recommended adaptations."""
+    from core.audit_log import AuditEntry, AuditLog
     from core.feedback_loop import load_feedback
     from core.self_reflection import reflect_and_adapt
-    from core.audit_log import AuditLog, AuditEntry
 
     profile = AgentIdentity.load(name)
     feedback = load_feedback(name)
@@ -514,8 +516,8 @@ def mission_step(agent: str) -> None:
         typer.echo("no mission")
         raise typer.Exit(code=1)
     mid = profile.active_missions[0]
-    from core.missions import AgentMission
     from core.mission_prompts import render_prompt
+    from core.missions import AgentMission
 
     mission = AgentMission.load(mid)
     if not mission:
@@ -646,9 +648,10 @@ def team_create(
     coordinator: str = typer.Option(None, "--coordinator"),
 ) -> None:
     """Create a new team."""
-    from uuid import uuid4
     from dataclasses import asdict
     from datetime import datetime
+    from uuid import uuid4
+
     from core.teams import AgentTeam
 
     team_id = str(uuid4())
@@ -709,6 +712,7 @@ def team_join(
 def team_show(team_id: str) -> None:
     """Show team information."""
     from dataclasses import asdict
+
     from core.teams import AgentTeam
 
     team = AgentTeam.load(team_id)
@@ -736,10 +740,10 @@ def config_show() -> None:
 
 @model_app.command("list")
 def model_list():
-    """List MLflow experiments."""
-    mgr = ModelManager()
-    experiments = mgr.list_experiments()
-    typer.echo(json.dumps(experiments))
+    """List available models."""
+    client = AgentClient()
+    models = client.get_models()
+    typer.echo(json.dumps(models, indent=2))
 
 
 @model_app.command("runs-view")
@@ -771,6 +775,14 @@ def model_stage(name: str, stage: str):
     version = versions[0].version
     client.transition_model_version_stage(name, version, stage)
     typer.echo(f"{name} -> {stage}")
+
+
+@model_app.command("switch")
+def model_switch(model_id: str, user_id: str = "default"):
+    """Switch active model."""
+    client = AgentClient()
+    resp = client.set_model(model_id, user_id)
+    typer.echo(json.dumps(resp))
 
 
 @queue_app.command("status")

@@ -5,8 +5,6 @@ from pydantic import BaseModel
 
 class GenerateRequest(BaseModel):
     prompt: str
-    model_name: str | None = None
-    temperature: float | None = 0.7
 
 
 class GenerateResponse(BaseModel):
@@ -17,9 +15,14 @@ class GenerateResponse(BaseModel):
 
 class EmbedRequest(BaseModel):
     text: str
-    model_name: str | None = None
 
 
 class EmbedResponse(BaseModel):
     embedding: list[float]
     provider: str
+
+
+class ChatResponse(BaseModel):
+    completion: str
+    provider: str
+    tokens_used: int

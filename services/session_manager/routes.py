@@ -6,7 +6,7 @@ from core.model_context import ModelContext
 from core.schemas import StatusResponse
 from utils.api_utils import api_route
 
-from .schemas import SessionHistory, SessionId
+from .schemas import ModelSelection, SessionHistory, SessionId
 from .service import SessionManagerService
 
 router = APIRouter()
@@ -35,3 +35,17 @@ async def get_context(session_id: str) -> SessionHistory:
     """Return the conversation history for a session."""
     history = service.get_context(session_id)
     return SessionHistory(context=history)
+
+
+@api_route(version="v1.0.0")
+@router.post("/model", response_model=StatusResponse)
+async def set_model(selection: ModelSelection) -> StatusResponse:
+    service.set_model(selection.user_id, selection.model_id)
+    return StatusResponse(status="ok")
+
+
+@api_route(version="v1.0.0")
+@router.get("/model/{user_id}", response_model=ModelSelection)
+async def get_model(user_id: str) -> ModelSelection:
+    model = service.get_model(user_id) or ""
+    return ModelSelection(user_id=user_id, model_id=model)

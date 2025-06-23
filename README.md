@@ -69,6 +69,22 @@ agentnn feedback   # Feedback-Tools
 
 Weitere Details findest du im Ordner [docs/](docs/).
 
+### Example `llm_config.yaml`
+
+```yaml
+default_provider: openai
+providers:
+  openai:
+    type: openai
+    api_key: ${OPENAI_API_KEY}
+  anthropic:
+    type: anthropic
+    api_key: ${ANTHROPIC_API_KEY}
+  local:
+    type: local
+    model_path: ./models/mistral-7b.Q4_K_M.gguf
+```
+
 ## 🤖 Installation (Entwicklung)
 
 ```bash

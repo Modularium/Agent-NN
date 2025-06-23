@@ -13,3 +13,8 @@ class SessionId(BaseModel):
 
 class SessionHistory(BaseModel):
     context: List[ModelContext]
+
+
+class ModelSelection(BaseModel):
+    user_id: str
+    model_id: str

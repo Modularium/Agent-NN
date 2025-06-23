@@ -11,6 +11,8 @@ dependencies = [
   "typer",
   "pydantic-settings",
   "pydantic",
+  "PyYAML",
+  "tqdm",
   "uvicorn",
   "slowapi",
   "aiofiles",

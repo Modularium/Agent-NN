@@ -1,6 +1,6 @@
 # Agent-NN MCP ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
-Agent-NN ist ein Multi-Agent-System, das im Rahmen der Modular Control Plane in mehrere Microservices aufgeteilt wurde. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen.
+Agent-NN ist ein Multi-Agent-System, das im Rahmen der Modular Control Plane in mehrere Microservices aufgeteilt wurde. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen. Neben den Backend-Diensten stellt das Projekt ein Python‑SDK, eine CLI und ein React-basiertes Frontend bereit. Weitere Dokumentation befindet sich im Ordner [docs/](docs/).
 
 ## Systemvoraussetzungen
 
@@ -35,20 +35,52 @@ graph TD
    ```bash
    git clone https://github.com/EcoSphereNetwork/Agent-NN.git
    cd Agent-NN
-
    ```
-2. Abhängigkeiten installieren
+2. Abhängigkeiten installieren und Beispielkonfiguration kopieren
    ```bash
    pip install -r requirements.txt
-   cp .env.example .env  # lokale Konfiguration
+   cp .env.example .env
    ```
-3. Basis-Services starten
+3. (Optional) Lokale Modelle herunterladen
+   ```bash
+   python scripts/setup_local_models.py --model all
+   ```
+4. Frontend bauen
+   ```bash
+   ./scripts/deploy/build_frontend.sh
+   ```
+5. Dienste starten
+   ```bash
    ./scripts/deploy/start_services.sh
    ```
-4. Testanfrage stellen
+6. Erste Anfrage stellen oder UI öffnen
+   ```bash
+   curl -X POST http://localhost:8000/task -H "Content-Type: application/json" \
+     -d '{"task_type": "chat", "input": "Hallo"}'
+   # UI: http://localhost:3000
+   ```
+
+Alternativ lassen sich alle Dienste per Docker Compose starten:
 ```bash
-curl -X POST http://localhost:8000/task -H "Content-Type: application/json" -d '{"task_type": "chat", "input": "Hallo"}'
+docker compose up --build
 ```
+
+## Hilfreiche Skripte
+
+| Script | Zweck |
+|---|---|
+| `scripts/deploy/build_frontend.sh` | Baut die React-Oberfläche in `frontend/dist/` |
+| `scripts/deploy/start_services.sh` | Startet alle Container nach einem Port- und .env-Check |
+| `scripts/deploy/dev_reset.sh` | Entfernt Volumes und lokale Daten für einen Neustart |
+| `scripts/setup_local_models.py` | Lädt optionale Llamafile-Modelle herunter |
+| `scripts/build_and_test.sh` | Erstellt ein Docker-Image und führt Tests aus |
+| `scripts/deploy_to_registry.sh` | Publiziert Images in ein Container-Registry |
+| `scripts/start_mcp.sh` | Startet das Microservice-Compose-Setup |
+
+
+## Konfiguration
+
+Eine Beispielkonfiguration steht in `.env.example`. Kopiere die Datei bei Bedarf nach `.env` und passe die Werte an. Eine vollständige Liste aller Variablen ist in [docs/config_reference.md](docs/config_reference.md) beschrieben.
 
 Weitere Details zur Einrichtung findest du in [docs/deployment.md](docs/deployment.md).
 ## CLI
@@ -112,6 +144,10 @@ npm run dev
 ```
 
 Run `npm run build` to create the static files in `frontend/dist/`.
+
+## Tests & Beiträge
+
+Bevor du einen Pull Request erstellst, führe bitte `ruff`, `mypy` und `pytest` aus. Details zum Entwicklungsprozess findest du in [CONTRIBUTING.md](CONTRIBUTING.md) sowie im Dokument [docs/test_strategy.md](docs/test_strategy.md).
 
 ## Monitoring & Maintenance
 

@@ -86,6 +86,7 @@ nav:
     - Contributing: development/contributing.md
     - Testing: development/testing.md
     - CI/CD: development/cicd.md
+    - Nx Python Plugin: development/nxlv-python.md
     - Release Notes: development/releases.md
   - Deployment:
     - Docker: deployment/docker.md

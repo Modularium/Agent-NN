@@ -3,9 +3,8 @@
 ## From Source
 
 ```bash
-pip install -r requirements.txt
-pip install -e .[sdk]
-agentnn --version
+poetry install --with sdk
+poetry run agentnn --version
 ```
 
 ## Using pip

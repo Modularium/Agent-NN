@@ -18,8 +18,7 @@ cd Agent-NN
 ## Abhängigkeiten installieren
 
 ```bash
-pip install -r requirements.txt
-pip install -r test-requirements.txt  # optional für Tests
+poetry install --with sdk,test
 ```
 
 ## Services starten

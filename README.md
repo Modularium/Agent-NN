@@ -36,9 +36,9 @@ graph TD
    git clone https://github.com/EcoSphereNetwork/Agent-NN.git
    cd Agent-NN
    ```
-2. Abhängigkeiten installieren und Beispielkonfiguration kopieren
+2. Abhängigkeiten mit Poetry installieren und Beispielkonfiguration kopieren
    ```bash
-   pip install -r requirements.txt
+   poetry install --with sdk
    cp .env.example .env
    ```
 3. (Optional) Lokale Modelle herunterladen
@@ -77,6 +77,17 @@ docker compose up --build
 | `scripts/deploy_to_registry.sh` | Publiziert Images in ein Container-Registry |
 | `scripts/start_mcp.sh` | Startet das Microservice-Compose-Setup |
 
+## Poetry-Workflow
+
+Das Projekt nutzt [Poetry](https://python-poetry.org/) zur Verwaltung der Python-Abhängigkeiten.
+Nach dem Klonen installierst du alle Pakete und aktivierst die virtuelle Umgebung mit:
+
+```bash
+poetry install --with sdk
+poetry shell
+```
+
+Alternativ kannst du Befehle auch direkt über `poetry run <command>` ausführen.
 
 ## Konfiguration
 
@@ -123,8 +134,8 @@ providers:
 ```bash
 git clone https://github.com/EcoSphereNetwork/Agent-NN.git
 cd Agent-NN
-pip install -e .[sdk]
-agentnn --version
+poetry install --with sdk
+poetry run agentnn --version
 ```
 
 ### Empfohlene Umgebung

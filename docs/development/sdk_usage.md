@@ -5,7 +5,7 @@ Das SDK ermöglicht einfachen Zugriff auf die Agent-NN-Services.
 ## Installation
 
 ```bash
-poetry install --with sdk
+poetry install
 ```
 
 ## AgentClient Beispiel

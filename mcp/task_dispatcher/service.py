@@ -1,8 +1,8 @@
 import json
-import urllib.request
 import logging
-from typing import Dict, Optional
 import time
+import urllib.request
+from typing import Dict, Optional
 
 from mcp.agent_registry.service import AgentRegistryService
 from mcp.session_manager.service import SessionManagerService
@@ -15,7 +15,7 @@ class TaskDispatcherService:
         self.registry = AgentRegistryService()
         self.sessions = SessionManagerService()
         # simple rule mapping task_type to agent name
-        self.task_map = {"greeting": "worker_dev"}
+        self.task_map = {"greeting": "worker_dev", "say_hello": "worker_dev"}
         self.logger = logging.getLogger(__name__)
         if not self.logger.handlers:
             logging.basicConfig(level=logging.INFO)
@@ -68,7 +68,7 @@ class TaskDispatcherService:
             "worker": agent["name"],
             "response": result,
             "duration": duration,
-            "confidence": result.get("confidence", 1.0)
-            if isinstance(result, dict)
-            else 1.0,
+            "confidence": (
+                result.get("confidence", 1.0) if isinstance(result, dict) else 1.0
+            ),
         }

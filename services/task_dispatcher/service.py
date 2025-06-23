@@ -10,6 +10,7 @@ from typing import Any, List
 import httpx
 
 from core.access_control import is_authorized
+from core.agent_profile import AgentIdentity
 from core.audit_log import AuditEntry, AuditLog
 from core.crypto import verify_signature
 from core.dispatch_queue import DispatchQueue
@@ -17,11 +18,10 @@ from core.governance import AgentContract
 from core.metrics_utils import TASKS_PROCESSED, TOKENS_IN, TOKENS_OUT
 from core.model_context import AgentRunContext, ModelContext, TaskContext
 from core.privacy_filter import filter_permissions, redact_context
-from core.roles import resolve_roles
-from core.trust_evaluator import calculate_trust, update_trust_usage
-from core.agent_profile import AgentIdentity
-from core.skill_matcher import match_agent_to_task
 from core.role_capabilities import apply_role_capabilities
+from core.roles import resolve_roles
+from core.skill_matcher import match_agent_to_task
+from core.trust_evaluator import calculate_trust, update_trust_usage
 
 from .config import settings
 
@@ -409,6 +409,9 @@ class TaskDispatcherService:
         mission_role: str | None = None,
     ) -> ModelContext:
         """Select agents and forward the ModelContext."""
+        legacy_map = {"say_hello": "dev", "hello": "dev"}
+        if task.task_type in legacy_map:
+            task.task_type = legacy_map[task.task_type]
         ctx = self._prepare_context(
             task,
             session_id,
@@ -672,6 +675,7 @@ class TaskDispatcherService:
 
     def _record_mission_progress(self, ctx: ModelContext) -> None:
         from datetime import datetime
+
         from core.missions import AgentMission
         from core.rewards import grant_rewards
 

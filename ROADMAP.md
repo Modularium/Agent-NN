@@ -1,4 +1,7 @@
-# Roadmap 
+# Roadmap
+
+Diese Datei enthält die ausführliche Aufgabenliste. Eine kompakte Übersicht
+steht in `docs/roadmap.md`. Historische Entwürfe finden sich in `Roadmap.md`.
 
 # TODO-Liste für Agent-NN Entwicklungsplan
 

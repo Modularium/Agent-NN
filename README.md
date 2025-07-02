@@ -213,7 +213,10 @@ backup and update recommendations.
 
 ## 🔭 Zukunft & Weiterentwicklung
 
-Die aktuelle Version bildet einen stabilen Grundstock für Agent-NN. Weitere Ideen und geplante Schritte sind in [docs/roadmap.md](docs/roadmap.md) beschrieben.
+Die aktuelle Version bildet einen stabilen Grundstock für Agent-NN.
+Eine kompakte Übersicht befindet sich in
+[docs/roadmap.md](docs/roadmap.md). Die detaillierte Aufgabenliste steht in
+[ROADMAP.md](ROADMAP.md).
 
 ## Offene Punkte
 

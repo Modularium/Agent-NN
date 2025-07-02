@@ -28,3 +28,14 @@ In the node parameters specify:
 
 When executed, the node forwards the request to Agent‑NN and returns the API
 response.
+
+### Example
+
+```ts
+// In your n8n workflow
+const data = {
+  endpoint: 'http://localhost:8000',
+  taskType: 'chat',
+  payload: { text: 'Hello' },
+};
+```

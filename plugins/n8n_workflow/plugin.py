@@ -14,12 +14,20 @@ class Plugin(ToolPlugin):
         headers = input.get("headers", {})
         method = input.get("method", "POST").upper()
         timeout = input.get("timeout", 10)
+        auth = input.get("auth")
         if not url and not endpoint:
             return {"error": "no url or endpoint provided"}
         if not url:
             url = f"{endpoint.rstrip('/')}{path}"
         try:
-            resp = httpx.request(method, url, json=payload, headers=headers, timeout=timeout)
+            resp = httpx.request(
+                method,
+                url,
+                json=payload,
+                headers=headers,
+                timeout=timeout,
+                auth=(auth["username"], auth["password"]) if auth else None,
+            )
             resp.raise_for_status()
             try:
                 data = resp.json()

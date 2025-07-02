@@ -106,6 +106,7 @@ export class AgentNN implements INodeType {
 Dieses Skript kann als Custom Node in n8n eingebunden werden und sendet Aufgaben direkt an das Agent‑NN API‑Gateway.
 Dabei können optionale Parameter wie `path`, `method`, `headers` und `timeout` gesetzt werden, um URL-Pfad, HTTP-Methode, Header und Zeitlimit zu steuern.
 
+
 ## Agent‑NN ruft n8n Workflows auf
 
 Das Python‑Plugin `n8n_workflow` erlaubt es, beliebige Webhook‑ oder REST‑Workflows anzusprechen. Es unterstützt optionale Header und Payloads:

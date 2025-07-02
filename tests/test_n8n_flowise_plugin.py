@@ -13,6 +13,7 @@ def _fake_request(method: str, url: str, json=None, headers=None, timeout=10, au
             "timeout": timeout,
             "auth": auth,
         },
+        request=httpx.Request(method, url),
     )
 
 
@@ -35,7 +36,7 @@ def test_n8n_plugin(monkeypatch):
         "url": "http://n8n.local/webhook",
         "method": "POST",
         "timeout": 5,
-        "auth": ("u", "p"),
+        "auth": ["u", "p"],
     }
 
 

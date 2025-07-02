@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Any, Dict
+from datetime import datetime
 
 
 def agent_config_to_flowise(config: Dict[str, Any]) -> Dict[str, Any]:
@@ -16,7 +17,19 @@ def agent_config_to_flowise(config: Dict[str, Any]) -> Dict[str, Any]:
     Returns
     -------
     dict
-        Flowise compatible agent definition.
+        Flowise compatible agent definition. Example::
+
+            {
+                "id": "demo",
+                "name": "demo",
+                "description": "demo domain",
+                "type": "agent",
+                "tools": [],
+                "capabilities": [],
+                "llm": {"model": "gpt-3.5"},
+                "created_at": "2024-01-01T00:00:00",
+                "version": "1.0.0"
+            }
     """
     return {
         "id": config.get("name"),
@@ -26,6 +39,8 @@ def agent_config_to_flowise(config: Dict[str, Any]) -> Dict[str, Any]:
         "tools": config.get("tools", []),
         "capabilities": config.get("capabilities", []),
         "llm": config.get("model_config", {}),
-        "created_at": config.get("created_at"),
-        "version": config.get("version"),
+        "created_at": config.get(
+            "created_at", datetime.now().isoformat()
+        ),
+        "version": config.get("version", "1.0.0"),
     }

@@ -340,3 +340,28 @@ Question: {input}
         """Clear agent memory."""
         self.memory.clear()
         self.log_event("memory_cleared", {})
+
+    def get_config(self) -> Dict[str, Any]:
+        """Return configuration for Flowise export."""
+        return {
+            "name": self.name,
+            "domain": self.domain,
+            "tools": [tool.name for tool in self.tools],
+            "model_config": {"model": "gpt-4"},
+            "created_at": datetime.now().isoformat(),
+            "version": "1.0.0",
+        }
+
+    def get_status(self) -> Dict[str, Any]:
+        """Return runtime status information."""
+        return {
+            "agent_id": self.name,
+            "name": self.name,
+            "domain": self.domain,
+            "status": "active",
+            "capabilities": [tool.name for tool in self.tools],
+            "total_tasks": 0,
+            "success_rate": 0.0,
+            "avg_response_time": 0.0,
+            "last_active": datetime.now().isoformat(),
+        }

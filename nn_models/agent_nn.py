@@ -142,3 +142,22 @@ class AgentNN(nn.Module):
         self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         self.training_losses = checkpoint['training_losses']
         self.eval_metrics = checkpoint['eval_metrics']
+
+    def get_metrics(self) -> Dict[str, float]:
+        """Return aggregated performance metrics."""
+        if not self.eval_metrics:
+            return {
+                "total_tasks": 0,
+                "success_rate": 0.0,
+                "avg_response_time": 0.0,
+            }
+
+        total = len(self.eval_metrics)
+        success = [m.get("success_rate", 0.0) for m in self.eval_metrics]
+        avg_success = sum(success) / total if success else 0.0
+        avg_resp = sum(m.get("response_time", 0.0) for m in self.eval_metrics) / total
+        return {
+            "total_tasks": total,
+            "success_rate": avg_success,
+            "avg_response_time": avg_resp,
+        }

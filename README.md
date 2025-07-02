@@ -188,6 +188,10 @@ Jeder neu erstellte Agent wird zusätzlich im Flowise-Format abgelegt. Die Datei
 `<name>_flowise.json` kann über `GET /agents/<id>?format=flowise` abgerufen und
 direkt in Flowise importiert werden.
 
+```bash
+curl http://localhost:8000/agents/demo?format=flowise
+```
+
 ## Tests & Beiträge
 
 Bevor du einen Pull Request erstellst, führe bitte `ruff`, `mypy` und `pytest` aus. Details zum Entwicklungsprozess findest du in [CONTRIBUTING.md](CONTRIBUTING.md) sowie im Dokument [docs/test_strategy.md](docs/test_strategy.md). Sollten Module fehlen, können lokale Wheels oder ein internes Paketmirror verwendet werden.

@@ -182,9 +182,23 @@ class APIEndpoints(LoggerMixin):
                     )
 
                 if format == "flowise":
+                    if not hasattr(agent, "get_config"):
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=(
+                                "Agent does not support Flowise export. "
+                                "See docs/integrations/flowise.md#migration"
+                            ),
+                        )
                     from utils.flowise import agent_config_to_flowise
 
-                    return agent_config_to_flowise(agent.get_config())
+                    try:
+                        return agent_config_to_flowise(agent.get_config())
+                    except Exception as exc:
+                        raise HTTPException(
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f"Flowise export failed: {exc}",
+                        )
 
                 return agent.get_status()
             except Exception as e:

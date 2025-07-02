@@ -10,14 +10,23 @@ Unter `integrations/flowise-agentnn` liegt eine Beispielkomponente `AgentNN.ts`.
 import axios from 'axios';
 
 export default class AgentNN {
-  constructor(private endpoint: string) {}
+  constructor(
+    private endpoint: string,
+    private taskType = 'chat',
+    private headers: Record<string, string> = {},
+    private timeout = 10000,
+  ) {}
 
-  async run(question: string) {
-    const { data } = await axios.post(`${this.endpoint}/task`, {
-      task_type: 'chat',
-      input: question,
-    });
-    return data.result;
+  async run(payload: unknown) {
+    const { data } = await axios.post(
+      `${this.endpoint}/task`,
+      {
+        task_type: this.taskType,
+        input: payload,
+      },
+      { headers: this.headers, timeout: this.timeout },
+    );
+    return data.result ?? data;
   }
 }
 ```
@@ -50,6 +59,7 @@ Kompiliere das Skript zu JavaScript und registriere es über die Flowise-UI. So 
 1. Wechsle in das Verzeichnis `integrations/flowise-agentnn`.
 2. Installiere Abhängigkeiten mit `npm install` und führe `npx tsc` aus.
 3. Lade die erzeugte `dist/AgentNN.js` Datei in der Flowise-Administration hoch.
-4. Lege beim Einbinden der Komponente die URL deines Agent‑NN Gateways fest.
+4. Lege beim Einbinden der Komponente die URL deines Agent‑NN Gateways fest und
+   optional weitere Parameter wie `taskType`, Header oder Timeout.
 
 Weitere Details enthält der [Integration Plan](full_integration_plan.md).

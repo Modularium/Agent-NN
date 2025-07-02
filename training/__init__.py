@@ -10,6 +10,7 @@ try:  # pragma: no cover - optional dependencies
         create_dataloaders,
     )
     from .agent_selector_model import AgentSelectorModel, AgentSelectorTrainer
+    from .federated import FederatedAveraging
 
     __all__ = [
         "InteractionLogger",
@@ -17,6 +18,7 @@ try:  # pragma: no cover - optional dependencies
         "create_dataloaders",
         "AgentSelectorModel",
         "AgentSelectorTrainer",
+        "FederatedAveraging",
     ]
 except Exception:  # pragma: no cover - allow partial functionality
     __all__: list[str] = []

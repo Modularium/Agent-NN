@@ -160,6 +160,11 @@ npm run dev
 
 Run `npm run build` to create the static files in `frontend/dist/`.
 
+## Integrations
+
+Agent-NN stellt Plugins für n8n und FlowiseAI bereit. Details finden sich in
+[docs/integrations](docs/integrations/index.md).
+
 ## Tests & Beiträge
 
 Bevor du einen Pull Request erstellst, führe bitte `ruff`, `mypy` und `pytest` aus. Details zum Entwicklungsprozess findest du in [CONTRIBUTING.md](CONTRIBUTING.md) sowie im Dokument [docs/test_strategy.md](docs/test_strategy.md).

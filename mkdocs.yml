@@ -75,6 +75,11 @@ nav:
     - Voting: use-cases/voting.md
     - Trust Driven Authorization: use-cases/trust_driven_authorization.md
     - Community Quality Feedback: use-cases/community_quality_feedback.md
+  - Integrations:
+    - Overview: integrations/index.md
+    - Smolitux UI: smolitux-ui-integration.md
+    - n8n: integrations/n8n.md
+    - FlowiseAI: integrations/flowise.md
   - API Reference:
     - Agents: api/agents.md
     - Managers: api/managers.md

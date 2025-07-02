@@ -10,36 +10,102 @@ Ein Beispiel befindet sich unter `integrations/n8n-agentnn/AgentNN.node.ts`. Der
 
 ```ts
 import { IExecuteFunctions } from 'n8n-core';
-import { IDataObject } from 'n8n-workflow';
+import {
+  IDataObject,
+  INodeExecutionData,
+  INodeType,
+  INodeTypeDescription,
+} from 'n8n-workflow';
 import axios, { AxiosRequestConfig } from 'axios';
 
-export async function execute(this: IExecuteFunctions): Promise<IDataObject[]> {
-  const endpoint = this.getNodeParameter('endpoint') as string;
-  const taskType = this.getNodeParameter('taskType') as string;
-  const payload = this.getNodeParameter('payload') as IDataObject;
-  const method = (this.getNodeParameter('method', 0, 'POST') as string).toUpperCase();
-  const headers = (this.getNodeParameter('headers', 0, {}) as IDataObject) as Record<string, string>;
-  const timeout = this.getNodeParameter('timeout', 0, 10000) as number;
-
-  const options: AxiosRequestConfig = {
-    method,
-    url: `${endpoint}/task`,
-    data: {
-      task_type: taskType,
-      input: payload,
-    },
-    headers,
-    timeout,
+export class AgentNN implements INodeType {
+  description: INodeTypeDescription = {
+    displayName: 'AgentNN',
+    name: 'agentnn',
+    group: ['transform'],
+    version: 1,
+    inputs: ['main'],
+    outputs: ['main'],
+    properties: [
+      {
+        displayName: 'Endpoint',
+        name: 'endpoint',
+        type: 'string',
+        default: 'http://localhost:8000',
+      },
+      {
+        displayName: 'Task Type',
+        name: 'taskType',
+        type: 'string',
+        default: 'chat',
+      },
+      {
+        displayName: 'Payload',
+        name: 'payload',
+        type: 'json',
+        default: '{}',
+      },
+      {
+        displayName: 'Path',
+        name: 'path',
+        type: 'string',
+        default: '/task',
+      },
+      {
+        displayName: 'Method',
+        name: 'method',
+        type: 'options',
+        options: [
+          { name: 'POST', value: 'POST' },
+          { name: 'GET', value: 'GET' },
+        ],
+        default: 'POST',
+      },
+      {
+        displayName: 'Headers',
+        name: 'headers',
+        type: 'json',
+        default: '{}',
+      },
+      {
+        displayName: 'Timeout',
+        name: 'timeout',
+        type: 'number',
+        default: 10000,
+      },
+    ],
   };
 
-  const { data } = await axios.request(options);
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const endpoint = this.getNodeParameter('endpoint') as string;
+    const taskType = this.getNodeParameter('taskType') as string;
+    const payload = this.getNodeParameter('payload') as IDataObject;
+    const path = this.getNodeParameter('path', 0, '/task') as string;
+    const method = (this.getNodeParameter('method', 0, 'POST') as string).toUpperCase();
+    const headers = (this.getNodeParameter('headers', 0, {}) as IDataObject) as Record<string, string>;
+    const timeout = this.getNodeParameter('timeout', 0, 10000) as number;
 
-  return [data as IDataObject];
+    const options: AxiosRequestConfig = {
+      method,
+      url: `${endpoint}${path}`,
+      data: {
+        task_type: taskType,
+        input: payload,
+      },
+      headers,
+      timeout,
+    };
+
+    const { data } = await axios.request(options);
+
+    return [[data as INodeExecutionData]];
+  }
 }
 ```
 
 Dieses Skript kann als Custom Node in n8n eingebunden werden und sendet Aufgaben direkt an das Agent‑NN API‑Gateway.
-Dabei können optionale Parameter wie `method`, `headers` und `timeout` gesetzt werden, um HTTP-Methode, Header und Zeitlimit zu steuern.
+Dabei können optionale Parameter wie `path`, `method`, `headers` und `timeout` gesetzt werden, um URL-Pfad, HTTP-Methode, Header und Zeitlimit zu steuern.
+
 
 ## Agent‑NN ruft n8n Workflows auf
 

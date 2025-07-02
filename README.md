@@ -172,6 +172,18 @@ daher müssen die Komponenten vor einer Veröffentlichung stets gebaut werden. D
 Sämtliche Integrationen akzeptieren optionale Parameter wie `path`, `method`,
 `headers`, `timeout` sowie Auth-Daten, um alternative Endpunkte zu adressieren.
 
+
+### Quickstart Flowise
+
+```bash
+cd integrations/flowise-agentnn
+npm install && npx tsc
+# In der Flowise-UI die Datei dist/AgentNN.js hochladen
+```
+
+Danach kann ein Flow den Agent über das Feld `endpoint` ansprechen. Beispiel-
+Flows liegen im gleichen Ordner.
+
 ## Tests & Beiträge
 
 Bevor du einen Pull Request erstellst, führe bitte `ruff`, `mypy` und `pytest` aus. Details zum Entwicklungsprozess findest du in [CONTRIBUTING.md](CONTRIBUTING.md) sowie im Dokument [docs/test_strategy.md](docs/test_strategy.md). Sollten Module fehlen, können lokale Wheels oder ein internes Paketmirror verwendet werden.

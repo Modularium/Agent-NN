@@ -39,13 +39,15 @@ Diese Komponente wird in Flowise eingebunden und erlaubt es, Benutzeranfragen di
 
 Das Plugin `flowise_workflow` ruft HTTP‑basierte Chatflows auf. Neben einem Payload können optionale Header, die HTTP-Methode und ein Timeout übergeben werden:
 
+
 ```python
 from plugins.flowise_workflow.plugin import Plugin
 
 plugin = Plugin()
 result = plugin.execute(
     {
-        "url": "http://localhost:3000/api/v1/predict",
+        "endpoint": "http://localhost:3000",
+        "path": "/api/v1/predict",
         "payload": {"question": "Hi"},
         "headers": {"Authorization": "Bearer token"},
     },

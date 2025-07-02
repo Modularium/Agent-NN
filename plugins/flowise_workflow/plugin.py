@@ -8,12 +8,16 @@ class Plugin(ToolPlugin):
 
     def execute(self, input: dict, context: dict) -> dict:
         url = input.get("url")
+        endpoint = input.get("endpoint")
+        path = input.get("path", "")
         payload = input.get("payload", {})
         headers = input.get("headers", {})
         method = input.get("method", "POST").upper()
         timeout = input.get("timeout", 10)
+        if not url and not endpoint:
+            return {"error": "no url or endpoint provided"}
         if not url:
-            return {"error": "no url provided"}
+            url = f"{endpoint.rstrip('/')}{path}"
         try:
             resp = httpx.request(method, url, json=payload, headers=headers, timeout=timeout)
             resp.raise_for_status()

@@ -2,6 +2,12 @@ name: flowise_workflow
 version: 0.1
 summary: Invoke FlowiseAI chatflows via HTTP
 fields:
+  endpoint:
+    type: string
+    description: Base URL of the Flowise instance
+  path:
+    type: string
+    description: Request path appended to the endpoint
   url:
     type: string
     description: Flowise endpoint or chatflow webhook

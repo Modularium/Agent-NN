@@ -3,21 +3,40 @@ from plugins.n8n_workflow.plugin import Plugin as N8NPlugin
 from plugins.flowise_workflow.plugin import Plugin as FlowisePlugin
 
 
-def _fake_request(method: str, url: str, json=None, headers=None, timeout=10):
-    request = httpx.Request(method, url)
+def _fake_request(method: str, url: str, json=None, headers=None, timeout=10, auth=None):
     return httpx.Response(
         200,
-        request=request,
-        json={"ok": True, "url": url, "method": method, "timeout": timeout},
+        json={
+            "ok": True,
+            "url": url,
+            "method": method,
+            "timeout": timeout,
+            "auth": auth,
+        },
     )
 
 
 def test_n8n_plugin(monkeypatch):
     monkeypatch.setattr(httpx, "request", _fake_request)
     plugin = N8NPlugin()
-    result = plugin.execute({"endpoint": "http://n8n.local", "path": "/webhook", "method": "POST", "timeout": 5}, {})
+    result = plugin.execute(
+        {
+            "endpoint": "http://n8n.local",
+            "path": "/webhook",
+            "method": "POST",
+            "timeout": 5,
+            "auth": {"username": "u", "password": "p"},
+        },
+        {},
+    )
     assert result["status"] == "success"
-    assert result["data"] == {"ok": True, "url": "http://n8n.local/webhook", "method": "POST", "timeout": 5}
+    assert result["data"] == {
+        "ok": True,
+        "url": "http://n8n.local/webhook",
+        "method": "POST",
+        "timeout": 5,
+        "auth": ("u", "p"),
+    }
 
 
 def test_flowise_plugin(monkeypatch):
@@ -25,4 +44,10 @@ def test_flowise_plugin(monkeypatch):
     plugin = FlowisePlugin()
     result = plugin.execute({"endpoint": "http://flowise.local", "path": "/api", "method": "POST"}, {})
     assert result["status"] == "success"
-    assert result["data"] == {"ok": True, "url": "http://flowise.local/api", "method": "POST", "timeout": 10}
+    assert result["data"] == {
+        "ok": True,
+        "url": "http://flowise.local/api",
+        "method": "POST",
+        "timeout": 10,
+        "auth": None,
+    }

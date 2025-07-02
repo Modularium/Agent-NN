@@ -17,6 +17,9 @@ fields:
   headers:
     type: object
     description: Optional HTTP headers for authentication
+  auth:
+    type: object
+    description: Optional basic auth credentials with username and password
   method:
     type: string
     description: HTTP method to use, defaults to POST

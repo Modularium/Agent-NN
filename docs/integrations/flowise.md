@@ -1,6 +1,6 @@
 # FlowiseAI Integration
 
-[FlowiseAI](https://flowiseai.com/) bietet eine grafische Oberfläche zum Erstellen von Chatbot‑Flows. Agent‑NN lässt sich sowohl als Quelle für Antworten als auch als externer Aufrufer nutzen. Mit Version **v1.0.2** gilt die Flowise‑Integration als stabil.
+[FlowiseAI](https://flowiseai.com/) bietet eine grafische Oberfläche zum Erstellen von Chatbot‑Flows. Agent‑NN lässt sich sowohl als Quelle für Antworten als auch als externer Aufrufer nutzen. Mit Version **v1.0.3** gilt die Flowise‑Integration als stabil.
 
 ## Agent‑NN als Flowise Komponente
 

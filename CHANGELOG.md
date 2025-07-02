@@ -43,6 +43,11 @@ All notable changes to this project are documented in this file.
 - Integrations-Builds generieren JavaScript-Dateien in `dist/`
 - Version als Release Candidate markiert
 
+## v1.0.2
+- Stable-Tag für die Flowise-Integration
+- Troubleshooting und Known-Issues ergänzt
+- Changelog und Release-Notes aktualisiert
+
 ## v0.9.0-mcp
 - Abschluss der MCP-Migration
 - Dokumentation überarbeitet

@@ -1,3 +1,3 @@
-# Release Notes v1.0.1
+# Release Notes v1.0.2
 
-Diese Version schließt die MCP-Modernisierung ab. Legacy-Bestandteile sind archiviert, Metriken und Audit-Logs werden dauerhaft gespeichert und eine Roadmap für künftige Erweiterungen ist dokumentiert. Weitere Details siehe [docs/maintenance.md](maintenance.md) und [docs/roadmap.md](roadmap.md).
+Stabiles Release der Flowise‑Integration. Quickstart und Troubleshooting sind aktualisiert, Fehlerbehandlung sowie Authentifizierung getestet. Bekannte Limitierungen der Testumgebung sind dokumentiert. Details siehe [docs/integrations/flowise.md](integrations/flowise.md) und den [Changelog](../CHANGELOG.md).

@@ -1,6 +1,6 @@
 # FlowiseAI Integration
 
-[FlowiseAI](https://flowiseai.com/) bietet eine grafische Oberfläche zum Erstellen von Chatbot‑Flows. Agent‑NN lässt sich sowohl als Quelle für Antworten als auch als externer Aufrufer nutzen.
+[FlowiseAI](https://flowiseai.com/) bietet eine grafische Oberfläche zum Erstellen von Chatbot‑Flows. Agent‑NN lässt sich sowohl als Quelle für Antworten als auch als externer Aufrufer nutzen. Mit Version **v1.0.2** gilt die Flowise‑Integration als stabil.
 
 ## Agent‑NN als Flowise Komponente
 
@@ -118,3 +118,8 @@ Weitere Details enthält der [Integration Plan](full_integration_plan.md).
 - **Installationsfehler**: Nutze einen internen npm-Mirror, falls `npm install` wegen fehlender Internetverbindung scheitert.
 - **Komponente erscheint nicht**: Prüfe, ob die Datei `dist/AgentNN.js` korrekt hochgeladen wurde und Flowise neu gestartet ist.
 - **API-Timeouts**: Erhöhe das `timeout` in der Komponente oder teste den Endpoint separat mit `curl`.
+- **Fehlende Node-Module für Tests**: In manchen CI-Umgebungen sind `axios` oder `typescript` nicht installiert. Führe `npm install` im Integrationsordner aus oder verwende einen vorbereiteten Docker-Container.
+
+### Known Issues
+
+- Die Test-Suite schlägt vereinzelt fehl, wenn optionale Python-Module wie `aiohttp` oder `langchain` nicht verfügbar sind. Diese Abhängigkeiten werden nicht standardmäßig mitgeliefert und müssen lokal oder über einen internen Spiegel installiert werden.

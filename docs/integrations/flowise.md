@@ -115,6 +115,26 @@ curl http://localhost:8000/agents/<id>?format=flowise
 Die Antwort entspricht dem von Flowise erwarteten Agent‑Format und kann direkt
 importiert werden.
 
+Beispielantwort:
+
+```json
+{
+  "id": "demo",
+  "name": "demo",
+  "description": "demo domain",
+  "type": "agent",
+  "tools": [],
+  "capabilities": [],
+  "llm": {"model": "gpt"},
+  "created_at": "2024-01-01T00:00:00",
+  "version": "1.0.0"
+}
+```
+
+Falls ein Agent keinen Flowise‑Export unterstützt, liefert die Route einen
+`400`‑Fehler mit dem Hinweis auf diesen Abschnitt. Nicht registrierte Agenten
+resultieren in einem `404`.
+
 Weitere Details enthält der [Integration Plan](full_integration_plan.md).
 
 ## Troubleshooting
@@ -129,6 +149,7 @@ Weitere Details enthält der [Integration Plan](full_integration_plan.md).
 - **Komponente erscheint nicht**: Prüfe, ob die Datei `dist/AgentNN.js` korrekt hochgeladen wurde und Flowise neu gestartet ist.
 - **API-Timeouts**: Erhöhe das `timeout` in der Komponente oder teste den Endpoint separat mit `curl`.
 - **Fehlende Node-Module für Tests**: In manchen CI-Umgebungen sind `axios` oder `typescript` nicht installiert. Führe `npm install` im Integrationsordner aus oder verwende einen vorbereiteten Docker-Container.
+- **Fehlender Flowise-Export**: Gibt die API einen `400`-Fehler zurück, unterstützt der Agent das Format nicht. Lege ihn neu an oder ergänze `get_config()`.
 
 ### Known Issues
 

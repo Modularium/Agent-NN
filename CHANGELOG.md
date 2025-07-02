@@ -48,6 +48,10 @@ All notable changes to this project are documented in this file.
 - Troubleshooting und Known-Issues ergänzt
 - Changelog und Release-Notes aktualisiert
 
+## v1.0.3
+- Flowise-Export über `GET /agents/{id}?format=flowise` finalisiert
+- Fehlercodes und Dokumentation ergänzt
+
 ## v0.9.0-mcp
 - Abschluss der MCP-Migration
 - Dokumentation überarbeitet

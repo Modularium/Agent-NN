@@ -94,6 +94,7 @@ nav:
     - CI/CD: development/cicd.md
     - Nx Python Plugin: development/nxlv-python.md
     - Release Notes: development/releases.md
+    - Release Checklist: release_checklist.md
   - Deployment:
     - Docker: deployment/docker.md
     - Kubernetes: deployment/kubernetes.md

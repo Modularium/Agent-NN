@@ -54,6 +54,20 @@ export class AgentNN implements INodeType {
 Dieses Skript kann als Custom Node in n8n eingebunden werden und sendet Aufgaben direkt an das Agent‑NN API‑Gateway.
 Dabei können optionale Parameter wie `path`, `method`, `headers`, `timeout` und `auth` gesetzt werden, um URL-Pfad, HTTP-Methode, Header, Zeitlimit und Basis-Auth zu steuern.
 
+## Quick Start
+
+Schneller Einstieg zum Testen des Nodes:
+
+```bash
+cd integrations/n8n-agentnn
+npm install
+npx tsc
+cp dist/* ~/.n8n/custom/
+n8n start
+```
+
+Nach dem Kopieren der Dateien erscheint der Node im Editor unter `AgentNN`.
+
 ## Agent‑NN ruft n8n Workflows auf
 
 Das Python‑Plugin `n8n_workflow` erlaubt es, beliebige Webhook‑ oder REST‑Workflows anzusprechen. Neben Headern und Payloads lassen sich auch die HTTP-Methode, ein Timeout und optionale Basic‑Auth-Daten definieren:
@@ -89,3 +103,10 @@ Der Aufruf gibt die Antwort des Workflows zurück.
 Vor einer Veröffentlichung muss der Node immer nach `dist/` kompiliert werden. Der PluginManager lädt ausschließlich die JavaScript-Dateien.
 
 Weitere Hinweise zur Konfiguration findest du im [Integration Plan](full_integration_plan.md).
+
+## Troubleshooting
+
+- **Fehlende Module**: Schlägt `npm install` fehl, prüfe die Proxy-Einstellungen oder verwende ein internes npm-Registry.
+- **Keine Ausführung**: Wird der Node nicht angezeigt, kontrolliere, ob die Dateien unter `~/.n8n/custom` die Endung `.js` besitzen und n8n neu gestartet wurde.
+- **Netzwerkprobleme**: Bei Verbindungsfehlern setze das Feld `timeout` höher oder teste die URL per `curl`.
+- **Offline-Umgebungen**: Nutze einen lokalen npm-Cache (z.B. `npm config set cache /path/to/cache`) oder spiegel die Pakete intern.

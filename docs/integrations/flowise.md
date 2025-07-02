@@ -36,6 +36,18 @@ export default class AgentNN {
 
 Diese Komponente wird in Flowise eingebunden und erlaubt es, Benutzeranfragen direkt an Agent‑NN zu delegieren.
 
+## Quick Start
+
+```bash
+cd integrations/flowise-agentnn
+npm install
+npx tsc
+# Danach die Datei dist/AgentNN.js in Flowise hochladen
+```
+
+Nach dem Upload kann die Komponente sofort verwendet werden. Konfiguriere die
+Basis-URL von Agent‑NN sowie optionale Header oder ein anderes Timeout.
+
 ## Flowise Workflows aus Agent‑NN anstoßen
 
 Das Plugin `flowise_workflow` ruft HTTP‑basierte Chatflows auf. Neben einem Payload können optionale Header, die HTTP-Methode und ein Timeout übergeben werden:
@@ -74,3 +86,9 @@ Stelle deshalb sicher, dass `npm install` und `npx tsc` vor jeder Veröffentlich
 ausgeführt wurden.
 
 Weitere Details enthält der [Integration Plan](full_integration_plan.md).
+
+## Troubleshooting
+
+- **Installationsfehler**: Nutze einen internen npm-Mirror, falls `npm install` wegen fehlender Internetverbindung scheitert.
+- **Komponente erscheint nicht**: Prüfe, ob die Datei `dist/AgentNN.js` korrekt hochgeladen wurde und Flowise neu gestartet ist.
+- **API-Timeouts**: Erhöhe das `timeout` in der Komponente oder teste den Endpoint separat mit `curl`.

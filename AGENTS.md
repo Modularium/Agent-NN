@@ -148,6 +148,7 @@ Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-A
 - **Kommunikation:** Da der Agent autonom agiert, sollte er seine Fortschritte im Log (`codex_progress.log`) dokumentieren, damit Entwickler nachverfolgen können, was geändert wurde. Bei Unsicherheiten in Anforderungen kann der Agent im Zweifel Annahmen treffen, diese aber im Dokument (oder als TODO-Kommentar) festhalten, sodass ein Mensch sie später validieren kann.
 - **Integrationen:** Plugins für n8n und FlowiseAI liegen unter `plugins/`. Beispielimplementierungen der Custom Nodes/Components findest du in `integrations/`. Ausführliche Hinweise und ein Integrationsplan sind in `docs/integrations/` dokumentiert. Bei Erweiterungen stets auf API-Kompatibilität achten und die optionale Übergabe von `task_type`, `path`, `method`, `headers` und `timeout` berücksichtigen.
 - **Integrations-Builds:** n8n-Node und Flowise-Komponente **müssen** vor jeder Veröffentlichung mit `npm install && npx tsc` in das Verzeichnis `dist/` kompiliert werden. Der PluginManager lädt ausschließlich die erzeugten JavaScript-Dateien aus `plugins/` bzw. den Integrationsordnern. Die genauen Schritte sind in den Integrationsdokumenten beschrieben.
+- **Fehleranalyse Integrationen:** Bei `npm install` oder `tsc` auftretenden Fehlern zuerst die Netzwerkverbindung überprüfen. In Offline-Umgebungen lokale Caches oder interne Registries nutzen und Dateipfade auf Schreibrechte prüfen.
 
 *Ende der AGENTS.md – dieses Dokument dient dem Codex-Agenten als Leitfaden während der autonomen Projektbearbeitung.*
 

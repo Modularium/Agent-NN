@@ -8,6 +8,7 @@ Unter `integrations/flowise-agentnn` liegt eine Beispielkomponente `AgentNN.ts`.
 
 ```ts
 import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 export default class AgentNN {
   constructor(
@@ -17,33 +18,52 @@ export default class AgentNN {
     private timeout = 10000,
     private method: 'POST' | 'GET' | 'PUT' | 'DELETE' = 'POST',
     private path = '/task',
+    private auth?: { username?: string; password?: string; token?: string }
   ) {}
 
   async run(payload: unknown) {
     const url = `${this.endpoint.replace(/\/$/, '')}${this.path}`;
     const body = { task_type: this.taskType, input: payload };
     const { data } = await axios.request({
+    const headers = { ...this.headers } as Record<string, string>;
+    if (this.auth?.token) {
+      headers['Authorization'] = `Bearer ${this.auth.token}`;
+    }
+    const opts: AxiosRequestConfig = {
       url,
       method: this.method,
       data: body,
       headers: this.headers,
+      headers,
       timeout: this.timeout,
     });
     return data.result ?? data;
+    };
+    if (this.auth?.username && this.auth?.password) {
+      opts.auth = { username: this.auth.username, password: this.auth.password };
+    }
+    try {
+      const { data } = await axios.request(opts);
+      return data.result ?? data;
+    } catch (err: any) {
+      return { error: err.message ?? String(err) };
+    }
   }
 }
 ```
 
 Diese Komponente wird in Flowise eingebunden und erlaubt es, Benutzeranfragen direkt an Agent‑NN zu delegieren.
 
-## Quick Start
+## Quickstart
 
-```bash
-cd integrations/flowise-agentnn
-npm install
-npx tsc
-# Danach die Datei dist/AgentNN.js in Flowise hochladen
-```
+1. Wechsel in `integrations/flowise-agentnn` und installiere die Abhängigkeiten:
+   `npm install && npx tsc`.
+2. Lade die erzeugte `dist/AgentNN.js` in der Flowise-UI hoch und setze die
+   URL deines Agent‑NN Gateways.
+3. Optional können `taskType`, `path`, `method`, `headers`, `auth` und
+   `timeout` angepasst werden.
+
+![Flowise Example](flowise_example.png)
 
 Nach dem Upload kann die Komponente sofort verwendet werden. Konfiguriere die
 Basis-URL von Agent‑NN sowie optionale Header oder ein anderes Timeout.
@@ -89,6 +109,12 @@ Weitere Details enthält der [Integration Plan](full_integration_plan.md).
 
 ## Troubleshooting
 
+- **Fehlende Systempakete:** In minimalen Umgebungen kann `npm install` scheitern,
+  wenn Build‑Tools wie `make` fehlen. Nutze in diesem Fall den Docker‑Container
+  aus dem Repository oder installiere die Pakete manuell.
+- **Kein Internetzugang:** Falls Flowise oder Agent‑NN offline laufen, kannst du
+  die Plugins mit statischen Antworten testen. Die Python‑Plugins geben bei
+  Netzwerkfehlern eine Fehlermeldung zurück, die du im Log findest.
 - **Installationsfehler**: Nutze einen internen npm-Mirror, falls `npm install` wegen fehlender Internetverbindung scheitert.
 - **Komponente erscheint nicht**: Prüfe, ob die Datei `dist/AgentNN.js` korrekt hochgeladen wurde und Flowise neu gestartet ist.
 - **API-Timeouts**: Erhöhe das `timeout` in der Komponente oder teste den Endpoint separat mit `curl`.

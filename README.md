@@ -164,7 +164,9 @@ Run `npm run build` to create the static files in `frontend/dist/`.
 ## Integrations
 
 Agent-NN stellt Plugins für n8n und FlowiseAI bereit. Details finden sich in
-[docs/integrations](docs/integrations/index.md).
+[docs/integrations](docs/integrations/index.md). Die Beispielkomponenten lassen sich mit
+`npm install && npx tsc` in den jeweiligen Unterordnern kompilieren und anschließend
+in n8n bzw. Flowise registrieren.
 
 ## Tests & Beiträge
 

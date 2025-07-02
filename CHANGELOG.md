@@ -36,6 +36,13 @@ All notable changes to this project are documented in this file.
 - Plugins akzeptieren `path`, `method`, `headers` und `timeout`
 - Tests und Type-Hints fuer Plugins ergaenzt
 
+## v1.0.2-rc
+- Verbesserte Flowise-Komponente mit `auth`-Unterstützung und Fehlerbehandlung
+- Beispiel-Flows und Screenshot hinzugefügt
+- Quickstart- und Troubleshooting-Abschnitte in der Dokumentation
+- Integrations-Builds generieren JavaScript-Dateien in `dist/`
+- Version als Release Candidate markiert
+
 ## v0.9.0-mcp
 - Abschluss der MCP-Migration
 - Dokumentation überarbeitet

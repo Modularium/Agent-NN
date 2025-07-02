@@ -164,8 +164,8 @@ Run `npm run build` to create the static files in `frontend/dist/`.
 ## Integrations
 
 Agent-NN stellt Plugins für n8n und FlowiseAI bereit. Details finden sich in
-[docs/integrations](docs/integrations/index.md). Die Beispielkomponenten lassen sich mit
-`npm install && npx tsc` in den jeweiligen Unterordnern kompilieren und anschließend
+[docs/integrations](docs/integrations/index.md). Schnelleinstiege stehen in den Abschnitten [n8n Quick Start](docs/integrations/n8n.md#quick-start) und [Flowise Quick Start](docs/integrations/flowise.md#quick-start).
+Die Beispielkomponenten lassen sich mit `npm install && npx tsc` in den jeweiligen Unterordnern kompilieren und anschließend
 in n8n bzw. Flowise registrieren. Der PluginManager lädt nur die JavaScript-Dateien,
 daher müssen die Komponenten vor einer Veröffentlichung stets gebaut werden. Der vollständige Ablauf ist im
 [Full Integration Plan](docs/integrations/full_integration_plan.md) beschrieben.
@@ -174,7 +174,11 @@ Sämtliche Integrationen akzeptieren optionale Parameter wie `path`, `method`,
 
 ## Tests & Beiträge
 
-Bevor du einen Pull Request erstellst, führe bitte `ruff`, `mypy` und `pytest` aus. Details zum Entwicklungsprozess findest du in [CONTRIBUTING.md](CONTRIBUTING.md) sowie im Dokument [docs/test_strategy.md](docs/test_strategy.md).
+Bevor du einen Pull Request erstellst, führe bitte `ruff`, `mypy` und `pytest` aus. Details zum Entwicklungsprozess findest du in [CONTRIBUTING.md](CONTRIBUTING.md) sowie im Dokument [docs/test_strategy.md](docs/test_strategy.md). Sollten Module fehlen, können lokale Wheels oder ein internes Paketmirror verwendet werden.
+
+## Releases
+
+Der komplette Ablauf für neue Versionen ist im [Release Checklist](docs/release_checklist.md) beschrieben.
 
 ## Monitoring & Maintenance
 

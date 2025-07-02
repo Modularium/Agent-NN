@@ -184,6 +184,10 @@ npm install && npx tsc
 Danach kann ein Flow den Agent über das Feld `endpoint` ansprechen. Beispiel-
 Flows liegen im gleichen Ordner.
 
+Jeder neu erstellte Agent wird zusätzlich im Flowise-Format abgelegt. Die Datei
+`<name>_flowise.json` kann über `GET /agents/<id>?format=flowise` abgerufen und
+direkt in Flowise importiert werden.
+
 ## Tests & Beiträge
 
 Bevor du einen Pull Request erstellst, führe bitte `ruff`, `mypy` und `pytest` aus. Details zum Entwicklungsprozess findest du in [CONTRIBUTING.md](CONTRIBUTING.md) sowie im Dokument [docs/test_strategy.md](docs/test_strategy.md). Sollten Module fehlen, können lokale Wheels oder ein internes Paketmirror verwendet werden.

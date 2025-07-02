@@ -105,6 +105,16 @@ Die Flowise-UI nutzt den Plug-in-Manager, um die kompilierten JS-Dateien zu lade
 Stelle deshalb sicher, dass `npm install` und `npx tsc` vor jeder Veröffentlichung
 ausgeführt wurden.
 
+Nach der Erstellung speichert Agent‑NN zusätzlich eine Datei `<name>_flowise.json`
+im Agent-Konfigurationsordner. Über die API lässt sich diese Definition abrufen:
+
+```bash
+curl http://localhost:8000/agents/<id>?format=flowise
+```
+
+Die Antwort entspricht dem von Flowise erwarteten Agent‑Format und kann direkt
+importiert werden.
+
 Weitere Details enthält der [Integration Plan](full_integration_plan.md).
 
 ## Troubleshooting

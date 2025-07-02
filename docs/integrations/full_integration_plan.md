@@ -15,14 +15,17 @@ Dieser Plan beschreibt die nötigen Schritte, um Agent‑NN in beide Richtungen 
    - `endpoint`: Basis-URL des API-Gateways
    - `task_type`: Art der Aufgabe (z. B. `chat`)
    - `payload`: Freies JSON-Feld für Eingabedaten
-3. Der Node sendet eine POST-Anfrage an `/task` und gibt die JSON-Antwort zurück.
+   - `method`: HTTP-Methode (Standard `POST`)
+   - `headers`: optionale HTTP-Header für Authentifizierung
+   - `timeout`: Zeitlimit in Millisekunden
+3. Der Node ruft `/task` über die angegebene Methode auf und gibt die JSON-Antwort zurück.
 4. Führe `npm install` und anschließend `npx tsc` aus, um die JavaScript-Dateien in `dist/` zu erzeugen.
 5. Veröffentlichung als benutzerdefiniertes n8n-Paket (Installationsanleitung in der Doku).
 
 ## 3. FlowiseAI Komponente
 
 1. Neues Modul `integrations/flowise-agentnn` mit einem Custom Component Script (`AgentNN.ts`) (bereits im Repository enthalten).
-2. Das Script erlaubt die Konfiguration der Agent‑NN URL und weiterer Parameter.
+2. Das Script erlaubt die Konfiguration der Agent‑NN URL sowie `taskType`, `method`, Header und Timeout.
 3. Eingehende Prompts werden an Agent‑NN weitergeleitet; die Antwort des Dispatchers wird als Chatbot-Antwort ausgegeben.
 4. Nach `npm install` und `npx tsc` liegt die kompilierte Datei unter `dist/AgentNN.js`.
 5. Bereitstellung über das Flowise Plugin System.

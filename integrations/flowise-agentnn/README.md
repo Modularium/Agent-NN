@@ -1,5 +1,8 @@
 # Flowise AgentNN Component
 
-A simple Flowise component that sends user prompts to the Agent-NN dispatcher.
-After running `npm install` you can build the script with `npx tsc`.
-Upload the generated `dist/AgentNN.js` through the Flowise UI and set the `endpoint` parameter during registration.
+A Flowise component that forwards input to the Agent-NN API gateway.
+Run `npm install` and then `npx tsc` to compile the script.
+Upload the generated `dist/AgentNN.js` through the Flowise UI and configure the
+`endpoint` of your Agent-NN instance. Optional parameters allow you to change
+`taskType`, set the HTTP `method`, provide custom headers and adjust the
+request timeout.

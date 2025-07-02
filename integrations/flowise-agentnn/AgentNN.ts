@@ -1,13 +1,25 @@
 import axios from 'axios';
 
 export default class AgentNN {
-  constructor(private endpoint: string) {}
+  constructor(
+    private endpoint: string,
+    private taskType = 'chat',
+    private headers: Record<string, string> = {},
+    private timeout = 10000,
+    private method: 'POST' | 'GET' | 'PUT' | 'DELETE' = 'POST'
+  ) {}
 
-  async run(question: string): Promise<string> {
-    const { data } = await axios.post(`${this.endpoint}/task`, {
-      task_type: 'chat',
-      input: question,
+  async run(payload: unknown): Promise<any> {
+    const url = `${this.endpoint}/task`;
+    const body = { task_type: this.taskType, input: payload };
+    const response = await axios.request({
+      url,
+      method: this.method,
+      data: body,
+      headers: this.headers,
+      timeout: this.timeout,
     });
-    return data.result as string;
+    const data = response.data;
+    return data.result ?? data;
   }
 }

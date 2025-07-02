@@ -15,6 +15,7 @@ Aktuelle Version: **v1.0.3** – Flowise-Export und Dokumentation aktualisiert.
 graph TD
     U[User/Web UI] --> G[API-Gateway]
     G --> D[Task Dispatcher]
+    G --> UM[User Manager]
     D --> R[Agent Registry]
     D --> S[Session Manager]
     D --> W[Worker Services]
@@ -31,6 +32,7 @@ graph TD
 - **Session Manager** – Speichert Kontexte in Redis.
 - **Vector Store** – Bietet Dokumentensuche für RAG.
 - **LLM Gateway** – Einheitliche Schnittstelle zu Sprachmodellen.
+- **User Manager** – Verwaltet Nutzerkonten und Tokens.
 - **Monitoring** – Prometheus sammelt Metriken aller Dienste.
 - **Worker Services** – Domänenspezifische Agenten.
 

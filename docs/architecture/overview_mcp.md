@@ -5,6 +5,7 @@ The Modular Control Plane architecture breaks Agent-NN into small services that 
 ```mermaid
 graph TD
     A[API-Gateway] --> B[Task-Dispatcher]
+    A --> U[User Manager]
     B --> C[Agent Registry]
     B --> D[Session Manager]
     B --> E[Worker Services]
@@ -43,6 +44,7 @@ mcp/
 ├── session_manager/
 ├── vector_store/
 ├── llm_gateway/
+├── user_manager/
 ├── worker_dev/
 ├── worker_loh/
 └── worker_openhands/

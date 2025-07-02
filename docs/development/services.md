@@ -9,6 +9,7 @@ Die Modular Control Plane besteht aus mehreren eigenständigen Services. Jeder S
 | Session Manager    | 8002 | Speichert Gesprächskontexte   |
 | Vector Store       | 8003 | Dokumentensuche               |
 | LLM Gateway        | 8004 | Zugriff auf Sprachmodelle     |
+| User Manager       | 8005 | Verwaltet Nutzerkonten und Token |
 | Worker Dev         | 8101 | Beispiel-Worker für Code      |
 | Worker OpenHands   | 8102 | Docker-Operationen            |
 | Worker LOH         | 8103 | Pflegewissen                  |

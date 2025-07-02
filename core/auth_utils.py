@@ -2,6 +2,7 @@ import os
 from fastapi import Request, HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 import structlog
+import httpx
 
 
 def _load_tokens() -> set[str]:
@@ -17,6 +18,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         self.logger = logger
         self.enabled = os.getenv("AUTH_ENABLED", "false").lower() == "true"
         self.tokens = _load_tokens()
+        self.user_service_url = os.getenv("USER_SERVICE_URL")
         self.exempt_paths = {"/health", "/metrics", "/status"}
 
     async def dispatch(self, request: Request, call_next):
@@ -33,7 +35,19 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
             raise HTTPException(status_code=401, detail="Unauthorized")
         token = auth.split()[1]
-        if token not in self.tokens:
+        valid = token in self.tokens
+        if not valid and self.user_service_url:
+            try:
+                async with httpx.AsyncClient() as client:
+                    resp = await client.post(
+                        f"{self.user_service_url.rstrip('/')}/validate",
+                        json={"token": token},
+                        timeout=5,
+                    )
+                    valid = resp.status_code == 200
+            except Exception:  # pragma: no cover - network failures
+                valid = False
+        if not valid:
             self.logger.warning(
                 "auth_invalid",
                 event="auth_invalid",

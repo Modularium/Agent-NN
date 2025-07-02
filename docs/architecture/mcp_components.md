@@ -5,6 +5,7 @@
 - **Session Manager**: keeps conversation history and temporary state.
 - **Vector Store Service**: provides semantic search across documents.
 - **LLM Gateway**: exposes a unified API to various LLM backends.
+- **User Manager Service**: manages user accounts and tokens.
 - **Worker Services**: domain specific executors, e.g. Dev, OpenHands, LOH.
 - **API Gateway**: optional entrypoint for external requests with auth and rate limiting.
 - **Monitoring/Logging**: collects logs and metrics from all services.

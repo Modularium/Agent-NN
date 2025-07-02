@@ -166,7 +166,8 @@ Run `npm run build` to create the static files in `frontend/dist/`.
 Agent-NN stellt Plugins für n8n und FlowiseAI bereit. Details finden sich in
 [docs/integrations](docs/integrations/index.md). Die Beispielkomponenten lassen sich mit
 `npm install && npx tsc` in den jeweiligen Unterordnern kompilieren und anschließend
-in n8n bzw. Flowise registrieren. Der vollständige Ablauf ist im
+in n8n bzw. Flowise registrieren. Der PluginManager lädt nur die JavaScript-Dateien,
+daher müssen die Komponenten vor einer Veröffentlichung stets gebaut werden. Der vollständige Ablauf ist im
 [Full Integration Plan](docs/integrations/full_integration_plan.md) beschrieben.
 Sämtliche Integrationen akzeptieren optionale Parameter wie `path`, `method`,
 `headers`, `timeout` sowie Auth-Daten, um alternative Endpunkte zu adressieren.
@@ -185,3 +186,8 @@ backup and update recommendations.
 ## 🔭 Zukunft & Weiterentwicklung
 
 Die aktuelle Version bildet einen stabilen Grundstock für Agent-NN. Weitere Ideen und geplante Schritte sind in [docs/roadmap.md](docs/roadmap.md) beschrieben.
+
+## Offene Punkte
+
+Einige Tests schlagen aktuell wegen fehlender Abhängigkeiten fehl (`mypy` und `pytest`).
+Installiere vor dem Ausführen der Checks notwendige Pakete wie `pydantic`, `fastapi` und `requests`. Bei eingeschränktem Netzwerkzugriff empfiehlt es sich, die Räder vorab zu cachen oder eine interne Paketmirror zu verwenden.

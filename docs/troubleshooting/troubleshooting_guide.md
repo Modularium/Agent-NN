@@ -427,6 +427,14 @@ def handle_alert(alert):
    - Implement batching
    - Monitor and tune
 
+## Dependency and Network Issues
+
+If package installations via `pip` or `npm` fail because of restricted network
+access, use an offline mirror or configure a proxy. Make sure all required
+modules (e.g. `pydantic`, `fastapi`, `requests`) are installed before running
+`mypy` or `pytest`. In CI environments without internet, cache the wheel files
+or provide a pre-built virtual environment.
+
 ## Support
 
 For additional support:

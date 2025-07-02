@@ -6,6 +6,7 @@ The MCP version of Agent-NN is composed of several cooperating services. The fol
 graph TD
     A[User/CLI] --> B[API Gateway]
     B --> C[Task Dispatcher]
+    B --> U[User Manager]
     C --> D[Agent Registry]
     C --> E[Session Manager]
     C --> F[Worker Services]
@@ -23,6 +24,7 @@ graph TD
 - **Worker Services**: execute domain specific actions.
 - **Vector Store**: semantic search across documentation and code.
 - **LLM Gateway**: unified access to language models.
+- **User Manager**: manages user accounts and tokens.
 - **API Gateway**: optional entry point with authentication and routing.
 
 This setup replaces the former SupervisorAgent architecture and enables independent scaling of each service.

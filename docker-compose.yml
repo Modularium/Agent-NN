@@ -65,6 +65,14 @@ services:
     restart: unless-stopped
     env_file: .env
 
+  user_manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python services/user_manager/main.py
+    restart: unless-stopped
+    env_file: .env
+
   worker_dev:
     build:
       context: .

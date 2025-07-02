@@ -19,5 +19,6 @@ Agent-NN is being refactored into a Modular Control Plane. Instead of one monoli
 4. **Worker Services** – domain specific executors running in their own processes
 5. **Vector Store Service** – provides semantic search capabilities
 6. **LLM Gateway** – unified interface to LLM providers
+7. **User Manager Service** – handles user accounts and tokens
 
 For an overview of the interaction between these services see `overview_mcp.md`.

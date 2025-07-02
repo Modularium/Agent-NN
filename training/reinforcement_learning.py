@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Callable, Dict, Iterable, Tuple
 
 from core.model_context import TaskContext
 
@@ -55,3 +55,38 @@ class QTableLearner:
             state, agent = key.split("|", 1)
             table[(state, agent)] = float(val)
         self.table = table
+
+
+@dataclass
+class MultiAgentQLearner(QTableLearner):
+    """Q-learning for selecting a team of agents."""
+
+    reward_shaping: Callable[[float, TaskContext], float] | None = None
+    team_size: int = 2
+    table: Dict[Tuple[str, Tuple[str, ...]], float] = field(default_factory=dict)
+
+    def select_team(self, task: TaskContext, agents: Iterable[str]) -> Tuple[str, ...]:
+        """Choose a team of agents via epsilon-greedy policy."""
+        import itertools
+        import random
+
+        agent_list = list(agents)
+        combos = list(itertools.combinations(agent_list, self.team_size))
+        if not combos:
+            raise ValueError("no agent combinations available")
+        if random.random() < self.epsilon:
+            return random.choice(combos)
+        state = self._state_key(task)
+        q_vals = {c: self.table.get((state, c), 0.0) for c in combos}
+        return max(q_vals, key=q_vals.get)
+
+    def learn_team(
+        self, task: TaskContext, team: Tuple[str, ...], reward: float
+    ) -> None:
+        """Update Q-table for a team selection."""
+        if self.reward_shaping:
+            reward = self.reward_shaping(reward, task)
+        state = self._state_key(task)
+        key = (state, team)
+        current = self.table.get(key, 0.0)
+        self.table[key] = current + self.learning_rate * (reward - current)

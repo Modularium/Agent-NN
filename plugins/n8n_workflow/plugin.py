@@ -17,8 +17,10 @@ class Plugin(ToolPlugin):
         auth = input.get("auth")
         if not url and not endpoint:
             return {"error": "no url or endpoint provided"}
-        if not url:
+        if not url and endpoint:
             url = f"{endpoint.rstrip('/')}{path}"
+        elif not url:
+            return {"error": "no url or endpoint provided"}
         try:
             resp = httpx.request(
                 method,

@@ -168,6 +168,8 @@ Agent-NN stellt Plugins für n8n und FlowiseAI bereit. Details finden sich in
 `npm install && npx tsc` in den jeweiligen Unterordnern kompilieren und anschließend
 in n8n bzw. Flowise registrieren. Der vollständige Ablauf ist im
 [Full Integration Plan](docs/integrations/full_integration_plan.md) beschrieben.
+Sämtliche Integrationen akzeptieren optionale Parameter wie `path`, `method`,
+`headers`, `timeout` sowie Auth-Daten, um alternative Endpunkte zu adressieren.
 
 ## Tests & Beiträge
 

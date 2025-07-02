@@ -28,9 +28,9 @@ class PluginManager:
 
     def _load_module(self, path: str, name: str) -> ModuleType:
         spec = importlib.util.spec_from_file_location(name, path)
+        if spec is None or spec.loader is None:  # pragma: no cover - invalid spec
+            raise ImportError(f"Cannot load module spec for {name}")
         module = importlib.util.module_from_spec(spec)
-        if spec.loader is None:  # pragma: no cover - invalid spec
-            raise ImportError(f"Cannot load module {name}")
         spec.loader.exec_module(module)
         return module
 

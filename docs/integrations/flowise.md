@@ -58,6 +58,8 @@ result = plugin.execute(
 
 Kompiliere das Skript zu JavaScript und registriere es über die Flowise-UI. So kann ein Flowise‑Chatbot direkt in Agent‑NN Aufgaben bearbeiten oder Informationen abrufen. Optional lassen sich `path`, `method` und `timeout` an den Pluginaufruf übergeben.
 
+Sobald die Komponente eingebunden ist, kann Agent‑NN automatisiert neue Flowise‑Agenten registrieren und deren Ausführung überwachen. Über das Python‑Plugin werden Aufgabentyp, Modell und Authentifizierungs‑Header an Flowise übermittelt. Das Ergebnis des Flows wird zurück an Agent‑NN gereicht und steht dort für weitere Verarbeitung oder Training zur Verfügung.
+
 ## Registrierung der Komponente
 
 1. Wechsle in das Verzeichnis `integrations/flowise-agentnn`.

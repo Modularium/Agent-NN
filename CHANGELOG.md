@@ -31,6 +31,11 @@ All notable changes to this project are documented in this file.
 - SDKs und Release-Dokumente
 - Production Docker Compose
 
+## v1.0.1
+- Bidirektionale Flowise-Integration
+- Plugins akzeptieren `path`, `method`, `headers` und `timeout`
+- Tests und Type-Hints fuer Plugins ergaenzt
+
 ## v0.9.0-mcp
 - Abschluss der MCP-Migration
 - Dokumentation überarbeitet

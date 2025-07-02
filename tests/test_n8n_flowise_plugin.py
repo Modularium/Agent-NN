@@ -4,7 +4,12 @@ from plugins.flowise_workflow.plugin import Plugin as FlowisePlugin
 
 
 def _fake_request(method: str, url: str, json=None, headers=None, timeout=10):
-    return httpx.Response(200, json={"ok": True, "url": url, "method": method, "timeout": timeout})
+    request = httpx.Request(method, url)
+    return httpx.Response(
+        200,
+        request=request,
+        json={"ok": True, "url": url, "method": method, "timeout": timeout},
+    )
 
 
 def test_n8n_plugin(monkeypatch):

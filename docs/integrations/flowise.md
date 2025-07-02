@@ -67,4 +67,8 @@ Kompiliere das Skript zu JavaScript und registriere es über die Flowise-UI. So 
    optional weitere Parameter wie `taskType`, `path`, `method`, zusätzliche
    HTTP-Header oder ein eigenes Timeout.
 
+Die Flowise-UI nutzt den Plug-in-Manager, um die kompilierten JS-Dateien zu laden.
+Stelle deshalb sicher, dass `npm install` und `npx tsc` vor jeder Veröffentlichung
+ausgeführt wurden.
+
 Weitere Details enthält der [Integration Plan](full_integration_plan.md).

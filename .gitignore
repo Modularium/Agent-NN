@@ -22,5 +22,7 @@ keys/
 /frontend/node_modules/
 integrations/n8n-agentnn/node_modules/
 integrations/n8n-agentnn/dist/
+integrations/flowise-agentnn/node_modules/
+integrations/flowise-agentnn/dist/
 *.env
 frontend/agent-ui/dist/

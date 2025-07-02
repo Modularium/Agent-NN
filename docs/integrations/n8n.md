@@ -84,6 +84,8 @@ Der Aufruf gibt die Antwort des Workflows zurück.
 1. Navigiere in das Verzeichnis `integrations/n8n-agentnn`.
 2. Führe `npm install` aus und kompiliere den TypeScript-Code mit `npx tsc`.
 3. Kopiere die erzeugten Dateien aus `dist/` in den `~/.n8n/custom` Ordner deiner n8n-Installation.
-4. Starte n8n neu, um den Node nutzen zu können. In den Node-Einstellungen lassen sich `taskType`, `method`, Header und Timeout konfigurieren.
+4. Starte n8n neu, damit der PluginManager das kompilerte JavaScript laden kann. In den Node-Einstellungen lassen sich `taskType`, `path`, `method`, Header und Timeout konfigurieren.
+
+Vor einer Veröffentlichung muss der Node immer nach `dist/` kompiliert werden. Der PluginManager lädt ausschließlich die JavaScript-Dateien.
 
 Weitere Hinweise zur Konfiguration findest du im [Integration Plan](full_integration_plan.md).

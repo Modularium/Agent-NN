@@ -10,6 +10,29 @@ Ein Beispiel befindet sich unter `integrations/n8n-agentnn/AgentNN.node.ts`. Der
 
 ```ts
 import { IExecuteFunctions } from 'n8n-core';
+import { IDataObject } from 'n8n-workflow';
+import axios from 'axios';
+
+export async function execute(this: IExecuteFunctions): Promise<IDataObject[]> {
+  const endpoint = this.getNodeParameter('endpoint') as string;
+  const taskType = this.getNodeParameter('taskType') as string;
+  const payload = this.getNodeParameter('payload') as IDataObject;
+  const headers = (this.getNodeParameter('headers', 0, {}) as IDataObject) || {};
+  const method = (this.getNodeParameter('method', 0, 'POST') as string).toUpperCase();
+  const timeout = this.getNodeParameter('timeout', 0, 10000) as number;
+
+  const { data } = await axios.request({
+    url: `${endpoint}/task`,
+    method,
+    data: {
+      task_type: taskType,
+      input: payload,
+    },
+    headers,
+    timeout,
+  });
+
+  return [data as IDataObject];
 import {
   IDataObject,
   INodeExecutionData,
@@ -108,7 +131,8 @@ Dabei können optionale Parameter wie `path`, `method`, `headers` und `timeout` 
 
 ## Agent‑NN ruft n8n Workflows auf
 
-Das Python‑Plugin `n8n_workflow` erlaubt es, beliebige Webhook‑ oder REST‑Workflows anzusprechen. Neben der direkten Angabe eines `url`-Feldes kann auch ein `endpoint` mit separatem `path` genutzt werden. Zudem unterstützt es optionale Header und Payloads:
+Das Python‑Plugin `n8n_workflow` erlaubt es, beliebige Webhook‑ oder REST‑Workflows anzusprechen. Neben Headern und Payloads lassen sich auch die HTTP-Methode und ein Timeout definieren:
+
 
 ```python
 from plugins.n8n_workflow.plugin import Plugin
@@ -134,6 +158,6 @@ Der Aufruf gibt die Antwort des Workflows zurück.
 1. Navigiere in das Verzeichnis `integrations/n8n-agentnn`.
 2. Führe `npm install` aus und kompiliere den TypeScript-Code mit `npx tsc`.
 3. Kopiere die erzeugten Dateien aus `dist/` in den `~/.n8n/custom` Ordner deiner n8n-Installation.
-4. Starte n8n neu, um den Node nutzen zu können.
+4. Starte n8n neu, um den Node nutzen zu können. In den Node-Einstellungen lassen sich `taskType`, `method`, Header und Timeout konfigurieren.
 
 Weitere Hinweise zur Konfiguration findest du im [Integration Plan](full_integration_plan.md).

@@ -5,21 +5,21 @@ export default class AgentNN {
     private endpoint: string,
     private taskType = 'chat',
     private headers: Record<string, string> = {},
-    private timeout = 10000
+    private timeout = 10000,
+    private method: 'POST' | 'GET' | 'PUT' | 'DELETE' = 'POST'
   ) {}
 
   async run(payload: unknown): Promise<any> {
-    const { data } = await axios.post(
-      `${this.endpoint}/task`,
-      {
-        task_type: this.taskType,
-        input: payload,
-      },
-      {
-        headers: this.headers,
-        timeout: this.timeout,
-      }
-    );
+    const url = `${this.endpoint}/task`;
+    const body = { task_type: this.taskType, input: payload };
+    const response = await axios.request({
+      url,
+      method: this.method,
+      data: body,
+      headers: this.headers,
+      timeout: this.timeout,
+    });
+    const data = response.data;
     return data.result ?? data;
   }
 }

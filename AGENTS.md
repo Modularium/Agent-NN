@@ -142,6 +142,10 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Flowise-Export stabilisiert und Release 1.0.3 erstellt
 ### Fortschritt Phase 4.6
 - Lokaler Installationsworkflow mit `poetry install --no-root` dokumentiert
+### Fortschritt Phase 5.0
+- Planung erweiterter Lernmechanismen gestartet
+### Fortschritt Phase 6.0
+- Vorbereitungen für Skalierung und Federation eingeleitet
 ## Allgemeine Projekt-Richtlinien
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:
 

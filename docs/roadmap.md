@@ -1,6 +1,24 @@
 # Agent-NN Roadmap
 
-Dieses Dokument beschreibt empfohlene Weiterentwicklungen nach Version 1.0.0.
+Diese Datei fasst die wichtigsten Schritte der Entwicklungsplanung zusammen.
+Ausführliche To‑Do-Listen befinden sich in `ROADMAP.md`. Historische
+Notizen sind unter `Roadmap.md` archiviert.
+
+## Phase 1 – MCP-Grundlagen
+- Aufteilung des Monolithen in Microservices
+- Einführung des `ModelContext` und erster End‑to‑End-Test
+
+## Phase 2 – Lernmechanismen
+- Routing-Agent und Feedback-Schleife aktivieren
+- Provider-System mit dynamischer Modellwahl
+
+## Phase 3 – SDK & Frontend
+- Python‑SDK und CLI bereitstellen
+- Erste React-basierte Chat‑UI anbinden
+
+## Phase 4 – Stabilisierung
+- Vollständige Testabdeckung und Deployment‑Skripte
+- Betriebsmetriken und Audit‑Logs einführen
 
 ## Phase 5 – Erweiterte Lernmechanismen
 - Feinjustierung vorhandener Modelle via Reinforcement Learning und Few-Shot-Training.

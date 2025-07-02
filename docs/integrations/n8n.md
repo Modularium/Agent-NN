@@ -9,35 +9,13 @@ Die Workflow-Plattform [n8n](https://n8n.io/) kann Agent‑NN sowohl aufrufen al
 Ein Beispiel befindet sich unter `integrations/n8n-agentnn/AgentNN.node.ts`. Der Node leitet Aufgaben an den Dispatcher weiter. Der Kern sieht wie folgt aus:
 
 ```ts
-import { IExecuteFunctions } from 'n8n-core';
-import { IDataObject } from 'n8n-workflow';
-import axios from 'axios';
-
-export async function execute(this: IExecuteFunctions): Promise<IDataObject[]> {
-  const endpoint = this.getNodeParameter('endpoint') as string;
-  const taskType = this.getNodeParameter('taskType') as string;
-  const payload = this.getNodeParameter('payload') as IDataObject;
-  const headers = (this.getNodeParameter('headers', 0, {}) as IDataObject) || {};
-  const method = (this.getNodeParameter('method', 0, 'POST') as string).toUpperCase();
-  const timeout = this.getNodeParameter('timeout', 0, 10000) as number;
-
-  const { data } = await axios.request({
-    url: `${endpoint}/task`,
-    method,
-    data: {
-      task_type: taskType,
-      input: payload,
-    },
-    headers,
-    timeout,
-  });
-
-  return [data as IDataObject];
 import {
+  IExecuteFunctions,
   IDataObject,
   INodeExecutionData,
   INodeType,
   INodeTypeDescription,
+  NodeConnectionType,
 } from 'n8n-workflow';
 import axios, { AxiosRequestConfig } from 'axios';
 
@@ -47,80 +25,27 @@ export class AgentNN implements INodeType {
     name: 'agentnn',
     group: ['transform'],
     version: 1,
-    inputs: ['main'],
-    outputs: ['main'],
+    inputs: [NodeConnectionType.Main],
+    outputs: [NodeConnectionType.Main],
     properties: [
-      {
-        displayName: 'Endpoint',
-        name: 'endpoint',
-        type: 'string',
-        default: 'http://localhost:8000',
-      },
-      {
-        displayName: 'Task Type',
-        name: 'taskType',
-        type: 'string',
-        default: 'chat',
-      },
-      {
-        displayName: 'Payload',
-        name: 'payload',
-        type: 'json',
-        default: '{}',
-      },
-      {
-        displayName: 'Path',
-        name: 'path',
-        type: 'string',
-        default: '/task',
-      },
-      {
-        displayName: 'Method',
-        name: 'method',
-        type: 'options',
-        options: [
-          { name: 'POST', value: 'POST' },
-          { name: 'GET', value: 'GET' },
-        ],
-        default: 'POST',
-      },
-      {
-        displayName: 'Headers',
-        name: 'headers',
-        type: 'json',
-        default: '{}',
-      },
-      {
-        displayName: 'Timeout',
-        name: 'timeout',
-        type: 'number',
-        default: 10000,
-      },
+      { displayName: 'Endpoint', name: 'endpoint', type: 'string', default: 'http://localhost:8000' },
+      { displayName: 'Task Type', name: 'taskType', type: 'string', default: 'chat' },
+      { displayName: 'Payload', name: 'payload', type: 'json', default: '{}' },
     ],
   };
 
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-    const endpoint = this.getNodeParameter('endpoint') as string;
-    const taskType = this.getNodeParameter('taskType') as string;
-    const payload = this.getNodeParameter('payload') as IDataObject;
-    const path = this.getNodeParameter('path', 0, '/task') as string;
-    const method = (this.getNodeParameter('method', 0, 'POST') as string).toUpperCase();
-    const headers = (this.getNodeParameter('headers', 0, {}) as IDataObject) as Record<string, string>;
-    const timeout = this.getNodeParameter('timeout', 0, 10000) as number;
+    const endpoint = this.getNodeParameter('endpoint', 0) as unknown as string;
+    const taskType = this.getNodeParameter('taskType', 0) as unknown as string;
+    const payload = this.getNodeParameter('payload', 0) as unknown as IDataObject;
 
     const options: AxiosRequestConfig = {
-      method,
-      url: `${endpoint}${path}`,
-      data: {
-        task_type: taskType,
-        input: payload,
-      },
-      headers,
-      timeout,
+      method: 'POST',
+      url: `${endpoint}/task`,
+      data: { task_type: taskType, input: payload },
     };
 
     const { data } = await axios.request(options);
-
     return [[data as INodeExecutionData]];
   }
 }

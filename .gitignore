@@ -20,5 +20,7 @@ keys/
 *.tmp
 .ipynb_checkpoints/
 /frontend/node_modules/
+integrations/n8n-agentnn/node_modules/
+integrations/n8n-agentnn/dist/
 *.env
 frontend/agent-ui/dist/

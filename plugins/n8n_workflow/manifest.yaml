@@ -1,0 +1,3 @@
+name: n8n_workflow
+version: 0.1
+summary: Trigger workflows in n8n via HTTP requests

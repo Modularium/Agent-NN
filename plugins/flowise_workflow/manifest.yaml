@@ -1,0 +1,3 @@
+name: flowise_workflow
+version: 0.1
+summary: Invoke FlowiseAI chatflows via HTTP

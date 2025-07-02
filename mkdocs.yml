@@ -80,6 +80,7 @@ nav:
     - Smolitux UI: smolitux-ui-integration.md
     - n8n: integrations/n8n.md
     - FlowiseAI: integrations/flowise.md
+    - Full Integration Plan: integrations/full_integration_plan.md
   - API Reference:
     - Agents: api/agents.md
     - Managers: api/managers.md

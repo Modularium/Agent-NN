@@ -1,16 +1,45 @@
 # FlowiseAI Integration
 
-[FlowiseAI](https://flowiseai.com/) ermöglicht das visuelle Erstellen von LLM-Flows.
-Mit dem Plugin `flowise_workflow` lassen sich Chatflows per HTTP aus Agent-NN heraus
-aufrufen.
+[FlowiseAI](https://flowiseai.com/) bietet eine grafische Oberfläche zum Erstellen von Chatbot‑Flows. Agent‑NN lässt sich sowohl als Quelle für Antworten als auch als externer Aufrufer nutzen.
 
-## Beispiel
+## Agent‑NN als Flowise Komponente
+
+Eine Custom Component kann Anfragen an den Dispatcher schicken und die Antwort im Flow weiterverwenden. Das folgende TypeScript‑Fragment zeigt den Kern:
+
+```ts
+import axios from 'axios';
+
+export default class AgentNN {
+  constructor(private endpoint: string) {}
+
+  async run(question: string) {
+    const { data } = await axios.post(`${this.endpoint}/task`, {
+      task_type: 'chat',
+      input: question,
+    });
+    return data.result;
+  }
+}
+```
+
+Diese Komponente wird in Flowise eingebunden und erlaubt es, Benutzeranfragen direkt an Agent‑NN zu delegieren.
+
+## Flowise Workflows aus Agent‑NN anstoßen
+
+Das Plugin `flowise_workflow` ruft HTTP‑basierte Chatflows auf. Es akzeptiert optionale Header und einen Payload:
 
 ```python
 from plugins.flowise_workflow.plugin import Plugin
 
 plugin = Plugin()
-result = plugin.execute({"url": "http://localhost:3000/api/v1/predict", "payload": {"question": "Hi"}}, {})
+result = plugin.execute(
+    {
+        "url": "http://localhost:3000/api/v1/predict",
+        "payload": {"question": "Hi"},
+        "headers": {"Authorization": "Bearer token"},
+    },
+    {},
+)
 ```
 
-So kann ein Flowise-Chatbot direkt in Agent-NN Aufgaben bearbeiten.
+So kann ein Flowise‑Chatbot direkt in Agent‑NN Aufgaben bearbeiten oder Informationen abrufen.

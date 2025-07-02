@@ -1,4 +1,6 @@
-# Agent-NN ![Build](https://img.shields.io/badge/build-passing-brightgreen)
+# Agent-NN 
+
+![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
 Agent-NN ist ein Multi-Agent-System mit integrierten neuronalen Netzen. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen. Neben den Backend-Diensten stellt das Projekt ein Python‑SDK, eine CLI und ein React-basiertes Frontend bereit. Weitere Dokumentation befindet sich im Ordner [docs/](docs/).
 

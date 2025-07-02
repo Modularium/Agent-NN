@@ -50,3 +50,12 @@ result = plugin.execute(
 Der Aufruf gibt die Antwort des Workflows zurück.
 
 Über die optionalen Parameter `method` und `timeout` lassen sich HTTP-Methode und Zeitlimit anpassen.
+
+## Installation des Nodes
+
+1. Navigiere in das Verzeichnis `integrations/n8n-agentnn`.
+2. Führe `npm install` aus und kompiliere den TypeScript-Code mit `npx tsc`.
+3. Kopiere die erzeugten Dateien aus `dist/` in den `~/.n8n/custom` Ordner deiner n8n-Installation.
+4. Starte n8n neu, um den Node nutzen zu können.
+
+Weitere Hinweise zur Konfiguration findest du im [Integration Plan](full_integration_plan.md).

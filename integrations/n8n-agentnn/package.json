@@ -1,0 +1,12 @@
+{
+  "name": "agentnn-n8n-node",
+  "version": "0.1.0",
+  "main": "dist/AgentNN.node.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.0",
+    "axios": "^1.6.0"
+  }
+}

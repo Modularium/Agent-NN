@@ -397,6 +397,12 @@ Please provide an updated specification in JSON format."""
             config_file = self.config_dir / f"{spec.domain}_config.json"
             with open(config_file, 'w') as f:
                 json.dump(spec.__dict__, f, indent=2)
+
+            flowise_file = self.config_dir / f"{spec.domain}_flowise.json"
+            from utils.flowise import agent_config_to_flowise
+
+            with open(flowise_file, 'w') as f:
+                json.dump(agent_config_to_flowise(spec.__dict__), f, indent=2)
         except Exception as e:
             logger.error(f"Error saving configuration: {str(e)}")
             

@@ -407,3 +407,29 @@ class WorkerAgent(LoggerMixin):
         if self.communication_hub:
             await self.communication_hub.deregister_agent(self.name)
         self.save_nn()
+
+    def get_config(self) -> Dict[str, Any]:
+        """Return a minimal configuration of the agent."""
+        return {
+            "name": self.name,
+            "domain": self.name,
+            "tools": [tool.name for tool in self.tools],
+            "model_config": self.llm.get_config(),
+            "created_at": datetime.now().isoformat(),
+            "version": "1.0.0",
+        }
+
+    def get_status(self) -> Dict[str, Any]:
+        """Return basic runtime status."""
+        metrics = self.nn.get_metrics()
+        return {
+            "agent_id": self.name,
+            "name": self.name,
+            "domain": self.name,
+            "status": "active",
+            "capabilities": [],
+            "total_tasks": metrics.get("total_tasks", 0),
+            "success_rate": metrics.get("success_rate", 0.0),
+            "avg_response_time": metrics.get("avg_response_time", 0.0),
+            "last_active": datetime.now().isoformat(),
+        }

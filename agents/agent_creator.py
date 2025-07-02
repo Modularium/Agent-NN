@@ -550,6 +550,12 @@ Suggest improvements in JSON format with fields:
             file_path = self.config_dir / f"{config['name']}_config.json"
             with open(file_path, 'w') as f:
                 json.dump(config, f, indent=2)
+
+            flowise_path = self.config_dir / f"{config['name']}_flowise.json"
+            from utils.flowise import agent_config_to_flowise
+
+            with open(flowise_path, 'w') as f:
+                json.dump(agent_config_to_flowise(config), f, indent=2)
         except Exception as e:
             logger.error(f"Error saving config: {str(e)}")
             

@@ -171,15 +171,21 @@ class APIEndpoints(LoggerMixin):
             response_model=AgentStatus,
             dependencies=[Security(oauth2_scheme)]
         )
-        async def get_agent(agent_id: str):
-            """Get agent status."""
+        async def get_agent(agent_id: str, format: Optional[str] = None):
+            """Get agent status or Flowise-compatible definition."""
             try:
                 agent = await self.agent_manager.get_agent(agent_id)
                 if not agent:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail="Agent not found"
+                        detail="Agent not found",
                     )
+
+                if format == "flowise":
+                    from utils.flowise import agent_config_to_flowise
+
+                    return agent_config_to_flowise(agent.get_config())
+
                 return agent.get_status()
             except Exception as e:
                 self.log_error(e, {"agent_id": agent_id})

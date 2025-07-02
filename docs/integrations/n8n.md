@@ -1,31 +1,29 @@
 # n8n Integration
 
-Die Workflow-Plattform [n8n](https://n8n.io/) kann Agent‑NN sowohl aufrufen als auch von Agent‑NN aus gestartet werden.
+Die Workflow-Plattform [n8n](https://n8n.io/) kann Agent‑NN sowohl aufrufen als auch von Agent‑NN aus gestartet werden. Eigene Nodes erleichtern die Kommunikation.
 
 ## Agent‑NN von n8n aus nutzen
 
-Für eine enge Anbindung empfiehlt sich ein eigener Node. Das folgende Beispiel zeigt ein minimales TypeScript-Snippet:
+### Eigener Node
+
+Ein Beispiel befindet sich unter `integrations/n8n-agentnn/AgentNN.node.ts`. Der Node leitet Aufgaben an den Dispatcher weiter. Der Kern sieht wie folgt aus:
 
 ```ts
 import { IExecuteFunctions } from 'n8n-core';
 import { IDataObject } from 'n8n-workflow';
+import axios from 'axios';
 
 export async function execute(this: IExecuteFunctions): Promise<IDataObject[]> {
   const endpoint = this.getNodeParameter('endpoint') as string;
   const taskType = this.getNodeParameter('taskType') as string;
-  const payload = this.getNodeParameter('payload') as object;
+  const payload = this.getNodeParameter('payload') as IDataObject;
 
-  const response = await this.helpers.request({
-    method: 'POST',
-    uri: `${endpoint}/task`,
-    body: {
-      task_type: taskType,
-      input: payload,
-    },
-    json: true,
+  const { data } = await axios.post(`${endpoint}/task`, {
+    task_type: taskType,
+    input: payload,
   });
 
-  return [response as IDataObject];
+  return [data as IDataObject];
 }
 ```
 
@@ -50,3 +48,5 @@ result = plugin.execute(
 ```
 
 Der Aufruf gibt die Antwort des Workflows zurück.
+
+Über die optionalen Parameter `method` und `timeout` lassen sich HTTP-Methode und Zeitlimit anpassen.

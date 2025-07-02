@@ -4,7 +4,7 @@
 
 ## Agent‑NN als Flowise Komponente
 
-Eine Custom Component kann Anfragen an den Dispatcher schicken und die Antwort im Flow weiterverwenden. Das folgende TypeScript‑Fragment zeigt den Kern:
+Unter `integrations/flowise-agentnn` liegt eine Beispielkomponente `AgentNN.ts`. Sie sendet Fragen an den Dispatcher und gibt das Ergebnis zurück. Der Kern sieht so aus:
 
 ```ts
 import axios from 'axios';
@@ -42,4 +42,4 @@ result = plugin.execute(
 )
 ```
 
-So kann ein Flowise‑Chatbot direkt in Agent‑NN Aufgaben bearbeiten oder Informationen abrufen.
+Kompiliere das Skript zu JavaScript und registriere es über die Flowise-UI. So kann ein Flowise‑Chatbot direkt in Agent‑NN Aufgaben bearbeiten oder Informationen abrufen. Optional lassen sich `method` und `timeout` an den Pluginaufruf übergeben.

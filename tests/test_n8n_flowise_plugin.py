@@ -3,21 +3,21 @@ from plugins.n8n_workflow.plugin import Plugin as N8NPlugin
 from plugins.flowise_workflow.plugin import Plugin as FlowisePlugin
 
 
-def _fake_post(url: str, json=None, headers=None, timeout=10):
-    return httpx.Response(200, json={"ok": True, "url": url})
+def _fake_request(method: str, url: str, json=None, headers=None, timeout=10):
+    return httpx.Response(200, json={"ok": True, "url": url, "method": method, "timeout": timeout})
 
 
 def test_n8n_plugin(monkeypatch):
-    monkeypatch.setattr(httpx, "post", _fake_post)
+    monkeypatch.setattr(httpx, "request", _fake_request)
     plugin = N8NPlugin()
-    result = plugin.execute({"url": "http://n8n.local/webhook"}, {})
+    result = plugin.execute({"url": "http://n8n.local/webhook", "method": "POST", "timeout": 5}, {})
     assert result["status"] == "success"
-    assert result["data"] == {"ok": True, "url": "http://n8n.local/webhook"}
+    assert result["data"] == {"ok": True, "url": "http://n8n.local/webhook", "method": "POST", "timeout": 5}
 
 
 def test_flowise_plugin(monkeypatch):
-    monkeypatch.setattr(httpx, "post", _fake_post)
+    monkeypatch.setattr(httpx, "request", _fake_request)
     plugin = FlowisePlugin()
-    result = plugin.execute({"url": "http://flowise.local/api"}, {})
+    result = plugin.execute({"url": "http://flowise.local/api", "method": "POST"}, {})
     assert result["status"] == "success"
-    assert result["data"] == {"ok": True, "url": "http://flowise.local/api"}
+    assert result["data"] == {"ok": True, "url": "http://flowise.local/api", "method": "POST", "timeout": 10}

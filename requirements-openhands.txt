@@ -1,0 +1,7 @@
+aiohttp
+fastapi
+aioredis
+docker
+prometheus - client
+psutil
+PyJWT

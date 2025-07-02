@@ -1,6 +1,7 @@
 # Agent-NN Documentation
 
 Welcome to the Agent-NN documentation! This documentation will help you understand and use our multi-agent system with neural network-based task routing.
+Current stable version: **v1.0.3**.
 
 ## Overview
 

@@ -2,6 +2,7 @@
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
 Agent-NN ist ein Multi-Agent-System mit integrierten neuronalen Netzen. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen. Neben den Backend-Diensten stellt das Projekt ein Python‑SDK, eine CLI und ein React-basiertes Frontend bereit. Weitere Dokumentation befindet sich im Ordner [docs/](docs/).
+Aktuelle Version: **v1.0.3** – Flowise-Export und Dokumentation aktualisiert.
 
 ## Systemvoraussetzungen
 
@@ -12,8 +13,8 @@ Agent-NN ist ein Multi-Agent-System mit integrierten neuronalen Netzen. Jeder Se
 
 ```mermaid
 graph TD
-    U[User/CLI] --> G[API-Gateway]
-    G --> D[Task-Dispatcher]
+    U[User/Web UI] --> G[API-Gateway]
+    G --> D[Task Dispatcher]
     D --> R[Agent Registry]
     D --> S[Session Manager]
     D --> W[Worker Services]
@@ -21,6 +22,8 @@ graph TD
     D --> L[LLM Gateway]
     W --> V
     W --> L
+    D --> M[Monitoring]
+    W --> M
 ```
 
 - **Task-Dispatcher** – Koordiniert eingehende Aufgaben.
@@ -28,6 +31,7 @@ graph TD
 - **Session Manager** – Speichert Kontexte in Redis.
 - **Vector Store** – Bietet Dokumentensuche für RAG.
 - **LLM Gateway** – Einheitliche Schnittstelle zu Sprachmodellen.
+- **Monitoring** – Prometheus sammelt Metriken aller Dienste.
 - **Worker Services** – Domänenspezifische Agenten.
 
 ## Schnellstart

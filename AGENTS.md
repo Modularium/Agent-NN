@@ -138,8 +138,11 @@ Sessions und Vektordaten bei Neustarts erhalten bleiben.
 - Deployment-Skripte und Dokumentation für Version 1.0.0 erstellt
 ### Fortschritt Phase 4.3
 - Betriebsmetriken, Audit-Logs und produktive Umgebungsdateien hinzugefügt
+### Fortschritt Phase 4.4
+- Flowise-Export stabilisiert und Release 1.0.3 erstellt
+### Fortschritt Phase 4.6
+- Lokaler Installationsworkflow mit `poetry install --no-root` dokumentiert
 ## Allgemeine Projekt-Richtlinien
-
 Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-Agenten, um qualitativ hochwertige Beiträge zu gewährleisten:
 
 - **Kenntnis der Codebase:** Der Agent soll vorhandenen Code wiederverwenden und verstehen, statt duplizieren. Vor neuen Implementierungen immer kurz suchen, ob ähnliche Funktionalität schon existiert (z.B. Utility-Funktionen, Basisklassen).  

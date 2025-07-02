@@ -26,7 +26,7 @@ Diese Komponente wird in Flowise eingebunden und erlaubt es, Benutzeranfragen di
 
 ## Flowise Workflows aus Agent‑NN anstoßen
 
-Das Plugin `flowise_workflow` ruft HTTP‑basierte Chatflows auf. Es akzeptiert optionale Header und einen Payload:
+Das Plugin `flowise_workflow` ruft HTTP‑basierte Chatflows auf. Neben dem direkten `url` kann auch hier ein `endpoint` plus `path` angegeben werden. Zusätzlich akzeptiert es optionale Header und einen Payload:
 
 ```python
 from plugins.flowise_workflow.plugin import Plugin
@@ -34,7 +34,8 @@ from plugins.flowise_workflow.plugin import Plugin
 plugin = Plugin()
 result = plugin.execute(
     {
-        "url": "http://localhost:3000/api/v1/predict",
+        "endpoint": "http://localhost:3000",
+        "path": "/api/v1/predict",
         "payload": {"question": "Hi"},
         "headers": {"Authorization": "Bearer token"},
     },

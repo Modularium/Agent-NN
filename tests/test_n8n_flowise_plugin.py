@@ -10,7 +10,7 @@ def _fake_request(method: str, url: str, json=None, headers=None, timeout=10):
 def test_n8n_plugin(monkeypatch):
     monkeypatch.setattr(httpx, "request", _fake_request)
     plugin = N8NPlugin()
-    result = plugin.execute({"url": "http://n8n.local/webhook", "method": "POST", "timeout": 5}, {})
+    result = plugin.execute({"endpoint": "http://n8n.local", "path": "/webhook", "method": "POST", "timeout": 5}, {})
     assert result["status"] == "success"
     assert result["data"] == {"ok": True, "url": "http://n8n.local/webhook", "method": "POST", "timeout": 5}
 
@@ -18,6 +18,6 @@ def test_n8n_plugin(monkeypatch):
 def test_flowise_plugin(monkeypatch):
     monkeypatch.setattr(httpx, "request", _fake_request)
     plugin = FlowisePlugin()
-    result = plugin.execute({"url": "http://flowise.local/api", "method": "POST"}, {})
+    result = plugin.execute({"endpoint": "http://flowise.local", "path": "/api", "method": "POST"}, {})
     assert result["status"] == "success"
     assert result["data"] == {"ok": True, "url": "http://flowise.local/api", "method": "POST", "timeout": 10}

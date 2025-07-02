@@ -2,6 +2,12 @@ name: n8n_workflow
 version: 0.1
 summary: Trigger workflows in n8n via HTTP requests
 fields:
+  endpoint:
+    type: string
+    description: Base URL of the n8n instance
+  path:
+    type: string
+    description: Request path appended to the endpoint
   url:
     type: string
     description: Endpoint of the n8n webhook or REST workflow

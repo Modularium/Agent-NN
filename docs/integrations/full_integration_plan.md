@@ -10,7 +10,7 @@ Dieser Plan beschreibt die nötigen Schritte, um Agent‑NN in beide Richtungen 
 
 ## 2. n8n Node für Agent‑NN
 
-1. Neues Paket unter `integrations/n8n-agentnn` mit TypeScript-Quellcode anlegen.
+1. Neues Paket unter `integrations/n8n-agentnn` mit TypeScript-Quellcode anlegen (bereits im Repository enthalten).
 2. Implementation eines `AgentNN` Nodes, der folgende Parameter besitzt:
    - `endpoint`: Basis-URL des API-Gateways
    - `task_type`: Art der Aufgabe (z. B. `chat`)
@@ -20,14 +20,14 @@ Dieser Plan beschreibt die nötigen Schritte, um Agent‑NN in beide Richtungen 
 
 ## 3. FlowiseAI Komponente
 
-1. Neues Modul `integrations/flowise-agentnn` mit einem Custom Component Script (`AgentNN.ts`).
+1. Neues Modul `integrations/flowise-agentnn` mit einem Custom Component Script (`AgentNN.ts`) (bereits im Repository enthalten).
 2. Das Script erlaubt die Konfiguration der Agent‑NN URL und weiterer Parameter.
 3. Eingehende Prompts werden an Agent‑NN weitergeleitet; die Antwort des Dispatchers wird als Chatbot-Antwort ausgegeben.
 4. Bereitstellung über das Flowise Plugin System.
 
 ## 4. Verbesserte Plugins in Agent‑NN
 
-- Erweiterung der Plugins `n8n_workflow` und `flowise_workflow` um optionale Auth‑Header sowie konfigurierbare Timeouts.
+- Erweiterung der Plugins `n8n_workflow` und `flowise_workflow` um optionale Auth‑Header, frei wählbare HTTP-Methoden sowie konfigurierbare Timeouts.
 - Dokumentation aller Felder in den Plugin-Manifests.
 - Beispielskript `run_plugin_task.py` aktualisieren, um beide Plugins komfortabel testen zu können.
 

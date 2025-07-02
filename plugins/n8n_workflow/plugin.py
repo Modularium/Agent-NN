@@ -4,16 +4,18 @@ from plugins import ToolPlugin
 
 
 class Plugin(ToolPlugin):
-    """Trigger an n8n workflow via HTTP POST."""
+    """Trigger an n8n workflow via HTTP request."""
 
     def execute(self, input: dict, context: dict) -> dict:
         url = input.get("url")
         payload = input.get("payload", {})
         headers = input.get("headers", {})
+        method = input.get("method", "POST").upper()
+        timeout = input.get("timeout", 10)
         if not url:
             return {"error": "no url provided"}
         try:
-            resp = httpx.post(url, json=payload, headers=headers, timeout=10)
+            resp = httpx.request(method, url, json=payload, headers=headers, timeout=timeout)
             resp.raise_for_status()
             try:
                 data = resp.json()

@@ -3,6 +3,25 @@
 
 Wir erstellen einen Flowise-Workflow, der 10 lokal laufende OpenHands-Agenten (Ports 3001–3010) als Spezialisten (“Frontend”, “Backend”, “Dokumentation” etc.) ansteuert. Flowise selbst ist ein Open-Source Low‑Code-Werkzeug, mit dem man KI-Workflows visuell zusammenstellen kann. OpenHands ist ein Open-Source-Agentensystem, das Entwickleraufgaben per natürlicher Sprache ausführt. Im Flowise-Flow richten wir folgende Komponenten ein:
 
+## Setup
+
+1. Stelle sicher, dass Python 3.10, Docker und Redis installiert sind.
+2. Installiere die Basis-Abhängigkeiten mit
+
+   ```bash
+   pip install -r requirements.txt
+   ./install_openhands_deps.sh  # optional
+   ```
+
+   Alternativ kann `pip install -r requirements-openhands.txt` ausgeführt werden.
+
+3. Starte alle OpenHands-Agenten (Standardports 3001‑3010) und Flowise.
+
+In Test- oder CI-Umgebungen ohne Docker kann der OpenHands-API-Server durch
+`tests/mocks/fake_openhands.py` simuliert werden. Die zugehörigen Tests
+überspringen fehlende Abhängigkeiten automatisch.
+
+
 * **User-Input-Node:** Ein Texteingabe-Node (“User Prompt”), in dem der Nutzer die Aufgabenbeschreibung eingibt (z.B. „Implementiere ein Login-Formular in React“). Dieser Text wird als Variable im Flow gespeichert (z.B. in `state.user_task`).
 
 * **Auswahl-Node (Dropdown/Checkbox):** Ein Auswahl- bzw. Switch-Node, mit dem der Nutzer eine oder mehrere Ziel-Instanzen auswählt (z.B. „Frontend“, „Backend“, „Dokumentation“). Dies kann über ein Dropdown oder Kontrollkästchen realisiert werden. Die Auswahl wird in einer State-Variable (z.B. `state.selected_agents`) festgehalten.

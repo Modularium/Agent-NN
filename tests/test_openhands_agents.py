@@ -1,8 +1,12 @@
-import unittest
-from unittest.mock import patch, AsyncMock
 import asyncio
 import sys
 import types
+import unittest
+from unittest.mock import AsyncMock, patch
+
+import pytest
+
+pytest.importorskip("aiohttp", reason="aiohttp not installed")
 
 module_mlflow = types.ModuleType("mlflow")
 setattr(module_mlflow, "active_run", lambda: None)
@@ -44,8 +48,8 @@ setattr(sys.modules["langchain_core.outputs"], "LLMResult", object)
 setattr(sys.modules["langchain_core.outputs"], "Generation", object)
 
 from agents.openhands.base_openhands_agent import OpenHandsAgent
-from agents.openhands.docker_agent import DockerAgent
 from agents.openhands.compose_agent import DockerComposeAgent
+from agents.openhands.docker_agent import DockerAgent
 
 
 class TestOpenHandsAgent(unittest.TestCase):

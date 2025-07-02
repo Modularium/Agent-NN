@@ -16,10 +16,13 @@ import typer
 def _handle_http_error(err: httpx.HTTPStatusError) -> None:
     """Show a friendly message for HTTP errors."""
     if err.response.status_code == 401:
-        typer.secho("\u26d4 Nicht autorisiert – überprüfe deinen API-Key", fg=typer.colors.RED)
+        typer.secho(
+            "\u26d4 Nicht autorisiert – überprüfe deinen API-Key", fg=typer.colors.RED
+        )
     else:
         typer.secho(f"HTTP Error: {err.response.status_code}", fg=typer.colors.RED)
     raise typer.Exit(1)
+
 
 from core.access_control import is_authorized
 from core.agent_evolution import evolve_profile
@@ -63,6 +66,7 @@ mission_app = typer.Typer(name="mission", help="Mission management")
 rep_app = typer.Typer(name="rep", help="Reputation utilities")
 delegate_app = typer.Typer(name="delegate", help="Delegation management")
 feedback_app = typer.Typer(name="feedback", help="Feedback utilities")
+openhands_app = typer.Typer(name="openhands", help="OpenHands agent utilities")
 app.add_typer(agent_app)
 app.add_typer(team_app)
 app.add_typer(model_app)
@@ -83,6 +87,7 @@ app.add_typer(mission_app)
 app.add_typer(rep_app)
 app.add_typer(delegate_app)
 app.add_typer(feedback_app)
+app.add_typer(openhands_app)
 
 agent_app.add_typer(agent_contract_app)
 
@@ -1091,6 +1096,49 @@ def feedback_log(agent: str) -> None:
 
     entries = load_feedback(agent)
     typer.echo(json.dumps([asdict(e) for e in entries], indent=2))
+
+
+@openhands_app.command("list")
+def openhands_list() -> None:
+    """List registered OpenHands agents."""
+    ports_env = os.getenv("OPENHANDS_AGENT_PORTS", "3001-3010")
+    if "-" in ports_env:
+        start, end = [int(p) for p in ports_env.split("-")]
+        ports = list(range(start, end + 1))
+    else:
+        ports = [int(p) for p in ports_env.split(",") if p]
+    agents = [
+        {"name": f"openhands_{i}", "url": f"http://localhost:{p}", "port": p}
+        for i, p in enumerate(ports, start=1)
+    ]
+    typer.echo(json.dumps({"agents": agents}, indent=2))
+
+
+@openhands_app.command("trigger")
+def openhands_trigger(task: str, agents: str = "all") -> None:
+    """Trigger a task on one or multiple OpenHands agents."""
+    ports_env = os.getenv("OPENHANDS_AGENT_PORTS", "3001-3010")
+    if "-" in ports_env:
+        start, end = [int(p) for p in ports_env.split("-")]
+        ports = list(range(start, end + 1))
+    else:
+        ports = [int(p) for p in ports_env.split(",") if p]
+    selected = (
+        ports if agents == "all" else [ports[int(a) - 1] for a in agents.split(",")]
+    )
+    results = {}
+    for port in selected:
+        try:
+            resp = httpx.post(
+                f"http://localhost:{port}/api/conversations",
+                json={"initial_user_msg": task},
+                timeout=5,
+            )
+            resp.raise_for_status()
+            results[port] = resp.json()
+        except Exception as exc:  # pragma: no cover - network
+            results[port] = {"error": str(exc)}
+    typer.echo(json.dumps(results, indent=2))
 
 
 def main() -> None:

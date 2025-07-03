@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 from datetime import datetime
+from pathlib import Path
 
 import typer
 import httpx
@@ -169,6 +171,34 @@ def verify_ctx(context_json: str) -> None:
     else:
         valid = False
     typer.echo(json.dumps({"valid": valid}))
+
+
+@app.command("reset")
+def reset(
+    confirm: bool = typer.Option(
+        False, "--confirm", "-y", help="confirm deletion of local data"
+    )
+) -> None:
+    """Delete session history and user configuration."""
+    if not confirm:
+        typer.secho(
+            "Add --confirm to delete session and user data", fg=typer.colors.RED
+        )
+        raise typer.Exit(1)
+    paths = [
+        Path(os.getenv("CONTEXT_DB_PATH", "data/context.db")),
+        Path(os.getenv("SNAPSHOT_PATH", "data/snapshots")),
+        Path.home() / ".agentnn",
+    ]
+    for path in paths:
+        if path.is_file():
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                pass
+        elif path.is_dir():
+            shutil.rmtree(path, ignore_errors=True)
+    typer.echo("reset complete")
 
 
 @app.command("promote")

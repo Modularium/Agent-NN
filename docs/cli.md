@@ -15,6 +15,7 @@ Install the project and run `agentnn --help` to see available commands.
 | `prompt` | refine prompts and check quality |
 | `config` | show effective configuration |
 | `governance` | governance and trust utilities |
+| `reset` | remove session history and user data |
 
 ## Examples
 
@@ -99,6 +100,12 @@ Quickstart-Kürzel kombinieren Konfiguration und Vorlagen:
 agentnn quickstart agent --name Demo --role planner
 agentnn quickstart session --template demo_session.yaml
 ```
+
+## Resetting local data
+
+Mit `agentnn reset --confirm` werden die lokale Kontextdatenbank,
+gespeicherte Snapshots und das Verzeichnis `~/.agentnn` entfernt.
+Nutze diesen Befehl, um deine Umgebung komplett zurückzusetzen.
 
 ## Intelligente Templates & Automatisierung
 

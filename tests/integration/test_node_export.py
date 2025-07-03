@@ -25,3 +25,7 @@ def test_generate_flowise_nodes(tmp_path):
     data = json.loads(node_path.read_text())
     assert data["name"] == "EchoNode"
     assert (outdir / "EchoNode.ts").exists()
+    assert data["icon"] == "user"
+    assert data["color"] == "#2375ec"
+    assert data["category"] == "Agent-NN"
+    assert data["tooltip"] == "Simple echo"

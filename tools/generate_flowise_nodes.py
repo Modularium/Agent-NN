@@ -86,6 +86,11 @@ def write_node(entry: Dict[str, Any], outdir: Path, ts: bool) -> None:
     outputs = entry.get("outputs") or [{"name": "result", "type": "object"}]
     path_val = entry.get("path", "/")
     method = entry.get("method", "GET")
+    icon = entry.get("icon", "user")
+    color = entry.get("color", "#2375ec")
+    category = entry.get("category", "Agent-NN")
+    tooltip = entry.get("tooltip", description)
+    doc_url = entry.get("documentationURL")
 
     if isinstance(inputs, str):
         inputs = to_python(inputs)
@@ -93,7 +98,18 @@ def write_node(entry: Dict[str, Any], outdir: Path, ts: bool) -> None:
         outputs = to_python(outputs)
     if not isinstance(inputs, list):
         inputs = []
-    node = {"name": name, "description": description, "inputs": inputs, "outputs": outputs}
+    node = {
+        "name": name,
+        "description": description,
+        "inputs": inputs,
+        "outputs": outputs,
+        "icon": icon,
+        "color": color,
+        "category": category,
+        "tooltip": tooltip,
+    }
+    if doc_url:
+        node["documentationURL"] = doc_url
     outdir.mkdir(parents=True, exist_ok=True)
     node_file = outdir / f"{name}.node.json"
     node_file.write_text(json.dumps(node, indent=2))

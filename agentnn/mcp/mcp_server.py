@@ -8,6 +8,7 @@ from fastapi import APIRouter, FastAPI
 from api_gateway.connectors import ServiceConnector
 from ..storage import context_store
 from ..session.session_manager import SessionManager
+from .mcp_ws import ws_server
 from core.model_context import ModelContext
 from core.run_service import run_service
 
@@ -91,6 +92,7 @@ def create_app() -> FastAPI:
 
     app = FastAPI(title="Agent-NN MCP Server")
     app.include_router(router)
+    app.include_router(ws_server.router)
     return app
 
 

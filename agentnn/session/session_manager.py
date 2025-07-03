@@ -7,6 +7,7 @@ import uuid
 
 from core.model_context import ModelContext, TaskContext
 from ..mcp.mcp_client import MCPClient
+from ..mcp.mcp_ws import ws_server
 
 
 class SessionManager:
@@ -20,6 +21,11 @@ class SessionManager:
         """Return a new session id."""
         sid = str(uuid.uuid4())
         self._sessions[sid] = {"linked_agents": [], "message_history": []}
+        try:
+            # broadcast creation event
+            ws_server.broadcast({"event": "session_created", "session_id": sid})
+        except Exception:
+            pass
         return sid
 
     def add_agent(self, session_id: str, agent_id: str) -> None:
@@ -28,6 +34,12 @@ class SessionManager:
             session_id, {"linked_agents": [], "message_history": []}
         )
         session["linked_agents"].append(agent_id)
+        try:
+            ws_server.broadcast(
+                {"event": "agent_added", "session_id": session_id, "agent": agent_id}
+            )
+        except Exception:
+            pass
 
     def run_task(self, session_id: str, task: str) -> ModelContext:
         """Execute the task with all linked agents."""
@@ -45,6 +57,17 @@ class SessionManager:
             session["message_history"].append(
                 {"agent": agent, "task": task, "result": result_ctx.result}
             )
+            try:
+                ws_server.broadcast(
+                    {
+                        "event": "agent_result",
+                        "session_id": session_id,
+                        "agent": agent,
+                        "result": result_ctx.result,
+                    }
+                )
+            except Exception:
+                pass
         return result_ctx or ModelContext(task_context=TaskContext(task_type="chat", description=task))
 
     def get_session(self, session_id: str) -> Dict[str, Any] | None:

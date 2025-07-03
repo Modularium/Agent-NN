@@ -55,6 +55,7 @@ nav:
     - Architecture: concepts/architecture.md
     - Multi-Agent Execution: architecture/multi_agent.md
     - Voting Logic: architecture/voting_logic.md
+    - Context Reasoning: reasoning.md
     - Agents: concepts/agents.md
     - Neural Networks: concepts/neural-networks.md
     - Knowledge Base: concepts/knowledge-base.md
@@ -72,6 +73,7 @@ nav:
     - Evaluation: advanced/evaluation.md
     - Monitoring: advanced/monitoring.md
     - Scaling: advanced/scaling.md
+    - Real-time Events: realtime.md
     - Dynamic Roles: architecture/dynamic_roles.md
     - Reputation System: architecture/reputation_system.md
   - Use Cases:

@@ -80,6 +80,14 @@ def restore(snapshot_id: str) -> None:
     typer.echo(json.dumps({"session_id": sid}))
 
 
+@session_app.command("list")
+def session_list() -> None:
+    """List active sessions."""
+    client = AgentClient()
+    data = client.list_sessions()
+    typer.echo(json.dumps(data, indent=2))
+
+
 @session_app.command("budget")
 def session_budget(session_id: str) -> None:
     """Show consumed tokens for a session."""

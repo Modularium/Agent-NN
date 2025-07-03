@@ -6,12 +6,14 @@ from datetime import datetime
 from dataclasses import asdict
 import os
 from typing import List
+from pathlib import Path
 
 import typer
 import httpx
 
 from ..utils import handle_http_error
 from ..client import AgentClient
+from agentnn.deployment.agent_registry import AgentRegistry, load_agent_file
 from core.agent_profile import PROFILE_DIR, AgentIdentity
 from core.agent_evolution import evolve_profile
 from core.crypto import generate_keypair
@@ -46,12 +48,27 @@ def agents() -> None:
     typer.echo(json.dumps(result, indent=2))
 
 
+@agent_app.command("register")
+def agent_register(config: Path, endpoint: str = "http://localhost:8090") -> None:
+    """Register an agent configuration with the registry."""
+    data = load_agent_file(config)
+    registry = AgentRegistry(endpoint)
+    result = registry.deploy(data)
+    typer.echo(json.dumps(result, indent=2))
+
+
 @agent_app.command("profile")
 def agent_profile(name: str) -> None:
     """Show profile information for an agent."""
     client = AgentClient()
     result = client.get_agent_profile(name)
     typer.echo(json.dumps(result, indent=2))
+
+
+@agent_app.command("info")
+def agent_info(name: str) -> None:
+    """Alias for ``profile``."""
+    agent_profile(name)
 
 
 @agent_app.command("update")

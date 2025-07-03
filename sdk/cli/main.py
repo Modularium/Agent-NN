@@ -13,6 +13,7 @@ from .commands.governance import register as register_governance
 from .commands.agentctl import register as register_agentctl
 from .commands.dispatch import register as register_dispatch
 from .commands.context import context_app
+from .commands.prompt import prompt_app
 
 app = typer.Typer()
 
@@ -23,6 +24,7 @@ app.add_typer(root_app)
 app.add_typer(session_app, name="session")
 app.add_typer(agent_app, name="agent")
 app.add_typer(context_app, name="context")
+app.add_typer(prompt_app, name="prompt")
 register_tasks(app)
 register_model(app)
 register_config(app)

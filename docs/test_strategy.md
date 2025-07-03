@@ -22,3 +22,4 @@ runs only unit tests unless `--run-integration` is provided. This behavior is im
 Iteration 3 adds focused unit tests for the `AgentRegistryService` and its API routes. The tests verify
 metric counters, status handling and persistence of profile updates via the REST interface.
 Using `tmp_path` ensures profile files are isolated.
+An extra case validates that requesting an unknown agent increases the metrics counter and that the API responds with `404`.

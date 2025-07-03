@@ -11,6 +11,8 @@ from core.run_service import run_service
 
 DISPATCHER_URL = os.getenv("DISPATCHER_URL", "http://task_dispatcher:8000")
 SESSION_MANAGER_URL = os.getenv("SESSION_MANAGER_URL", "http://session_manager:8000")
+REGISTRY_URL = os.getenv("AGENT_REGISTRY_URL", "http://agent_registry:8001")
+TOOLS_URL = os.getenv("PLUGIN_AGENT_URL", "http://plugin_agent_service:8110")
 
 
 def create_app() -> FastAPI:
@@ -18,6 +20,8 @@ def create_app() -> FastAPI:
     router = APIRouter(prefix="/v1/mcp")
     dispatcher = ServiceConnector(DISPATCHER_URL)
     sessions = ServiceConnector(SESSION_MANAGER_URL)
+    registry = ServiceConnector(REGISTRY_URL)
+    tools = ServiceConnector(TOOLS_URL)
 
     @router.get("/ping")
     async def ping() -> dict:
@@ -27,14 +31,39 @@ def create_app() -> FastAPI:
     async def execute(ctx: ModelContext) -> ModelContext:
         return await dispatcher.post("/dispatch", ctx.model_dump())
 
+    @router.post("/task/execute", response_model=ModelContext)
+    async def execute_task(ctx: ModelContext) -> ModelContext:
+        """Alias for :func:`execute`."""
+        return await execute(ctx)
+
     @router.post("/context")
     async def update_context(ctx: ModelContext) -> dict:
         await sessions.post("/update_context", ctx.model_dump())
         return {"status": "ok"}
 
+    @router.post("/context/save")
+    async def save_context(ctx: ModelContext) -> dict:
+        """Alias for :func:`update_context`."""
+        return await update_context(ctx)
+
     @router.get("/context/{sid}")
     async def get_context(sid: str) -> dict:
         return await sessions.get(f"/context/{sid}")
+
+    @router.get("/context/get/{sid}")
+    async def get_context_alt(sid: str) -> dict:
+        """Alias for :func:`get_context`."""
+        return await get_context(sid)
+
+    @router.post("/agent/create")
+    async def create_agent(agent: dict) -> dict:
+        """Register a new agent in the registry service."""
+        return await registry.post("/register", agent)
+
+    @router.post("/tool/use")
+    async def use_tool(payload: dict) -> dict:
+        """Execute a tool via the plugin agent service."""
+        return await tools.post("/execute_tool", payload)
 
     app = FastAPI(title="Agent-NN MCP Server")
     app.include_router(router)

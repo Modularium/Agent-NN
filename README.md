@@ -200,7 +200,14 @@ curl http://localhost:8000/agents/demo?format=flowise
 
 ## MCP Server
 
-Der integrierte MCP-Server stellt unter `/v1/mcp/*` eine kompatible Schnittstelle für externe Dienste bereit. Die Python-Klasse `agentnn.mcp.MCPClient` ermöglicht das Senden von Aufgaben und Kontextdaten. Weitere Informationen finden sich in [docs/mcp.md](docs/mcp.md).
+Der integrierte MCP-Server stellt unter `/v1/mcp/*` eine kompatible Schnittstelle für externe Dienste bereit. Die Python-Klasse `agentnn.mcp.MCPClient` ermöglicht das Senden von Aufgaben und Kontextdaten. Weitere Informationen finden sich in [docs/mcp.md](docs/mcp.md). Wichtige Endpunkte:
+
+- `POST /v1/mcp/execute` – Dispatch von Aufgaben
+- `POST /v1/mcp/task/execute` – Alias zu `/execute`
+- `POST /v1/mcp/agent/create` – Registrierung neuer Agenten
+- `POST /v1/mcp/tool/use` – Aufruf eines Plugin-Tools
+- `POST /v1/mcp/context` – Kontext speichern
+- `GET /v1/mcp/context/{session_id}` – Kontext abrufen
 
 
 ## Tests & Beiträge

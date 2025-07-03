@@ -7,6 +7,7 @@ import typer
 
 from .formatting import print_success, print_error, print_output
 from .io import load_yaml, write_json, ensure_parent
+from .history import log_entry
 
 
 def handle_http_error(err: httpx.HTTPStatusError) -> None:
@@ -40,4 +41,5 @@ __all__ = [
     "load_yaml",
     "write_json",
     "ensure_parent",
+    "log_entry",
 ]

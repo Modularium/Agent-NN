@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["id", "role"],
+  "properties": {
+    "id": {"type": "string"},
+    "role": {"type": "string"},
+    "description": {"type": "string"},
+    "tools": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

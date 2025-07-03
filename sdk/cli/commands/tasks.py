@@ -4,10 +4,9 @@ from __future__ import annotations
 import json
 
 import typer
-import httpx
 
 from ..client import AgentClient
-from core.role_capabilities import apply_role_capabilities, ROLE_CAPABILITIES
+from core.role_capabilities import apply_role_capabilities
 from core.model_context import ModelContext, TaskContext
 
 queue_app = typer.Typer(name="queue", help="Queue management")

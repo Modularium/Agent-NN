@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from dataclasses import asdict
-from pathlib import Path
+import os
 from typing import List
 
 import typer
@@ -17,7 +17,7 @@ from core.agent_evolution import evolve_profile
 from core.crypto import generate_keypair
 from core.governance import AgentContract
 from core.level_evaluator import check_level_up
-from core.reputation import AgentRating, aggregate_score
+from core.reputation import aggregate_score
 from core.audit_log import AuditEntry, AuditLog
 from core.skills import load_skill
 from core.trust_evaluator import eligible_for_role

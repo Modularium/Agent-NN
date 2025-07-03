@@ -13,7 +13,7 @@ from ..client import AgentClient
 from ..utils import handle_http_error
 from core.audit_log import AuditEntry, AuditLog
 from core.crypto import verify_signature
-from core.model_context import ModelContext, TaskContext
+from core.model_context import ModelContext
 from core.reputation import AgentRating, save_rating, update_reputation
 
 app = typer.Typer(add_completion=False)

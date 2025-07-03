@@ -56,6 +56,7 @@ nav:
     - Multi-Agent Execution: architecture/multi_agent.md
     - Voting Logic: architecture/voting_logic.md
     - Context Reasoning: reasoning.md
+    - Prompt Refinement: prompting.md
     - Agents: concepts/agents.md
     - Neural Networks: concepts/neural-networks.md
     - Knowledge Base: concepts/knowledge-base.md
@@ -75,6 +76,7 @@ nav:
     - Scaling: advanced/scaling.md
     - Real-time Events: realtime.md
     - Dynamic Roles: architecture/dynamic_roles.md
+    - Shared Context Map: context_map.md
     - Reputation System: architecture/reputation_system.md
   - Use Cases:
     - Multi-Agent RAG: use-cases/multi-agent.md

@@ -7,6 +7,7 @@ from fastapi import APIRouter, FastAPI
 
 from api_gateway.connectors import ServiceConnector
 from ..storage import context_store
+from ..context import generate_map
 from ..session.session_manager import SessionManager
 from .mcp_ws import ws_server
 from core.model_context import ModelContext
@@ -58,6 +59,10 @@ def create_app() -> FastAPI:
     @router.get("/context/history")
     async def list_contexts_route() -> dict:
         return {"sessions": context_store.list_contexts()}
+
+    @router.get("/context/map")
+    async def context_map_route() -> dict:
+        return generate_map()
 
     @router.get("/context/{sid}")
     async def get_context(sid: str) -> dict:

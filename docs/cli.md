@@ -1,13 +1,15 @@
-# Session Runner CLI
+# AgentNN CLI
 
-All session commands are now available via the unified SDK CLI:
+The command line interface is now fully modular. Each logical group of features
+is implemented as a subcommand under `sdk.cli.commands`.
 
-```
+Common examples:
+
+```bash
 python -m sdk.cli session start examples/three_agent_chain.yaml
-python -m sdk.cli session watch <session_id>
-python -m sdk.cli session vote <session_id> --roles critic,reviewer
-python -m sdk.cli session snapshot <session_id>
+python -m sdk.cli agent list
+python -m sdk.cli model list
 ```
 
-Sessions defined in a YAML template consist of an `agents` list and a sequence of
-`tasks`. The tool prints results as JSON for easy scripting.
+Session templates consist of an `agents` list and a sequence of `tasks`.
+The tool prints results as JSON for easy scripting.

@@ -87,3 +87,5 @@ def session_budget(session_id: str) -> None:
     for ctx in data.get("context", []):
         tokens += int(ctx.get("metrics", {}).get("tokens_used", 0))
     typer.echo(json.dumps({"session_id": session_id, "tokens_used": tokens}))
+
+__all__ = ["session_app"]

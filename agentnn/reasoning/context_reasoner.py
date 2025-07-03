@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
+from .tool_vote import BestToolSelector, ToolResult
+
 
 @dataclass
 class ReasoningStep:
@@ -41,3 +43,33 @@ class MajorityVoteReasoner(ContextReasoner):
             weight = step.score if step.score is not None else 1.0
             tally[step.result] = tally.get(step.result, 0.0) + weight
         return max(tally.items(), key=lambda item: item[1])[0]
+
+
+class ToolMajorityReasoner(ContextReasoner):
+    """Evaluate tool results using majority vote on aggregated metrics."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.tool_vote = BestToolSelector()
+
+    def add_tool_result(
+        self,
+        tool: str,
+        output: Any,
+        *,
+        confidence: float | None = None,
+        relevance: float | None = None,
+        consistency: float | None = None,
+    ) -> None:
+        """Register a tool result for later evaluation."""
+        self.tool_vote.add_result(
+            tool,
+            output,
+            confidence=confidence,
+            relevance=relevance,
+            consistency=consistency,
+        )
+
+    def decide(self) -> Any:
+        result = self.tool_vote.decide()
+        return result.output if result else None

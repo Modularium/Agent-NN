@@ -64,6 +64,7 @@ nav:
     - Neural Models: components/neural-models.md
     - Vector Store: components/vector-store.md
     - MCP Server: mcp.md
+    - Session Management: sessions.md
     - Federation Manager: architecture/federation.md
   - Advanced Features:
     - Security: security/authentication.md
@@ -83,6 +84,7 @@ nav:
     - Smolitux UI: smolitux-ui-integration.md
     - n8n: integrations/n8n.md
     - FlowiseAI: integrations/flowise.md
+    - LangChain Bridge: integrations/langchain_bridge.md
     - OpenHands Workflows: integrations/openhands_workflows.md
     - Full Integration Plan: integrations/full_integration_plan.md
   - API Reference:

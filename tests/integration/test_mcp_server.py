@@ -20,6 +20,10 @@ class DummyConnector:
         return {"path": path, "context": []}
 
 
+import pytest
+
+
+@pytest.mark.unit
 def test_execute_roundtrip(monkeypatch):
     monkeypatch.setattr(mcp_server, "ServiceConnector", DummyConnector)
     app = mcp_server.create_app()
@@ -38,3 +42,35 @@ def test_execute_roundtrip(monkeypatch):
     resp = client.get("/v1/mcp/context/123")
     assert resp.status_code == 200
     assert resp.json()["path"] == "/context/123"
+
+
+@pytest.mark.unit
+def test_extended_routes(monkeypatch):
+    monkeypatch.setattr(mcp_server, "ServiceConnector", DummyConnector)
+    app = mcp_server.create_app()
+    client = TestClient(app)
+
+    ctx = {"task": "demo"}
+    resp = client.post("/v1/mcp/task/execute", json=ctx)
+    assert resp.status_code == 200
+    assert resp.json()["echo"] == "/dispatch"
+
+    resp = client.post("/v1/mcp/context/save", json=ctx)
+    assert resp.status_code == 200
+
+    resp = client.get("/v1/mcp/context/get/42")
+    assert resp.status_code == 200
+    assert resp.json()["path"] == "/context/42"
+
+    resp = client.post("/v1/mcp/agent/create", json={"name": "demo"})
+    assert resp.status_code == 200
+    assert resp.json()["echo"] == "/register"
+
+    resp = client.post(
+        "/v1/mcp/tool/use",
+        json={"tool_name": "t", "input": {}, "context": {}},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["echo"] == "/execute_tool"
+
+

@@ -31,3 +31,9 @@ simulate a failing worker, verify the returned status for agents without any
 history and assert that `_update_model` receives the correct success score for
 both successful and failed executions. Dummy manager classes keep these tests
 independent from the rest of the system.
+
+## Fehlertests / Resilienz
+
+Iteration 4 focuses on failure scenarios for the plugin agent service. Tests
+cover unknown tool names and invalid plugin inputs so that the service returns
+informative error messages instead of raising exceptions.

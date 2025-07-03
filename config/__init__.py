@@ -1,4 +1,5 @@
 import os
+from core.config import settings
 
 # Global configuration variables
 VECTOR_DB_PATH = os.getenv("VECTOR_DB_PATH", "data/vectorstore")
@@ -10,3 +11,6 @@ os.makedirs(MODELS_DIR, exist_ok=True)
 
 # Create vector store directory if it doesn't exist
 os.makedirs(VECTOR_DB_PATH, exist_ok=True)
+
+# expose LLM_BACKEND for backward compatibility
+LLM_BACKEND = settings.LLM_BACKEND

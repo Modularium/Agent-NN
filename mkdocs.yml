@@ -63,6 +63,7 @@ nav:
     - Worker Agents: components/worker-agents.md
     - Neural Models: components/neural-models.md
     - Vector Store: components/vector-store.md
+    - MCP Server: mcp.md
     - Federation Manager: architecture/federation.md
   - Advanced Features:
     - Security: advanced/security.md

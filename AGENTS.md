@@ -157,6 +157,7 @@ Unabhängig von der Rolle gelten folgende übergreifende Regeln für den Codex-A
 - **Integrations-Builds:** n8n-Node und Flowise-Komponente **müssen** vor jeder Veröffentlichung mit `npm install && npx tsc` in das Verzeichnis `dist/` kompiliert werden. Der PluginManager lädt ausschließlich die erzeugten JavaScript-Dateien aus `plugins/` bzw. den Integrationsordnern. Die genauen Schritte sind in den Integrationsdokumenten beschrieben.
 - **Fehleranalyse Integrationen:** Bei `npm install` oder `tsc` auftretenden Fehlern zuerst die Netzwerkverbindung überprüfen. In Offline-Umgebungen lokale Caches oder interne Registries nutzen und Dateipfade auf Schreibrechte prüfen.
 - **Flowise Nodes:** Zusätzliche Komponenten liegen unter `integrations/flowise-nodes`. Beispielhaft implementiert ist `ListAgents`, das alle registrierten Agenten über die Registry-API abruft.
+- **Autoexport:** Mit `python tools/generate_flowise_nodes.py <file>` lassen sich Node-Definitionen automatisch aus einer Tabelle erzeugen. Die Skripte landen unter `integrations/flowise-nodes`.
 
 *Ende der AGENTS.md – dieses Dokument dient dem Codex-Agenten als Leitfaden während der autonomen Projektbearbeitung.*
 

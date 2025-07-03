@@ -24,6 +24,9 @@ def version_callback(
     ctx: typer.Context,
     version: bool = typer.Option(False, "--version", help="Show version and exit"),
     token: str = typer.Option(None, "--token", help="API token"),
+    verbose: bool = typer.Option(False, "--verbose", help="Enable verbose logging"),
+    quiet: bool = typer.Option(False, "--quiet", help="Suppress info output"),
+    debug: bool = typer.Option(False, "--debug", help="Show stack traces"),
 ) -> None:
     """Global options."""
     if version:
@@ -31,6 +34,14 @@ def version_callback(
         ctx.exit()
     if token:
         os.environ["AGENTNN_API_TOKEN"] = token
+    if debug:
+        os.environ["AGENTNN_DEBUG"] = "1"
+    level = "INFO"
+    if verbose:
+        level = "DEBUG"
+    if quiet:
+        level = "WARNING"
+    os.environ.setdefault("AGENTNN_LOG_LEVEL", level)
 
 
 @app.command()

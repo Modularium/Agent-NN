@@ -29,6 +29,21 @@ agentnn agent register config/agent.yaml
 - `--version` – show version and exit
 - `--token` – override API token for this call
 - `--help` – display help for any command
+- `--verbose` – detailed log output
+- `--quiet` – suppress info messages
+- `--debug` – show stack traces on errors
+
+## \U0001F4C0 Ausgabeformate & interaktive Nutzung
+
+Viele `list`-Befehle unterstützen das Flag `--output` mit den Optionen
+`table`, `json` oder `markdown`.
+
+```bash
+agentnn agent list --output markdown
+```
+
+Der Befehl `agent register --interactive` startet einen kurzen Wizard und
+fragt Name, Rolle, Tools und Beschreibung interaktiv ab.
 
 Session templates are YAML files containing `agents` and `tasks` sections.
 The CLI prints JSON output so that results can easily be processed in scripts.

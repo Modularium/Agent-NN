@@ -8,16 +8,19 @@ import mlflow
 
 from ..client import AgentClient
 from ..nn_models import ModelManager
+from ..utils.formatting import print_output
 
 model_app = typer.Typer(name="model", help="Model management commands")
 
 
 @model_app.command("list")
-def model_list() -> None:
+def model_list(
+    output: str = typer.Option("table", "--output", help="table|json|markdown")
+) -> None:
     """List available models."""
     client = AgentClient()
-    models = client.get_models()
-    typer.echo(json.dumps(models, indent=2))
+    models = client.get_models().get("models", [])
+    print_output(models, output)
 
 
 @model_app.command("runs-view")

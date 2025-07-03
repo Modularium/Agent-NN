@@ -14,5 +14,8 @@
     "agent-nn",
     "flowise",
     "plugin"
-  ]
+  ],
+  "repository": "https://github.com/EcoSphereNetwork/Agent-NN",
+  "homepage": "https://github.com/EcoSphereNetwork/Agent-NN",
+  "license": "MIT"
 }

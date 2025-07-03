@@ -22,3 +22,5 @@ python flowise_deploy.py --dest ~/.flowise/nodes/agent-nn --build-plugin agentnn
 | 1.0.4 | 1.3 |
 
 The license follows the main repository (MIT).
+
+See [docs/flowise_plugin.md](docs/flowise_plugin.md) for detailed instructions.

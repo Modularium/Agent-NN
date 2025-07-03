@@ -55,6 +55,9 @@ def generate_manifest(node_dir: Path, out_file: Path) -> Path:
         "nodes": collect_nodes(node_dir),
         "author": "Agent-NN Team",
         "keywords": ["agent-nn", "flowise", "plugin"],
+        "repository": "https://github.com/EcoSphereNetwork/Agent-NN",
+        "homepage": "https://github.com/EcoSphereNetwork/Agent-NN",
+        "license": "MIT",
     }
     out_file.write_text(json.dumps(manifest, indent=2))
     Path("plugin_version.txt").write_text(version)

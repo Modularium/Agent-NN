@@ -22,7 +22,7 @@ Wir erstellen einen Flowise-Workflow, der 16 lokal laufende OpenHands-Agenten (P
 - ML/DL Expert
 - LLM DevOps
 
-Neben diesem Grund-Setup existieren drei zusätzliche Workflows, die jeweils ein
+Neben diesem Grund-Setup existieren vier zusätzliche Workflows, die jeweils ein
 Spezialistenteam ansprechen:
 
 ### Team 2 – Mobile- und Cross‑Plattform‑Apps (Ports 3011–3020)
@@ -65,6 +65,19 @@ Agenten zur Entwicklung neuer neuronaler Netze:
 - Deployment Engineer
 - MLOps Specialist
 - Experiment Tracker
+
+### Team 5 – ML- & DL-Algorithmen (Ports 3041–3050)
+Der Workflow `openhands_mldl.json` fokussiert sich auf die Erforschung und Implementierung neuer Lernverfahren. Zehn spezialisierte Agenten bilden dieses Team:
+- Algorithm Research Scientist
+- Novel Model Designer
+- Optimization Engineer
+- Reinforcement Learning Specialist
+- Transfer Learning Expert
+- AutoML Engineer
+- Federated Learning Architect
+- Data Augmentation Specialist
+- Acceleration Expert
+- Benchmark Analyst
 
 Flowise ist ein Open-Source Low‑Code-Werkzeug, mit dem man KI‑Workflows visuell zusammenstellen kann. OpenHands ist ein Open-Source-Agentensystem, das Entwickleraufgaben per natürlicher Sprache ausführt. Im Flowise‑Flow richten wir folgende Komponenten ein:
 

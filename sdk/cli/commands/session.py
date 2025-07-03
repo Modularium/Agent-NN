@@ -5,7 +5,7 @@ from typing import Optional
 import typer
 
 from ..utils.io import load_yaml
-from ..utils.formatting import print_success
+from ..utils.formatting import print_success, print_output
 
 from agentnn.reasoning.context_reasoner import MajorityVoteReasoner
 from agentnn.session.session_manager import SessionManager
@@ -81,11 +81,13 @@ def restore(snapshot_id: str) -> None:
 
 
 @session_app.command("list")
-def session_list() -> None:
+def session_list(
+    output: str = typer.Option("table", "--output", help="table|json|markdown")
+) -> None:
     """List active sessions."""
     client = AgentClient()
-    data = client.list_sessions()
-    typer.echo(json.dumps(data, indent=2))
+    data = client.list_sessions().get("sessions", [])
+    print_output(data, output)
 
 
 @session_app.command("budget")

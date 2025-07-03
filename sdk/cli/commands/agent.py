@@ -11,7 +11,7 @@ from pathlib import Path
 import typer
 import httpx
 
-from ..utils import handle_http_error
+from ..utils import handle_http_error, print_output
 from ..client import AgentClient
 from agentnn.deployment.agent_registry import AgentRegistry, load_agent_file
 from core.agent_profile import PROFILE_DIR, AgentIdentity
@@ -37,7 +37,7 @@ openhands_app = typer.Typer(name="openhands", help="OpenHands agent utilities")
 
 
 @agent_app.command("list")
-def agents() -> None:
+def agents(output: str = typer.Option("table", "--output", help="table|json|markdown")) -> None:
     """List available agents."""
     client = AgentClient()
     try:
@@ -45,13 +45,38 @@ def agents() -> None:
     except httpx.HTTPStatusError as err:
         handle_http_error(err)
         return
-    typer.echo(json.dumps(result, indent=2))
+    print_output(result.get("agents", []), output)
 
 
 @agent_app.command("register")
-def agent_register(config: Path, endpoint: str = "http://localhost:8090") -> None:
+def agent_register(
+    config: Path | None = None,
+    endpoint: str = "http://localhost:8090",
+    interactive: bool = typer.Option(False, "--interactive", help="use wizard"),
+) -> None:
     """Register an agent configuration with the registry."""
-    data = load_agent_file(config)
+    if interactive or not config:
+        typer.echo("Interactive agent setup")
+        name = typer.prompt("Agent name")
+        role = typer.prompt("Role", default="assistant")
+        tools = typer.prompt("Tools (comma separated)", default="")
+        desc = typer.prompt("Description", default="")
+        data = {
+            "id": name,
+            "role": role,
+            "description": desc,
+            "tools": [t.strip() for t in tools.split(",") if t.strip()],
+        }
+    else:
+        if not config.exists():
+            typer.secho(f"file not found: {config}", fg=typer.colors.RED)
+            suggestion = Path("config/agent.yaml")
+            if suggestion.exists():
+                typer.echo(f"Vielleicht meinst du {suggestion}")
+            else:
+                typer.echo("Nutze --interactive für einen Wizard")
+            raise typer.Exit(1)
+        data = load_agent_file(config)
     registry = AgentRegistry(endpoint)
     result = registry.deploy(data)
     typer.echo(json.dumps(result, indent=2))
@@ -494,7 +519,9 @@ def feedback_log(agent: str) -> None:
 
 
 @openhands_app.command("list")
-def openhands_list() -> None:
+def openhands_list(
+    output: str = typer.Option("table", "--output", help="table|json|markdown")
+) -> None:
     """List registered OpenHands agents."""
     ports_env = os.getenv("OPENHANDS_AGENT_PORTS", "3001-3016")
     if "-" in ports_env:
@@ -506,7 +533,7 @@ def openhands_list() -> None:
         {"name": f"openhands_{i}", "url": f"http://localhost:{p}", "port": p}
         for i, p in enumerate(ports, start=1)
     ]
-    typer.echo(json.dumps({"agents": agents}, indent=2))
+    print_output(agents, output)
 
 
 @openhands_app.command("trigger")

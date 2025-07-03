@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 import httpx
+import os
 import typer
 
-from .formatting import print_success, print_error
+from .formatting import print_success, print_error, print_output
 from .io import load_yaml, write_json, ensure_parent
 
 
@@ -16,7 +17,12 @@ def handle_http_error(err: httpx.HTTPStatusError) -> None:
             fg=typer.colors.RED,
         )
     else:
-        typer.secho(f"HTTP Error: {err.response.status_code}", fg=typer.colors.RED)
+        typer.secho(
+            f"HTTP Error: {err.response.status_code}", fg=typer.colors.RED
+        )
+    if os.getenv("AGENTNN_DEBUG") == "1":
+        typer.echo(err.response.text)
+        raise
     raise typer.Exit(1)
 
 
@@ -30,6 +36,7 @@ __all__ = [
     "confirm_action",
     "print_success",
     "print_error",
+    "print_output",
     "load_yaml",
     "write_json",
     "ensure_parent",

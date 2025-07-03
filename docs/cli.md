@@ -99,3 +99,21 @@ Quickstart-Kürzel kombinieren Konfiguration und Vorlagen:
 agentnn quickstart agent --name Demo --role planner
 agentnn quickstart session --template demo_session.yaml
 ```
+
+## \U0001F9E0 Intelligente Templates & Automatisierung
+
+Die Template-Befehle unterstützen nun Schema-Validierung und Konvertierung. Beispiele:
+
+```bash
+agentnn template validate my_agent.yaml
+agentnn template show my_agent.yaml --as json
+agentnn template doc my_agent.yaml > AGENT.md
+```
+
+Mit `quickstart agent --from-description` lässt sich aus einer Kurzbeschreibung automatisch ein Agent-Template erzeugen:
+
+```bash
+agentnn quickstart agent --from-description "Planender Entscheidungsagent mit Zugriff auf Tools" --output agent-smart.yaml
+```
+
+Unvollständige Session-Templates können über `quickstart session --from=partial.yaml --complete` ergänzt werden. Alle Aufrufe werden im Verzeichnis `~/.agentnn/history/` protokolliert.

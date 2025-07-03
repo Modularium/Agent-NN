@@ -7,7 +7,6 @@ import json
 import typer
 
 from ..config import SDKSettings
-from ..config import CLIConfig
 from core.config import settings as core_settings
 
 config_app = typer.Typer(name="config", help="Configuration commands")
@@ -17,6 +16,8 @@ config_app = typer.Typer(name="config", help="Configuration commands")
 def config_show() -> None:
     """Show effective configuration."""
     settings = SDKSettings.load()
+    from ..config import CLIConfig
+
     cli = CLIConfig.load()
     data = {"sdk": settings.__dict__, "cli": cli.__dict__}
     typer.echo(json.dumps(data, indent=2))

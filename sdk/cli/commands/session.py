@@ -4,7 +4,8 @@ from typing import Optional
 
 import typer
 
-from ..utils import load_yaml, print_success
+from ..utils.io import load_yaml
+from ..utils.formatting import print_success
 
 from agentnn.reasoning.context_reasoner import MajorityVoteReasoner
 from agentnn.session.session_manager import SessionManager

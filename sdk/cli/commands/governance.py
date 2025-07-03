@@ -13,7 +13,6 @@ from core.governance import AgentContract
 from core.trust_evaluator import calculate_trust, eligible_for_role
 from core.audit_log import AuditEntry, AuditLog
 from core.privacy_filter import redact_context
-from core.privacy import AccessLevel
 from core.model_context import ModelContext, TaskContext
 from core.trust_network import AgentRecommendation, record_recommendation, load_recommendations
 from core.trust_circle import is_trusted_for

@@ -6,7 +6,7 @@ from pathlib import Path
 import typer
 
 from agentnn.storage import context_store
-from ..utils import print_success
+from ..utils.formatting import print_success
 
 context_app = typer.Typer(name="context", help="Context utilities")
 

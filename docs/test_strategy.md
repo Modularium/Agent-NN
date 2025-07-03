@@ -23,3 +23,11 @@ Iteration 3 adds focused unit tests for the `AgentRegistryService` and its API r
 metric counters, status handling and persistence of profile updates via the REST interface.
 Using `tmp_path` ensures profile files are isolated.
 An extra case validates that requesting an unknown agent increases the metrics counter and that the API responds with `404`.
+
+## Supervisor agent coverage
+
+Iteration 3.2 expands the unit tests for the `SupervisorAgent`. New cases
+simulate a failing worker, verify the returned status for agents without any
+history and assert that `_update_model` receives the correct success score for
+both successful and failed executions. Dummy manager classes keep these tests
+independent from the rest of the system.

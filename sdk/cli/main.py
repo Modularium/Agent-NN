@@ -1,4 +1,5 @@
 """Modular command line interface for Agent-NN."""
+
 from __future__ import annotations
 
 import typer
@@ -14,6 +15,8 @@ from .commands.agentctl import register as register_agentctl
 from .commands.dispatch import register as register_dispatch
 from .commands.context import context_app
 from .commands.prompt import prompt_app
+from .commands.template import template_app
+from .commands.quickstart import quickstart_app
 
 app = typer.Typer()
 
@@ -25,6 +28,8 @@ app.add_typer(session_app, name="session")
 app.add_typer(agent_app, name="agent")
 app.add_typer(context_app, name="context")
 app.add_typer(prompt_app, name="prompt")
+app.add_typer(template_app, name="template")
+app.add_typer(quickstart_app, name="quickstart")
 register_tasks(app)
 register_model(app)
 register_config(app)

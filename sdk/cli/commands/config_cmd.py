@@ -1,4 +1,5 @@
 """Configuration commands."""
+
 from __future__ import annotations
 
 import json
@@ -6,6 +7,7 @@ import json
 import typer
 
 from ..config import SDKSettings
+from ..config import CLIConfig
 from core.config import settings as core_settings
 
 config_app = typer.Typer(name="config", help="Configuration commands")
@@ -15,7 +17,9 @@ config_app = typer.Typer(name="config", help="Configuration commands")
 def config_show() -> None:
     """Show effective configuration."""
     settings = SDKSettings.load()
-    typer.echo(json.dumps(settings.__dict__, indent=2))
+    cli = CLIConfig.load()
+    data = {"sdk": settings.__dict__, "cli": cli.__dict__}
+    typer.echo(json.dumps(data, indent=2))
 
 
 @config_app.command("check")
@@ -26,5 +30,6 @@ def config_check() -> None:
 
 def register(app: typer.Typer) -> None:
     app.add_typer(config_app)
+
 
 __all__ = ["register", "config_app"]

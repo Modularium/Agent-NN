@@ -8,9 +8,11 @@ from core.model_context import ModelContext
 
 def to_mcp(ctx: ModelContext) -> dict:
     """Return a plain dictionary representation for MCP payloads."""
-    return ctx.model_dump()
+    return ctx.model_dump(exclude_none=True)
 
 
-def from_mcp(data: dict) -> ModelContext:
+def from_mcp(data: dict | ModelContext) -> ModelContext:
     """Create a :class:`ModelContext` instance from MCP payload data."""
-    return ModelContext(**data)
+    if isinstance(data, ModelContext):
+        return data
+    return ModelContext.model_validate(data)

@@ -1101,7 +1101,7 @@ def feedback_log(agent: str) -> None:
 @openhands_app.command("list")
 def openhands_list() -> None:
     """List registered OpenHands agents."""
-    ports_env = os.getenv("OPENHANDS_AGENT_PORTS", "3001-3010")
+    ports_env = os.getenv("OPENHANDS_AGENT_PORTS", "3001-3016")
     if "-" in ports_env:
         start, end = [int(p) for p in ports_env.split("-")]
         ports = list(range(start, end + 1))
@@ -1117,7 +1117,7 @@ def openhands_list() -> None:
 @openhands_app.command("trigger")
 def openhands_trigger(task: str, agents: str = "all") -> None:
     """Trigger a task on one or multiple OpenHands agents."""
-    ports_env = os.getenv("OPENHANDS_AGENT_PORTS", "3001-3010")
+    ports_env = os.getenv("OPENHANDS_AGENT_PORTS", "3001-3016")
     if "-" in ports_env:
         start, end = [int(p) for p in ports_env.split("-")]
         ports = list(range(start, end + 1))

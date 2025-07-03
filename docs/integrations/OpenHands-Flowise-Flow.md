@@ -1,21 +1,45 @@
 
-# Flowise-Flow für ein 10‑Agenten-Team mit OpenHands
+# Flowise-Flow für ein 16‑Agenten-Team mit OpenHands
 
-Wir erstellen einen Flowise-Workflow, der 10 lokal laufende OpenHands-Agenten (Ports 3001–3010) als Spezialisten (“Frontend”, “Backend”, “Dokumentation” etc.) ansteuert. Flowise selbst ist ein Open-Source Low‑Code-Werkzeug, mit dem man KI-Workflows visuell zusammenstellen kann. OpenHands ist ein Open-Source-Agentensystem, das Entwickleraufgaben per natürlicher Sprache ausführt. Im Flowise-Flow richten wir folgende Komponenten ein:
+Wir erstellen einen Flowise-Workflow, der 16 lokal laufende OpenHands-Agenten (Ports 3001–3016) als Spezialisten ansteuert. Neben den bisherigen Rollen wie „Frontend“, „Backend“ oder „Dokumentation“ sind zusätzliche Experten vertreten. Dazu zählen Android‑ und iOS‑Entwicklung, plattformübergreifende App-DevOps, Spezialisten für neuronale Netze, allgemeines ML/DL sowie LLM‑DevOps.
+
+**Agentenübersicht:**
+
+- Frontend Engineer
+- Backend Engineer
+- DevOps Specialist
+- Security Analyst
+- QA Tester
+- Technical Writer
+- Code Reviewer
+- Release Manager
+- Performance Optimizer
+- UX Designer
+- Android App DevOps
+- iOS App DevOps
+- Cross‑Platform App DevOps
+- Neural Network Expert
+- ML/DL Expert
+- LLM DevOps
+
+Flowise ist ein Open-Source Low‑Code-Werkzeug, mit dem man KI‑Workflows visuell zusammenstellen kann. OpenHands ist ein Open-Source-Agentensystem, das Entwickleraufgaben per natürlicher Sprache ausführt. Im Flowise‑Flow richten wir folgende Komponenten ein:
 
 ## Setup
 
 1. Stelle sicher, dass Python 3.10, Docker und Redis installiert sind.
 2. Installiere die Basis-Abhängigkeiten mit
 
-   ```bash
-   pip install -r requirements.txt
-   ./install_openhands_deps.sh  # optional
-   ```
+ ```bash
+  pip install -r requirements.txt
+  ./install_openhands_deps.sh  # optional
+  ```
+
 
    Alternativ kann `pip install -r requirements-openhands.txt` ausgeführt werden.
 
-3. Starte alle OpenHands-Agenten (Standardports 3001‑3010) und Flowise.
+   Die Ports der Agenten lassen sich über die Umgebungsvariable `OPENHANDS_AGENT_PORTS` steuern (Standard `3001-3016`).
+
+3. Starte alle OpenHands-Agenten (Standardports 3001‑3016) und Flowise.
 
 In Test- oder CI-Umgebungen ohne Docker kann der OpenHands-API-Server durch
 `tests/mocks/fake_openhands.py` simuliert werden. Die zugehörigen Tests
@@ -100,7 +124,7 @@ Die gesamte Logik sieht so aus: Nutzer gibt Aufgabe und Agenten-Auswahl ein. Anh
   }
   ```
 
-  (Analog für die Ports 3002–3010 der anderen Instanzen.) Dieses JSON entspricht dem cURL-Beispiel aus der OpenHands-Doku.
+  (Analog für die Ports 3002–3016 der anderen Instanzen.) Dieses JSON entspricht dem cURL-Beispiel aus der OpenHands-Doku.
 
 * *GET-Request Trajectory:*
 

@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 __all__ = ["propose_refinement", "evaluate_prompt_quality"]
+
 
 def propose_refinement(prompt: str, strategy: str = "direct") -> str:
     """Return an improved version of the given prompt.

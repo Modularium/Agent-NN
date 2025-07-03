@@ -38,6 +38,8 @@ class AgentRunContext(BaseModel):
     score: Optional[float] = None
     feedback: Optional[str] = None
     voted_by: List[str] = []
+    priority: int | None = None
+    exclusive: bool = False
 
 
 class ModelContext(BaseModel):

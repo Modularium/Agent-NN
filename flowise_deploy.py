@@ -3,15 +3,19 @@
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 from pathlib import Path
 
 import httpx
 
+from packaging.version import parse as parse_version
+
 from tools.generate_flowise_plugin import generate_manifest
 from tools.package_plugin import create_archive
 
 DEFAULT_DEST = Path.home() / ".flowise" / "nodes" / "agent-nn"
+VERSION_FILE = Path("plugin_version.txt")
 
 
 def copy_files(src: Path, dest: Path) -> None:
@@ -32,8 +36,30 @@ def reload_nodes(url: str) -> None:
         print(f"Reload failed: {exc}")
 
 
-def deploy(src: Path, dest: Path, reload_url: str | None) -> None:
+def read_manifest_version(manifest: Path) -> str:
+    return json.loads(manifest.read_text())[
+        "version"
+    ]
+
+
+def should_deploy(new_version: str, dest: Path) -> bool:
+    current = dest / VERSION_FILE.name
+    if current.is_file():
+        installed = current.read_text().strip()
+        if parse_version(new_version) <= parse_version(installed):
+            print(
+                f"Installed plugin {installed} is newer or equal to {new_version}. Skipping."
+            )
+            return False
+    return True
+
+
+def deploy(src: Path, dest: Path, manifest: Path, reload_url: str | None) -> None:
+    version = read_manifest_version(manifest)
+    if not should_deploy(version, dest):
+        return
     copy_files(src, dest)
+    (dest / VERSION_FILE.name).write_text(version)
     if reload_url:
         reload_nodes(reload_url)
 
@@ -51,10 +77,10 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    deploy(args.src, args.dest, args.reload_url)
+    manifest = generate_manifest(args.src, Path("flowise-plugin.json"))
+    deploy(args.src, args.dest, manifest, args.reload_url)
 
     if args.build_plugin:
-        manifest = generate_manifest(args.src, Path("flowise-plugin.json"))
         create_archive(args.src, manifest, args.build_plugin)
 
 

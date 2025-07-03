@@ -7,6 +7,7 @@ from fastapi import APIRouter, FastAPI
 
 from api_gateway.connectors import ServiceConnector
 from ..storage import context_store
+from ..session.session_manager import SessionManager
 from core.model_context import ModelContext
 from core.run_service import run_service
 
@@ -14,6 +15,8 @@ DISPATCHER_URL = os.getenv("DISPATCHER_URL", "http://task_dispatcher:8000")
 SESSION_MANAGER_URL = os.getenv("SESSION_MANAGER_URL", "http://session_manager:8000")
 REGISTRY_URL = os.getenv("AGENT_REGISTRY_URL", "http://agent_registry:8001")
 TOOLS_URL = os.getenv("PLUGIN_AGENT_URL", "http://plugin_agent_service:8110")
+
+session_pool = SessionManager()
 
 
 def create_app() -> FastAPI:
@@ -70,6 +73,21 @@ def create_app() -> FastAPI:
     @router.post("/tool/use")
     async def use_tool(payload: dict) -> dict:
         return await tools.post("/execute_tool", payload)
+
+    @router.post("/session/create")
+    async def create_session_route() -> dict:
+        sid = session_pool.create_session()
+        return {"session_id": sid}
+
+    @router.post("/session/{sid}/add_agent")
+    async def add_agent_route(sid: str, payload: dict) -> dict:
+        session_pool.add_agent(sid, payload.get("agent_id"))
+        return {"status": "ok"}
+
+    @router.post("/session/{sid}/run_task")
+    async def run_task_route(sid: str, payload: dict) -> dict:
+        ctx = session_pool.run_task(sid, payload.get("task", ""))
+        return ctx.model_dump()
 
     app = FastAPI(title="Agent-NN MCP Server")
     app.include_router(router)

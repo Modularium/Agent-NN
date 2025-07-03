@@ -7,6 +7,8 @@ Diese Anleitung beschreibt die bereitgestellten Flowise-Workflows unter `integra
 * `openhands.json` – Standard-Workflow für ein 16-köpfiges Entwicklungsteam.
 * `openhands_linux.json` – Variante für Linux-Distributionen (Kernel, Packages usw.).
 * `openhands_app.json` – Variante für mobile Apps (Android/iOS).
+* `openhands_nn.json` – Team für neuronale Netze (Ports 3031–3040).
+* `openhands_mldl.json` – Team für ML- & DL-Algorithmen (Ports 3041–3050).
 * `sample_flow.json` – Minimalbeispiel zum Testen der Komponente `AgentNN`.
 
 Alle Workflows besitzen denselben Aufbau und unterscheiden sich hauptsächlich bei den Agentennamen, Ports und Tokens. Die Dateien lassen sich direkt in der Flowise-UI importieren.
@@ -52,6 +54,12 @@ Richtet sich an ein Linux-Team mit Rollen wie Kernel Engineer, Package Maintaine
 
 ### Mobile Apps (openhands_app.json)
 Für mobile Projekte: Android App DevOps, iOS App DevOps usw. Die Ports beginnen bei 3011.
+
+### Neuronale Netze (openhands_nn.json)
+Dieses Team entwickelt Modelle für Agent‑NN. Die Ports reichen von 3031 bis 3040.
+
+### ML- & DL-Algorithmen (openhands_mldl.json)
+Enthält zehn Spezialisten für neue Lernverfahren. Die Ports reichen von 3041 bis 3050.
 
 ## Verwendung
 1. Öffne Flowise und wähle **Import Flow**.

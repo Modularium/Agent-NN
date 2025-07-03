@@ -50,17 +50,6 @@ Session templates are YAML files containing `agents` and `tasks` sections.
 The CLI prints JSON output so that results can easily be processed in scripts.
 Check file paths and YAML formatting if a command reports errors.
 
-## Alte CLI ersetzt
-
-Vor der Modularisierung gab es mehrere Einstiegspunkte wie `cli/agentctl.py`
-oder `mcp/cli.py`. Alle Funktionen wurden in `agentnn` konsolidiert. Beispiele
-zur Migration:
-
-```bash
-python cli/agentctl.py deploy config/agent.yaml  # alt
-agentnn agent register config/agent.yaml         # neu
-```
-
 ## 🧩 CLI-Architektur & Interna
 
 Die Befehle der CLI sind modular aufgebaut. Jedes Subkommando lebt in

@@ -8,6 +8,9 @@ from pathlib import Path
 
 import httpx
 
+from tools.generate_flowise_plugin import generate_manifest
+from tools.package_plugin import create_archive
+
 DEFAULT_DEST = Path.home() / ".flowise" / "nodes" / "agent-nn"
 
 
@@ -40,9 +43,19 @@ def main() -> None:
     parser.add_argument("--src", type=Path, default=Path("integrations/flowise-nodes"))
     parser.add_argument("--dest", type=Path, default=DEFAULT_DEST)
     parser.add_argument("--reload-url", help="Flowise reload endpoint")
+    parser.add_argument(
+        "--build-plugin",
+        type=Path,
+        metavar="ARCHIVE",
+        help="Create a plugin archive after deployment",
+    )
     args = parser.parse_args()
 
     deploy(args.src, args.dest, args.reload_url)
+
+    if args.build_plugin:
+        manifest = generate_manifest(args.src, Path("flowise-plugin.json"))
+        create_archive(args.src, manifest, args.build_plugin)
 
 
 if __name__ == "__main__":

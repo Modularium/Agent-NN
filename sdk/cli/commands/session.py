@@ -3,7 +3,8 @@ from pathlib import Path
 from typing import Optional
 
 import typer
-import yaml
+
+from ..utils import load_yaml, print_success
 
 from agentnn.reasoning.context_reasoner import MajorityVoteReasoner
 from agentnn.session.session_manager import SessionManager
@@ -19,7 +20,7 @@ def start(template: Optional[Path] = None) -> None:
     """Start a new session from optional YAML template."""
     sid = manager.create_session()
     if template and template.exists():
-        data = yaml.safe_load(template.read_text())
+        data = load_yaml(template)
         for agent in data.get("agents", []):
             manager.add_agent(
                 sid,
@@ -30,7 +31,7 @@ def start(template: Optional[Path] = None) -> None:
             )
         for task in data.get("tasks", []):
             manager.run_task(sid, task)
-    typer.echo(json.dumps({"session_id": sid}))
+    print_success(json.dumps({"session_id": sid}))
 
 
 @session_app.command("watch")

@@ -20,7 +20,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "smolit=cli.smolit_cli:main",
+            "agentnn=sdk.cli.main:app",
         ],
     },
     author="OpenHands",

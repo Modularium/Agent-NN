@@ -42,6 +42,9 @@ from .. import __version__
 from ..client import AgentClient
 from ..config import SDKSettings
 from ..nn_models import ModelManager
+from .commands.agentctl import register as register_agentctl
+from .commands.dispatch import register as register_dispatch
+from .commands.session_runner import session_app
 
 model_app = typer.Typer(name="model", help="Model management commands")
 config_app = typer.Typer(name="config", help="Configuration commands")
@@ -50,7 +53,6 @@ app = typer.Typer()
 agent_app = typer.Typer(name="agent", help="Agent management")
 agent_contract_app = typer.Typer(name="contract", help="Agent contract management")
 team_app = typer.Typer(name="team", help="Team management")
-session_app = typer.Typer(name="session", help="Session utilities")
 queue_app = typer.Typer(name="queue", help="Queue management")
 contract_app = typer.Typer(name="contract", help="Governance contracts")
 trust_app = typer.Typer(name="trust", help="Trust management")
@@ -90,6 +92,8 @@ app.add_typer(feedback_app)
 app.add_typer(openhands_app)
 
 agent_app.add_typer(agent_contract_app)
+register_agentctl(agent_app)
+register_dispatch(task_app)
 
 
 @app.callback(invoke_without_command=True)
@@ -233,15 +237,6 @@ def verify_ctx(context_json: str) -> None:
     typer.echo(json.dumps({"valid": valid}))
 
 
-@session_app.command("budget")
-def session_budget(session_id: str) -> None:
-    """Show consumed tokens for a session."""
-    client = AgentClient()
-    data = client.get_session_history(session_id)
-    tokens = 0
-    for ctx in data.get("context", []):
-        tokens += int(ctx.get("metrics", {}).get("tokens_used", 0))
-    typer.echo(json.dumps({"session_id": session_id, "tokens_used": tokens}))
 
 
 @agent_app.command("list")

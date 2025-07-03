@@ -1,12 +1,12 @@
 # Session Runner CLI
 
-The `session_runner.py` tool simplifies starting and observing agent sessions.
+All session commands are now available via the unified SDK CLI:
 
 ```
-python cli/session_runner.py start examples/three_agent_chain.yaml
-python cli/session_runner.py watch <session_id>
-python cli/session_runner.py vote <session_id> --roles critic,reviewer
-python cli/session_runner.py snapshot <session_id>
+python -m sdk.cli session start examples/three_agent_chain.yaml
+python -m sdk.cli session watch <session_id>
+python -m sdk.cli session vote <session_id> --roles critic,reviewer
+python -m sdk.cli session snapshot <session_id>
 ```
 
 Sessions defined in a YAML template consist of an `agents` list and a sequence of

@@ -43,3 +43,17 @@ const node = new CreateTask('http://localhost:8000', 'chat', {prompt: 'Hi'});
 const result = await node.run();
 ```
 
+
+## Node-Vorschau und Deployment
+
+Die generierten `.node.json` Dateien enthalten jetzt zusätzliche Felder für Farbe, Icon und Kategorie. Damit erscheinen die Agent-NN Nodes in Flowise einheitlich unter der Kategorie **Agent-NN**.
+
+![Node Preview](integrations/flowise_example.png)
+
+Zur Installation in einer lokalen Flowise Instanz kann das Skript `flowise_deploy.py` verwendet werden:
+
+```bash
+python flowise_deploy.py
+```
+
+Das Skript kopiert die Node-Definitionen nach `~/.flowise/nodes/agent-nn/` und löst optional über `--reload-url` einen Reload der Nodes aus.

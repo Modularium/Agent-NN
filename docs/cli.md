@@ -69,3 +69,33 @@ strukturiert. Dadurch können neue Kommandos leicht angelegt werden, ohne
 unerwünschte Abhängigkeiten zu erzeugen. `main.py` bindet lediglich die
 bereits initialisierten `Typer`-Instanzen ein und enthält keine Logik
 oder Rückimporte.
+
+## ⚙️ Konfiguration & Vorlagen
+
+Beim Start sucht die CLI nach `~/.agentnn/config.toml` und liest globale
+Standardwerte wie `default_session_template`, `output_format` und `log_level`.
+Eine optionale `agentnn.toml` im aktuellen Projektverzeichnis kann diese
+Einstellungen überschreiben.
+
+Beispiel `agentnn.toml`:
+
+```toml
+output_format = "json"
+default_session_template = "project/session.yaml"
+```
+
+Vorlagen liegen unter `~/.agentnn/templates/` und können mit folgenden
+Befehlen verwaltet werden:
+
+```bash
+agentnn template list
+agentnn template show session_template.yaml
+agentnn template init session --output=my.yaml
+```
+
+Quickstart-Kürzel kombinieren Konfiguration und Vorlagen:
+
+```bash
+agentnn quickstart agent --name Demo --role planner
+agentnn quickstart session --template demo_session.yaml
+```

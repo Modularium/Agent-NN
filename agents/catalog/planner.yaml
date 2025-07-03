@@ -1,0 +1,7 @@
+name: planner
+version: 1.0.0
+description: Planning agent for roadmap updates
+license: MIT
+capabilities:
+  - plan_tasks
+  - update_roadmap

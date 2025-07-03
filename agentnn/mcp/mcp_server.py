@@ -6,6 +6,7 @@ import os
 from fastapi import APIRouter, FastAPI
 
 from api_gateway.connectors import ServiceConnector
+from ..storage import context_store
 from core.model_context import ModelContext
 from core.run_service import run_service
 
@@ -41,9 +42,18 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     @router.post("/context/save")
-    async def save_context(ctx: ModelContext) -> dict:
+    async def save_context_route(ctx: ModelContext) -> dict:
         await sessions.post("/update_context", ctx.model_dump())
+        context_store.save_context(ctx.session_id or "default", ctx.model_dump())
         return {"status": "ok"}
+
+    @router.get("/context/load/{sid}")
+    async def load_context_route(sid: str) -> dict:
+        return {"context": context_store.load_context(sid)}
+
+    @router.get("/context/history")
+    async def list_contexts_route() -> dict:
+        return {"sessions": context_store.list_contexts()}
 
     @router.get("/context/{sid}")
     async def get_context(sid: str) -> dict:

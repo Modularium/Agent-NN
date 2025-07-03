@@ -58,6 +58,12 @@ def test_extended_routes(monkeypatch):
     resp = client.post("/v1/mcp/context/save", json=ctx)
     assert resp.status_code == 200
 
+    resp = client.get("/v1/mcp/context/load/sid1")
+    assert resp.status_code == 200
+
+    resp = client.get("/v1/mcp/context/history")
+    assert resp.status_code == 200
+
     resp = client.get("/v1/mcp/context/get/42")
     assert resp.status_code == 200
     assert resp.json()["path"] == "/context/42"

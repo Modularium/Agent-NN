@@ -11,9 +11,11 @@ implemented in `agentnn.mcp.mcp_server` and provides the following endpoints:
 - `POST /v1/mcp/agent/create` – register a new worker agent
 - `POST /v1/mcp/tool/use` – invoke a plugin tool
 - `POST /v1/mcp/context` – store a context in the session manager
-- `POST /v1/mcp/context/save` – alias for `/context`
+- `POST /v1/mcp/context/save` – persist a context entry
 - `GET /v1/mcp/context/{session_id}` – retrieve all contexts for a session
 - `GET /v1/mcp/context/get/{session_id}` – alias for `/context/{session_id}`
+- `GET /v1/mcp/context/load/{session_id}` – load persisted contexts
+- `GET /v1/mcp/context/history` – list sessions with stored context
 
 A lightweight client wrapper is available via `agentnn.mcp.MCPClient`.
 

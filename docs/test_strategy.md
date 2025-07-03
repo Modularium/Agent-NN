@@ -11,3 +11,15 @@ such as the dispatcher legacy routing fallback.
 
 Run `./tests/ci_check.sh` locally or via CI which executes ruff, mypy and pytest
 with coverage output in HTML and JSON format.
+
+## Markers
+
+All tests are tagged with either `@pytest.mark.unit` or `@pytest.mark.integration`. The default collection
+runs only unit tests unless `--run-integration` is provided. This behavior is implemented in `tests/conftest.py`.
+
+## Agent registry coverage
+
+Iteration 3 adds focused unit tests for the `AgentRegistryService` and its API routes. The tests verify
+metric counters, status handling and persistence of profile updates via the REST interface.
+Using `tmp_path` ensures profile files are isolated.
+An extra case validates that requesting an unknown agent increases the metrics counter and that the API responds with `404`.

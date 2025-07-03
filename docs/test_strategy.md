@@ -37,3 +37,11 @@ independent from the rest of the system.
 Iteration 4 focuses on failure scenarios for the plugin agent service. Tests
 cover unknown tool names and invalid plugin inputs so that the service returns
 informative error messages instead of raising exceptions.
+
+## CLI-Kommandos
+
+Iteration 5 fügt gezielte Tests für die Befehlszeile hinzu. Die neuen Fälle
+verifizieren Fehlermeldungen bei ungültigen Bewertungen und eine korrekte
+Authentifizierungsprüfung beim Absenden von Feedback. Dazu wird der
+`typer.CliRunner` verwendet und HTTP-Aufrufe werden mit Dummy-Objekten
+simuliert.

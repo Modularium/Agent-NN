@@ -33,7 +33,7 @@ agentnn agent register config/agent.yaml
 - `--quiet` – suppress info messages
 - `--debug` – show stack traces on errors
 
-## \U0001F4C0 Ausgabeformate & interaktive Nutzung
+## Ausgabeformate & interaktive Nutzung
 
 Viele `list`-Befehle unterstützen das Flag `--output` mit den Optionen
 `table`, `json` oder `markdown`.
@@ -100,7 +100,7 @@ agentnn quickstart agent --name Demo --role planner
 agentnn quickstart session --template demo_session.yaml
 ```
 
-## \U0001F9E0 Intelligente Templates & Automatisierung
+## Intelligente Templates & Automatisierung
 
 Die Template-Befehle unterstützen nun Schema-Validierung und Konvertierung. Beispiele:
 

@@ -162,6 +162,20 @@ verwendet werden. Das Flag `--complete` ergänzt fehlende Felder automatisch.
 - `--last` nutzt die zuletzt verwendete Vorlage erneut.
 - Abgebrochene Wizards lassen sich jederzeit neu starten.
 
+## Tool Registry
+
+Builtin model wrappers are included in the `tools` list. Show all tools with:
+
+```bash
+agentnn tools list
+```
+
+Inspect a specific tool:
+
+```bash
+agentnn tools inspect agent_nn_v2
+```
+
 ## MCP Utilities
 
 The `mcp` subcommand bundles tools for the Model Context Protocol.

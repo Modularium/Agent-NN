@@ -18,7 +18,7 @@ cd Agent-NN
 
 - Python 3.10 oder neuer
 - Node.js 18+
-- Docker und Docker Compose
+- Docker mit Docker Compose (Plugin oder Classic)
 - Poetry 1.5+
 - Mindestens 4 GB RAM
 
@@ -67,11 +67,11 @@ graph TD
    # UI: http://localhost:3000
    ```
 
-Alternativ lassen sich alle Dienste per Docker Compose starten:
+Alternativ lassen sich alle Dienste per Docker Compose starten. Das Setup erkennt automatisch,
+ob `docker compose` (Plugin) oder `docker-compose` (Classic) verfügbar ist:
 ```bash
-docker compose up --build
+docker compose up --build  # oder docker-compose up --build
 ```
-Bei älteren Docker-Versionen heißt der Befehl `docker-compose`. Prüfe mit `docker compose version`, ob das Plugin verfügbar ist.
 
 Zur Fehlersuche helfen `docker ps`, `npm run build` im Frontend-Verzeichnis sowie `poetry shell` für eine interaktive Python-Umgebung. Das Setup wurde unter Ubuntu, macOS und Windows/WSL getestet.
 

@@ -38,3 +38,6 @@ mcp
 structlog>=23.0.0
 aiofiles
 tqdm
+typer
+cryptography
+jsonschema

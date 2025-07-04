@@ -6,7 +6,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from agents.worker_agent import WorkerAgent
 from managers.hybrid_matcher import HybridMatcher, MatchResult
-from nn_models.agent_nn import TaskMetrics
+from nn_models.agent_nn_v2 import TaskMetrics
 from utils.logging_util import LoggerMixin
 from config import LLM_BACKEND
 from config.llm_config import OPENAI_CONFIG, LMSTUDIO_CONFIG

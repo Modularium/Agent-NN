@@ -7,7 +7,7 @@ import json
 import os
 import numpy as np
 from utils.logging_util import LoggerMixin
-from nn_models.agent_nn import TaskMetrics
+from nn_models.agent_nn_v2 import TaskMetrics
 import mlflow
 
 class AdaptiveLearningManager(LoggerMixin):

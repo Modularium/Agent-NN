@@ -5,16 +5,16 @@ import os
 import tempfile
 import asyncio
 from langchain.schema import Document
-from agents.nn_worker_agent import NNWorkerAgent
-from nn_models.agent_nn import TaskMetrics
+from agents.worker_agent import WorkerAgent
+from nn_models.agent_nn_v2 import TaskMetrics
 
-class TestNNWorkerAgent(unittest.TestCase):
+class TestWorkerAgentNNFeatures(unittest.TestCase):
     def setUp(self):
         """Set up test environment."""
         # Mock dependencies
-        self.llm_patcher = patch('agents.nn_worker_agent.SpecializedLLM')
-        self.db_patcher = patch('agents.nn_worker_agent.WorkerAgentDB')
-        self.nn_patcher = patch('agents.nn_worker_agent.AgentNN')
+        self.llm_patcher = patch('agents.worker_agent.SpecializedLLM')
+        self.db_patcher = patch('agents.worker_agent.WorkerAgentDB')
+        self.nn_patcher = patch('agents.worker_agent.AgentNN')
         
         self.mock_llm = self.llm_patcher.start()
         self.mock_db = self.db_patcher.start()
@@ -43,7 +43,7 @@ class TestNNWorkerAgent(unittest.TestCase):
         self.mock_nn.return_value = self.mock_nn_instance
         
         # Initialize agent
-        self.agent = NNWorkerAgent("test_agent")
+        self.agent = WorkerAgent("test_agent", use_nn_features=True)
 
     def tearDown(self):
         """Clean up after tests."""
@@ -127,7 +127,7 @@ class TestNNWorkerAgent(unittest.TestCase):
             self.mock_nn_instance.save_model.assert_called_once_with(model_path)
             
             # Create new agent and load model
-            new_agent = NNWorkerAgent("test_agent")
+            new_agent = WorkerAgent("test_agent", use_nn_features=True)
             
             # Check that load was attempted
             self.mock_nn_instance.load_model.assert_called_once_with(model_path)

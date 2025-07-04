@@ -425,3 +425,56 @@ class AgentNN(LoggerMixin):
                 "status": "error",
                 "error": str(e)
             }
+
+    def train_step(self, task_embedding: torch.Tensor, target_features: torch.Tensor) -> float:
+        """Perform a single training step.
+
+        Args:
+            task_embedding: Input embedding tensor.
+            target_features: Target output tensor.
+
+        Returns:
+            Loss value as float.
+        """
+        if self.model is None:
+            self.load_model()
+
+        self.optimizer.zero_grad()
+        output = self.model(task_embedding)
+        loss = self.criterion(output, target_features)
+        loss.backward()
+        self.optimizer.step()
+
+        self.training_losses.append(float(loss))
+        return float(loss)
+
+    def get_training_summary(self) -> Dict[str, float]:
+        """Return a summary of recent training progress."""
+        if not self.training_losses:
+            return {}
+
+        return {
+            "avg_loss": float(np.mean(self.training_losses[-100:])),
+            "min_loss": float(np.min(self.training_losses)),
+            "max_loss": float(np.max(self.training_losses)),
+            "total_batches": len(self.training_losses),
+        }
+
+    def get_metrics(self) -> Dict[str, float]:
+        """Return aggregated evaluation metrics."""
+        if not self.eval_metrics:
+            return {
+                "total_tasks": 0,
+                "success_rate": 0.0,
+                "avg_response_time": 0.0,
+            }
+
+        total = len(self.eval_metrics)
+        success = [m.get("success_rate", 0.0) for m in self.eval_metrics]
+        avg_success = sum(success) / total if success else 0.0
+        avg_resp = sum(m.get("response_time", 0.0) for m in self.eval_metrics) / total
+        return {
+            "total_tasks": total,
+            "success_rate": avg_success,
+            "avg_response_time": avg_resp,
+        }

@@ -58,9 +58,9 @@ class _Special:
 
 
 sys.modules["llm_models.specialized_llm"].SpecializedLLM = _Special
-sys.modules.setdefault("nn_models.agent_nn", types.ModuleType("agent_nn"))
-setattr(sys.modules["nn_models.agent_nn"], "AgentNN", object)
-setattr(sys.modules["nn_models.agent_nn"], "TaskMetrics", object)
+sys.modules.setdefault("nn_models.agent_nn_v2", types.ModuleType("agent_nn_v2"))
+setattr(sys.modules["nn_models.agent_nn_v2"], "AgentNN", object)
+setattr(sys.modules["nn_models.agent_nn_v2"], "TaskMetrics", object)
 sys.modules.setdefault(
     "agents.agent_communication", types.ModuleType("agent_communication")
 )

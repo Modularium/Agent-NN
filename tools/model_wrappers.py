@@ -89,7 +89,7 @@ class DynamicArchitectureWrapper(BaseModelTool):
 
 
 class AgentNNWrapper(BaseModelTool):
-    """Wrapper for ``nn_models.agent_nn``."""
+    """Wrapper for ``nn_models.agent_nn_v2``."""
 
     description = "AgentNN base model"
 
@@ -100,7 +100,7 @@ class AgentNNWrapper(BaseModelTool):
             return {"error": "torch not installed"}
         import torch
 
-        from nn_models.agent_nn import AgentNN
+        from nn_models.agent_nn_v2 import AgentNN
 
         model = AgentNN()
         x = torch.zeros(1, 768)

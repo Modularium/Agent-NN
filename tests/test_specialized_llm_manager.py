@@ -5,7 +5,7 @@ import shutil
 import os
 from datetime import datetime
 from managers.specialized_llm_manager import SpecializedLLMManager
-from nn_models.agent_nn import TaskMetrics
+from nn_models.agent_nn_v2 import TaskMetrics
 
 class TestSpecializedLLMManager(unittest.TestCase):
     def setUp(self):

@@ -2,7 +2,7 @@ import unittest
 import torch
 import os
 import tempfile
-from nn_models.agent_nn import AgentNN, TaskMetrics
+from nn_models.agent_nn_v2 import AgentNN, TaskMetrics
 
 class TestAgentNN(unittest.TestCase):
     def setUp(self):

@@ -32,13 +32,28 @@ find_compose_file() {
     )
 
     for f in "${search_paths[@]}"; do
-        if [[ -f "$f" ]]; then
+        if [ -f "$f" ]; then
             echo "$f"
             return 0
         fi
     done
 
-    if [[ -f "$REPO_ROOT/${name}.example" ]]; then
+    # Wenn Standard-Datei nicht existiert, nach Alternativen suchen
+    if [[ "$name" == "docker-compose.yml" ]]; then
+        mapfile -t alternatives < <(find "$REPO_ROOT" -maxdepth 1 -name 'docker-compose*.yml' ! -name 'docker-compose.yml' 2>/dev/null)
+        if [[ ${#alternatives[@]} -gt 0 ]]; then
+            if [[ ${#alternatives[@]} -gt 1 ]]; then
+                log_warn "Mehrere Compose-Dateien gefunden: ${alternatives[*]}"
+                log_warn "Keine ausgewählt, verwende ${alternatives[0]}"
+            else
+                log_info "Verwende Compose-Datei ${alternatives[0]}"
+            fi
+            echo "${alternatives[0]}"
+            return 0
+        fi
+    fi
+
+    if [ -f "$REPO_ROOT/${name}.example" ]; then
         log_err "Docker Compose Datei nicht gefunden: $name"
         log_err "Erstelle sie aus ${name}.example"
     else

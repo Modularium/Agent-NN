@@ -317,6 +317,7 @@ main() {
             log_err "Frontend-Build fehlgeschlagen. Setup abgebrochen."
             exit 1
         fi
+        cd "$REPO_ROOT"
     fi
     
     # Docker-Services starten

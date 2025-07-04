@@ -1,102 +1,126 @@
 // src/components/ui/Button.tsx
-import React, { forwardRef, ReactNode } from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/utils/cn'
+import React from 'react'
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 rounded-lg gap-2",
-  {
-    variants: {
-      variant: {
-        default: "bg-blue-600 text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 shadow-blue-600/25",
-        destructive: "bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800 shadow-red-600/25",
-        outline: "border border-gray-300 bg-white text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100",
-        secondary: "bg-gray-100 text-gray-900 shadow-sm hover:bg-gray-200 active:bg-gray-300",
-        ghost: "text-gray-700 hover:bg-gray-100 active:bg-gray-200",
-        success: "bg-green-600 text-white shadow-sm hover:bg-green-700 active:bg-green-800 shadow-green-600/25",
-        warning: "bg-yellow-600 text-white shadow-sm hover:bg-yellow-700 active:bg-yellow-800 shadow-yellow-600/25"
-      },
-      size: {
-        default: "h-10 px-4 py-2 text-sm",
-        sm: "h-8 px-3 py-1.5 text-xs",
-        lg: "h-12 px-6 py-3 text-base",
-        xl: "h-14 px-8 py-4 text-lg",
-        icon: "h-10 w-10"
-      },
-      fullWidth: {
-        true: "w-full"
-      }
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default"
-    }
-  }
-)
-
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+interface ButtonProps {
+  children: React.ReactNode
+  variant?: 'primary' | 'secondary' | 'danger' | 'success'
+  size?: 'sm' | 'md' | 'lg'
+  disabled?: boolean
   loading?: boolean
-  leftIcon?: ReactNode
-  rightIcon?: ReactNode
-  children?: ReactNode
+  onClick?: () => void
+  className?: string
+  type?: 'button' | 'submit' | 'reset'
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ 
-    className, 
-    variant, 
-    size, 
-    fullWidth,
-    loading = false, 
-    disabled, 
-    leftIcon, 
-    rightIcon, 
-    children, 
-    ...props 
-  }, ref) => {
-    const isDisabled = disabled || loading
-
-    return (
-      <button
-        className={cn(buttonVariants({ variant, size, fullWidth, className }))}
-        ref={ref}
-        disabled={isDisabled}
-        aria-disabled={isDisabled}
-        {...props}
-      >
-        {loading && (
-          <svg
-            className="animate-spin h-4 w-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-        )}
-        {!loading && leftIcon && leftIcon}
-        {children}
-        {!loading && rightIcon && rightIcon}
-      </button>
-    )
+export function Button({ 
+  children, 
+  variant = 'primary', 
+  size = 'md', 
+  disabled = false, 
+  loading = false, 
+  onClick, 
+  className = '',
+  type = 'button'
+}: ButtonProps) {
+  const baseStyles = 'font-medium rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
+  
+  const variants = {
+    primary: 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700 focus:ring-blue-500 shadow-lg shadow-blue-500/25',
+    secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500 border border-gray-300',
+    danger: 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 focus:ring-red-500 shadow-lg shadow-red-500/25',
+    success: 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 focus:ring-green-500 shadow-lg shadow-green-500/25'
   }
-)
+  
+  const sizes = {
+    sm: 'px-3 py-1.5 text-sm',
+    md: 'px-4 py-2',
+    lg: 'px-6 py-3 text-lg'
+  }
 
-Button.displayName = "Button"
+  return (
+    <button
+      type={type}
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      disabled={disabled || loading}
+      onClick={onClick}
+    >
+      {loading && (
+        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+      )}
+      {children}
+    </button>
+  )
+}
 
-export { Button, buttonVariants }
+// src/components/ui/Card.tsx
+import React from 'react'
+
+interface CardProps {
+  children: React.ReactNode
+  title?: string
+  subtitle?: string
+  padding?: 'sm' | 'md' | 'lg'
+  hover?: boolean
+  className?: string
+}
+
+export function Card({ 
+  children, 
+  title, 
+  subtitle, 
+  padding = 'md', 
+  hover = false, 
+  className = '' 
+}: CardProps) {
+  const paddings = {
+    sm: 'p-4',
+    md: 'p-6',
+    lg: 'p-8'
+  }
+
+  return (
+    <div className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 ${paddings[padding]} ${
+      hover ? 'hover:shadow-lg transition-shadow duration-200' : 'shadow-sm'
+    } ${className}`}>
+      {(title || subtitle) && (
+        <div className="mb-4">
+          {title && <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>}
+          {subtitle && <p className="text-gray-600 dark:text-gray-400">{subtitle}</p>}
+        </div>
+      )}
+      {children}
+    </div>
+  )
+}
+
+// src/components/ui/LoadingSpinner.tsx
+import React from 'react'
+
+interface LoadingSpinnerProps {
+  size?: 'sm' | 'md' | 'lg'
+  color?: 'blue' | 'gray' | 'white'
+  className?: string
+}
+
+export function LoadingSpinner({ size = 'md', color = 'blue', className = '' }: LoadingSpinnerProps) {
+  const sizes = {
+    sm: 'w-4 h-4',
+    md: 'w-6 h-6',
+    lg: 'w-8 h-8'
+  }
+  
+  const colors = {
+    blue: 'border-blue-500 border-t-transparent',
+    gray: 'border-gray-500 border-t-transparent',
+    white: 'border-white border-t-transparent'
+  }
+
+  return (
+    <div className={`${sizes[size]} border-2 ${colors[color]} rounded-full animate-spin ${className}`}></div>
+  )
+}
+
+// src/components/ui/index.ts
+export { Button } from './Button'
+export { Card } from './Card'
+export { LoadingSpinner } from './LoadingSpinner'

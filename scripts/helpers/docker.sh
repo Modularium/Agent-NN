@@ -8,12 +8,44 @@ if [[ -z "${HELPERS_DIR:-}" ]]; then
     HELPERS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
+# Repository-Wurzel ableiten, falls nicht gesetzt
+if [[ -z "${REPO_ROOT:-}" ]]; then
+    REPO_ROOT="$(cd "$HELPERS_DIR/../.." && pwd)"
+fi
+
 # Source common.sh from the helpers directory
 source "$HELPERS_DIR/common.sh"
 
 # Globale Docker-Variablen
 DOCKER_COMPOSE_COMMAND=""
 DOCKER_COMPOSE_VERSION=""
+
+find_compose_file() {
+    local name="${1:-docker-compose.yml}"
+
+    local search_paths=(
+        "$PWD/$name"
+        "$REPO_ROOT/$name"
+        "$REPO_ROOT/scripts/$name"
+        "$REPO_ROOT/deploy/$name"
+        "$REPO_ROOT/docker/$name"
+    )
+
+    for f in "${search_paths[@]}"; do
+        if [[ -f "$f" ]]; then
+            echo "$f"
+            return 0
+        fi
+    done
+
+    if [[ -f "$REPO_ROOT/${name}.example" ]]; then
+        log_err "Docker Compose Datei nicht gefunden: $name"
+        log_err "Erstelle sie aus ${name}.example"
+    else
+        log_err "Docker Compose Datei nicht gefunden: $name"
+    fi
+    return 1
+}
 
 detect_docker_compose() {
     log_info "Erkenne Docker Compose..."
@@ -22,6 +54,7 @@ detect_docker_compose() {
     if docker compose version &>/dev/null; then
         DOCKER_COMPOSE_COMMAND="docker compose"
         DOCKER_COMPOSE_VERSION=$(docker compose version --short 2>/dev/null || echo "unknown")
+        alias dc="docker compose"
         log_ok "Docker Compose Plugin erkannt (v$DOCKER_COMPOSE_VERSION)"
         return 0
     fi
@@ -30,6 +63,7 @@ detect_docker_compose() {
     if command -v docker-compose &>/dev/null; then
         DOCKER_COMPOSE_COMMAND="docker-compose"
         DOCKER_COMPOSE_VERSION=$(docker-compose version --short 2>/dev/null || echo "unknown")
+        alias dc="docker-compose"
         log_ok "Docker Compose Classic erkannt (v$DOCKER_COMPOSE_VERSION)"
         return 0
     fi
@@ -58,6 +92,10 @@ check_docker() {
         log_err "  sudo usermod -aG docker \$USER"
         return 1
     fi
+
+    if [[ ! -S /var/run/docker.sock ]]; then
+        log_warn "docker.sock nicht verfügbar oder keine Berechtigung"
+    fi
     
     log_ok "Docker ist verfügbar ($(docker --version))"
     
@@ -78,10 +116,7 @@ docker_compose_up() {
         fi
     fi
     
-    if [[ ! -f "$compose_file" ]]; then
-        log_err "Docker Compose Datei nicht gefunden: $compose_file"
-        return 1
-    fi
+    compose_file=$(find_compose_file "$compose_file") || return 1
     
     log_info "Starte Docker-Services mit $DOCKER_COMPOSE_COMMAND..."
     log_debug "Compose-Datei: $compose_file"
@@ -105,6 +140,7 @@ docker_compose_up() {
     
     if eval "$cmd"; then
         log_ok "Docker-Services gestartet"
+        docker ps --format "table {{.Names}}\t{{.Status}}" || true
         return 0
     else
         log_err "Fehler beim Starten der Docker-Services"
@@ -121,6 +157,8 @@ docker_compose_down() {
         fi
     fi
     
+    compose_file=$(find_compose_file "$compose_file") || return 1
+
     log_info "Stoppe Docker-Services..."
     
     local cmd="$DOCKER_COMPOSE_COMMAND"

@@ -11,6 +11,9 @@ from .commands.tasks import register as register_tasks, task_app
 from .commands.model import register as register_model
 from .commands.config_cmd import register as register_config
 from .commands.governance import register as register_governance
+from .commands.feedback import feedback_app
+from .commands.tools import tools_app
+from .commands.train import train_app
 from .commands.agentctl import register as register_agentctl
 from .commands.dispatch import register as register_dispatch
 from .commands.context import context_app
@@ -30,6 +33,9 @@ app.add_typer(context_app, name="context")
 app.add_typer(prompt_app, name="prompt")
 app.add_typer(template_app, name="template")
 app.add_typer(quickstart_app, name="quickstart")
+app.add_typer(feedback_app, name="feedback")
+app.add_typer(tools_app, name="tools")
+app.add_typer(train_app, name="train")
 register_tasks(app)
 register_model(app)
 register_config(app)

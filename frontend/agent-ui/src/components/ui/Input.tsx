@@ -43,11 +43,24 @@ export function Input({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           disabled={disabled}
-          className={`w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all ${
+          className={`w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:shadow-focus outline-none transition-all ${
             icon ? 'pl-10' : ''
-          } ${error ? 'border-red-500 focus:ring-red-500' : ''} ${
+          } ${error ? 'border-red-500 focus:shadow-red' : ''} ${
             disabled ? 'bg-gray-50 dark:bg-gray-800 cursor-not-allowed' : ''
           }`}
+          style={{
+            boxShadow: error ? 'none' : undefined
+          }}
+          onFocus={(e) => {
+            if (!error) {
+              e.target.style.boxShadow = '0 0 0 2px #3b82f6'
+            } else {
+              e.target.style.boxShadow = '0 0 0 2px #ef4444'
+            }
+          }}
+          onBlur={(e) => {
+            e.target.style.boxShadow = 'none'
+          }}
         />
       </div>
       {error && (

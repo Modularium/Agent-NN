@@ -8,7 +8,7 @@ if [[ -z "${SCRIPT_DIR:-}" ]]; then
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
-source "$SCRIPT_DIR/common.sh"
+source "$SCRIPT_DIR/helpers/common.sh"
 
 readonly FRONTEND_DIR="$SCRIPT_DIR/../../frontend/agent-ui"
 readonly TARGET_DIST="$SCRIPT_DIR/../../frontend/dist"

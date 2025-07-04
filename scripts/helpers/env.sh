@@ -8,7 +8,7 @@ if [[ -z "${SCRIPT_DIR:-}" ]]; then
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
-source "$SCRIPT_DIR/helpers/common.sh"
+source "$SCRIPT_DIR/common.sh"
 
 check_env_file() {
     local env_file="${1:-.env}"

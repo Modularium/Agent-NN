@@ -5,10 +5,11 @@ Agent-NN ist ein Multi-Agent-System mit integrierten neuronalen Netzen. Jeder Se
 
 Aktuelle Version: **v1.0.3** – Flowise-Export und Dokumentation aktualisiert.
 
-## \ud83d\udd27 Schnelles Setup
+## Quick Start
+
 ```bash
 # Voraussetzung: Docker, Node.js, Python 3.10+, Poetry
-git clone https://github.com/EcoSphereNetwork/Agent-NN
+git clone https://github.com/EcoSphereNetwork/Agent-NNQuick Star
 cd Agent-NN
 ./scripts/setup.sh
 ```

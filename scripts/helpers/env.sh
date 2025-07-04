@@ -3,10 +3,12 @@
 
 set -euo pipefail
 
-# Get the directory where this script (env.sh) is located
-HELPERS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Only set HELPERS_DIR if it's not already set
+if [[ -z "${HELPERS_DIR:-}" ]]; then
+    HELPERS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
 
-# Source common.sh from the same directory as this helper
+# Source common.sh from the helpers directory
 source "$HELPERS_DIR/common.sh"
 
 check_env_file() {

@@ -1,4 +1,5 @@
 """Governance and contract related commands."""
+
 from __future__ import annotations
 
 import json
@@ -14,8 +15,13 @@ from core.trust_evaluator import calculate_trust, eligible_for_role
 from core.audit_log import AuditEntry, AuditLog
 from core.privacy_filter import redact_context
 from core.model_context import ModelContext, TaskContext
-from core.trust_network import AgentRecommendation, record_recommendation, load_recommendations
+from core.trust_network import (
+    AgentRecommendation,
+    record_recommendation,
+    load_recommendations,
+)
 from core.trust_circle import is_trusted_for
+from core.voting import ProposalVote, record_vote, load_votes
 
 contract_app = typer.Typer(name="contract", help="Governance contracts")
 trust_app = typer.Typer(name="trust", help="Trust management")
@@ -23,6 +29,7 @@ privacy_app = typer.Typer(name="privacy", help="Privacy tools")
 audit_app = typer.Typer(name="audit", help="Audit utilities")
 auth_app = typer.Typer(name="auth", help="Authorization utilities")
 role_app = typer.Typer(name="role", help="Role utilities")
+governance_app = typer.Typer(name="governance", help="High level governance utilities")
 
 
 @contract_app.command("view")
@@ -67,7 +74,9 @@ def trust_score(agent: str) -> None:
 def trust_eligible(agent: str, for_role: str = typer.Option(..., "--for")) -> None:
     """Check if AGENT may be elevated to FOR_ROLE."""
     allowed = eligible_for_role(agent, for_role)
-    typer.echo(json.dumps({"agent": agent, "role": for_role, "eligible": allowed}, indent=2))
+    typer.echo(
+        json.dumps({"agent": agent, "role": for_role, "eligible": allowed}, indent=2)
+    )
 
 
 @trust_app.command("endorse")
@@ -169,12 +178,46 @@ def role_limits(role: str) -> None:
     typer.echo(json.dumps({role: ROLE_CAPABILITIES.get(role, {})}, indent=2))
 
 
+@governance_app.command("vote")
+def governance_vote(
+    proposal: str,
+    agent: str = typer.Option(..., "--agent"),
+    decision: str = typer.Option(..., "--decision", help="yes|no"),
+    comment: str = typer.Option(None, "--comment"),
+) -> None:
+    """Record a vote for ``proposal`` by ``agent``."""
+    vote = ProposalVote(
+        proposal_id=proposal,
+        agent_id=agent,
+        decision=decision,
+        comment=comment,
+        created_at=datetime.utcnow().isoformat(),
+    )
+    record_vote(vote)
+    typer.echo("recorded")
+
+
+@governance_app.command("log")
+def governance_log(proposal: str) -> None:
+    """Show all votes for ``proposal``."""
+    votes = [asdict(v) for v in load_votes(proposal)]
+    typer.echo(json.dumps(votes, indent=2))
+
+
+@governance_app.command("audit")
+def governance_audit() -> None:
+    """Alias for :func:`contract_audit`."""
+    contract_audit()
+
+
 def register(app: typer.Typer) -> None:
-    app.add_typer(contract_app)
-    app.add_typer(trust_app)
-    app.add_typer(privacy_app)
-    app.add_typer(audit_app)
-    app.add_typer(auth_app)
-    app.add_typer(role_app)
+    app.add_typer(governance_app)
+    governance_app.add_typer(contract_app)
+    governance_app.add_typer(trust_app)
+    governance_app.add_typer(privacy_app)
+    governance_app.add_typer(audit_app)
+    governance_app.add_typer(auth_app)
+    governance_app.add_typer(role_app)
+
 
 __all__ = ["register"]

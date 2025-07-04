@@ -21,6 +21,7 @@ from .commands.prompt import prompt_app
 from .commands.template import template_app
 from .commands.quickstart import quickstart_app
 from .commands.dev import dev_app
+from .commands.mcp import mcp_app
 
 app = typer.Typer()
 
@@ -38,6 +39,7 @@ app.add_typer(feedback_app, name="feedback")
 app.add_typer(tools_app, name="tools")
 app.add_typer(train_app, name="train")
 app.add_typer(dev_app, name="dev")
+app.add_typer(mcp_app, name="mcp")
 register_tasks(app)
 register_model(app)
 register_config(app)

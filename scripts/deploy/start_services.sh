@@ -1,7 +1,33 @@
 #!/usr/bin/env sh
 # Start all Docker services with basic health and environment checks
 
-set -e
+set -eu
+
+usage() {
+    echo "Usage: $(basename "$0") [--build] [--dry-run]" >&2
+}
+
+BUILD=false
+DRY=false
+for arg in "$@"; do
+    case $arg in
+        --help)
+            usage
+            exit 0
+            ;;
+        --build)
+            BUILD=true
+            ;;
+        --dry-run)
+            DRY=true
+            ;;
+        *)
+            echo "Unknown option: $arg" >&2
+            usage
+            exit 1
+            ;;
+    esac
+done
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")/.."
@@ -25,7 +51,14 @@ check_port() {
 check_port 8000
 check_port 3000
 
-docker compose up -d
+CMD="docker compose up -d"
+if $BUILD; then
+    CMD="docker compose up --build -d"
+fi
+echo "Running: $CMD"
+if ! $DRY; then
+    eval "$CMD"
+fi
 
 echo "Services started"
 

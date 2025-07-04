@@ -4,10 +4,17 @@
 # Copies are skipped if Vite already builds into the target directory.
 # Pass --clean to remove the dist folder before building.
 
-set -e
+set -eu
+
+usage() {
+    echo "Usage: $(basename "$0") [--clean]" >&2
+}
 
 CLEAN=false
-if [ "$1" = "--clean" ]; then
+if [ "${1:-}" = "--help" ]; then
+    usage
+    exit 0
+elif [ "${1:-}" = "--clean" ]; then
     CLEAN=true
 fi
 
@@ -15,6 +22,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")/.."
 FRONTEND_DIR="$REPO_ROOT/frontend/agent-ui"
 DIST_DIR="$REPO_ROOT/frontend/dist"
+echo "Building frontend in $FRONTEND_DIR"
 cd "$FRONTEND_DIR"
 
 if [ ! -f package.json ]; then

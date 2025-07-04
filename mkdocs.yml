@@ -51,6 +51,8 @@ nav:
     - Installation: getting-started/installation.md
     - Quick Start: getting-started/quickstart.md
     - Configuration: getting-started/configuration.md
+  - Setup Guide: setup.md
+  - Scripts: scripts.md
   - Core Concepts:
     - Architecture: concepts/architecture.md
     - Multi-Agent Execution: architecture/multi_agent.md

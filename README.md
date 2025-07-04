@@ -6,7 +6,10 @@ Aktuelle Version: **v1.0.3** – Flowise-Export und Dokumentation aktualisiert.
 
 ## Systemvoraussetzungen
 
-- Python 3.9 oder neuer
+- Python 3.10 oder neuer
+- Node.js 18+
+- Docker und Docker Compose
+- Poetry 1.5+
 - Mindestens 4 GB RAM
 
 ## Komponentenübersicht
@@ -43,24 +46,11 @@ graph TD
    git clone https://github.com/EcoSphereNetwork/Agent-NN.git
    cd Agent-NN
    ```
-2. Abhängigkeiten mit Poetry installieren und Beispielkonfiguration kopieren
+2. One-Line-Setup ausführen
    ```bash
-   poetry install
-   cp .env.example .env
+   ./scripts/setup.sh
    ```
-3. (Optional) Lokale Modelle herunterladen
-   ```bash
-   python scripts/setup_local_models.py --model all
-   ```
-4. Frontend bauen
-   ```bash
-   ./scripts/deploy/build_frontend.sh
-   ```
-5. Dienste starten
-   ```bash
-   ./scripts/deploy/start_services.sh
-   ```
-6. Erste Anfrage stellen oder UI öffnen
+3. Erste Anfrage stellen oder UI öffnen
    ```bash
    curl -X POST http://localhost:8000/task -H "Content-Type: application/json" \
      -d '{"task_type": "chat", "input": "Hallo"}'
@@ -83,6 +73,7 @@ docker compose up --build
 | `scripts/build_and_test.sh` | Erstellt ein Docker-Image und führt Tests aus |
 | `scripts/deploy_to_registry.sh` | Publiziert Images in ein Container-Registry |
 | `scripts/start_mcp.sh` | Startet das Microservice-Compose-Setup |
+| `scripts/setup.sh` | Komplettes Setup in einem Schritt |
 
 ## Poetry-Workflow
 

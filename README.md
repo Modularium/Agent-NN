@@ -1,5 +1,340 @@
 # Agent-NN 
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
+![Docker](https://img.shields.io/badge/docker-compose-blue)
+![Python](https://img.shields.io/badge/python-3.9+-green)
+![Node](https://img.shields.io/badge/node.js-18+-green)
+
+Agent-NN ist ein Multi-Agent-System mit integrierten neuronalen Netzen. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen. Neben den Backend-Diensten stellt das Projekt ein Python‑SDK, eine CLI und ein React-basiertes Frontend bereit.
+
+**Aktuelle Version:** v1.0.3 – Robuste Setup-Skripte und verbesserte Docker-Kompatibilität
+
+## 🚀 Quick Start
+
+```bash
+# Klonen und Setup in einem Schritt
+git clone https://github.com/EcoSphereNetwork/Agent-NN.git
+cd Agent-NN
+./scripts/setup.sh
+```
+
+Das war's! Das Setup-Skript erkennt automatisch Ihr System und installiert alle Abhängigkeiten.
+
+## 📋 Systemvoraussetzungen
+
+### Erforderlich
+- **Python 3.9+** mit Poetry
+- **Node.js 18+** mit npm
+- **Docker** mit Docker Compose (Plugin oder Classic)
+- **Git**
+
+### Empfohlen
+- **4+ GB RAM** (8 GB für größere Modelle)
+- **2+ CPU Cores**
+- **5+ GB freier Speicherplatz**
+
+### Plattformkompatibilität
+✅ Ubuntu 20.04+  
+✅ macOS 11+  
+✅ Windows 10+ (WSL2)  
+✅ Debian 11+  
+✅ CentOS/RHEL 8+  
+
+### Docker Compose Unterstützung
+Das Setup-System erkennt automatisch:
+- **Docker Compose Plugin** (`docker compose`) - Moderne Variante
+- **Docker Compose Classic** (`docker-compose`) - Legacy-Variante
+
+## 🏗️ Installation
+
+### Automatisches Setup (Empfohlen)
+```bash
+# Vollständiges Setup mit allen Prüfungen
+./scripts/setup.sh
+
+# Setup-Optionen
+./scripts/setup.sh --help              # Hilfe anzeigen
+./scripts/setup.sh --check-only        # Nur Umgebung prüfen
+./scripts/setup.sh --no-docker         # Ohne Docker-Start
+./scripts/setup.sh --verbose           # Ausführliche Ausgabe
+./scripts/setup.sh --clean             # Entwicklungsumgebung zurücksetzen
+```
+
+### Manuelles Setup
+```bash
+# 1. Repository klonen
+git clone https://github.com/EcoSphereNetwork/Agent-NN.git
+cd Agent-NN
+
+# 2. Umgebung vorbereiten
+cp .env.example .env  # Konfiguration anpassen!
+
+# 3. Python-Abhängigkeiten
+poetry install
+
+# 4. Frontend bauen
+cd frontend/agent-ui
+npm install && npm run build
+cd ../..
+
+# 5. Services starten
+docker compose up --build -d
+```
+
+### Troubleshooting häufiger Probleme
+
+#### Docker Compose Fehler
+```bash
+# Plugin vs. Classic erkennen
+docker compose version    # Plugin (empfohlen)
+docker-compose version    # Classic
+
+# Bei Problemen mit Classic:
+pip install docker-compose
+
+# Bei Problemen mit Plugin:
+# Folge der Docker-Dokumentation für dein System
+```
+
+#### Port-Konflikte
+```bash
+# Prüfe belegte Ports
+./scripts/setup.sh --check-only
+
+# Alternative: Ports in docker-compose.yml ändern
+nano docker-compose.yml
+```
+
+#### Abhängigkeits-Probleme
+```bash
+# Ubuntu/Debian
+sudo apt update && sudo apt install python3 python3-pip nodejs npm docker.io docker-compose-plugin git
+
+# macOS
+brew install python node docker git
+
+# Windows (PowerShell als Administrator)
+# Installiere Docker Desktop, Python, Node.js manuell
+```
+
+## 🔧 Konfiguration
+
+### Umgebungsvariablen (.env)
+```bash
+# API-Schlüssel
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Datenbank
+DATABASE_URL=postgresql://postgres:postgres@db:5432/agent_nn
+
+# LLM-Konfiguration
+LLM_BACKEND=openai          # openai|lmstudio|local
+LLM_MODEL=gpt-3.5-turbo
+LLM_TEMPERATURE=0.7
+
+# Sicherheit
+AUTH_ENABLED=false          # In Produktion: true
+JWT_SECRET=your_jwt_secret_here
+
+# Docker-Ports (bei Konflikten anpassen)
+API_PORT=8000
+FRONTEND_PORT=3000
+DB_PORT=5432
+REDIS_PORT=6379
+```
+
+Vollständige Konfigurationsreferenz: [docs/config_reference.md](docs/config_reference.md)
+
+## 🐳 Docker-Deployment
+
+### Entwicklung
+```bash
+# Standard-Setup
+docker compose up --build -d
+
+# Mit spezifischer Compose-Datei
+docker compose -f docker-compose.yml up --build -d
+
+# Services stoppen
+docker compose down
+
+# Volumes und Daten zurücksetzen
+./scripts/setup.sh --clean
+```
+
+### Produktion
+```bash
+# Produktions-Setup
+cp .env.production .env
+docker compose -f docker-compose.production.yml up -d
+
+# Monitoring einrichten
+docker compose -f docker-compose.monitoring.yml up -d
+```
+
+### Kubernetes (Helm)
+```bash
+# Namespace erstellen und Chart installieren
+helm install agent-nn deploy/k8s/helm/agent-nn \
+  -n agent-nn --create-namespace \
+  --set gateway.apiKey="your-secure-key"
+```
+
+## 💻 CLI und SDK
+
+### CLI installieren und verwenden
+```bash
+# Nach Poetry-Installation verfügbar
+poetry run agentnn --help
+
+# Häufige Befehle
+poetry run agentnn agents              # Verfügbare Agents
+poetry run agentnn sessions            # Aktive Sessions
+poetry run agentnn config check        # Konfiguration prüfen
+```
+
+### Python-SDK
+```python
+from sdk.client import AgentNNClient
+
+client = AgentNNClient(base_url="http://localhost:8000")
+response = client.send_task("chat", {"input": "Hallo Agent-NN!"})
+print(response)
+```
+
+## 📊 Überwachung und Logs
+
+### Services überwachen
+```bash
+# Service-Status prüfen
+docker compose ps
+
+# Logs anzeigen
+docker compose logs -f api_gateway     # Specific service
+docker compose logs -f                 # All services
+
+# Prometheus-Metriken
+open http://localhost:9090
+```
+
+### Log-Dateien
+- **Setup-Logs:** `logs/setup.log`
+- **Service-Logs:** `logs/` (Docker-Volumes)
+- **Frontend-Logs:** Browser-Konsole
+
+## 🧪 Tests ausführen
+
+```bash
+# Vollständige Test-Suite
+poetry run pytest
+
+# Mit Coverage
+poetry run pytest --cov=agentnn
+
+# Nur bestimmte Tests
+poetry run pytest tests/test_setup.py
+
+# Linting und Code-Quality
+poetry run ruff check .
+poetry run mypy mcp
+```
+
+## 🔍 Fehlerdiagnose
+
+### Allgemeine Probleme
+
+1. **Setup schlägt fehl:**
+   ```bash
+   ./scripts/setup.sh --verbose  # Detaillierte Ausgabe
+   ./scripts/setup.sh --check-only  # Nur Prüfungen
+   ```
+
+2. **Docker-Services starten nicht:**
+   ```bash
+   docker compose logs            # Fehler-Logs anzeigen
+   docker system prune            # Docker-Cache leeren
+   ```
+
+3. **Frontend nicht erreichbar:**
+   ```bash
+   cd frontend/agent-ui
+   npm run build                  # Manuell bauen
+   ```
+
+4. **Port-Konflikte:**
+   ```bash
+   lsof -i :8000                  # Prüfen wer Port nutzt
+   # Oder Ports in docker-compose.yml ändern
+   ```
+
+### Debug-Modus
+```bash
+export DEBUG=1
+./scripts/setup.sh --verbose
+```
+
+## 🤝 Entwicklung und Beiträge
+
+### Entwicklungsumgebung
+```bash
+# Development-Setup
+poetry install
+poetry shell
+
+# Pre-commit hooks
+pre-commit install
+
+# Tests vor Commit
+poetry run pytest
+poetry run ruff check .
+poetry run mypy mcp
+```
+
+### Code-Style
+- **Python:** Ruff + MyPy
+- **JavaScript/TypeScript:** ESLint + Prettier
+- **Shell:** ShellCheck
+
+Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für Details.
+
+## 📚 Dokumentation
+
+- **[Konfiguration](docs/config_reference.md)** - Vollständige Konfigurationsreferenz
+- **[Deployment](docs/deployment.md)** - Produktions-Deployment
+- **[API-Dokumentation](docs/api/)** - REST-API-Referenz
+- **[Integrationen](docs/integrations/)** - n8n, Flowise, etc.
+- **[Troubleshooting](docs/troubleshooting.md)** - Häufige Probleme lösen
+
+## 🚧 Roadmap
+
+- [ ] **v1.1:** Verbessertes Monitoring & Alerting
+- [ ] **v1.2:** Erweiterte LLM-Provider-Unterstützung
+- [ ] **v1.3:** Auto-Scaling für Docker/K8s
+- [ ] **v2.0:** Graph-basierte Agent-Workflows
+
+Siehe [ROADMAP.md](ROADMAP.md) für Details.
+
+## 📄 Lizenz
+
+MIT License - siehe [LICENSE](LICENSE) für Details.
+
+## 🆘 Support
+
+- **GitHub Issues:** [Neue Issue erstellen](https://github.com/EcoSphereNetwork/Agent-NN/issues)
+- **Diskussionen:** [GitHub Discussions](https://github.com/EcoSphereNetwork/Agent-NN/discussions)
+- **Dokumentation:** [docs/](docs/)
+
+---
+
+**Agent-NN:** Robuste Multi-Agent-KI für moderne Anwendungen 🤖✨
+
+---
+---
+
+# OLD README:
+---
+
+# Agent-NN 
+![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
 Agent-NN ist ein Multi-Agent-System mit integrierten neuronalen Netzen. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen. Neben den Backend-Diensten stellt das Projekt ein Python‑SDK, eine CLI und ein React-basiertes Frontend bereit. Weitere Dokumentation befindet sich im Ordner [docs/](docs/).
 

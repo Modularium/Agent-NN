@@ -161,3 +161,13 @@ verwendet werden. Das Flag `--complete` ergänzt fehlende Felder automatisch.
 - `--preset` lädt gespeicherte Einstellungen aus `~/.agentnn/presets/`.
 - `--last` nutzt die zuletzt verwendete Vorlage erneut.
 - Abgebrochene Wizards lassen sich jederzeit neu starten.
+
+## MCP Utilities
+
+The `mcp` subcommand bundles tools for the Model Context Protocol.
+
+```bash
+agentnn mcp serve --port 8090
+agentnn mcp register-endpoint demo http://mcp.example.com
+agentnn mcp invoke demo.text-analyzer --input '{"text": "Hi"}'
+```

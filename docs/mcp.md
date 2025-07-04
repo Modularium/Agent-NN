@@ -38,3 +38,35 @@ curl -X POST http://localhost:9000/v1/mcp/execute \
      -H "Content-Type: application/json" \
      -d '{"task_context": {"task_type": "chat", "description": "Hello"}}'
 ```
+
+## Additional Endpoints
+
+The server now exposes further MCP routes to control the system:
+
+- `POST /v1/mcp/agent/register` – register an agent
+- `GET /v1/mcp/agent/list` – list all agents
+- `GET /v1/mcp/agent/info/{name}` – details for one agent
+- `POST /v1/mcp/session/start` – create a session
+- `GET /v1/mcp/session/status/{id}` – session status
+- `POST /v1/mcp/session/restore/{snapshot}` – restore from snapshot
+- `POST /v1/mcp/task/dispatch` – dispatch a task
+- `POST /v1/mcp/task/ask` – simplified alias for dispatch
+- `POST /v1/mcp/prompt/refine` – refine a prompt
+- `GET /v1/mcp/context/map` – context map of stored sessions
+
+Start the server with:
+
+```bash
+agentnn mcp serve --host 0.0.0.0 --port 8090
+```
+
+### Using external MCP tools
+
+Register remote endpoints and invoke tools directly:
+
+```bash
+agentnn mcp register-endpoint demo http://mcp.example.com
+agentnn mcp invoke demo.text-analyzer --input '{"text": "hello"}'
+```
+
+Agents can reference tools via `mcp://` URLs in their configuration.

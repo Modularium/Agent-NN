@@ -9,7 +9,7 @@ Aktuelle Version: **v1.0.3** – Flowise-Export und Dokumentation aktualisiert.
 
 ```bash
 # Voraussetzung: Docker, Node.js, Python 3.10+, Poetry
-git clone https://github.com/EcoSphereNetwork/Agent-NNQuick Star
+git clone https://github.com/EcoSphereNetwork/Agent-NN.git
 cd Agent-NN
 ./scripts/setup.sh
 ```

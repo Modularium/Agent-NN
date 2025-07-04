@@ -2,7 +2,16 @@
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
 Agent-NN ist ein Multi-Agent-System mit integrierten neuronalen Netzen. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen. Neben den Backend-Diensten stellt das Projekt ein Python‑SDK, eine CLI und ein React-basiertes Frontend bereit. Weitere Dokumentation befindet sich im Ordner [docs/](docs/).
+
 Aktuelle Version: **v1.0.3** – Flowise-Export und Dokumentation aktualisiert.
+
+## \ud83d\udd27 Schnelles Setup
+```bash
+# Voraussetzung: Docker, Node.js, Python 3.10+, Poetry
+git clone https://github.com/EcoSphereNetwork/Agent-NN
+cd Agent-NN
+./scripts/setup.sh
+```
 
 ## Systemvoraussetzungen
 
@@ -61,6 +70,9 @@ Alternativ lassen sich alle Dienste per Docker Compose starten:
 ```bash
 docker compose up --build
 ```
+Bei älteren Docker-Versionen heißt der Befehl `docker-compose`. Prüfe mit `docker compose version`, ob das Plugin verfügbar ist.
+
+Zur Fehlersuche helfen `docker ps`, `npm run build` im Frontend-Verzeichnis sowie `poetry shell` für eine interaktive Python-Umgebung. Das Setup wurde unter Ubuntu, macOS und Windows/WSL getestet.
 
 ## Hilfreiche Skripte
 
@@ -108,6 +120,18 @@ agentnn sessions   # aktive Sessions anzeigen
 agentnn feedback   # Feedback-Tools
 agentnn config check  # geladene Konfiguration anzeigen
 ```
+
+## \ud83d\udd0d Anforderungen & Debugging
+
+Dieses Projekt ben\u00f6tigt Python 3.10, Docker, Node.js und Poetry. Installiere die Abh\u00e4ngigkeiten mit:
+
+```bash
+poetry install
+# Falls Fehler auftreten:
+poetry add torch typer fastapi transformers mlflow
+```
+
+F\u00fcr GPU-Nutzung installiere torch mit CUDA-Support: [https://pytorch.org/get-started/locally/](https://pytorch.org/get-started/locally/)
 
 Weitere Details findest du im Ordner [docs/](docs/).
 

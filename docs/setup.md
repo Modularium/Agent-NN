@@ -2,6 +2,16 @@
 
 Dieser Leitfaden beschreibt die Installation von Agent-NN Schritt für Schritt.
 
+## \ud83d\udd27 Schnelles Setup
+```bash
+# Voraussetzung: Docker, Node.js, Python 3.10+, Poetry
+git clone https://github.com/EcoSphereNetwork/Agent-NN
+cd Agent-NN
+./scripts/setup.sh
+```
+
+Das Skript wurde unter Ubuntu, macOS und Windows/WSL getestet.
+
 ## Vorbereitung
 
 * Node.js 18+
@@ -38,6 +48,7 @@ Die Container laufen im Hintergrund. Beende sie mit `docker compose down`.
 ### Docker Compose vs. lokal
 
 Alle Services lassen sich auch direkt mit `docker compose up` starten. Für eine rein lokale Ausführung müssen Redis und Postgres installiert sein.
+Bei älteren Docker-Versionen heißt der Befehl `docker-compose`. Stelle sicher, dass das Compose-Plugin installiert ist oder verwende den Legacy-Befehl.
 
 ## Umgebungsvariablen
 
@@ -50,4 +61,7 @@ Alle benötigten Variablen sind in `.env.example` dokumentiert. Kopiere diese Da
 
 **Ports bereits belegt**
 : Passe die Ports in `.env` an oder stoppe den blockierenden Dienst.
+
+**Dienste starten nicht**
+: Prüfe mit `docker ps`, ob die Container laufen. F\u00fchre `npm run build` im Frontend aus und nutze `poetry shell` f\u00fcr weitere Python-Befehle.
 

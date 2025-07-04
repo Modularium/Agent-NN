@@ -47,11 +47,10 @@ export default function App() {
 
   // Initialize app
   useEffect(() => {
-    // Simulate app initialization
     const initializeApp = async () => {
       try {
         // Load user preferences
-        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' || 'light'
+        const savedTheme = (localStorage.getItem('theme') as 'light' | 'dark') || 'light'
         const savedSidebarState = localStorage.getItem('sidebarCollapsed') === 'true'
         
         setAppState(prev => ({
@@ -60,10 +59,8 @@ export default function App() {
           sidebarCollapsed: savedSidebarState
         }))
 
-        // Apply theme
-        if (savedTheme === 'dark') {
-          document.documentElement.classList.add('dark')
-        }
+        // Apply theme to document element (correct for Tailwind dark mode)
+        applyTheme(savedTheme)
 
         // Simulate loading time
         await new Promise(resolve => setTimeout(resolve, 1000))
@@ -78,17 +75,23 @@ export default function App() {
     initializeApp()
   }, [])
 
+  // Apply theme to document element
+  const applyTheme = (theme: 'light' | 'dark') => {
+    const root = document.documentElement
+    
+    if (theme === 'dark') {
+      root.classList.add('dark')
+    } else {
+      root.classList.remove('dark')
+    }
+  }
+
   // Theme toggle
   const toggleTheme = () => {
     const newTheme = appState.theme === 'light' ? 'dark' : 'light'
     setAppState(prev => ({ ...prev, theme: newTheme }))
     localStorage.setItem('theme', newTheme)
-    
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
+    applyTheme(newTheme)
   }
 
   // Sidebar toggle
@@ -142,9 +145,10 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className={`flex h-screen ${appState.theme === 'dark' ? 'dark' : ''} bg-gray-50 dark:bg-gray-900`}>
+      <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
         {/* Mobile Menu Button */}
         <button
+          id="mobile-menu-button"
           className="sm:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
           onClick={() => setMenuOpen(true)}
           aria-label="Open menu"
@@ -162,10 +166,8 @@ export default function App() {
           onToggleCollapse={toggleSidebar}
         />
 
-        {/* Main Content */}
-        <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
-          appState.sidebarCollapsed ? 'ml-0 sm:ml-16' : 'ml-0 sm:ml-64'
-        }`}>
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Header */}
           <Header 
             user={appState.user}

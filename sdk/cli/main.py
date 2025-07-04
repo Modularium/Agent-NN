@@ -20,6 +20,7 @@ from .commands.context import context_app
 from .commands.prompt import prompt_app
 from .commands.template import template_app
 from .commands.quickstart import quickstart_app
+from .commands.dev import dev_app
 
 app = typer.Typer()
 
@@ -36,6 +37,7 @@ app.add_typer(quickstart_app, name="quickstart")
 app.add_typer(feedback_app, name="feedback")
 app.add_typer(tools_app, name="tools")
 app.add_typer(train_app, name="train")
+app.add_typer(dev_app, name="dev")
 register_tasks(app)
 register_model(app)
 register_config(app)

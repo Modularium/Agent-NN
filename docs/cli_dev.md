@@ -41,3 +41,15 @@ agentnn example hello --name Alice
 ```
 
 Weitere Beispiele befinden sich in `docs/cli.md`.
+
+## 🛠 CLI-Dokumentation automatisieren mit `agentnn dev docgen`
+
+Die Referenztabelle in `docs/cli.md` lässt sich automatisch aus dem Code
+generieren. Führe dazu folgenden Befehl im Projektverzeichnis aus:
+
+```bash
+agentnn dev docgen --output docs/cli.md
+```
+
+Der Generator untersucht alle Module unter `sdk/cli/commands/` und aktualisiert
+die Tabelle mit Kommandonamen, Kurzbeschreibung und Quellverweis.

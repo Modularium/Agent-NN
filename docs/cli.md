@@ -5,26 +5,25 @@ Install the project and run `agentnn --help` to see available commands.
 
 ## Subcommands
 
-| Command | Description |
-|---------|-------------|
-| `agent` | inspect and update agent profiles |
-| `session` | manage and track conversation sessions |
-| `task` | queue utilities and task helpers |
-| `queue` | inspect dispatcher queue |
-| `model` | list and switch language models |
-| `context` | export stored context data and context maps |
-| `prompt` | refine prompts and check quality |
-| `template` | manage built‑in templates |
-| `quickstart` | start wizards for agents and sessions |
-| `train` | track training progress |
-| `feedback` | record user feedback |
-| `tools` | inspect available plugins |
-| `config` | show effective configuration |
-| `governance` | governance and trust utilities |
-| `dispatch` | low level dispatcher call |
-| `submit` | submit a task with metadata |
-| `ask` | send a quick chat request |
-| `reset` | remove session history and user data |
+| Command | Description | Source |
+|---------|-------------|--------|
+| `agent` | Agent management | [agent.py](../sdk/cli/commands/agent.py) |
+| `context` | Context utilities | [context.py](../sdk/cli/commands/context.py) |
+| `dev` | Developer utilities | [dev.py](../sdk/cli/commands/dev.py) |
+| `feedback` | Feedback utilities | [feedback.py](../sdk/cli/commands/feedback.py) |
+| `prompt` | Prompt utilities | [prompt.py](../sdk/cli/commands/prompt.py) |
+| `quickstart` | Automated setup helpers | [quickstart.py](../sdk/cli/commands/quickstart.py) |
+| `session` | Session utilities | [session.py](../sdk/cli/commands/session.py) |
+| `template` | Manage templates | [template.py](../sdk/cli/commands/template.py) |
+| `tools` | Tool registry | [tools.py](../sdk/cli/commands/tools.py) |
+| `train` | Training management | [train.py](../sdk/cli/commands/train.py) |
+| `ask` | Send a quick task to the dispatcher. | [root.py](../sdk/cli/commands/root.py) |
+| `promote` | Promote a queued task by id. | [root.py](../sdk/cli/commands/root.py) |
+| `rate` | Submit a peer rating. | [root.py](../sdk/cli/commands/root.py) |
+| `reset` | Delete session history and user configuration. | [root.py](../sdk/cli/commands/root.py) |
+| `sessions` | List active sessions. | [root.py](../sdk/cli/commands/root.py) |
+| `submit` | Submit a task to the dispatcher. | [root.py](../sdk/cli/commands/root.py) |
+| `verify` | Verify the signature of a ModelContext JSON file. | [root.py](../sdk/cli/commands/root.py) |
 
 ## Examples
 
@@ -162,4 +161,3 @@ verwendet werden. Das Flag `--complete` ergänzt fehlende Felder automatisch.
 - `--preset` lädt gespeicherte Einstellungen aus `~/.agentnn/presets/`.
 - `--last` nutzt die zuletzt verwendete Vorlage erneut.
 - Abgebrochene Wizards lassen sich jederzeit neu starten.
-

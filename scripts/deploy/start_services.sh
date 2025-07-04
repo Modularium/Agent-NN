@@ -51,14 +51,23 @@ check_port() {
 check_port 8000
 check_port 3000
 
-CMD="docker compose up -d"
+if command -v docker-compose >/dev/null 2>&1; then
+    DOCKER_CMD="docker-compose"
+else
+    DOCKER_CMD="docker compose"
+fi
+
+CMD="$DOCKER_CMD up -d"
 if $BUILD; then
-    CMD="docker compose up --build -d"
+    CMD="$DOCKER_CMD up --build -d"
 fi
 echo "Running: $CMD"
 if ! $DRY; then
-    eval "$CMD"
+    if ! eval "$CMD"; then
+        echo "\033[1;31m[✗]\033[0m Docker start failed" >&2
+        exit 1
+    fi
 fi
 
-echo "Services started"
+echo "\033[1;32m[✓]\033[0m Services started"
 

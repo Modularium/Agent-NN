@@ -52,6 +52,7 @@ SRC_DIR=$(realpath "$OUT_DIR")
 DEST_DIR=$(realpath "$DIST_DIR")
 if [ "$SRC_DIR" = "$DEST_DIR" ]; then
     echo "[skip] source and destination are identical"
+    exit 0
 else
     cp -r "$SRC_DIR"/* "$DEST_DIR/"
 fi

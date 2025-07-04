@@ -89,6 +89,10 @@ aiohttp = "*"
 structlog = "*"
 cryptography = "*"
 mlflow = "*"
+openai = "*"
+transformers = "*"
+torch = "*"
+scikit-learn = "*"
 
 [tool.poetry.extras]
 sdk = []

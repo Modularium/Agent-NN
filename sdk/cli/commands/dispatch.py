@@ -4,8 +4,7 @@ import sys
 import typer
 
 from core.model_context import ModelContext, TaskContext
-
-from ...client import AgentClient
+from services import dispatch_task
 
 
 def register(app: typer.Typer) -> None:
@@ -33,9 +32,8 @@ def register(app: typer.Typer) -> None:
         if not task:
             typer.echo("missing task")
             raise typer.Exit(1)
-        client = AgentClient()
         ctx = ModelContext(task_context=TaskContext(task_type="chat", description=task))
         if tool:
             ctx.agent_selection = tool
-        result = client.dispatch_task(ctx)
+        result = dispatch_task(ctx)
         typer.echo(json.dumps(result))

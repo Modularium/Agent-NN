@@ -1,12 +1,19 @@
 from tools import ToolRegistry
-from tools.model_wrappers import MultiTaskModelWrapper, AgentV2Wrapper
+from tools.model_wrappers import (
+    AgentNNWrapper,
+    AgentV2Wrapper,
+    DynamicArchitectureWrapper,
+    MultiTaskModelWrapper,
+)
 
 
 def test_registry_register_and_get():
     ToolRegistry._registry.clear()
     ToolRegistry.register("mtl", MultiTaskModelWrapper)
     ToolRegistry.register("v2", AgentV2Wrapper)
-    assert set(ToolRegistry.list_tools()) == {"mtl", "v2"}
-    tool = ToolRegistry.get("mtl")
-    assert isinstance(tool, MultiTaskModelWrapper)
+    ToolRegistry.register("dyn", DynamicArchitectureWrapper)
+    ToolRegistry.register("base", AgentNNWrapper)
+    assert set(ToolRegistry.list_tools()) == {"mtl", "v2", "dyn", "base"}
+    tool = ToolRegistry.get("dyn")
+    assert isinstance(tool, DynamicArchitectureWrapper)
     assert isinstance(tool.run({}), dict)

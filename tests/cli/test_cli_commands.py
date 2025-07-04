@@ -1,8 +1,8 @@
-from typer.testing import CliRunner
-
 import sys
 import types
 from pathlib import Path
+
+from typer.testing import CliRunner
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -19,7 +19,10 @@ sys.modules.setdefault(
     types.SimpleNamespace(SessionManager=object),
 )
 sys.modules.setdefault(
-    "agentnn.mcp.mcp_ws", types.SimpleNamespace(ws_server=types.SimpleNamespace(broadcast=lambda *a, **k: None))
+    "agentnn.mcp.mcp_ws",
+    types.SimpleNamespace(
+        ws_server=types.SimpleNamespace(broadcast=lambda *a, **k: None)
+    ),
 )
 sys.modules.setdefault(
     "agentnn.mcp.mcp_server", types.SimpleNamespace(create_app=lambda: None)
@@ -44,15 +47,19 @@ sys.modules.setdefault(
     ),
 )
 import sdk.nn_models as _nn
+
 sys.modules.setdefault("sdk.cli.nn_models", _nn)
 DummySettings = type(
     "DummySettings",
     (),
     {"load": classmethod(lambda cls: cls()), "__init__": lambda self: None},
 )
-sys.modules.setdefault("sdk.cli.config", types.SimpleNamespace(SDKSettings=DummySettings))
 sys.modules.setdefault(
-    "core.config", types.SimpleNamespace(settings=types.SimpleNamespace(model_dump=lambda: {}))
+    "sdk.cli.config", types.SimpleNamespace(SDKSettings=DummySettings)
+)
+sys.modules.setdefault(
+    "core.config",
+    types.SimpleNamespace(settings=types.SimpleNamespace(model_dump=lambda: {})),
 )
 
 from sdk.cli.main import app  # noqa: E402
@@ -128,10 +135,30 @@ def test_dispatch(monkeypatch):
     assert "ok" in result.stdout
 
 
+def test_dispatch_with_tool(monkeypatch):
+    from sdk.cli.commands import dispatch as dispatch_mod
+
+    class DummyClient:
+        def dispatch_task(self, ctx):
+            assert ctx.agent_selection == "dynamic_architecture"
+            return {"ok": True}
+
+    monkeypatch.setattr(dispatch_mod, "AgentClient", lambda: DummyClient())
+    runner = CliRunner()
+    result = runner.invoke(
+        app,
+        ["task", "dispatch", "hello", "--tool", "dynamic_architecture"],
+    )
+    assert result.exit_code == 0
+    assert "ok" in result.stdout
+
+
 def test_session_list(monkeypatch):
     from sdk.cli.commands import session as session_cmd
 
-    monkeypatch.setattr(session_cmd.AgentClient, "list_sessions", lambda self: {"sessions": []})
+    monkeypatch.setattr(
+        session_cmd.AgentClient, "list_sessions", lambda self: {"sessions": []}
+    )
     runner = CliRunner()
     result = runner.invoke(app, ["session", "list"])
     assert result.exit_code == 0

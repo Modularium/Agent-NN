@@ -176,6 +176,12 @@ Inspect a specific tool:
 agentnn tools inspect agent_nn_v2
 ```
 
+Dispatch a task with a specific model:
+
+```bash
+agentnn task dispatch --tool dynamic_architecture "Analyse Daten"
+```
+
 ## MCP Utilities
 
 The `mcp` subcommand bundles tools for the Model Context Protocol.

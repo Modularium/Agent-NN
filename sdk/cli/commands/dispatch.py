@@ -4,6 +4,7 @@ import sys
 import typer
 
 from core.model_context import ModelContext, TaskContext
+
 from ...client import AgentClient
 
 
@@ -13,6 +14,14 @@ def register(app: typer.Typer) -> None:
     @app.command("dispatch")
     def dispatch(
         task: str = "",
+        tool: str = typer.Option(
+            None,
+            "--tool",
+            "--model",
+            "--reasoner",
+            "--nn",
+            help="Execute task using TOOL",
+        ),
         from_stdin: bool = typer.Option(
             False, "--from-stdin", help="read JSON task from stdin"
         ),
@@ -26,5 +35,7 @@ def register(app: typer.Typer) -> None:
             raise typer.Exit(1)
         client = AgentClient()
         ctx = ModelContext(task_context=TaskContext(task_type="chat", description=task))
+        if tool:
+            ctx.agent_selection = tool
         result = client.dispatch_task(ctx)
         typer.echo(json.dumps(result))

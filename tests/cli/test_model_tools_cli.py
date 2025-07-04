@@ -15,9 +15,14 @@ def test_cli_tools_list_builtin(monkeypatch):
             return None
 
     monkeypatch.setattr(tools_cmd, "PluginManager", lambda: DummyMgr())
-    monkeypatch.setattr(registry_mod.ToolRegistry, "list_tools", classmethod(lambda cls: ["agent_nn_v2"]))
+    monkeypatch.setattr(
+        registry_mod.ToolRegistry,
+        "list_tools",
+        classmethod(lambda cls: ["agent_nn_v2", "dynamic_architecture"]),
+    )
 
     runner = CliRunner()
     result = runner.invoke(app, ["tools", "list"])
     assert result.exit_code == 0
     assert "agent_nn_v2" in result.stdout
+    assert "dynamic_architecture" in result.stdout

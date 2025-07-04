@@ -1,29 +1,32 @@
 """Agent management commands."""
+
 from __future__ import annotations
 
 import json
-from datetime import datetime
-from dataclasses import asdict
 import os
-from typing import List
+from dataclasses import asdict
+from datetime import datetime
 from pathlib import Path
+from typing import List
 
-import typer
 import httpx
+import typer
 
-from ..utils import handle_http_error, print_output
-from ..utils.formatting import doc_printer
-from ..client import AgentClient
-from agentnn.deployment.agent_registry import AgentRegistry, load_agent_file
-from core.agent_profile import PROFILE_DIR, AgentIdentity
+from agentnn.deployment.agent_registry import load_agent_file
 from core.agent_evolution import evolve_profile
+from core.agent_profile import PROFILE_DIR, AgentIdentity
+from core.audit_log import AuditEntry, AuditLog
 from core.crypto import generate_keypair
 from core.governance import AgentContract
 from core.level_evaluator import check_level_up
 from core.reputation import aggregate_score
-from core.audit_log import AuditEntry, AuditLog
 from core.skills import load_skill
 from core.trust_evaluator import eligible_for_role
+from services import create_agent
+
+from ..client import AgentClient
+from ..utils import handle_http_error, print_output
+from ..utils.formatting import doc_printer
 
 agent_app = typer.Typer(name="agent", help="Agent management")
 team_app = typer.Typer(name="team", help="Team management")
@@ -38,7 +41,9 @@ openhands_app = typer.Typer(name="openhands", help="OpenHands agent utilities")
 
 
 @agent_app.command("list")
-def agents(output: str = typer.Option("table", "--output", help="table|json|markdown")) -> None:
+def agents(
+    output: str = typer.Option("table", "--output", help="table|json|markdown")
+) -> None:
     """List available agents."""
     client = AgentClient()
     try:
@@ -89,8 +94,7 @@ def agent_register(
                 typer.echo("Nutze --interactive für einen Wizard")
             raise typer.Exit(1)
         data = load_agent_file(config)
-    registry = AgentRegistry(endpoint)
-    result = registry.deploy(data)
+    result = create_agent(data, endpoint=endpoint)
     typer.echo(json.dumps(result, indent=2))
 
 
@@ -129,7 +133,9 @@ def agent_status(name: str) -> None:
 
 
 @agent_app.command("top")
-def agent_top(metric: str = typer.Option("cost", "--metric", help="Sort metric")) -> None:
+def agent_top(
+    metric: str = typer.Option("cost", "--metric", help="Sort metric")
+) -> None:
     """List agents sorted by metric."""
     client = AgentClient()
     data = client.list_agents().get("agents", [])
@@ -206,7 +212,9 @@ def agent_certify(name: str, skill: str = typer.Option(..., "--skill")) -> None:
         "granted_at": datetime.utcnow().isoformat() + "Z",
         "expires_at": skill_def.expires_at,
     }
-    profile.certified_skills = [c for c in profile.certified_skills if c.get("id") != skill_def.id]
+    profile.certified_skills = [
+        c for c in profile.certified_skills if c.get("id") != skill_def.id
+    ]
     profile.certified_skills.append(cert)
     profile.save()
     log = AuditLog()
@@ -226,7 +234,15 @@ def agent_certify(name: str, skill: str = typer.Option(..., "--skill")) -> None:
 def agent_level(name: str) -> None:
     """Show level information for AGENT."""
     profile = AgentIdentity.load(name)
-    typer.echo(json.dumps({"current_level": profile.current_level, "progress": profile.level_progress}, indent=2))
+    typer.echo(
+        json.dumps(
+            {
+                "current_level": profile.current_level,
+                "progress": profile.level_progress,
+            },
+            indent=2,
+        )
+    )
 
 
 @agent_app.command("promote")
@@ -244,7 +260,16 @@ def agent_promote(name: str) -> None:
 def agent_rep(name: str) -> None:
     """Show reputation information for an agent."""
     profile = AgentIdentity.load(name)
-    typer.echo(json.dumps({"agent": name, "reputation": profile.reputation_score, "feedback": profile.feedback_log}, indent=2))
+    typer.echo(
+        json.dumps(
+            {
+                "agent": name,
+                "reputation": profile.reputation_score,
+                "feedback": profile.feedback_log,
+            },
+            indent=2,
+        )
+    )
 
 
 @agent_app.command("endorsements")
@@ -557,7 +582,9 @@ def openhands_trigger(task: str, agents: str = "all") -> None:
         ports = list(range(start, end + 1))
     else:
         ports = [int(p) for p in ports_env.split(",") if p]
-    selected = ports if agents == "all" else [ports[int(a) - 1] for a in agents.split(",")]
+    selected = (
+        ports if agents == "all" else [ports[int(a) - 1] for a in agents.split(",")]
+    )
     results = {}
     for port in selected:
         try:

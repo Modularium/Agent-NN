@@ -4,24 +4,26 @@ from __future__ import annotations
 
 import typer
 
+from .commands.agent import agent_app
+from .commands.agentctl import register as register_agentctl
+from .commands.config_cmd import register as register_config
+from .commands.context import context_app
+from .commands.dev import dev_app
+from .commands.dispatch import register as register_dispatch
+from .commands.feedback import feedback_app
+from .commands.governance import register as register_governance
+from .commands.mcp import mcp_app
+from .commands.model import register as register_model
+from .commands.plugins_cmd import plugins_app
+from .commands.prompt import prompt_app
+from .commands.quickstart import quickstart_app
 from .commands.root import app as root_app
 from .commands.session import session_app
-from .commands.agent import agent_app
-from .commands.tasks import register as register_tasks, task_app
-from .commands.model import register as register_model
-from .commands.config_cmd import register as register_config
-from .commands.governance import register as register_governance
-from .commands.feedback import feedback_app
+from .commands.tasks import register as register_tasks
+from .commands.tasks import task_app
+from .commands.template import template_app
 from .commands.tools import tools_app
 from .commands.train import train_app
-from .commands.agentctl import register as register_agentctl
-from .commands.dispatch import register as register_dispatch
-from .commands.context import context_app
-from .commands.prompt import prompt_app
-from .commands.template import template_app
-from .commands.quickstart import quickstart_app
-from .commands.dev import dev_app
-from .commands.mcp import mcp_app
 
 app = typer.Typer()
 
@@ -40,6 +42,7 @@ app.add_typer(tools_app, name="tools")
 app.add_typer(train_app, name="train")
 app.add_typer(dev_app, name="dev")
 app.add_typer(mcp_app, name="mcp")
+app.add_typer(plugins_app, name="plugins")
 register_tasks(app)
 register_model(app)
 register_config(app)

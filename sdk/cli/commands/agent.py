@@ -12,6 +12,7 @@ import typer
 import httpx
 
 from ..utils import handle_http_error, print_output
+from ..utils.formatting import doc_printer
 from ..client import AgentClient
 from agentnn.deployment.agent_registry import AgentRegistry, load_agent_file
 from core.agent_profile import PROFILE_DIR, AgentIdentity
@@ -48,13 +49,24 @@ def agents(output: str = typer.Option("table", "--output", help="table|json|mark
     print_output(result.get("agents", []), output)
 
 
-@agent_app.command("register")
+@agent_app.command(
+    "register",
+    help="Register an agent configuration with the registry.",
+    epilog="Beispiel: agentnn agent register config/agent.yaml",
+)
 def agent_register(
     config: Path | None = None,
     endpoint: str = "http://localhost:8090",
     interactive: bool = typer.Option(False, "--interactive", help="use wizard"),
+    docs: bool = typer.Option(
+        False,
+        "--docs",
+        callback=doc_printer("docs/cli.md#agent-registrieren"),
+        is_eager=True,
+        expose_value=False,
+        help="show documentation and exit",
+    ),
 ) -> None:
-    """Register an agent configuration with the registry."""
     if interactive or not config:
         typer.echo("Interactive agent setup")
         name = typer.prompt("Agent name")

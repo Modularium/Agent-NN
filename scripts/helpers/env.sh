@@ -2,7 +2,12 @@
 # -*- coding: utf-8 -*-
 
 set -euo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Only define SCRIPT_DIR if it's not already set
+if [[ -z "${SCRIPT_DIR:-}" ]]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
+
 source "$SCRIPT_DIR/common.sh"
 
 check_env_file() {

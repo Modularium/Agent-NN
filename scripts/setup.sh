@@ -170,7 +170,7 @@ verify_installation() {
     for step in "${verification_steps[@]}"; do
         case "$step" in
             check_frontend_build)
-                if [[ ! -d "$REPO_ROOT/frontend/dist" ]] || [[ -z "$(ls -A "$REPO_ROOT/frontend/dist" 2>/dev/null)" ]]; then
+                if [[ ! -f "$REPO_ROOT/frontend/dist/index.html" ]]; then
                     failed_verifications+=("Frontend-Build")
                 fi
                 ;;

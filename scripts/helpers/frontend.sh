@@ -92,28 +92,49 @@ build_frontend() {
         return 1
     fi
     
-    # Build-Output kopieren falls nötig
-    local source_dist="$FRONTEND_DIR/dist"
-    if [[ -d "$source_dist" ]]; then
-        mkdir -p "$TARGET_DIST"
-        
-        # Nur kopieren wenn sich Verzeichnisse unterscheiden
-        if [[ "$(realpath "$source_dist" 2>/dev/null)" != "$(realpath "$TARGET_DIST" 2>/dev/null)" ]]; then
-            log_info "Kopiere Build-Output nach $TARGET_DIST..."
-            if cp -r "$source_dist"/* "$TARGET_DIST"/; then
-                log_ok "Build-Output kopiert"
-            else
-                log_err "Fehler beim Kopieren des Build-Outputs"
-                return 1
-            fi
-        else
-            log_debug "Build-Output bereits am Zielort"
-        fi
+    # Build-Output lokalisieren
+    local source_dist=""
+    if [[ -d "dist" ]]; then
+        source_dist="dist"
+    elif [[ -d "../dist" ]]; then
+        source_dist="../dist"
     else
-        log_err "Build-Output nicht gefunden: $source_dist"
+        # outDir aus der Vite-Konfiguration ermitteln
+        local config_out
+        config_out=$(grep -oE "outDir:\s*['\"][^'\"]+['\"]" vite.config.ts | head -n1 | cut -d\" -f2)
+        if [[ -n "$config_out" && -d "$config_out" ]]; then
+            source_dist="$config_out"
+        fi
+    fi
+
+    if [[ -z "$source_dist" ]]; then
+        log_err "Build-Output nicht gefunden"
         return 1
     fi
-    
+
+    source_dist=$(realpath "$source_dist")
+    mkdir -p "$TARGET_DIST"
+
+    if [[ "$source_dist" != "$(realpath "$TARGET_DIST")" ]]; then
+        log_info "Kopiere Build-Output von $source_dist nach $TARGET_DIST..."
+        if cp -r "$source_dist"/* "$TARGET_DIST"/; then
+            log_ok "Build-Output kopiert"
+        else
+            log_err "Fehler beim Kopieren des Build-Outputs"
+            return 1
+        fi
+    else
+        log_debug "Build-Output bereits am Zielort"
+    fi
+
+    # Build validieren
+    if [[ ! -f "$TARGET_DIST/index.html" ]]; then
+        log_err "index.html im Build-Output fehlt: $TARGET_DIST"
+        return 1
+    fi
+
+    log_ok "Build-Output gefunden: $(realpath "$TARGET_DIST")"
+
     return 0
 }
 

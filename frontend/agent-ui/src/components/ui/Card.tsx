@@ -1,6 +1,8 @@
-// Card Component
+// src/components/ui/Card.tsx
+import React from 'react'
+
 interface CardProps {
-  children: ReactNode
+  children: React.ReactNode
   title?: string
   subtitle?: string
   padding?: 'sm' | 'md' | 'lg'
@@ -23,13 +25,13 @@ export function Card({
   }
 
   return (
-    <div className={`bg-white rounded-xl border border-gray-200 ${paddings[padding]} ${
+    <div className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 ${paddings[padding]} ${
       hover ? 'hover:shadow-lg transition-shadow duration-200' : 'shadow-sm'
     } ${className}`}>
       {(title || subtitle) && (
         <div className="mb-4">
-          {title && <h3 className="text-lg font-semibold text-gray-900">{title}</h3>}
-          {subtitle && <p className="text-gray-600">{subtitle}</p>}
+          {title && <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>}
+          {subtitle && <p className="text-gray-600 dark:text-gray-400">{subtitle}</p>}
         </div>
       )}
       {children}

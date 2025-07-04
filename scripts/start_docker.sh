@@ -4,4 +4,5 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/helpers/docker.sh"
 
-start_docker
+# Start Docker services using the docker_compose_up function
+docker_compose_up "docker-compose.yml" "--build" "-d"

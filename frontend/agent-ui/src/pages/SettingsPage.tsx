@@ -190,7 +190,7 @@ export default function ModernSettingsPage() {
         value={value}
         onChange={(e) => onChange(type === 'number' ? Number(e.target.value) : e.target.value)}
         placeholder={placeholder}
-        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:shadow-focus focus:border-transparent"
       />
       {description && (
         <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
@@ -218,7 +218,7 @@ export default function ModernSettingsPage() {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:shadow-focus focus:border-transparent"
       >
         {options.map(option => (
           <option key={option.value} value={option.value}>
@@ -254,7 +254,7 @@ export default function ModernSettingsPage() {
       </div>
       <button
         onClick={() => onChange(!value)}
-        className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+        className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:outline-none focus:shadow-focus ${
           value ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'
         }`}
       >

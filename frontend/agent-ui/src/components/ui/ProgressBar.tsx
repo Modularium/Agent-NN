@@ -1,4 +1,6 @@
-// Progress Bar Component
+// src/components/ui/ProgressBar.tsx
+import React from 'react'
+
 interface ProgressBarProps {
   value: number
   max?: number
@@ -33,14 +35,14 @@ export function ProgressBar({
 
   return (
     <div className={className}>
-      <div className={`w-full bg-gray-200 rounded-full ${sizes[size]}`}>
+      <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full ${sizes[size]}`}>
         <div 
           className={`${colors[color]} ${sizes[size]} rounded-full transition-all duration-300`}
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
       {showLabel && (
-        <div className="flex justify-between text-sm text-gray-600 mt-1">
+        <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mt-1">
           <span>{value}</span>
           <span>{max}</span>
         </div>

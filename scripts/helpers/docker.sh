@@ -3,12 +3,11 @@
 
 set -euo pipefail
 
-# Only define SCRIPT_DIR if it's not already set
-if [[ -z "${SCRIPT_DIR:-}" ]]; then
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-fi
+# Get the directory where this script (docker.sh) is located
+HELPERS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-source "$SCRIPT_DIR/common.sh"
+# Source common.sh from the same directory as this helper
+source "$HELPERS_DIR/common.sh"
 
 # Globale Docker-Variablen
 DOCKER_COMPOSE_COMMAND=""

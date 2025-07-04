@@ -4,15 +4,20 @@ import json
 import typer
 
 from plugins.loader import PluginManager
+from tools import ToolRegistry
 
 tools_app = typer.Typer(name="tools", help="Tool registry")
 
 
 @tools_app.command("list")
 def tools_list() -> None:
-    """List available tool plugins."""
+    """List available plugins and builtin tools."""
     mgr = PluginManager()
-    typer.echo(json.dumps(mgr.list_plugins(), indent=2))
+    result = {
+        "plugins": mgr.list_plugins(),
+        "builtin": ToolRegistry.list_tools(),
+    }
+    typer.echo(json.dumps(result, indent=2))
 
 
 @tools_app.command("inspect")
@@ -20,7 +25,11 @@ def tools_inspect(name: str) -> None:
     """Show details for ``name``."""
     mgr = PluginManager()
     plugin = mgr.get(name)
-    if not plugin:
+    if plugin:
+        typer.echo(plugin.__class__.__name__)
+        return
+    tool = ToolRegistry.get(name)
+    if not tool:
         typer.echo("not found")
         raise typer.Exit(1)
-    typer.echo(plugin.__class__.__name__)
+    typer.echo(tool.__class__.__name__)

@@ -39,4 +39,18 @@ def print_output(data: List[Dict[str, Any]], output: str = "table") -> None:
     Console().print(table)
 
 
-__all__ = ["print_success", "print_error", "print_output"]
+def doc_printer(path: str) -> callable:
+    """Return a callback that prints ``path`` and exits."""
+
+    def _printer(
+        ctx: typer.Context, param: typer.CallbackParam, value: bool
+    ) -> None:
+        if not value or ctx.resilient_parsing:
+            return
+        typer.echo(f"Weitere Beispiele: {path}")
+        raise typer.Exit()
+
+    return _printer
+
+
+__all__ = ["print_success", "print_error", "print_output", "doc_printer"]

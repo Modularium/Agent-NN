@@ -4,7 +4,7 @@ from datetime import datetime
 import json
 import os
 from utils.logging_util import LoggerMixin
-from nn_models.agent_nn import TaskMetrics
+from nn_models.agent_nn_v2 import TaskMetrics
 from config.llm_config import OPENAI_CONFIG
 
 class SpecializedLLMManager(LoggerMixin):

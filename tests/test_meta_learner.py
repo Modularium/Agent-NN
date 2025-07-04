@@ -5,7 +5,7 @@ import os
 import tempfile
 import shutil
 from managers.meta_learner import MetaLearner, AgentScore
-from nn_models.agent_nn import TaskMetrics
+from nn_models.agent_nn_v2 import TaskMetrics
 
 class TestMetaLearner(unittest.TestCase):
     def setUp(self):

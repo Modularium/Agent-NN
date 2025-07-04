@@ -1,6 +1,7 @@
 from typing import List, Union, Optional, Dict, Any
 from datetime import datetime
 import asyncio
+import time
 import torch
 from langchain.schema import Document
 from langchain.chains import RetrievalQA
@@ -9,15 +10,19 @@ from llm_models.specialized_llm import SpecializedLLM
 from datastores.worker_agent_db import WorkerAgentDB
 from .agent_communication import AgentCommunicationHub, AgentMessage, MessageType
 from .domain_knowledge import DomainKnowledgeManager
-from nn_models.agent_nn import AgentNN, TaskMetrics
+from nn_models.agent_nn_v2 import AgentNN, TaskMetrics
 from utils.logging_util import LoggerMixin
 
 class WorkerAgent(LoggerMixin):
-    def __init__(self,
-                 name: str,
-                 domain_docs: Optional[Union[List[str], List[Document]]] = None,
-                 communication_hub: Optional[AgentCommunicationHub] = None,
-                 knowledge_manager: Optional[DomainKnowledgeManager] = None):
+    def __init__(
+        self,
+        name: str,
+        domain_docs: Optional[Union[List[str], List[Document]]] = None,
+        communication_hub: Optional[AgentCommunicationHub] = None,
+        knowledge_manager: Optional[DomainKnowledgeManager] = None,
+        *,
+        use_nn_features: bool = True,
+    ):
         """Initialize a worker agent with a specific domain expertise.
         
         Args:
@@ -25,6 +30,7 @@ class WorkerAgent(LoggerMixin):
             domain_docs: Optional list of documents to initialize the knowledge base
             communication_hub: Optional communication hub for agent interaction
             knowledge_manager: Optional domain knowledge manager
+            use_nn_features: Enable neural network based task features
         """
         super().__init__()
         self.name = name
@@ -32,8 +38,10 @@ class WorkerAgent(LoggerMixin):
         self.llm = SpecializedLLM(domain=self.name)
         
         # Initialize neural network
-        self.nn = AgentNN()
-        self.load_or_init_nn()
+        self.use_nn_features = use_nn_features
+        self.nn = AgentNN(domain=name)
+        if self.use_nn_features:
+            self.load_or_init_nn()
         
         # Communication and knowledge management
         self.communication_hub = communication_hub
@@ -188,6 +196,13 @@ class WorkerAgent(LoggerMixin):
             str: The agent's response to the task
         """
         try:
+            start_time = time.time()
+            task_features_str = ""
+            if self.use_nn_features:
+                task_embedding = self.get_task_embedding(task_description)
+                task_features = self.nn.predict_task_features(task_embedding)
+                task_features_str = self.format_task_features(task_features)
+
             # Check if we need information from other domains
             if self.knowledge_manager:
                 related_knowledge = self.knowledge_manager.search_knowledge(
@@ -208,10 +223,33 @@ class WorkerAgent(LoggerMixin):
                             context = (context or "") + "\n" + "\n".join(responses)
                             
             # Execute task
-            if context:
-                return self.llm.generate_response(task_description, context)
+            if self.use_nn_features and hasattr(self.llm, "generate_with_confidence"):
+                if context:
+                    response, confidence = self.llm.generate_with_confidence(
+                        task_description,
+                        context=context,
+                        task_features=task_features_str,
+                    )
+                else:
+                    response, confidence = self.llm.generate_with_confidence(
+                        task_description,
+                        task_features=task_features_str,
+                    )
             else:
-                return self.qa_chain.run(task_description)
+                if context:
+                    response = self.llm.generate_response(task_description, context)
+                else:
+                    response = self.qa_chain.run(task_description)
+                confidence = 0.0
+
+            if self.use_nn_features:
+                metrics = TaskMetrics(
+                    response_time=time.time() - start_time,
+                    confidence_score=confidence,
+                )
+                self.nn.evaluate_performance(metrics)
+
+            return response
                 
         except Exception as e:
             # Log error and return error message
@@ -328,6 +366,36 @@ class WorkerAgent(LoggerMixin):
     def clear_knowledge(self) -> None:
         """Clear all documents from the agent's knowledge base."""
         self.db.clear_knowledge_base()
+
+    def get_task_embedding(self, task_description: str) -> torch.Tensor:
+        """Return embedding tensor for a task description."""
+        embedding = self.llm.get_embedding(task_description)
+        return torch.tensor(embedding).unsqueeze(0)
+
+    def format_task_features(self, features: torch.Tensor) -> str:
+        """Format feature tensor into a readable string."""
+        values = features.squeeze().tolist()
+        return "\n".join(
+            [f"Feature {i + 1}: {val:.3f}" for i, val in enumerate(values)]
+        )
+
+    def get_performance_metrics(self) -> Dict[str, float]:
+        """Return aggregated neural network training metrics."""
+        summary = self.nn.get_training_summary()
+        recent = self.nn.eval_metrics[-100:]
+        if recent:
+            avg_metrics = {
+                "avg_response_time": sum(m["response_time"] for m in recent) / len(recent),
+                "avg_confidence": sum(m["confidence"] for m in recent) / len(recent),
+            }
+            feedback = [m["user_feedback"] for m in recent if "user_feedback" in m]
+            if feedback:
+                avg_metrics["avg_user_feedback"] = sum(feedback) / len(feedback)
+            success = [m["success_rate"] for m in recent if "success_rate" in m]
+            if success:
+                avg_metrics["success_rate"] = sum(success) / len(success)
+            summary.update(avg_metrics)
+        return summary
         
     def get_features(self) -> torch.Tensor:
         """Get neural network features for the agent.

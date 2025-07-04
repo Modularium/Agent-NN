@@ -4,7 +4,7 @@ import numpy as np
 from dataclasses import dataclass
 from utils.logging_util import LoggerMixin
 from managers.meta_learner import MetaLearner, AgentScore
-from nn_models.agent_nn import TaskMetrics
+from nn_models.agent_nn_v2 import TaskMetrics
 
 @dataclass
 class MatchResult:

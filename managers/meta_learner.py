@@ -5,7 +5,7 @@ from typing import List, Dict, Optional, Tuple
 import numpy as np
 from dataclasses import dataclass
 from utils.logging_util import LoggerMixin
-from nn_models.agent_nn import TaskMetrics
+from nn_models.agent_nn_v2 import TaskMetrics
 
 @dataclass
 class AgentScore:

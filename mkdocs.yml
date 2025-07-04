@@ -105,6 +105,8 @@ nav:
     - Nx Python Plugin: development/nxlv-python.md
     - Release Notes: development/releases.md
     - Release Checklist: release_checklist.md
+    - Manager-Übersicht: dev_managers.md
+    - Modelle: models.md
   - Deployment:
     - Docker: deployment/docker.md
     - Kubernetes: deployment/kubernetes.md

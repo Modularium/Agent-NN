@@ -4,4 +4,5 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/helpers/env.sh"
 
-check_env
+# Run environment check using the check_environment function
+check_environment

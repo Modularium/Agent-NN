@@ -1,8 +1,15 @@
 #!/usr/bin/env sh
 # Build the React frontend using Vite
 # Output will be placed under frontend/dist
+# Copies are skipped if Vite already builds into the target directory.
+# Pass --clean to remove the dist folder before building.
 
 set -e
+
+CLEAN=false
+if [ "$1" = "--clean" ]; then
+    CLEAN=true
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")/.."
@@ -15,17 +22,30 @@ if [ ! -f package.json ]; then
     exit 1
 fi
 
+if $CLEAN && [ -d "$DIST_DIR" ]; then
+    echo "Cleaning $DIST_DIR"
+    rm -rf "$DIST_DIR"
+fi
+
 npm install
 npm run build
 
-mkdir -p "$DIST_DIR"
 if [ -d "dist" ]; then
-    cp -r dist/* "$DIST_DIR/"
+    OUT_DIR="dist"
 elif [ -d "../dist" ]; then
-    cp -r ../dist/* "$DIST_DIR/"
+    OUT_DIR="../dist"
 else
     echo "Error: build output not found" >&2
     exit 1
+fi
+
+mkdir -p "$DIST_DIR"
+SRC_DIR=$(realpath "$OUT_DIR")
+DEST_DIR=$(realpath "$DIST_DIR")
+if [ "$SRC_DIR" = "$DEST_DIR" ]; then
+    echo "[skip] source and destination are identical"
+else
+    cp -r "$SRC_DIR"/* "$DEST_DIR/"
 fi
 
 echo "✅ Build abgeschlossen: $DIST_DIR"

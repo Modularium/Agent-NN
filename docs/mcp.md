@@ -70,3 +70,6 @@ agentnn mcp invoke demo.text-analyzer --input '{"text": "hello"}'
 ```
 
 Agents can reference tools via `mcp://` URLs in their configuration.
+
+## MCP Restoration Note
+The MCP modules (`mcp_server.py`, `mcp_client.py` and `sdk/cli/commands/mcp.py`) were introduced in commit `9532ff5` and consolidated via PR #180 (`86ce971`). A repository audit confirmed they remain available on branches `main` and `work`.

@@ -191,3 +191,5 @@ agentnn mcp serve --port 8090
 agentnn mcp register-endpoint demo http://mcp.example.com
 agentnn mcp invoke demo.text-analyzer --input '{"text": "Hi"}'
 ```
+
+The MCP CLI was introduced in commit `86ce971` as part of PR #180.

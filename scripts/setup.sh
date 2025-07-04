@@ -322,7 +322,11 @@ main() {
     # Docker-Services starten
     if [[ "$START_DOCKER" == "true" ]]; then
         log_info "=== DOCKER-SERVICES ==="
-        if ! docker_compose_up "docker-compose.yml" "--build"; then
+        compose_file=$(find_compose_file "docker-compose.yml") || {
+            log_err "Docker Compose Datei nicht gefunden. Setup abgebrochen."
+            exit 1
+        }
+        if ! docker_compose_up "$compose_file" "--build"; then
             log_err "Start der Docker-Services fehlgeschlagen. Setup abgebrochen."
             exit 1
         fi

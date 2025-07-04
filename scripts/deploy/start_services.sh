@@ -105,10 +105,7 @@ main() {
         exit 1
     fi
     
-    if [[ ! -f "$compose_file" ]]; then
-        log_err "Compose-Datei nicht gefunden: $compose_file"
-        exit 1
-    fi
+    compose_file=$(find_compose_file "$compose_file") || exit 1
     
     # Port-Prüfung
     check_ports

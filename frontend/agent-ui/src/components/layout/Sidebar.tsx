@@ -1,7 +1,17 @@
+// src/components/layout/Sidebar.tsx
 import { useState } from 'react'
+import { useLocation, Link } from 'react-router-dom'
+
+interface SidebarProps {
+  open: boolean
+  setOpen: (open: boolean) => void
+  collapsed: boolean
+  onToggleCollapse: () => void
+}
 
 const navigationItems = [
-  { path: '/', name: 'Chat', icon: '💬', end: true },
+  { path: '/', name: 'Dashboard', icon: '📊', end: true },
+  { path: '/chat', name: 'Chat', icon: '💬' },
   { path: '/agents', name: 'Agents', icon: '🤖' },
   { path: '/tasks', name: 'Tasks', icon: '📋' },
   { path: '/routing', name: 'Routing', icon: '🔄' },
@@ -13,31 +23,19 @@ const navigationItems = [
   { path: '/debug', name: 'Debug', icon: '🔧' },
 ]
 
-export default function ModernSidebar() {
-  const [open, setOpen] = useState(false)
-  const [activeItem, setActiveItem] = useState('/')
+export default function Sidebar({ open, setOpen, collapsed, onToggleCollapse }: SidebarProps) {
+  const location = useLocation()
 
   const linkClass = (isActive: boolean) =>
-    `flex items-center gap-3 px-4 py-3 mx-2 rounded-xl transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-sm group cursor-pointer ${
+    `flex items-center gap-3 px-4 py-3 mx-2 rounded-xl transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 hover:shadow-sm group cursor-pointer ${
       isActive 
         ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25' 
-        : 'text-gray-700 hover:text-blue-600'
+        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
     }`
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Mobile Menu Button */}
-      <button
-        className="sm:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg border border-gray-200"
-        onClick={() => setOpen(!open)}
-        aria-label="Toggle menu"
-      >
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-
-      {/* Overlay for mobile */}
+    <>
+      {/* Mobile Overlay */}
       {open && (
         <div 
           className="fixed inset-0 bg-black/50 z-30 sm:hidden" 
@@ -45,120 +43,104 @@ export default function ModernSidebar() {
         />
       )}
       
-      <nav
+      {/* Sidebar */}
+      <div
         className={`${
           open ? 'translate-x-0' : '-translate-x-full'
-        } sm:translate-x-0 w-64 bg-white border-r border-gray-200 h-full fixed sm:static z-40 transition-transform duration-300 ease-in-out shadow-xl sm:shadow-none`}
-        aria-label="Main navigation"
+        } sm:translate-x-0 ${
+          collapsed ? 'w-16' : 'w-64'
+        } bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-full fixed sm:static z-40 transition-all duration-300 ease-in-out shadow-xl sm:shadow-none flex flex-col`}
       >
-        <div className="p-6">
-          {/* Logo/Header */}
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-lg">A</span>
-            </div>
-            <div>
-              <h1 className="font-bold text-xl text-gray-900">Agent-NN</h1>
-              <p className="text-sm text-gray-500">AI Management</p>
-            </div>
-          </div>
+        {/* Header */}
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            {!collapsed && (
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-lg">A</span>
+                </div>
+                <div>
+                  <h1 className="font-bold text-xl text-gray-900 dark:text-white">Agent-NN</h1>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">AI Management</p>
+                </div>
+              </div>
+            )}
+            
+            {collapsed && (
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg mx-auto">
+                <span className="text-white font-bold text-lg">A</span>
+              </div>
+            )}
 
-          {/* Close button for mobile */}
-          <button
-            className="sm:hidden absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
-            onClick={() => setOpen(false)}
-            aria-label="Close menu"
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+            {/* Close button for mobile */}
+            <button
+              className="sm:hidden p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+              onClick={() => setOpen(false)}
+              aria-label="Close menu"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Collapse toggle for desktop */}
+            <button
+              className="hidden sm:block p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+              onClick={onToggleCollapse}
+              aria-label="Toggle sidebar"
+            >
+              <svg className={`w-5 h-5 transition-transform ${collapsed ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Navigation */}
-        <div className="px-4 pb-6">
+        <div className="flex-1 px-4 py-6 overflow-y-auto">
           <ul className="space-y-2">
-            {navigationItems.map((item) => (
-              <li key={item.path}>
-                <div
-                  className={linkClass(activeItem === item.path)} 
-                  onClick={() => {
-                    setActiveItem(item.path)
-                    setOpen(false)
-                  }}
-                >
-                  <span className="text-xl">{item.icon}</span>
-                  <span className="font-medium">{item.name}</span>
-                  {activeItem === item.path && (
-                    <div className="ml-auto w-2 h-2 bg-white rounded-full"></div>
-                  )}
-                </div>
-              </li>
-            ))}
+            {navigationItems.map((item) => {
+              const isActive = item.end ? location.pathname === item.path : location.pathname.startsWith(item.path)
+              
+              return (
+                <li key={item.path}>
+                  <Link
+                    to={item.path}
+                    className={linkClass(isActive)}
+                    onClick={() => setOpen(false)}
+                    title={collapsed ? item.name : undefined}
+                  >
+                    <span className="text-xl flex-shrink-0">{item.icon}</span>
+                    {!collapsed && (
+                      <>
+                        <span className="font-medium">{item.name}</span>
+                        {isActive && (
+                          <div className="ml-auto w-2 h-2 bg-white rounded-full"></div>
+                        )}
+                      </>
+                    )}
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         </div>
 
         {/* Bottom section */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-200">
-          <div className="text-center">
-            <p className="text-xs text-gray-500 mb-2">System Status</p>
+        <div className="p-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 border-t border-gray-200 dark:border-gray-700">
+          <div className={`text-center ${collapsed ? 'px-2' : ''}`}>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+              {collapsed ? 'Status' : 'System Status'}
+            </p>
             <div className="flex items-center justify-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-gray-600 font-medium">Online</span>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content Area */}
-      <div className="flex-1 overflow-hidden ml-0 sm:ml-0">
-        <div className="p-8 pt-16 sm:pt-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              {navigationItems.find(item => item.path === activeItem)?.name || 'Dashboard'}
-            </h2>
-            <p className="text-gray-600 mb-8">
-              Manage your AI agents and monitor system performance
-            </p>
-            
-            {/* Sample Content */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <span className="text-blue-600 text-xl">🤖</span>
-                  </div>
-                  <h3 className="font-semibold text-gray-900">Active Agents</h3>
-                </div>
-                <p className="text-2xl font-bold text-gray-900 mb-2">12</p>
-                <p className="text-sm text-gray-600">+2 from yesterday</p>
-              </div>
-
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <span className="text-green-600 text-xl">✅</span>
-                  </div>
-                  <h3 className="font-semibold text-gray-900">Completed Tasks</h3>
-                </div>
-                <p className="text-2xl font-bold text-gray-900 mb-2">847</p>
-                <p className="text-sm text-gray-600">94% success rate</p>
-              </div>
-
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <span className="text-purple-600 text-xl">⚡</span>
-                  </div>
-                  <h3 className="font-semibold text-gray-900">Response Time</h3>
-                </div>
-                <p className="text-2xl font-bold text-gray-900 mb-2">0.3s</p>
-                <p className="text-sm text-gray-600">Average latency</p>
-              </div>
+              {!collapsed && (
+                <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">Online</span>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -155,14 +155,14 @@ providers:
 ## 🤖 Installation (Entwicklung)
 
 ```bash
-git clone https://github.com/EcoSphereNetwork/Agent-NN.git
-cd Agent-NN
-poetry install
-poetry run agentnn --version
+# 1. Abhängigkeiten sicherstellen
+sudo apt install docker docker-compose nodejs npm python3-poetry
 
-# Falls der Installationsschritt scheitert, kann `poetry install --no-root`
-# verwendet werden. Alternativ lässt sich der Paketmodus in der
-# `pyproject.toml` mit `package-mode = false` deaktivieren.
+# 2. Repository klonen
+git clone https://github.com/EcoSphereNetwork/Agent-NN.git && cd Agent-NN
+
+# 3. Setup starten
+./scripts/setup.sh
 ```
 
 ### Empfohlene Umgebung

@@ -1,14 +1,22 @@
 #!/bin/bash
 # -*- coding: utf-8 -*-
 
-# Farb-Codes für konsistente Ausgabe
-readonly RED='\033[1;31m'
-readonly GREEN='\033[1;32m'
-readonly YELLOW='\033[1;33m'
-readonly BLUE='\033[1;34m'
-readonly PURPLE='\033[1;35m'
-readonly CYAN='\033[1;36m'
-readonly NC='\033[0m' # No Color
+# Prevent multiple sourcing
+if [[ "${_COMMON_SH_LOADED:-}" == "true" ]]; then
+    return 0
+fi
+readonly _COMMON_SH_LOADED=true
+
+# Farb-Codes für konsistente Ausgabe (only set if not already defined)
+if [[ -z "${RED:-}" ]]; then
+    readonly RED='\033[1;31m'
+    readonly GREEN='\033[1;32m'
+    readonly YELLOW='\033[1;33m'
+    readonly BLUE='\033[1;34m'
+    readonly PURPLE='\033[1;35m'
+    readonly CYAN='\033[1;36m'
+    readonly NC='\033[0m' # No Color
+fi
 
 # Logging-Funktionen mit UTF-8 Unterstützung
 log_info() { 

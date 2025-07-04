@@ -106,6 +106,13 @@ export default defineConfig({
           charts: ['recharts'],
           utils: ['date-fns', 'clsx', 'zustand']
         }
+      },
+      onwarn(warning, warn) {
+        // Suppress certain warnings
+        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+          return
+        }
+        warn(warning)
       }
     },
     
@@ -215,20 +222,5 @@ export default defineConfig({
   // Worker configuration
   worker: {
     format: 'es'
-  },
-
-  // Performance hints
-  build: {
-    ...defineConfig({}).build,
-    rollupOptions: {
-      ...defineConfig({}).build?.rollupOptions,
-      onwarn(warning, warn) {
-        // Suppress certain warnings
-        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
-          return
-        }
-        warn(warning)
-      }
-    }
   }
 })

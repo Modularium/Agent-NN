@@ -44,6 +44,19 @@ def register_endpoint(alias: str, url: str) -> None:
     typer.echo(f"registered {alias}")
 
 
+@mcp_app.command("list-tools")
+def list_tools(alias: str) -> None:
+    """List available tools from a registered endpoint."""
+    data = _load()
+    if alias not in data:
+        typer.echo("unknown endpoint")
+        raise typer.Exit(1)
+    url = f"{data[alias]}/v1/mcp/agent/list"
+    resp = httpx.get(url, timeout=10)
+    resp.raise_for_status()
+    typer.echo(resp.text)
+
+
 @mcp_app.command("invoke")
 def invoke(target: str, input: str = typer.Option("{}", "--input")) -> None:
     """Invoke TOOL_ID on endpoint alias with JSON input."""

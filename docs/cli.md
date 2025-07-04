@@ -190,4 +190,5 @@ The `mcp` subcommand bundles tools for the Model Context Protocol.
 agentnn mcp serve --port 8090
 agentnn mcp register-endpoint demo http://mcp.example.com
 agentnn mcp invoke demo.text-analyzer --input '{"text": "Hi"}'
+agentnn mcp list-tools demo
 ```

@@ -67,6 +67,7 @@ Register remote endpoints and invoke tools directly:
 ```bash
 agentnn mcp register-endpoint demo http://mcp.example.com
 agentnn mcp invoke demo.text-analyzer --input '{"text": "hello"}'
+agentnn mcp list-tools demo
 ```
 
 Agents can reference tools via `mcp://` URLs in their configuration.

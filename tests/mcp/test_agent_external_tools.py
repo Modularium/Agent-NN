@@ -71,3 +71,17 @@ def test_register_and_invoke(monkeypatch, tmp_path):
 
     result = runner.invoke(app, ["mcp", "invoke", "demo.test", "--input", "{}"])
     assert result.exit_code == 0
+
+    monkeypatch.setattr(
+        httpx,
+        "get",
+        lambda url, timeout=10: types.SimpleNamespace(
+            status_code=200,
+            text="[]",
+            json=lambda: [],
+            raise_for_status=lambda: None,
+        ),
+    )
+
+    result = runner.invoke(app, ["mcp", "list-tools", "demo"])
+    assert result.exit_code == 0

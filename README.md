@@ -6,7 +6,7 @@ Aktuelle Version: **v1.0.3** – Flowise-Export und Dokumentation aktualisiert.
 
 ## Systemvoraussetzungen
 
-- Python 3.9 oder neuer
+- Python 3.10 oder neuer
 - Mindestens 4 GB RAM
 
 ## Komponentenübersicht
@@ -138,20 +138,22 @@ providers:
 
 ## 🤖 Installation (Entwicklung)
 
+Eine detailierte Anleitung findet sich in [docs/dev_setup.md](docs/dev_setup.md).
+Kurzfassung:
+
 ```bash
 git clone https://github.com/EcoSphereNetwork/Agent-NN.git
 cd Agent-NN
-poetry install
-poetry run agentnn --version
-
-# Falls der Installationsschritt scheitert, kann `poetry install --no-root`
-# verwendet werden. Alternativ lässt sich der Paketmodus in der
-# `pyproject.toml` mit `package-mode = false` deaktivieren.
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 ```
+
+Alternativ kann das Setup mit `poetry install` oder dem Skript `./install.sh`
+erfolgen.
 
 ### Empfohlene Umgebung
 
-- Python 3.9 oder neuer
+- Python 3.10 oder neuer
 - Mindestens 4 GB RAM (8 GB empfohlen)
 
 ## Frontend Development

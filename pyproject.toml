@@ -58,9 +58,9 @@ sdk = []
 
 
 [tool.poetry]
-name = "agentnn"
+name = "agent-nn"
 version = "1.0.0"
-description = "Modular agent execution and neural orchestration framework"
+description = "Agent-NN CLI and MCP system"
 authors = ["OpenHands <openhands@all-hands.dev>"]
 license = "MIT"
 readme = "README.md"
@@ -71,24 +71,26 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4.0"
-fastapi = "*"
-httpx = "*"
-typer = "*"
-pydantic-settings = "*"
-pydantic = "*"
-PyYAML = "*"
-tqdm = "*"
-uvicorn = "*"
-slowapi = "*"
-aiofiles = "*"
-prometheus-client = "*"
-loguru = "*"
-python-json-logger = "*"
-aiohttp = "*"
-structlog = "*"
-cryptography = "*"
-mlflow = "*"
+python = "^3.10"
+typer = "^0.9"
+rich = "^13.0"
+prompt-toolkit = "^3.0"
+transformers = "^4.0"
+torch = "^2.0"
+sentence-transformers = "^2.2"
+langchain = "^0.1"
+mlflow = "^2.3"
+datasets = "^2.0"
+pydantic = "^2.0"
+aiohttp = "^3.8"
+openai = "^1.0"
+httpx = "^0.25"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0"
+ruff = "^0.4"
+mypy = "^1.0"
+pre-commit = "^3.0"
 
 [tool.poetry.extras]
 sdk = []

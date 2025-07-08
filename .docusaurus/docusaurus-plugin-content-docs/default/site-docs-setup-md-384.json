@@ -1,0 +1,23 @@
+{
+  "id": "setup",
+  "title": "Setup Guide",
+  "description": "Dieser Leitfaden beschreibt die Installation von Agent-NN Schritt für Schritt.",
+  "source": "@site/docs/setup.md",
+  "sourceDirName": ".",
+  "slug": "/setup",
+  "permalink": "/Agent-NN/setup",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Agent-NN Overview",
+    "permalink": "/Agent-NN/overview"
+  },
+  "next": {
+    "title": "Installation",
+    "permalink": "/Agent-NN/install"
+  }
+}

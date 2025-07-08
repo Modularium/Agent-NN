@@ -1,0 +1,14 @@
+{
+  "id": "migration_status",
+  "title": "Migration Status",
+  "description": "Altmodul → Neues Modul / Status",
+  "source": "@site/docs/migration_status.md",
+  "sourceDirName": ".",
+  "slug": "/migration_status",
+  "permalink": "/Agent-NN/migration_status",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

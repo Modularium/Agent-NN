@@ -1,0 +1,14 @@
+{
+  "id": "development/sdk_usage",
+  "title": "Developer SDK",
+  "description": "Das SDK ermöglicht einfachen Zugriff auf die Agent-NN-Services.",
+  "source": "@site/docs/development/sdk_usage.md",
+  "sourceDirName": "development",
+  "slug": "/development/sdk_usage",
+  "permalink": "/Agent-NN/development/sdk_usage",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

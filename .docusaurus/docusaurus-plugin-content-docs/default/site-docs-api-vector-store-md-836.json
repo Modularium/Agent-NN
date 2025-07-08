@@ -1,0 +1,14 @@
+{
+  "id": "api/vector_store",
+  "title": "Vector Store API",
+  "description": "POST /document – Add a document with optional id and text fields. Returns the stored document id.",
+  "source": "@site/docs/api/vector_store.md",
+  "sourceDirName": "api",
+  "slug": "/api/vector_store",
+  "permalink": "/Agent-NN/api/vector_store",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

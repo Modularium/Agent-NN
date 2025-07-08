@@ -1,0 +1,14 @@
+{
+  "id": "models",
+  "title": "Modellübersicht",
+  "description": "Die neuronalen Modelle befinden sich im Ordner nn_models/.",
+  "source": "@site/docs/models.md",
+  "sourceDirName": ".",
+  "slug": "/models",
+  "permalink": "/Agent-NN/models",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

@@ -1,0 +1,14 @@
+{
+  "id": "api/errors",
+  "title": "Fehlercodes der MCP-API",
+  "description": "| Code | Beschreibung                          |",
+  "source": "@site/docs/api/errors.md",
+  "sourceDirName": "api",
+  "slug": "/api/errors",
+  "permalink": "/Agent-NN/api/errors",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

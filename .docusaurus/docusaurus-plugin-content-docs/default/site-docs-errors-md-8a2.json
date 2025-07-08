@@ -1,0 +1,14 @@
+{
+  "id": "errors",
+  "title": "Fehlerobjekte",
+  "description": "Alle Services geben Fehler im folgenden Format zurueck:",
+  "source": "@site/docs/errors.md",
+  "sourceDirName": ".",
+  "slug": "/errors",
+  "permalink": "/Agent-NN/errors",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

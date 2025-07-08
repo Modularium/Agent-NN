@@ -1,3 +1,7 @@
+---
+slug: /BenutzerHandbuch
+---
+
 # Agent-NN: Benutzerhandbuch
 
 ## Inhaltsverzeichnis

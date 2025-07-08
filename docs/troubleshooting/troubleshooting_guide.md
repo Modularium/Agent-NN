@@ -427,6 +427,33 @@ def handle_alert(alert):
    - Implement batching
    - Monitor and tune
 
+### Startup Failures
+Typische Ursachen sind fehlende Abhängigkeiten oder fehlerhafte Konfigurationen. Prüfe die Logs auf Hinweise und stelle sicher, dass alle Dienste erreichbar sind.
+
+### Crashes
+Bei unerwarteten Abstürzen sollten zunächst die letzten Logeinträge analysiert werden. Häufig helfen aktualisierte Treiber oder eine Reduzierung der Batch-Größe.
+
+### Memory Leaks
+Lange laufende Prozesse können Speicherprobleme verursachen. Nutze Tools wie `memory_profiler`, um undichte Stellen aufzuspüren.
+
+### Model Loading Failures
+Fehlermeldungen beim Laden von Modellen deuten meist auf Pfad- oder Versionsprobleme hin. Überprüfe Dateiberechtigungen und Modellpfade.
+
+### Inference Errors
+Tritt während der Ausführung ein Inferenzfehler auf, sollte das Modell mit Testdaten geprüft und gegebenenfalls neu initialisiert werden.
+
+### GPU Memory Issues
+Wenn die GPU nicht genügend Speicher bietet, reduziere die Batch-Größe oder aktiviere Mixed Precision.
+
+### Connection Problems
+Netzwerkfehler lassen sich oft durch einen Neustart des Gateways oder eine Überprüfung der Firewall-Regeln beheben.
+
+### Authentication Errors
+Stimmen die Zugangsdaten oder Tokens nicht, schlägt die Authentifizierung fehl. Lege neue Schlüssel an und prüfe die Konfiguration.
+
+### Rate Limiting
+Bei zu vielen Anfragen in kurzer Zeit greifen Schutzmechanismen. Warte einige Minuten oder kontaktiere den Administrator für höhere Limits.
+
 ## Dependency and Network Issues
 
 If package installations via `pip` or `npm` fail because of restricted network

@@ -13,7 +13,7 @@
 9. [Performance-Überwachung](#performance-überwachung)
 10. [Fortgeschrittene Funktionen](#fortgeschrittene-funktionen)
 11. [Fehlerbehebung](#fehlerbehebung)
-12. [Referenz](#referenz)
+12. [CLI-Referenz](#cli-referenz)
 
 ## Einführung
 
@@ -483,4 +483,6 @@ Optionen:
 
 ![CLI Modellverwaltung](CLI-Modellverwaltung.svg)
 
-###
+## CLI-Referenz
+
+Hier folgt eine vollständige Übersicht über alle verfügbaren Befehle und Optionen.

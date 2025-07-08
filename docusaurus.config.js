@@ -2,7 +2,7 @@
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Agent-NN Documentation',
-  url: 'https://EcoSphereNetwork.github.io',
+  url: 'https://ecospheretwork.github.io',
   baseUrl: '/Agent-NN/',
   organizationName: 'EcoSphereNetwork',
   projectName: 'Agent-NN',

@@ -9,3 +9,4 @@ Local Docusaurus build succeeded; 404.html generated automatically.
 Docs not yet reachable on GitHub Pages (curl 404).
 CI tests fail due to existing ruff lint errors.
 Tue Jul  8 22:12:22 UTC 2025: Begin fix docs deployment
+Tue Jul  8 23:20:40 UTC 2025: Adjusted deploy-docs script to use parent config

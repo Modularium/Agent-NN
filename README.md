@@ -6,6 +6,7 @@
 
 Agent-NN ist ein Multi-Agent-System mit integrierten neuronalen Netzen. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen. Neben den Backend-Diensten stellt das Projekt ein Python‑SDK, eine CLI und ein React-basiertes Frontend bereit.
 
+Online-Dokumentation: https://ecospheretwork.github.io/Agent-NN/
 **Aktuelle Version:** v1.0.3 – Robuste Setup-Skripte und verbesserte Docker-Kompatibilität
 
 ## 🚀 Quick Start

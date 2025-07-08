@@ -1,0 +1,14 @@
+{
+  "name": "agent-nn-docs",
+  "version": "1.0.0",
+  "description": "Docusaurus documentation for Agent-NN",
+  "scripts": {
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "deploy": "docusaurus deploy"
+  },
+  "dependencies": {
+    "@docusaurus/core": "^3.8.1",
+    "@docusaurus/preset-classic": "^3.8.1"
+  }
+}

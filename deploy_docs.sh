@@ -1,61 +1,58 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-# ensure we're on main branch
+BRANCH=gh-pages
+REPO=https://github.com/EcoSphereNetwork/Agent-NN.git
+
+if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+  REPO="https://x-access-token:${GITHUB_TOKEN}@github.com/EcoSphereNetwork/Agent-NN.git"
+fi
+
 current_branch=$(git rev-parse --abbrev-ref HEAD)
-if [ "$current_branch" != "main" ]; then
+if [[ "$current_branch" != "main" ]]; then
   echo "Aktueller Branch ist '$current_branch'. Bitte vorher auf 'main' wechseln." >&2
   exit 1
 fi
 
-# install dependencies only if node_modules doesn't exist
-if [ ! -d node_modules ]; then
-  echo "Installiere Node-Abhängigkeiten..."
-  npm install
+# Ensure dependencies installed
+if [[ ! -d node_modules ]]; then
+  npm ci
 fi
 
-# build docs with docusaurus
+# Build docs
 npm run build
 
-# check if gh-pages branch exists
-if git show-ref --quiet refs/heads/gh-pages; then
-  git fetch origin gh-pages:gh-pages
+# Check if gh-pages branch exists remotely
+if git ls-remote --exit-code --heads origin $BRANCH >/dev/null 2>&1; then
+  git fetch origin $BRANCH:$BRANCH
 else
-  echo "Initialisiere 'gh-pages' Branch..."
-  git checkout --orphan gh-pages
+  echo "Initialisiere '$BRANCH' Branch..."
+  git checkout --orphan $BRANCH
   git reset --hard
   echo "Agent-NN Dokumentation" > README.md
   git add README.md
-  git commit -m "Init gh-pages"
-  git push origin gh-pages
+  git commit -m "Init $BRANCH"
+  git push $REPO $BRANCH
   git checkout main
 fi
 
 workdir=$(mktemp -d)
-trap 'rm -rf "$workdir"' EXIT
+trap 'git worktree remove -f "$workdir"; rm -rf "$workdir"' EXIT
 
-# create worktree for gh-pages
-git worktree add "$workdir" gh-pages
+# Deploy build output
+git worktree add "$workdir" $BRANCH
 rm -rf "$workdir"/*
 cp -r build/* "$workdir"/
 touch "$workdir/.nojekyll"
 
-cd "$workdir"
-
-git add --all
-commit_msg="Deploy documentation"
-if git diff --staged --quiet; then
-  echo "Keine Änderungen zum Deployen."
+pushd "$workdir" > /dev/null
+if git status --porcelain | grep . >/dev/null; then
+  git add .
+  git commit -m "Deploy Docusaurus docs"
+  git push $REPO $BRANCH
 else
-  git commit -m "$commit_msg"
-  git push origin gh-pages
+  echo "Keine Änderungen zum Deployen."
 fi
+popd > /dev/null
 
-cd -
-
-git worktree remove "$workdir"
-
-echo "gh-pages wurde aktualisiert"
-echo "GitHub Pages muss ggf. manuell unter Settings → Pages aktiviert werden (Branch: gh-pages, Ordner: /)"
-
-exit 0
+echo "Deployment abgeschlossen."

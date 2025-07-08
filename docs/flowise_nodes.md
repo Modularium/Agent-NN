@@ -48,7 +48,7 @@ const result = await node.run();
 
 Die generierten `.node.json` Dateien enthalten jetzt zusätzliche Felder für Farbe, Icon und Kategorie. Damit erscheinen die Agent-NN Nodes in Flowise einheitlich unter der Kategorie **Agent-NN**.
 
-![Node Preview](integrations/flowise_example.png)
+> TODO: Screenshot "flowise_example.png" ergänzen
 
 Zur Installation in einer lokalen Flowise Instanz kann das Skript `flowise_deploy.py` verwendet werden:
 

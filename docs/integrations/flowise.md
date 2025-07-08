@@ -63,7 +63,7 @@ Diese Komponente wird in Flowise eingebunden und erlaubt es, Benutzeranfragen di
 3. Optional können `taskType`, `path`, `method`, `headers`, `auth` und
    `timeout` angepasst werden.
 
-![Flowise Example](flowise_example.png)
+> TODO: Screenshot "flowise_example.png" ergänzen
 
 Nach dem Upload kann die Komponente sofort verwendet werden. Konfiguriere die
 Basis-URL von Agent‑NN sowie optionale Header oder ein anderes Timeout.

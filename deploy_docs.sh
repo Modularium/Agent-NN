@@ -19,6 +19,6 @@ fi
 touch build/.nojekyll
 
 # Deploy using docusaurus deploy
-npm run deploy-docs
+npm run deploy
 
 echo "Deployment abgeschlossen."

@@ -1,3 +1,6 @@
-Added origin remote for GitHub repository.
+Set git remote to HTTPS origin.
 Created gh-pages branch with README placeholder.
 Attempted Docusaurus deploy, but deployment failed due to network restrictions (SSH port unreachable).
+
+Configured gh-pages deploy action using HTTPS.
+Tests aborted: missing heavy dependency torch.

@@ -27,3 +27,4 @@ integrations/flowise-agentnn/dist/
 integrations/flowise-nodes/node_modules/
 *.env
 frontend/agent-ui/dist/
+node_modules/

@@ -4,3 +4,7 @@ Attempted Docusaurus deploy, but deployment failed due to network restrictions (
 
 Configured gh-pages deploy action using HTTPS.
 Tests aborted: missing heavy dependency torch.
+Updated deploy-docs workflow to Node-only. Added step to create .nojekyll and use --skip-build.
+Local Docusaurus build succeeded; 404.html generated automatically.
+Docs not yet reachable on GitHub Pages (curl 404).
+CI tests fail due to existing ruff lint errors.

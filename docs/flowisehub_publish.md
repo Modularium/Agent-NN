@@ -22,7 +22,7 @@ The archive contains the compiled JavaScript files, node definitions and `flowis
 ## Repository and Release
 
 Tag a GitHub release to provide a stable download link. The repository URL is
-<https://github.com/EcoSphereNetwork/Agent-NN>. GitHub Pages can host a preview page under `dist/index.html` with screenshots and usage instructions.
+https://github.com/EcoSphereNetwork/Agent-NN. GitHub Pages can host a preview page under `dist/index.html` with screenshots and usage instructions.
 
 ## Submitting to FlowiseHub
 

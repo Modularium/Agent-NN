@@ -46,12 +46,8 @@ Agent-NN is a sophisticated multi-agent system that combines large language mode
 - System-wide monitoring
 
 ## Getting Started
+For a practical introduction, see the [User Guide](BenutzerHandbuch/index.md).
 
-To get started with Agent-NN, check out the following sections:
-
-1. [Installation Guide](getting-started/installation.md)
-2. [Quick Start Tutorial](getting-started/quickstart.md)
-3. [Configuration Guide](getting-started/configuration.md)
 
 ## Architecture Overview
 
@@ -68,7 +64,7 @@ graph TD
     B --> H[Evaluation]
 ```
 
-For more details about the system architecture, see the [Architecture Guide](concepts/architecture.md).
+For more details about the system architecture, see the [Architecture Overview](architecture/overview.md).
 
 ## Contributing
 

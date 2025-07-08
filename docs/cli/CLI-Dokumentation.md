@@ -26,7 +26,7 @@ Die CLI ist ideal für:
 - Leistungsüberwachung und -optimierung
 - Modell- und Systemkonfiguration
 
-![CLI-Übersicht](cli-overview-svg)
+![CLI-Übersicht](CLI-Übersicht.svg)
 
 ## Installation
 
@@ -123,7 +123,7 @@ Optionen:
 - `--output-format`: Format der Ausgabedateien (json, csv, yaml)
 - `--output-dir`: Verzeichnis für Ausgabedateien
 
-![CLI Batch-Verarbeitung](cli-batch-processing-svg)
+![CLI Batch-Verarbeitung](CLI-Batch-Verarbeitung.svg)
 
 ### Batch-Status überwachen
 
@@ -147,7 +147,7 @@ Starten Sie eine Echtzeit-Überwachung des Systems:
 agent-nn monitor --live
 ```
 
-![CLI Performance-Überwachung](cli-performance-monitoring-svg)
+![CLI Performance-Überwachung](CLI-Performance-Überwachung.svg)
 
 ### Leistungsbericht generieren
 
@@ -335,7 +335,7 @@ Der typische Workflow mit der CLI umfasst:
 2. **Modell auswählen**: Wählen Sie ein Modell für Ihre Aufgaben
 3. **Aufgabe ausführen**: Führen Sie eine Aufgabe aus oder starten Sie den Chat-Modus
 
-![CLI Workflow-Diagramm](cli-workflow-diagram-svg)
+![CLI Workflow-Diagramm](CLI-Workflow-Diagramm.svg)
 
 ## Grundlegende Befehle
 
@@ -409,7 +409,7 @@ Beispiel:
 agent-nn task "Erstelle eine Finanzanalyse für mein Portfolio basierend auf den aktuellen Markttrends" --domain finance --output json --save portfolio_analysis.json
 ```
 
-![CLI Aufgabenausführung](cli-task-execution-svg)
+![CLI Aufgabenausführung](CLI-Aufgabenausführung.svg)
 
 ### Ausgabeformate
 
@@ -445,7 +445,7 @@ Beispiel:
 agent-nn chat --model gpt-4 --system-prompt "Du bist ein Finanzberater mit Fachwissen in Kryptowährungen"
 ```
 
-![CLI Interaktiver Chat](cli-interactive-chat-svg)
+![CLI Interaktiver Chat](CLI-Interaktiver-Chat.svg)
 
 ### Chat-Befehle
 
@@ -481,6 +481,6 @@ Optionen:
 - `--backend`: Filtert nach Backend-Typ (openai, llamafile, lmstudio)
 - `--details`: Zeigt detaillierte Modellinformationen an
 
-![CLI Modellverwaltung](cli-model-management-svg)
+![CLI Modellverwaltung](CLI-Modellverwaltung.svg)
 
 ###

@@ -23,7 +23,7 @@ Response:
 }
 ```
 
-## GET /chat/history/{session_id}
+## GET `/chat/history/{session_id}`
 Return the stored interaction history for a session.
 
 ## POST /chat/feedback

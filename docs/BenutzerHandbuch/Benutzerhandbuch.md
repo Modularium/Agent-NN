@@ -36,7 +36,7 @@ Agent-NN ist ein intelligentes Assistenzsystem, das unterschiedliche spezialisie
 
 Agent-NN besteht aus mehreren Hauptkomponenten, die zusammenarbeiten, um Ihnen ein leistungsstarkes Assistenzsystem zu bieten.
 
-![Systemarchitektur](systemarchitektur.svg)
+![Systemarchitektur](Systemarchitektur.svg)
 
 ### Hauptkomponenten
 
@@ -50,7 +50,7 @@ Agent-NN besteht aus mehreren Hauptkomponenten, die zusammenarbeiten, um Ihnen e
 
 Agent-NN bietet verschiedene Arten von Agenten, jeder mit einzigartigen Fähigkeiten:
 
-![Agententypen](agententypen.svg)
+![Agententypen](Agententypen.svg)
 
 - **Finanz-Agent**: Experte für Finanzanalyse, Investitionen und Finanzplanung
 - **Tech-Agent**: Spezialist für Softwareentwicklung, Systemarchitektur und technische Problemlösung
@@ -83,13 +83,13 @@ Agent-NN ist eine webbasierte Anwendung und erfordert keine lokale Installation.
 3. Füllen Sie Ihr Profil aus, um personalisierte Empfehlungen zu erhalten
 4. Konfigurieren Sie Ihre bevorzugten Domänen und Interessen
 
-![Anmeldeprozess](login-process-svg)
+![Anmeldeprozess](Anmeldeprozess.svg)
 
 ## Die Benutzeroberfläche
 
 Die Agent-NN-Benutzeroberfläche ist intuitiv und benutzerfreundlich gestaltet, mit klaren Navigationselementen und einem zentralen Chat-Interface.
 
-![Benutzeroberfläche](ui-overview-svg)
+![Benutzeroberfläche](Benutzeroberfläche.svg)
 
 ### Hauptelemente
 
@@ -119,7 +119,7 @@ Die Interaktion mit Agent-NN erfolgt hauptsächlich über natürlichsprachliche 
 2. Klicken Sie auf "Neue Konversation" oder verwenden Sie die Tastenkombination Ctrl+N/Cmd+N
 3. Beginnen Sie mit einer Nachricht an das System
 
-![Chat-Interaktion](chat-interaction-svg)
+![Chat-Interaktion](Chat-Interaktion.svg)
 
 ### Direkte Agentenwahl
 
@@ -137,7 +137,7 @@ Agent-NN kann komplexe Aufgaben ausführen:
 3. Der Supervisor-Agent analysiert Ihre Anfrage und delegiert sie an den passenden Spezialisten
 4. Bei Bedarf können Agenten Rückfragen stellen oder Klarstellungen erbitten
 
-![Aufgabendelegation](task-delegation-svg)
+![Aufgabendelegation](Aufgabendelegation.svg)
 
 ### Multi-Agent-Zusammenarbeit
 
@@ -189,7 +189,7 @@ Agent-NN ist ein intelligentes Assistenzsystem, das unterschiedliche spezialisie
 
 Agent-NN besteht aus mehreren Hauptkomponenten, die zusammenarbeiten, um Ihnen ein leistungsstarkes Assistenzsystem zu bieten.
 
-![Systemarchitektur](system_architecture.png)
+![Systemarchitektur](Systemarchitektur.svg)
 
 ### Hauptkomponenten
 
@@ -203,7 +203,7 @@ Agent-NN besteht aus mehreren Hauptkomponenten, die zusammenarbeiten, um Ihnen e
 
 Agent-NN bietet verschiedene Arten von Agenten, jeder mit einzigartigen Fähigkeiten:
 
-![Agententypen](agent_types.png)
+![Agententypen](Agententypen.svg)
 
 - **Finanz-Agent**: Experte für Finanzanalyse, Investitionen und Finanzplanung
 - **Tech-Agent**: Spezialist für Softwareentwicklung, Systemarchitektur und technische Problemlösung
@@ -236,13 +236,13 @@ Agent-NN ist eine webbasierte Anwendung und erfordert keine lokale Installation.
 3. Füllen Sie Ihr Profil aus, um personalisierte Empfehlungen zu erhalten
 4. Konfigurieren Sie Ihre bevorzugten Domänen und Interessen
 
-![Anmeldeprozess](login_process.png)
+![Anmeldeprozess](Anmeldeprozess.svg)
 
 ## Die Benutzeroberfläche
 
 Die Agent-NN-Benutzeroberfläche ist intuitiv und benutzerfreundlich gestaltet, mit klaren Navigationselementen und einem zentralen Chat-Interface.
 
-![Benutzeroberfläche](ui_overview.png)
+![Benutzeroberfläche](Benutzeroberfläche.svg)
 
 ### Hauptelemente
 
@@ -272,7 +272,7 @@ Die Interaktion mit Agent-NN erfolgt hauptsächlich über natürlichsprachliche 
 2. Klicken Sie auf "Neue Konversation" oder verwenden Sie die Tastenkombination Ctrl+N/Cmd+N
 3. Beginnen Sie mit einer Nachricht an das System
 
-![Chat-Interaktion](chat_interaction.png)
+![Chat-Interaktion](Chat-Interaktion.svg)
 
 ### Direkte Agentenwahl
 
@@ -290,7 +290,7 @@ Agent-NN kann komplexe Aufgaben ausführen:
 3. Der Supervisor-Agent analysiert Ihre Anfrage und delegiert sie an den passenden Spezialisten
 4. Bei Bedarf können Agenten Rückfragen stellen oder Klarstellungen erbitten
 
-![Aufgabendelegation](task_delegation.png)
+![Aufgabendelegation](Aufgabendelegation.svg)
 
 ### Multi-Agent-Zusammenarbeit
 
@@ -323,7 +323,7 @@ Der Finanz-Agent ist Ihr Experte für alle finanzbezogenen Fragen und Aufgaben.
 - "Entwickle eine Finanzprognose für mein Startup"
 - "Berechne wichtige Finanzkennzahlen für dieses Unternehmen"
 
-![Finanz-Agent](finance_agent.png)
+![Finanz-Agent](Finanz-Agent.svg)
 
 ### Tech-Agent
 
@@ -343,7 +343,7 @@ Der Tech-Agent ist Ihr Spezialist für technische Fragen und Softwareentwicklung
 - "Implementiere Sicherheits-Best-Practices in meinem System"
 - "Hilf mir bei der Fehlerbehebung dieses technischen Problems"
 
-![Tech-Agent](tech_agent.png)
+![Tech-Agent](Tech-Agent.svg)
 
 ### Marketing-Agent
 
@@ -363,7 +363,7 @@ Der Marketing-Agent ist Ihr Experte für Marketingstrategien und Kundenkommunika
 - "Analysiere Markttrends und Wettbewerb"
 - "Entwirf ein Kundenbindungsprogramm"
 
-![Marketing-Agent](marketing_agent.png)
+> TODO: Bild einfügen: ./marketing_agent.png
 
 ### Web-Agent
 
@@ -392,7 +392,7 @@ Agent-NN ermöglicht es Ihnen, eigene Dokumente und Wissensquellen zu verwalten,
 4. Ordnen Sie das Dokument einer oder mehreren Domänen zu
 5. Fügen Sie optionale Metadaten hinzu, um die Auffindbarkeit zu verbessern
 
-![Dokumentenupload](document_upload.png)
+![Dokumentenupload](Dokumentenupload.svg)
 
 ### Wissensbasen verwalten
 
@@ -410,7 +410,7 @@ Sie können Agenten anweisen, spezifische Webquellen zu überwachen und zu integ
 3. Legen Sie Aktualisierungsintervalle fest
 4. Die Informationen werden automatisch in die relevanten Wissensbasen aufgenommen
 
-![Web-Integration](web_integration.png)
+![Web-Integration](Web-Integration.svg)
 
 ## Erweiterte Funktionen
 
@@ -426,7 +426,7 @@ Sie können wiederkehrende Aufgaben automatisieren:
 4. Konfigurieren Sie die auszuführenden Aufgaben
 5. Legen Sie Benachrichtigungspräferenzen fest
 
-![Workflow-Erstellung](workflow_creation.png)
+![Workflow-Erstellung](Workflow-Erstellung.svg)
 
 ### Benutzerdefinierte Agenten
 
@@ -447,7 +447,7 @@ Agent-NN kann mit verschiedenen externen Systemen integriert werden:
 - **Webhook-Benachrichtigungen**: Für ereignisbasierte Automatisierung
 - **Drittanbieter-Apps**: Verbindung zu Slack, Teams, Trello und mehr
 
-![Integrationsoptionen](integration_options.png)
+![Integrationsoptionen](Integrationsoptionen.svg)
 
 ### Erweiterte Analysen
 
@@ -482,7 +482,7 @@ Hier finden Sie Lösungen für häufig auftretende Probleme.
 3. Geben Sie zusätzlichen Kontext, um die Absicht zu verdeutlichen
 4. Geben Sie Feedback, damit das System lernen kann
 
-![Fehlerbehebung Agenten-Auswahl](agent_selection_troubleshooting.png)
+![Fehlerbehebung Agenten-Auswahl](FehlerbehebungAgenten-Auswahl.svg)
 
 ### Langsame Antworten
 

@@ -1,0 +1,3 @@
+Added origin remote for GitHub repository.
+Created gh-pages branch with README placeholder.
+Attempted Docusaurus deploy, but deployment failed due to network restrictions (SSH port unreachable).

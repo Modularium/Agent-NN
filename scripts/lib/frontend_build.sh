@@ -4,6 +4,7 @@ __frontend_build_init() {
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     source "$SCRIPT_DIR/log_utils.sh"
     source "$SCRIPT_DIR/../helpers/common.sh"
+    source "$SCRIPT_DIR/status_utils.sh"
 }
 
 __frontend_build_init
@@ -33,6 +34,7 @@ build_frontend() {
     log_info "Build-Output:"
     ls -al "$target" || true
     log_ok "Frontend-Build abgeschlossen"
+    update_status "frontend" "built" "$SCRIPT_DIR/../../.agentnn/status.json"
 }
 
 export -f build_frontend

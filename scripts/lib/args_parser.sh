@@ -58,6 +58,11 @@ parse_setup_args() {
                 RECOVERY_MODE=true
                 AUTO_MODE=true
                 ;;
+            --preset)
+                shift
+                PRESET="$1"
+                apply_preset "$PRESET"
+                ;;
             --clean)
                 clean_environment
                 exit 0

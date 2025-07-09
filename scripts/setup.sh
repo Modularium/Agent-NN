@@ -21,6 +21,9 @@ source "$SCRIPT_DIR/lib/frontend_build.sh"
 source "$SCRIPT_DIR/lib/install_utils.sh"
 source "$SCRIPT_DIR/lib/menu_utils.sh"
 source "$SCRIPT_DIR/lib/args_parser.sh"
+source "$SCRIPT_DIR/lib/config_utils.sh"
+source "$SCRIPT_DIR/lib/preset_utils.sh"
+source "$SCRIPT_DIR/lib/status_utils.sh"
 
 # Globale Variablen
 SCRIPT_NAME="$(basename "$0")"
@@ -35,6 +38,7 @@ RUN_MODE="full"
 EXIT_ON_FAIL=false
 RECOVERY_MODE=false
 LOG_ERROR_FILE=""
+PRESET=""
 
 usage() {
     cat << EOF
@@ -56,6 +60,7 @@ OPTIONS:
     --no-docker             Setup ohne Docker-Schritte
     --exit-on-fail          Bei Fehlern sofort abbrechen
     --recover               Fehlgeschlagenes Setup wiederaufnehmen
+    --preset <name>         Vordefinierte Einstellungen laden (dev|ci|minimal)
     --clean                 Entwicklungsumgebung zurücksetzen
 
 BEISPIELE:
@@ -64,6 +69,7 @@ BEISPIELE:
     $SCRIPT_NAME --skip-docker      # Setup ohne Docker-Start
     $SCRIPT_NAME --verbose          # Mit ausführlicher Ausgabe
     $SCRIPT_NAME --install-heavy    # Heavy-Dependencies installieren
+    $SCRIPT_NAME --preset dev       # Preset mit Docker und Frontend
 
 VORAUSSETZUNGEN:
     - Python 3.9+
@@ -146,7 +152,9 @@ install_python_dependencies() {
         pip install torch==2.2.0+cpu -f https://download.pytorch.org/whl/torch_stable.html \
             || echo "⚠️ torch konnte nicht installiert werden – Tests evtl. deaktiviert"
     fi
-    
+
+    update_status "python" "ok" "$REPO_ROOT/.agentnn/status.json"
+
     return 0
 }
 
@@ -285,6 +293,7 @@ main() {
     setup_error_handling
     ensure_utf8
     setup_logging
+    load_config || true
     
     # Argumente parsen
     parse_setup_args "${original_args[@]}"
@@ -416,6 +425,7 @@ main() {
             verify_installation || log_warn "Verifizierung mit Problemen abgeschlossen"
 
             run_project_tests || true
+            update_status "last_setup" "$(date -u +%FT%TZ)" "$REPO_ROOT/.agentnn/status.json"
             print_next_steps
             ;;
     esac

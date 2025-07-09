@@ -301,9 +301,15 @@ main() {
     # Argumente parsen
     parse_arguments "$@"
 
-    if [[ "$WITH_DOCKER" == "true" ]] && [[ ! -f docker-compose.yml ]]; then
-        echo "❗ Docker Compose nicht gefunden – Abbruch"
-        exit 1
+    if [[ "$WITH_DOCKER" == "true" ]]; then
+        if [[ ! -f docker-compose.yml ]]; then
+            log_err "docker-compose.yml fehlt"
+            exit 1
+        fi
+        if ! has_docker_compose; then
+            log_err "Docker Compose nicht ausführbar"
+            exit 1
+        fi
     fi
     
     # Banner anzeigen
@@ -330,6 +336,14 @@ main() {
             exit 1
         else
             log_warn "Docker nicht verfügbar – Docker-Start wird übersprungen"
+            START_DOCKER=false
+        fi
+    elif ! has_docker_compose; then
+        if [[ "$WITH_DOCKER" == "true" ]]; then
+            log_err "Docker Compose nicht gefunden."
+            exit 1
+        else
+            log_warn "Docker Compose fehlt – Docker-Start wird übersprungen"
             START_DOCKER=false
         fi
     fi

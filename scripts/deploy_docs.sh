@@ -1,35 +1,30 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "[docs] Checking dependencies"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOG_DIR="$SCRIPT_DIR/../logs"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/deploy_docs.log"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "[docs] Prüfe Abhängigkeiten"
 if [[ ! -d node_modules ]]; then
   npm ci
 fi
 
-if [[ ! -d build ]]; then
-  echo "[docs] Building Docusaurus site"
-  npm run build
-fi
+echo "[docs] Baue Docusaurus"
+npm run build
 
 if [[ ! -d build ]]; then
-  echo "[docs] Build directory missing" >&2
+  echo "[docs] Build fehlgeschlagen" >&2
   exit 1
 fi
 
-touch build/.nojekyll
-
-echo "[docs] Deploying to gh-pages branch"
-git -C build init
-git -C build add .
-timestamp="${CI_DEPLOY_TIMESTAMP:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")}"
-git -C build commit -m "Deploy docs $timestamp" || true
-git -C build branch -M gh-pages
-git -C build remote add origin "$(git config --get remote.origin.url)"
-git -C build push -f origin gh-pages
-
-if command -v gh >/dev/null && [[ -n "${GITHUB_REF:-}" ]]; then
-  pr_number=${GITHUB_REF##*/}
-  gh pr comment "$pr_number" --body "Docs deployed $timestamp" || true
-fi
+echo "[docs] Deploye nach gh-pages"
+git worktree add -B gh-pages ../gh-pages origin/gh-pages
+cp -r build/* ../gh-pages/
+git -C ../gh-pages add .
+git -C ../gh-pages commit -am "📚 deploy: $(date +%F_%T)"
+git -C ../gh-pages push origin gh-pages
 
 echo "[docs] Deployment abgeschlossen"

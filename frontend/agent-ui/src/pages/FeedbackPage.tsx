@@ -136,7 +136,7 @@ export default function ModernFeedbackPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'rating' | 'upvotes'>('newest')
-  const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null)
+  // const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null)
 
   // New feedback form state
   const [newFeedback, setNewFeedback] = useState({

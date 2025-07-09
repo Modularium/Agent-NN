@@ -1,5 +1,5 @@
 // src/components/ui/Input.tsx
-import React from 'react'
+import type { ReactNode } from 'react'
 
 interface InputProps {
   label?: string
@@ -9,7 +9,7 @@ interface InputProps {
   type?: 'text' | 'email' | 'password' | 'number'
   disabled?: boolean
   error?: string
-  icon?: React.ReactNode
+  icon?: ReactNode
   className?: string
 }
 

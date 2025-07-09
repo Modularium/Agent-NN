@@ -1,11 +1,11 @@
 // src/components/ui/Modal.tsx
-import React from 'react'
+import type { ReactNode } from 'react'
 
 interface ModalProps {
   isOpen: boolean
   onClose: () => void
   title?: string
-  children: React.ReactNode
+  children: ReactNode
   size?: 'sm' | 'md' | 'lg' | 'xl'
 }
 

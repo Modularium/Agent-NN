@@ -1,8 +1,8 @@
 // src/components/ui/Card.tsx
-import React from 'react'
+import type { ReactNode } from 'react'
 
 interface CardProps {
-  children: React.ReactNode
+  children: ReactNode
   title?: string
   subtitle?: string
   padding?: 'sm' | 'md' | 'lg'

@@ -1,8 +1,8 @@
 // src/components/ui/Button.tsx
-import React from 'react'
+import type { ReactNode } from 'react'
 
 interface ButtonProps {
-  children: React.ReactNode
+  children: ReactNode
   variant?: 'primary' | 'secondary' | 'danger' | 'success'
   size?: 'sm' | 'md' | 'lg'
   disabled?: boolean

@@ -1,5 +1,4 @@
 // src/components/ui/ProgressBar.tsx
-import React from 'react'
 
 interface ProgressBarProps {
   value: number

@@ -25,13 +25,11 @@ export interface ApiError {
 class ApiClient {
   private baseURL: string
   private timeout: number
-  private retries: number
 
   constructor() {
     const settings = useAppStore.getState().settings
     this.baseURL = settings.api.baseUrl
     this.timeout = settings.api.timeout
-    this.retries = settings.api.retries
   }
 
   private async request<T>(
@@ -71,7 +69,7 @@ class ApiClient {
       setError(null)
       return data
 
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof ApiError) {
         setError(error.message)
         throw error
@@ -172,7 +170,6 @@ export const queryClient = new QueryClient({
       retry: 3,
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
       staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 10 * 60 * 1000, // 10 minutes
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
     },

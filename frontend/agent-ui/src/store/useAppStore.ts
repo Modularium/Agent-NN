@@ -129,7 +129,7 @@ interface AppActions {
   removeTask: (id: string) => void
   
   // Notification Actions
-  addNotification: (notification: Omit<Notification, 'id' | 'timestamp'>) => void
+  addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void
   markNotificationRead: (id: string) => void
   removeNotification: (id: string) => void
   clearAllNotifications: () => void
@@ -165,7 +165,7 @@ const defaultSettings: AppSettings = {
 
 export const useAppStore = create<AppState & AppActions>()(
   persist(
-    immer((set, get) => ({
+    immer((set, _get) => ({
       // Initial State
       sidebarOpen: false,
       loading: false,
@@ -180,29 +180,29 @@ export const useAppStore = create<AppState & AppActions>()(
 
       // UI Actions
       setSidebarOpen: (open) =>
-        set((state) => {
+        set((state: AppState) => {
           state.sidebarOpen = open
         }),
 
       setLoading: (loading) =>
-        set((state) => {
+        set((state: AppState) => {
           state.loading = loading
         }),
 
       setOnline: (online) =>
-        set((state) => {
+        set((state: AppState) => {
           state.online = online
         }),
 
       // User Actions
       setUser: (user) =>
-        set((state) => {
+        set((state: AppState) => {
           state.user = user
           state.authenticated = !!user
         }),
 
       setAuthenticated: (authenticated) =>
-        set((state) => {
+        set((state: AppState) => {
           state.authenticated = authenticated
           if (!authenticated) {
             state.user = null
@@ -210,7 +210,7 @@ export const useAppStore = create<AppState & AppActions>()(
         }),
 
       logout: () =>
-        set((state) => {
+        set((state: AppState) => {
           state.user = null
           state.authenticated = false
           state.notifications = []
@@ -219,55 +219,55 @@ export const useAppStore = create<AppState & AppActions>()(
 
       // Agent Actions
       setAgents: (agents) =>
-        set((state) => {
+        set((state: AppState) => {
           state.agents = agents
         }),
 
       addAgent: (agent) =>
-        set((state) => {
+        set((state: AppState) => {
           state.agents.push(agent)
         }),
 
-      updateAgent: (id, updates) =>
-        set((state) => {
+      updateAgent: (id: string, updates: Partial<Agent>) =>
+        set((state: AppState) => {
           const index = state.agents.findIndex(a => a.id === id)
           if (index !== -1) {
             state.agents[index] = { ...state.agents[index], ...updates }
           }
         }),
 
-      removeAgent: (id) =>
-        set((state) => {
+      removeAgent: (id: string) =>
+        set((state: AppState) => {
           state.agents = state.agents.filter(a => a.id !== id)
         }),
 
       // Task Actions
-      setTasks: (tasks) =>
-        set((state) => {
+      setTasks: (tasks: Task[]) =>
+        set((state: AppState) => {
           state.tasks = tasks
         }),
 
-      addTask: (task) =>
-        set((state) => {
+      addTask: (task: Task) =>
+        set((state: AppState) => {
           state.tasks.push(task)
         }),
 
-      updateTask: (id, updates) =>
-        set((state) => {
+      updateTask: (id: string, updates: Partial<Task>) =>
+        set((state: AppState) => {
           const index = state.tasks.findIndex(t => t.id === id)
           if (index !== -1) {
             state.tasks[index] = { ...state.tasks[index], ...updates }
           }
         }),
 
-      removeTask: (id) =>
-        set((state) => {
+      removeTask: (id: string) =>
+        set((state: AppState) => {
           state.tasks = state.tasks.filter(t => t.id !== id)
         }),
 
       // Notification Actions
-      addNotification: (notification) =>
-        set((state) => {
+      addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) =>
+        set((state: AppState) => {
           const newNotification: Notification = {
             ...notification,
             id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
@@ -282,50 +282,50 @@ export const useAppStore = create<AppState & AppActions>()(
           }
         }),
 
-      markNotificationRead: (id) =>
-        set((state) => {
+      markNotificationRead: (id: string) =>
+        set((state: AppState) => {
           const notification = state.notifications.find(n => n.id === id)
           if (notification) {
             notification.read = true
           }
         }),
 
-      removeNotification: (id) =>
-        set((state) => {
+      removeNotification: (id: string) =>
+        set((state: AppState) => {
           state.notifications = state.notifications.filter(n => n.id !== id)
         }),
 
       clearAllNotifications: () =>
-        set((state) => {
+        set((state: AppState) => {
           state.notifications = []
         }),
 
       // Settings Actions
-      updateSettings: (updates) =>
-        set((state) => {
+      updateSettings: (updates: Partial<AppSettings>) =>
+        set((state: AppState) => {
           state.settings = { ...state.settings, ...updates }
         }),
 
       resetSettings: () =>
-        set((state) => {
+        set((state: AppState) => {
           state.settings = defaultSettings
         }),
 
       // Error Actions
-      setError: (error) =>
-        set((state) => {
+      setError: (error: string | null) =>
+        set((state: AppState) => {
           state.error = error
         }),
 
       clearError: () =>
-        set((state) => {
+        set((state: AppState) => {
           state.error = null
         })
     })),
     {
       name: 'agent-nn-store',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
+      partialize: (state: AppState) => ({
         settings: state.settings,
         user: state.user,
         authenticated: state.authenticated
@@ -335,11 +335,11 @@ export const useAppStore = create<AppState & AppActions>()(
 )
 
 // Selectors
-export const useUser = () => useAppStore((state) => state.user)
-export const useAuthenticated = () => useAppStore((state) => state.authenticated)
-export const useAgents = () => useAppStore((state) => state.agents)
-export const useTasks = () => useAppStore((state) => state.tasks)
-export const useNotifications = () => useAppStore((state) => state.notifications)
-export const useSettings = () => useAppStore((state) => state.settings)
-export const useLoading = () => useAppStore((state) => state.loading)
-export const useError = () => useAppStore((state) => state.error)
+export const useUser = () => useAppStore((state: AppState) => state.user)
+export const useAuthenticated = () => useAppStore((state: AppState) => state.authenticated)
+export const useAgents = () => useAppStore((state: AppState) => state.agents)
+export const useTasks = () => useAppStore((state: AppState) => state.tasks)
+export const useNotifications = () => useAppStore((state: AppState) => state.notifications)
+export const useSettings = () => useAppStore((state: AppState) => state.settings)
+export const useLoading = () => useAppStore((state: AppState) => state.loading)
+export const useError = () => useAppStore((state: AppState) => state.error)

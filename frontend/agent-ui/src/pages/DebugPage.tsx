@@ -724,7 +724,7 @@ export default function DebugPage() {
                   <div className="space-y-4">
                     {Object.entries(
                       environmentVars.reduce((acc, env) => {
-                        if (!acc[env.category]) acc[acc[env.category]] = []
+                        if (!acc[env.category]) acc[env.category] = []
                         acc[env.category].push(env)
                         return acc
                       }, {} as Record<string, EnvironmentVariable[]>)

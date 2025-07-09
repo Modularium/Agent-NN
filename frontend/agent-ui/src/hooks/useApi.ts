@@ -1,7 +1,9 @@
 // src/hooks/useApi.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { api, ApiResponse, handleApiError } from '@/services/api'
-import { useAppStore, Agent, Task, User } from '@/store/useAppStore'
+import { api, handleApiError } from '@/services/api'
+import { useAppStore } from '@/store/useAppStore'
+import { useEffect } from 'react'
+import type { Agent, Task, User } from '@/store/useAppStore'
 
 // Query Keys
 export const queryKeys = {
@@ -21,41 +23,54 @@ export const useAgents = (filters?: {
   domain?: string
   search?: string
 }) => {
-  return useQuery({
+  const query = useQuery({
     queryKey: [...queryKeys.agents, filters],
     queryFn: async () => {
       const response = await api.get<Agent[]>('/agents', filters)
       return response.data
     },
-    onSuccess: (data) => {
-      useAppStore.getState().setAgents(data)
-    },
-    onError: (error) => {
+  })
+
+  useEffect(() => {
+    if (query.data) {
+      useAppStore.getState().setAgents(query.data)
+    }
+  }, [query.data])
+
+  useEffect(() => {
+    if (query.error) {
       useAppStore.getState().addNotification({
         type: 'error',
         title: 'Failed to load agents',
-        message: handleApiError(error)
+        message: handleApiError(query.error),
       })
     }
-  })
+  }, [query.error])
+
+  return query
 }
 
 export const useAgent = (id: string) => {
-  return useQuery({
+  const query = useQuery({
     queryKey: queryKeys.agent(id),
     queryFn: async () => {
       const response = await api.get<Agent>(`/agents/${id}`)
       return response.data
     },
     enabled: !!id,
-    onError: (error) => {
+  })
+
+  useEffect(() => {
+    if (query.error) {
       useAppStore.getState().addNotification({
         type: 'error',
         title: 'Failed to load agent',
-        message: handleApiError(error)
+        message: handleApiError(query.error),
       })
     }
-  })
+  }, [query.error])
+
+  return query
 }
 
 export const useCreateAgent = () => {
@@ -149,41 +164,54 @@ export const useTasks = (filters?: {
   limit?: number
   offset?: number
 }) => {
-  return useQuery({
+  const query = useQuery({
     queryKey: [...queryKeys.tasks, filters],
     queryFn: async () => {
       const response = await api.get<Task[]>('/tasks', filters)
       return response.data
     },
-    onSuccess: (data) => {
-      useAppStore.getState().setTasks(data)
-    },
-    onError: (error) => {
+  })
+
+  useEffect(() => {
+    if (query.data) {
+      useAppStore.getState().setTasks(query.data)
+    }
+  }, [query.data])
+
+  useEffect(() => {
+    if (query.error) {
       useAppStore.getState().addNotification({
         type: 'error',
         title: 'Failed to load tasks',
-        message: handleApiError(error)
+        message: handleApiError(query.error),
       })
     }
-  })
+  }, [query.error])
+
+  return query
 }
 
 export const useTask = (id: string) => {
-  return useQuery({
+  const query = useQuery({
     queryKey: queryKeys.task(id),
     queryFn: async () => {
       const response = await api.get<Task>(`/tasks/${id}`)
       return response.data
     },
     enabled: !!id,
-    onError: (error) => {
+  })
+
+  useEffect(() => {
+    if (query.error) {
       useAppStore.getState().addNotification({
         type: 'error',
         title: 'Failed to load task',
-        message: handleApiError(error)
+        message: handleApiError(query.error),
       })
     }
-  })
+  }, [query.error])
+
+  return query
 }
 
 export const useCreateTask = () => {
@@ -277,21 +305,26 @@ export const useSendMessage = () => {
 
 // System Metrics Hooks
 export const useSystemMetrics = () => {
-  return useQuery({
+  const query = useQuery({
     queryKey: queryKeys.metrics,
     queryFn: async () => {
       const response = await api.get('/metrics/system')
       return response.data
     },
     refetchInterval: 30000, // Refresh every 30 seconds
-    onError: (error) => {
+  })
+
+  useEffect(() => {
+    if (query.error) {
       useAppStore.getState().addNotification({
         type: 'error',
         title: 'Failed to load system metrics',
-        message: handleApiError(error)
+        message: handleApiError(query.error),
       })
     }
-  })
+  }, [query.error])
+
+  return query
 }
 
 export const useSystemHealth = () => {
@@ -308,19 +341,27 @@ export const useSystemHealth = () => {
 
 // User Management Hooks
 export const useCurrentUser = () => {
-  return useQuery({
+  const query = useQuery({
     queryKey: queryKeys.user,
     queryFn: async () => {
       const response = await api.get<User>('/user/me')
       return response.data
     },
-    onSuccess: (user) => {
-      useAppStore.getState().setUser(user)
-    },
-    onError: (_error: unknown) => {
+  })
+
+  useEffect(() => {
+    if (query.data) {
+      useAppStore.getState().setUser(query.data)
+    }
+  }, [query.data])
+
+  useEffect(() => {
+    if (query.error) {
       useAppStore.getState().setAuthenticated(false)
     }
-  })
+  }, [query.error])
+
+  return query
 }
 
 export const useLogin = () => {

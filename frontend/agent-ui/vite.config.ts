@@ -136,14 +136,14 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         rewrite: (path: string) => path.replace(/^\/api/, ''),
-        configure: (proxy: any, options: any) => {
-          proxy.on('error', (err: any, req: any, res: any) => {
+        configure: (proxy: any, _options: any) => {
+          proxy.on('error', (err: any, _req: any, _res: any) => {
             console.log('proxy error', err)
           })
-          proxy.on('proxyReq', (proxyReq: any, req: any, res: any) => {
+          proxy.on('proxyReq', (_proxyReq: any, req: any, _res: any) => {
             console.log('Sending Request to the Target:', req.method, req.url)
           })
-          proxy.on('proxyRes', (proxyRes: any, req: any, res: any) => {
+          proxy.on('proxyRes', (proxyRes: any, req: any, _res: any) => {
             console.log('Received Response from the Target:', proxyRes.statusCode, req.url)
           })
         }

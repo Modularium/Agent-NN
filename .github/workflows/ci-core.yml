@@ -1,0 +1,32 @@
+name: CI Core
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install Python deps
+        run: |
+          pip install -r requirements.txt
+          pip install -r test-requirements.txt
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install Frontend deps
+        run: npm ci --prefix frontend/agent-ui
+      - name: Lint and Typecheck
+        run: |
+          npm run lint --prefix frontend/agent-ui
+          npx tsc --noEmit --project frontend/agent-ui/tsconfig.app.json
+      - name: Backend Tests
+        run: ./tests/ci_check.sh

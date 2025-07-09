@@ -81,6 +81,24 @@ cd ../..
 docker compose up --build -d
 ```
 
+## Optionale Komponenten (z. B. für ML)
+
+```bash
+poetry install --with heavy
+```
+
+Alternativ:
+
+```bash
+./scripts/setup.sh --install-heavy
+```
+
+Um Tests auszuführen:
+
+```bash
+pytest -m "not heavy"
+```
+
 ### Troubleshooting häufiger Probleme
 
 #### Docker Compose Fehler

@@ -2,13 +2,14 @@ import unittest
 from unittest.mock import patch
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import os
 import tempfile
 from managers.hybrid_matcher import HybridMatcher, MatchResult
 from nn_models.agent_nn_v2 import TaskMetrics
 
-pytestmark = pytest.mark.heavy
 
 
 class TestHybridMatcher(unittest.TestCase):

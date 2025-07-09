@@ -2,7 +2,9 @@ import unittest
 from unittest.mock import patch, MagicMock
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import torch.nn as nn
 import tempfile
 import shutil
@@ -10,7 +12,6 @@ import os
 from datetime import datetime
 from managers.model_registry import ModelVersion, ModelRegistry
 
-pytestmark = pytest.mark.heavy
 
 
 class SimpleModel(nn.Module):

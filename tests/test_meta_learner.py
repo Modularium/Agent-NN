@@ -2,14 +2,15 @@ import unittest
 from unittest.mock import patch, MagicMock
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import os
 import tempfile
 import shutil
 from managers.meta_learner import MetaLearner, AgentScore
 from nn_models.agent_nn_v2 import TaskMetrics
 
-pytestmark = pytest.mark.heavy
 
 
 class TestMetaLearner(unittest.TestCase):

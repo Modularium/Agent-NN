@@ -5,13 +5,14 @@ import shutil
 import tempfile
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import numpy as np
 from datetime import datetime, timedelta
 from managers.system_manager import SystemManager
 from managers.cache_manager import CacheManager
 
-pytestmark = pytest.mark.heavy
 from managers.model_manager import ModelManager
 from managers.knowledge_manager import KnowledgeManager
 

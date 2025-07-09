@@ -7,7 +7,9 @@ import shutil
 from pathlib import Path
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import numpy as np
 import pandas as pd
 from unittest.mock import patch, MagicMock
@@ -19,7 +21,6 @@ from training.data_logger import (
 )
 from training.agent_selector_model import AgentSelectorModel, AgentSelectorTrainer
 
-pytestmark = pytest.mark.heavy
 
 
 class TestTraining(unittest.TestCase):

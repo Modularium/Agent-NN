@@ -3,11 +3,16 @@ from __future__ import annotations
 
 from typing import Dict, Any, List
 import uuid
-import mlflow
+from core.utils.imports import optional_import
+
+mlflow = optional_import("mlflow")
 
 from ..config import SDKSettings
 from ..client.agent_client import AgentClient
-from mlflow_integration.client import MLflowClientWrapper
+if mlflow is not None:
+    from mlflow_integration.client import MLflowClientWrapper
+else:  # pragma: no cover - optional dependency missing
+    MLflowClientWrapper = None
 
 
 class ModelManager:
@@ -15,6 +20,8 @@ class ModelManager:
 
     def __init__(self, settings: SDKSettings | None = None) -> None:
         self.settings = settings or SDKSettings.load()
+        if MLflowClientWrapper is None:
+            raise ImportError("mlflow not installed")
         self.mlflow = MLflowClientWrapper()
         self.client = AgentClient(self.settings)
 

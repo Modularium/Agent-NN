@@ -1,12 +1,13 @@
 import unittest
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import torch.nn as nn
 import time
 from managers.gpu_manager import GPUMode, GPUConfig, GPUManager
 
-pytestmark = pytest.mark.heavy
 
 
 class SimpleModel(nn.Module):

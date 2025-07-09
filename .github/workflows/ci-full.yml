@@ -1,12 +1,12 @@
-name: Test
+name: CI Full
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
 
 jobs:
   build:
+    if: contains(github.event.pull_request.labels.*.name, 'run-full-tests')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,4 +29,4 @@ jobs:
           npm run lint --prefix frontend/agent-ui
           npx tsc --noEmit --project frontend/agent-ui/tsconfig.app.json
       - name: Backend Tests
-        run: ./tests/ci_check.sh
+        run: ./tests/ci_check.sh --full

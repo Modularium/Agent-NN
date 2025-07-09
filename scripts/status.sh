@@ -7,20 +7,17 @@ STATUS_FILE="$REPO_ROOT/.agentnn/status.json"
 
 source "$SCRIPT_DIR/lib/log_utils.sh"
 source "$SCRIPT_DIR/lib/docker_utils.sh"
+source "$SCRIPT_DIR/lib/status_utils.sh"
 
-print_last_setup() {
-    if [[ -f "$STATUS_FILE" ]]; then
-        python - <<PY "$STATUS_FILE"
+ensure_status_file "$STATUS_FILE"
+
+get_status_value() {
+    python - "$STATUS_FILE" "$1" <<'PY'
 import json,sys
-s=json.load(open(sys.argv[1]))
-print("Last setup:", s.get("last_setup", "unknown"))
-for k,v in s.items():
-    if k != "last_setup":
-        print(f"{k}: {v}")
+with open(sys.argv[1]) as f:
+    data=json.load(f)
+print(data.get(sys.argv[2], ""))
 PY
-    else
-        log_warn "Status file not found"
-    fi
 }
 
 check_consistency() {
@@ -37,15 +34,26 @@ check_consistency() {
     fi
     if [[ ${#issues[@]} -gt 0 ]]; then
         log_warn "Inconsistent state detected: ${issues[*]}"
+        return 1
     else
         log_ok "Status consistent"
+        return 0
     fi
 }
 
 main() {
-    log_info "Setup status:"
-    print_last_setup
-    check_consistency
+    local last_setup preset consistency
+    last_setup=$(get_status_value last_setup)
+    preset=$(get_status_value preset)
+    if check_consistency >/dev/null; then
+        consistency="OK"
+    else
+        consistency="FEHLER"
+    fi
+    log_last_check "$STATUS_FILE"
+    echo "Letztes Setup:   ${last_setup:-unknown}"
+    echo "Preset genutzt:  ${preset:--}"
+    echo "Konsistenz:      $consistency"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then

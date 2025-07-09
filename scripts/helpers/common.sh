@@ -7,8 +7,8 @@ if [[ "${_COMMON_SH_LOADED:-}" == "true" ]]; then
 fi
 readonly _COMMON_SH_LOADED=true
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../lib/log_utils.sh"
+_COMMON_HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$_COMMON_HELPER_DIR/../lib/log_utils.sh"
 
 # Utility-Funktionen
 check_command() {

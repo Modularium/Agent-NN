@@ -83,6 +83,8 @@ Wiederkehrende Einstellungen lassen sich über `--preset` laden:
 ./scripts/setup.sh --preset ci        # Nur Python + Tests
 ./scripts/setup.sh --preset minimal   # Ohne Docker/Node
 ```
+Verf\u00fcgbare Presets: `dev`, `ci`, `minimal`. Damit lassen sich typische
+Installationsszenarien ohne viele Eingaben starten.
 
 ```bash
 # Basis-Setup
@@ -178,8 +180,8 @@ pip install docker-compose
 ./scripts/setup.sh --check-only
 # Erweiterte Validierung vor einem Pull Request
 ./scripts/validate.sh
-# Aktuellen Setup-Status anzeigen
-./scripts/status.sh
+# Aktuellen Setup-Status pr\u00fcfen
+./scripts/status.sh  # zeigt letztes Setup, verwendetes Preset und Konsistenz
 
 # Alternative: Ports in docker-compose.yml ändern
 nano docker-compose.yml

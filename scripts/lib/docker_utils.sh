@@ -4,6 +4,7 @@ __docker_utils_init() {
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     source "$SCRIPT_DIR/log_utils.sh"
     source "$SCRIPT_DIR/../helpers/common.sh"
+    source "$SCRIPT_DIR/status_utils.sh"
 }
 
 __docker_utils_init
@@ -57,6 +58,7 @@ start_docker_services() {
     log_info "Starte Docker-Services..."
     if docker_compose -f "$compose" up -d; then
         log_ok "Docker-Services gestartet"
+        update_status "docker" "ok" "$SCRIPT_DIR/../../.agentnn/status.json"
     else
         log_err "Docker-Services konnten nicht gestartet werden"
         return 1

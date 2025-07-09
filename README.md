@@ -74,6 +74,16 @@ Das Setup-System erkennt automatisch:
 ./scripts/setup.sh --recover           # Setup nach Fehlern fortsetzen
 ```
 
+#### Presets
+
+Wiederkehrende Einstellungen lassen sich über `--preset` laden:
+
+```bash
+./scripts/setup.sh --preset dev       # Docker, Python, Frontend
+./scripts/setup.sh --preset ci        # Nur Python + Tests
+./scripts/setup.sh --preset minimal   # Ohne Docker/Node
+```
+
 ```bash
 # Basis-Setup
 ./scripts/setup.sh
@@ -168,6 +178,8 @@ pip install docker-compose
 ./scripts/setup.sh --check-only
 # Erweiterte Validierung vor einem Pull Request
 ./scripts/validate.sh
+# Aktuellen Setup-Status anzeigen
+./scripts/status.sh
 
 # Alternative: Ports in docker-compose.yml ändern
 nano docker-compose.yml
@@ -209,6 +221,17 @@ API_PORT=8000
 FRONTEND_PORT=3000
 DB_PORT=5432
 REDIS_PORT=6379
+```
+
+Beispiel für `~/.agentnn/config.json`:
+
+```json
+{
+  "default_mode": "full",
+  "last_used_flags": ["--recover", "--with-docker"],
+  "python_version": "3.10",
+  "project_path": "/home/user/Agent-NN"
+}
 ```
 
 Vollständige Konfigurationsreferenz: [docs/config_reference.md](docs/config_reference.md)
@@ -376,6 +399,7 @@ Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für Details.
 - **[API-Dokumentation](docs/api/)** - REST-API-Referenz
 - **[Integrationen](docs/integrations/)** - n8n, Flowise, etc.
 - **[Troubleshooting](docs/troubleshooting.md)** - Häufige Probleme lösen
+- **[Onboarding](scripts/docs/onboarding.md)** - Schnelleinstieg für Contributor:innen
 
 ## 🚧 Roadmap
 

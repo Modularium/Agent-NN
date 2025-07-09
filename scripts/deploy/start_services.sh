@@ -99,9 +99,9 @@ main() {
     # Services starten
     if [[ "$dry_run" == "true" ]]; then
         log_info "DRY-RUN: Würde ausführen:"
-        echo "start_compose '$compose_file'"
+        echo "start_docker_services '$compose_file'"
     else
-        if start_compose "$compose_file"; then
+        if start_docker_services "$compose_file"; then
             log_ok "Services erfolgreich gestartet"
             
             # Kurze Wartezeit für Service-Start

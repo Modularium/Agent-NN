@@ -1,17 +1,31 @@
 #!/bin/bash
 
-function build_frontend() {
-    local dir="frontend/agent-ui"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../helpers/common.sh"
+
+build_frontend() {
+    local dir="$SCRIPT_DIR/../../frontend/agent-ui"
+    local target="$SCRIPT_DIR/../../frontend/dist"
+
     if [[ ! -d "$dir" ]]; then
-        echo "Frontend-Verzeichnis fehlt" >&2
+        log_err "Frontend-Verzeichnis fehlt"
         return 1
     fi
+
     pushd "$dir" >/dev/null || return 1
     if [[ ! -d node_modules ]]; then
+        log_info "Installiere Frontend-Abhängigkeiten"
         npm ci || npm install || return 1
     fi
+
+    log_info "Baue Frontend"
     npm run build || return 1
     popd >/dev/null
-    mkdir -p frontend/dist
-    cp -r "$dir"/dist/* frontend/dist/ 2>/dev/null || true
+
+    mkdir -p "$target"
+    cp -r "$dir"/dist/* "$target"/ 2>/dev/null || true
+    log_info "Build-Output:"
+    ls -al "$target" || true
 }
+
+export -f build_frontend

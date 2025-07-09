@@ -62,8 +62,8 @@ Das Setup-System erkennt automatisch:
 ```
 
 ```bash
-# Setup ohne Docker
-./scripts/setup.sh --skip-docker
+# Basis-Setup
+./scripts/setup.sh
 
 # Setup mit Docker
 ./scripts/setup.sh --with-docker
@@ -71,8 +71,11 @@ Das Setup-System erkennt automatisch:
 # Services starten
 ./scripts/start_docker.sh
 
-# Dokumentation deployen
+# Doku bauen & veröffentlichen
 ./scripts/deploy_docs.sh
+
+# Tests ausführen
+./scripts/test.sh
 ```
 
 ### Manuelles Setup

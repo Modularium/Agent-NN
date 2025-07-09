@@ -8,6 +8,7 @@ set -euo pipefail
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 readonly HELPERS_DIR="$SCRIPT_DIR/helpers"
+readonly LIB_DIR="$SCRIPT_DIR/lib"
 
 # Alle Helper-Module laden
 for helper in "$HELPERS_DIR"/{common,env,docker,frontend}.sh; do
@@ -17,6 +18,11 @@ for helper in "$HELPERS_DIR"/{common,env,docker,frontend}.sh; do
         echo "FEHLER: Helper-Datei nicht gefunden: $helper" >&2
         exit 1
     fi
+done
+
+# Zusätzliche Library-Module laden
+for lib in "$LIB_DIR"/*.sh; do
+    [[ -f "$lib" ]] && source "$lib"
 done
 
 # Globale Variablen
@@ -38,7 +44,7 @@ OPTIONS:
     -h, --help              Diese Hilfe anzeigen
     -v, --verbose           Ausführliche Ausgabe aktivieren
     --no-frontend           Frontend-Build überspringen
-    --no-docker             Docker-Start überspringen
+    --skip-docker           Docker-Start überspringen
     --check-only            Nur Umgebungsprüfung durchführen
     --install-heavy         Zusätzliche Heavy-Dependencies installieren
     --with-docker          Abbruch wenn docker-compose.yml fehlt
@@ -47,7 +53,7 @@ OPTIONS:
 BEISPIELE:
     $SCRIPT_NAME                    # Vollständiges Setup
     $SCRIPT_NAME --check-only       # Nur Umgebungsprüfung
-    $SCRIPT_NAME --no-docker        # Setup ohne Docker-Start
+    $SCRIPT_NAME --skip-docker      # Setup ohne Docker-Start
     $SCRIPT_NAME --verbose          # Mit ausführlicher Ausgabe
     $SCRIPT_NAME --install-heavy    # Heavy-Dependencies installieren
 
@@ -75,7 +81,7 @@ parse_arguments() {
             --no-frontend)
                 BUILD_FRONTEND=false
                 ;;
-            --no-docker)
+            --skip-docker)
                 START_DOCKER=false
                 ;;
             --check-only)
@@ -318,9 +324,14 @@ main() {
     
     # Docker-Prüfung
     log_info "=== DOCKER-PRÜFUNG ==="
-    if ! check_docker; then
-        log_err "Docker-Prüfung fehlgeschlagen. Setup abgebrochen."
-        exit 1
+    if ! has_docker; then
+        if [[ "$WITH_DOCKER" == "true" ]]; then
+            log_err "Docker erforderlich aber nicht gefunden."
+            exit 1
+        else
+            log_warn "Docker nicht verfügbar – Docker-Start wird übersprungen"
+            START_DOCKER=false
+        fi
     fi
     
     # Python-Dependencies
@@ -343,8 +354,13 @@ main() {
     # Docker-Services starten
     if [[ "$START_DOCKER" == "true" ]]; then
         log_info "=== DOCKER-SERVICES ==="
-        if compose_file=$(find_compose_file "docker-compose.yml"); then
-            if ! docker_compose_up "$compose_file" "--build"; then
+        compose_file="docker-compose.yml"
+        if [[ ! -f "$compose_file" ]]; then
+            compose_file=$(ls docker-compose.*.yml 2>/dev/null | head -n1 || true)
+        fi
+
+        if [[ -f "$compose_file" ]]; then
+            if ! start_compose "$compose_file"; then
                 log_err "Start der Docker-Services fehlgeschlagen. Setup abgebrochen."
                 exit 1
             fi

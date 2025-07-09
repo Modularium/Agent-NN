@@ -55,9 +55,24 @@ Das Setup-System erkennt automatisch:
 # Setup-Optionen
 ./scripts/setup.sh --help              # Hilfe anzeigen
 ./scripts/setup.sh --check-only        # Nur Umgebung prüfen
-./scripts/setup.sh --no-docker         # Ohne Docker-Start
+./scripts/setup.sh --skip-docker       # Ohne Docker-Start
+./scripts/setup.sh --with-docker       # Start erzwingen
 ./scripts/setup.sh --verbose           # Ausführliche Ausgabe
 ./scripts/setup.sh --clean             # Entwicklungsumgebung zurücksetzen
+```
+
+```bash
+# Setup ohne Docker
+./scripts/setup.sh --skip-docker
+
+# Setup mit Docker
+./scripts/setup.sh --with-docker
+
+# Services starten
+./scripts/start_docker.sh
+
+# Dokumentation deployen
+./scripts/deploy_docs.sh
 ```
 
 ### Manuelles Setup

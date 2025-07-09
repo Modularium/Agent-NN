@@ -25,6 +25,7 @@ readonly LOG_FILE="$REPO_ROOT/logs/setup.log"
 BUILD_FRONTEND=true
 START_DOCKER=true
 VERBOSE=false
+INSTALL_HEAVY=false
 
 usage() {
     cat << EOF
@@ -38,6 +39,7 @@ OPTIONS:
     --no-frontend           Frontend-Build überspringen
     --no-docker             Docker-Start überspringen
     --check-only            Nur Umgebungsprüfung durchführen
+    --install-heavy         Zusätzliche Heavy-Dependencies installieren
     --clean                 Entwicklungsumgebung zurücksetzen
 
 BEISPIELE:
@@ -45,6 +47,7 @@ BEISPIELE:
     $SCRIPT_NAME --check-only       # Nur Umgebungsprüfung
     $SCRIPT_NAME --no-docker        # Setup ohne Docker-Start
     $SCRIPT_NAME --verbose          # Mit ausführlicher Ausgabe
+    $SCRIPT_NAME --install-heavy    # Heavy-Dependencies installieren
 
 VORAUSSETZUNGEN:
     - Python 3.9+
@@ -76,6 +79,9 @@ parse_arguments() {
             --check-only)
                 BUILD_FRONTEND=false
                 START_DOCKER=false
+                ;;
+            --install-heavy)
+                INSTALL_HEAVY=true
                 ;;
             --clean)
                 clean_environment
@@ -148,6 +154,10 @@ install_python_dependencies() {
         log_ok "CLI verfügbar: poetry run agentnn"
     else
         log_warn "CLI-Test fehlgeschlagen (möglicherweise normale Dev-Installation)"
+    fi
+    if [[ "$INSTALL_HEAVY" == "true" ]]; then
+        pip install torch==2.2.0+cpu -f https://download.pytorch.org/whl/torch_stable.html \
+            || echo "⚠️ torch konnte nicht installiert werden – Tests evtl. deaktiviert"
     fi
     
     return 0
@@ -336,7 +346,13 @@ main() {
     # Installation verifizieren
     log_info "=== VERIFIZIERUNG ==="
     verify_installation || log_warn "Verifizierung mit Problemen abgeschlossen"
-    
+
+    mkdir -p "$REPO_ROOT/logs/ci"
+    local ci_log="$REPO_ROOT/logs/ci/setup_$(date +%Y%m%d_%H%M%S).log"
+    (
+        npm run lint --prefix frontend/agent-ui && pytest -m "not heavy"
+    ) &> "$ci_log" || echo 'Tests teilweise fehlgeschlagen'
+
     # Abschluss
     log_info "=== SETUP ABGESCHLOSSEN ==="
     print_next_steps

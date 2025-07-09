@@ -1,47 +1,58 @@
 import unittest
 from unittest.mock import patch, MagicMock, AsyncMock
-import torch
+import pytest
+
+torch = pytest.importorskip("torch")
 import os
 import tempfile
-import asyncio
 from langchain.schema import Document
 from agents.worker_agent import WorkerAgent
 from nn_models.agent_nn_v2 import TaskMetrics
+
+pytestmark = pytest.mark.heavy
+
 
 class TestWorkerAgentNNFeatures(unittest.TestCase):
     def setUp(self):
         """Set up test environment."""
         # Mock dependencies
-        self.llm_patcher = patch('agents.worker_agent.SpecializedLLM')
-        self.db_patcher = patch('agents.worker_agent.WorkerAgentDB')
-        self.nn_patcher = patch('agents.worker_agent.AgentNN')
-        
+        self.llm_patcher = patch("agents.worker_agent.SpecializedLLM")
+        self.db_patcher = patch("agents.worker_agent.WorkerAgentDB")
+        self.nn_patcher = patch("agents.worker_agent.AgentNN")
+
         self.mock_llm = self.llm_patcher.start()
         self.mock_db = self.db_patcher.start()
         self.mock_nn = self.nn_patcher.start()
-        
+
         # Set up mock LLM behavior
         self.mock_llm_instance = MagicMock()
-        self.mock_llm_instance.get_embedding.return_value = [0.1] * 768  # Mock embedding
-        self.mock_llm_instance.generate_with_confidence.return_value = ("Test response", 0.8)
+        self.mock_llm_instance.get_embedding.return_value = [
+            0.1
+        ] * 768  # Mock embedding
+        self.mock_llm_instance.generate_with_confidence.return_value = (
+            "Test response",
+            0.8,
+        )
         self.mock_llm.return_value = self.mock_llm_instance
-        
+
         # Set up mock DB behavior
         self.mock_db_instance = MagicMock()
         self.mock_db_instance.search.return_value = [
             Document(page_content="Test document", metadata={"source": "test"})
         ]
         self.mock_db.return_value = self.mock_db_instance
-        
+
         # Set up mock NN behavior
         self.mock_nn_instance = MagicMock()
-        self.mock_nn_instance.predict_task_features.return_value = torch.tensor([[0.5] * 64])
+        self.mock_nn_instance.predict_task_features.return_value = torch.tensor(
+            [[0.5] * 64]
+        )
         self.mock_nn_instance.get_training_summary.return_value = {
             "avg_loss": 0.1,
-            "total_batches": 100
+            "total_batches": 100,
         }
         self.mock_nn.return_value = self.mock_nn_instance
-        
+
         # Initialize agent
         self.agent = WorkerAgent("test_agent", use_nn_features=True)
 
@@ -76,15 +87,15 @@ class TestWorkerAgentNNFeatures(unittest.TestCase):
     async def test_execute_task(self):
         """Test task execution with neural network enhancement."""
         response = await self.agent.execute_task("Test task")
-        
+
         # Check that LLM was called with task features
         self.mock_llm_instance.generate_with_confidence.assert_called_once()
         call_args = self.mock_llm_instance.generate_with_confidence.call_args[1]
         self.assertIn("task_features", call_args)
-        
+
         # Check response
         self.assertEqual(response, "Test response")
-        
+
         # Check that metrics were recorded
         self.mock_nn_instance.evaluate_performance.assert_called_once()
         metrics = self.mock_nn_instance.evaluate_performance.call_args[0][0]
@@ -96,18 +107,18 @@ class TestWorkerAgentNNFeatures(unittest.TestCase):
         # Set up mock metrics
         self.mock_nn_instance.eval_metrics = [
             {"response_time": 0.1, "confidence": 0.8, "user_feedback": 4.5},
-            {"response_time": 0.2, "confidence": 0.9, "user_feedback": 4.0}
+            {"response_time": 0.2, "confidence": 0.9, "user_feedback": 4.0},
         ]
-        
+
         metrics = self.agent.get_performance_metrics()
-        
+
         # Check metrics
         self.assertIn("avg_loss", metrics)
         self.assertIn("total_batches", metrics)
         self.assertIn("avg_response_time", metrics)
         self.assertIn("avg_confidence", metrics)
         self.assertIn("avg_user_feedback", metrics)
-        
+
         # Check values
         self.assertEqual(metrics["avg_response_time"], 0.15)
         self.assertEqual(metrics["avg_confidence"], 0.85)
@@ -119,16 +130,16 @@ class TestWorkerAgentNNFeatures(unittest.TestCase):
             # Set up paths
             os.environ["MODELS_DIR"] = tmpdir
             model_path = os.path.join(tmpdir, "agent_nn", "test_agent_nn.pt")
-            
+
             # Save model
             self.agent.save_nn()
-            
+
             # Check that save was called
             self.mock_nn_instance.save_model.assert_called_once_with(model_path)
-            
+
             # Create new agent and load model
             new_agent = WorkerAgent("test_agent", use_nn_features=True)
-            
+
             # Check that load was attempted
             self.mock_nn_instance.load_model.assert_called_once_with(model_path)
 
@@ -138,12 +149,12 @@ class TestWorkerAgentNNFeatures(unittest.TestCase):
         docs = [Document(page_content="Test content", metadata={"source": "test"})]
         self.agent.ingest_knowledge(docs)
         self.mock_db_instance.ingest_documents.assert_called_once()
-        
+
         # Test searching
         results = self.agent.search_knowledge_base("test query")
         self.mock_db_instance.search.assert_called_once_with("test query", k=4)
         self.assertEqual(len(results), 1)
-        
+
         # Test clearing
         self.agent.clear_knowledge()
         self.mock_db_instance.clear_knowledge_base.assert_called_once()
@@ -152,14 +163,16 @@ class TestWorkerAgentNNFeatures(unittest.TestCase):
         """Test agent shutdown."""
         # Add mock communication hub
         self.agent.communication_hub = AsyncMock()
-        
+
         await self.agent.shutdown()
-        
+
         # Check that model was saved
         self.mock_nn_instance.save_model.assert_called_once()
-        
-        # Check that agent was deregistered
-        self.agent.communication_hub.deregister_agent.assert_called_once_with("test_agent")
 
-if __name__ == '__main__':
+        # Check that agent was deregistered
+        self.agent.communication_hub.deregister_agent.assert_called_once_with(
+            "test_agent"
+        )
+
+if __name__ == "__main__":
     unittest.main()

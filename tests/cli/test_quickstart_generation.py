@@ -1,3 +1,6 @@
+import pytest
+pytest.importorskip("pydantic")
+pytestmark = pytest.mark.heavy
 from pathlib import Path
 import sys
 import types

@@ -317,7 +317,7 @@ export const useCurrentUser = () => {
     onSuccess: (user) => {
       useAppStore.getState().setUser(user)
     },
-    onError: (error) => {
+    onError: (_error: unknown) => {
       useAppStore.getState().setAuthenticated(false)
     }
   })

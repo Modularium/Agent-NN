@@ -1,9 +1,13 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../helpers/common.sh"
+__env_check_init() {
+    local SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$SCRIPT_DIR/../helpers/common.sh"
+}
 
-check_env_file() {
+__env_check_init
+
+check_dotenv_file() {
     local env_file="${1:-.env}"
     local example_file="${2:-.env.example}"
 
@@ -15,6 +19,8 @@ check_env_file() {
             log_err "$env_file und Vorlage $example_file fehlen"
             return 1
         fi
+    else
+        log_ok "$env_file vorhanden"
     fi
     return 0
 }
@@ -31,11 +37,16 @@ check_ports() {
         log_warn "Ports belegt: ${blocked[*]}"
         return 1
     fi
+    log_ok "Alle Ports frei"
     return 0
 }
 
-env_check() {
-    check_env_file && check_ports 8000 3000 5432 6379 9090
+log_env_status() {
+    log_info "Aktuelle .env Einstellungen:" && grep -v '^#' .env 2>/dev/null || true
 }
 
-export -f check_env_file check_ports env_check
+env_check() {
+    check_dotenv_file && check_ports 8000 3000 5432 6379 9090
+}
+
+export -f check_dotenv_file check_ports log_env_status env_check

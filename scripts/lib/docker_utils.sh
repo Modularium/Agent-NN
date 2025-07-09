@@ -1,12 +1,32 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../helpers/common.sh"
+__docker_utils_init() {
+    local SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$SCRIPT_DIR/../helpers/common.sh"
+}
 
-has_docker() { command -v docker &>/dev/null; }
+__docker_utils_init
+
+has_docker() {
+    if command -v docker &>/dev/null; then
+        log_ok "Docker gefunden"
+        return 0
+    else
+        log_err "Docker fehlt"
+        return 1
+    fi
+}
 
 has_docker_compose() {
-    docker compose version &>/dev/null || command -v docker-compose &>/dev/null
+    if docker compose version &>/dev/null; then
+        log_ok "Docker Compose Plugin gefunden"
+        return 0
+    elif command -v docker-compose &>/dev/null; then
+        log_ok "docker-compose gefunden"
+        return 0
+    fi
+    log_err "Docker Compose fehlt"
+    return 1
 }
 
 docker_compose() {
@@ -17,13 +37,29 @@ docker_compose() {
     fi
 }
 
-has_compose_file() {
-    [[ -f "docker-compose.yml" || -f "docker/docker-compose.yml" ]]
-}
-
-start_compose() {
+load_compose_file() {
     local file="${1:-docker-compose.yml}"
-    docker_compose -f "$file" up -d || return 1
+    if [[ -f "$file" ]]; then
+        echo "$file"
+        return 0
+    elif [[ -f "docker/$file" ]]; then
+        echo "docker/$file"
+        return 0
+    fi
+    log_err "Compose-Datei $file fehlt"
+    return 1
 }
 
-export -f has_docker has_docker_compose has_compose_file start_compose
+start_docker_services() {
+    local compose
+    compose=$(load_compose_file "${1:-docker-compose.yml}") || return 1
+    log_info "Starte Docker-Services..."
+    if docker_compose -f "$compose" up -d; then
+        log_ok "Docker-Services gestartet"
+    else
+        log_err "Docker-Services konnten nicht gestartet werden"
+        return 1
+    fi
+}
+
+export -f has_docker has_docker_compose docker_compose load_compose_file start_docker_services

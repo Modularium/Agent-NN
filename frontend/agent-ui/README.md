@@ -197,6 +197,9 @@ npm run type-check
 # Lint code
 npm run lint
 
+# Automatically fix lint issues
+npm run lint:fix
+
 # Format code
 npm run format
 
@@ -206,6 +209,8 @@ npm run build
 # Preview production build
 npm run preview
 ```
+
+The project uses **ESLint** with a flat configuration and **Prettier** for code formatting. Configuration is defined in `eslint.config.js`.
 
 ## 🚀 Deployment
 

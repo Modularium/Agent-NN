@@ -6,6 +6,8 @@ Vielen Dank für dein Interesse an Agent-NN! Dieses Projekt verwendet GitHub Flo
 
 1. Forke das Repository und klone deine Kopie.
 2. Installiere Abhängigkeiten mit `pip install -r requirements.txt`.
+   Alternativ kannst du `./scripts/install.sh --ci` nutzen, um alle
+   benötigten Tools automatisiert zu installieren.
 3. Richte optionale Hooks ein:
    ```bash
    pip install pre-commit

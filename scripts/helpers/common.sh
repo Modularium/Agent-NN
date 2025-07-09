@@ -7,39 +7,8 @@ if [[ "${_COMMON_SH_LOADED:-}" == "true" ]]; then
 fi
 readonly _COMMON_SH_LOADED=true
 
-# Farb-Codes für konsistente Ausgabe (only set if not already defined)
-if [[ -z "${RED:-}" ]]; then
-    readonly RED='\033[1;31m'
-    readonly GREEN='\033[1;32m'
-    readonly YELLOW='\033[1;33m'
-    readonly BLUE='\033[1;34m'
-    readonly PURPLE='\033[1;35m'
-    readonly CYAN='\033[1;36m'
-    readonly NC='\033[0m' # No Color
-fi
-
-# Logging-Funktionen mit UTF-8 Unterstützung
-log_info() { 
-    echo -e "${BLUE}[...]${NC} $1" 
-}
-
-log_ok() { 
-    echo -e "${GREEN}[✓]${NC} $1" 
-}
-
-log_warn() { 
-    echo -e "${YELLOW}[⚠]${NC} $1" 
-}
-
-log_err() { 
-    echo -e "${RED}[✗]${NC} $1" >&2 
-}
-
-log_debug() {
-    if [[ "${DEBUG:-}" == "1" ]]; then
-        echo -e "${PURPLE}[DEBUG]${NC} $1" >&2
-    fi
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../lib/log_utils.sh"
 
 # Utility-Funktionen
 check_command() {

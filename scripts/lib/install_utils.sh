@@ -1,8 +1,10 @@
 #!/bin/bash
 
 __install_utils_init() {
-    local SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$SCRIPT_DIR/log_utils.sh"
     source "$SCRIPT_DIR/../helpers/common.sh"
+    source "$SCRIPT_DIR/spinner_utils.sh"
 }
 
 __install_utils_init
@@ -115,27 +117,3 @@ ensure_python_tools() {
 
 export -f ask_install install_docker ensure_docker install_node ensure_node install_python ensure_python install_poetry ensure_poetry install_python_tool ensure_python_tools
 
-show_spinner() {
-    local pid=$1
-    local delay=0.1
-    local spin='|/-\\'
-    while kill -0 "$pid" 2>/dev/null; do
-        for i in $spin; do
-            printf "\r[%s] $SPINNER_MSG" "$i"
-            sleep $delay
-        done
-    done
-    wait "$pid" 2>/dev/null
-    printf "\r"
-}
-
-with_spinner() {
-    SPINNER_MSG="$1"; shift
-    ("$@") &
-    local pid=$!
-    show_spinner $pid
-    local status=$?
-    return $status
-}
-
-export -f show_spinner with_spinner

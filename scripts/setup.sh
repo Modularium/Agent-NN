@@ -8,6 +8,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
+source "$SCRIPT_DIR/lib/log_utils.sh"
+source "$SCRIPT_DIR/lib/spinner_utils.sh"
 source "$SCRIPT_DIR/helpers/common.sh"
 source "$SCRIPT_DIR/helpers/env.sh"
 source "$SCRIPT_DIR/helpers/docker.sh"
@@ -17,6 +19,8 @@ source "$SCRIPT_DIR/lib/env_check.sh"
 source "$SCRIPT_DIR/lib/docker_utils.sh"
 source "$SCRIPT_DIR/lib/frontend_build.sh"
 source "$SCRIPT_DIR/lib/install_utils.sh"
+source "$SCRIPT_DIR/lib/menu_utils.sh"
+source "$SCRIPT_DIR/lib/args_parser.sh"
 
 # Globale Variablen
 SCRIPT_NAME="$(basename "$0")"
@@ -65,59 +69,6 @@ VORAUSSETZUNGEN:
 EOF
 }
 
-parse_arguments() {
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            -h|--help)
-                usage
-                exit 0
-                ;;
-            -v|--verbose)
-                VERBOSE=true
-                export DEBUG=1
-                ;;
-            --no-frontend)
-                BUILD_FRONTEND=false
-                ;;
-            --skip-docker)
-                START_DOCKER=false
-                ;;
-            --check-only)
-                BUILD_FRONTEND=false
-                START_DOCKER=false
-                ;;
-            --install-heavy)
-                INSTALL_HEAVY=true
-                ;;
-            --with-docker)
-                WITH_DOCKER=true
-                ;;
-            --full)
-                AUTO_MODE=true
-                RUN_MODE="full"
-                ;;
-            --minimal)
-                START_DOCKER=false
-                BUILD_FRONTEND=false
-                AUTO_MODE=true
-                RUN_MODE="python"
-                ;;
-            --no-docker)
-                START_DOCKER=false
-                ;;
-            --clean)
-                clean_environment
-                exit 0
-                ;;
-            *)
-                log_err "Unbekannte Option: $1"
-                usage >&2
-                exit 1
-                ;;
-        esac
-        shift
-    done
-}
 
 setup_logging() {
     mkdir -p "$(dirname "$LOG_FILE")"
@@ -125,28 +76,6 @@ setup_logging() {
     exec 2> >(tee -a "$LOG_FILE" >&2)
 }
 
-interactive_menu() {
-    PS3="Auswahl: "
-    options=(
-        "Komplettes Setup (Empfohlen)"
-        "Nur Python-Abhängigkeiten installieren"
-        "Nur Frontend bauen"
-        "Docker-Container starten"
-        "Projekt testen"
-        "Abbrechen"
-    )
-    select opt in "${options[@]}"; do
-        case $REPLY in
-            1) RUN_MODE="full"; break ;;
-            2) RUN_MODE="python"; break ;;
-            3) RUN_MODE="frontend"; break ;;
-            4) RUN_MODE="docker"; break ;;
-            5) RUN_MODE="test"; break ;;
-            6) exit 0 ;;
-            *) echo "Ungültige Auswahl";;
-        esac
-    done
-}
 
 print_banner() {
     cat << 'EOF'
@@ -345,7 +274,7 @@ main() {
     setup_logging
     
     # Argumente parsen
-    parse_arguments "${original_args[@]}"
+    parse_setup_args "${original_args[@]}"
     if [[ $arg_count -eq 0 ]]; then
         interactive_menu
     fi

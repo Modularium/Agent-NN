@@ -2,7 +2,9 @@ import unittest
 from unittest.mock import patch, MagicMock
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import tempfile
 import os
 import json
@@ -15,7 +17,6 @@ from nn_models.dynamic_architecture import (
     ArchitectureOptimizer,
 )
 
-pytestmark = pytest.mark.heavy
 
 
 class TestDynamicArchitecture(unittest.TestCase):

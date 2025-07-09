@@ -26,6 +26,7 @@ BUILD_FRONTEND=true
 START_DOCKER=true
 VERBOSE=false
 INSTALL_HEAVY=false
+WITH_DOCKER=false
 
 usage() {
     cat << EOF
@@ -40,6 +41,7 @@ OPTIONS:
     --no-docker             Docker-Start überspringen
     --check-only            Nur Umgebungsprüfung durchführen
     --install-heavy         Zusätzliche Heavy-Dependencies installieren
+    --with-docker          Abbruch wenn docker-compose.yml fehlt
     --clean                 Entwicklungsumgebung zurücksetzen
 
 BEISPIELE:
@@ -82,6 +84,9 @@ parse_arguments() {
                 ;;
             --install-heavy)
                 INSTALL_HEAVY=true
+                ;;
+            --with-docker)
+                WITH_DOCKER=true
                 ;;
             --clean)
                 clean_environment
@@ -289,6 +294,11 @@ main() {
     
     # Argumente parsen
     parse_arguments "$@"
+
+    if [[ "$WITH_DOCKER" == "true" ]] && [[ ! -f docker-compose.yml ]]; then
+        echo "❗ Docker Compose nicht gefunden – Abbruch"
+        exit 1
+    fi
     
     # Banner anzeigen
     print_banner
@@ -333,13 +343,19 @@ main() {
     # Docker-Services starten
     if [[ "$START_DOCKER" == "true" ]]; then
         log_info "=== DOCKER-SERVICES ==="
-        compose_file=$(find_compose_file "docker-compose.yml") || {
-            log_err "Docker Compose Datei nicht gefunden. Setup abgebrochen."
-            exit 1
-        }
-        if ! docker_compose_up "$compose_file" "--build"; then
-            log_err "Start der Docker-Services fehlgeschlagen. Setup abgebrochen."
-            exit 1
+        if compose_file=$(find_compose_file "docker-compose.yml"); then
+            if ! docker_compose_up "$compose_file" "--build"; then
+                log_err "Start der Docker-Services fehlgeschlagen. Setup abgebrochen."
+                exit 1
+            fi
+        else
+            if [[ "$WITH_DOCKER" == "true" ]]; then
+                log_err "Docker Compose Datei nicht gefunden. Setup abgebrochen."
+                exit 1
+            else
+                log_warn "Docker Compose nicht gefunden – Docker-Start übersprungen"
+                START_DOCKER=false
+            fi
         fi
     fi
     

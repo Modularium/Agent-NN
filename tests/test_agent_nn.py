@@ -1,12 +1,13 @@
 import unittest
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import os
 import tempfile
 from nn_models.agent_nn_v2 import AgentNN, TaskMetrics
 
-pytestmark = pytest.mark.heavy
 
 
 class TestAgentNN(unittest.TestCase):

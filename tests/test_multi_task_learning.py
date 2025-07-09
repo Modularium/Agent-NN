@@ -2,7 +2,9 @@ import unittest
 from unittest.mock import patch, MagicMock
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import tempfile
 import shutil
 from torch.utils.data import DataLoader, TensorDataset
@@ -14,7 +16,6 @@ from nn_models.multi_task_learning import (
     MultiTaskTrainer,
 )
 
-pytestmark = pytest.mark.heavy
 
 
 class TestMultiTaskLearning(unittest.TestCase):

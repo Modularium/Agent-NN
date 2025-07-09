@@ -3,12 +3,13 @@ from unittest.mock import patch, MagicMock, AsyncMock
 import asyncio
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import json
 from datetime import datetime
 from managers.performance_manager import PerformanceManager
 
-pytestmark = pytest.mark.heavy
 
 
 class TestPerformanceManager(unittest.TestCase):

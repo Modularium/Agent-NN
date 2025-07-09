@@ -4,10 +4,11 @@ from __future__ import annotations
 import json
 
 import typer
-import mlflow
+from core.utils.imports import optional_import
+
+mlflow = optional_import("mlflow")
 
 from ..client import AgentClient
-from ..nn_models import ModelManager
 from ..utils.formatting import print_output
 
 model_app = typer.Typer(name="model", help="Model management commands")
@@ -26,6 +27,11 @@ def model_list(
 @model_app.command("runs-view")
 def model_runs_view(run_id: str) -> None:
     """Show details for a run."""
+    if mlflow is None:
+        typer.echo("mlflow not installed")
+        return
+    from ..nn_models import ModelManager
+
     mgr = ModelManager()
     info = mgr.get_run_summary(run_id)
     typer.echo(json.dumps(info, indent=2))
@@ -34,6 +40,9 @@ def model_runs_view(run_id: str) -> None:
 @model_app.command("register")
 def model_register(name: str, run_id: str) -> None:
     """Register a model from a run."""
+    if mlflow is None:
+        typer.echo("mlflow not installed")
+        return
     client = mlflow.tracking.MlflowClient()
     model_uri = f"runs:/{run_id}/model"
     client.create_registered_model(name)
@@ -44,6 +53,9 @@ def model_register(name: str, run_id: str) -> None:
 @model_app.command("stage")
 def model_stage(name: str, stage: str) -> None:
     """Transition the latest version of a model."""
+    if mlflow is None:
+        typer.echo("mlflow not installed")
+        return
     client = mlflow.tracking.MlflowClient()
     versions = client.search_model_versions(f"name='{name}'")
     if not versions:

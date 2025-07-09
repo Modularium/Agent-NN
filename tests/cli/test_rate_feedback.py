@@ -1,6 +1,8 @@
 import pytest
 pytest.importorskip("pydantic")
+from core.utils.imports import torch
 pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import sys
 import types
 import httpx

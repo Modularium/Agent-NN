@@ -2,7 +2,9 @@ import pytest
 import os
 import sys
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, Optional, List
@@ -20,7 +22,6 @@ from tests.test_gpu_manager import TestGPUManager
 from tests.test_model_registry import TestModelRegistry
 from tests.test_online_learning import TestOnlineLearning
 
-pytestmark = pytest.mark.heavy
 from tests.test_ab_testing import TestABTesting
 from tests.integration.test_system_integration import TestSystemIntegration
 from tests.test_dynamic_architecture import TestDynamicArchitecture

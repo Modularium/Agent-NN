@@ -3,4 +3,10 @@ set -e
 ruff check .
 black --check tests/api/test_health.py tests/integration/test_dispatcher_routing.py tests/cli/test_submit.py || true
 mypy mcp || true
-pytest -m "not heavy" --cov=. --cov-report=term --cov-report=html --cov-report=json "$@"
+
+if [[ "$1" == "--full" ]]; then
+    shift
+    pytest --cov=. --cov-report=term --cov-report=html --cov-report=json "$@"
+else
+    pytest -m "not heavy" --cov=. --cov-report=term --cov-report=html --cov-report=json "$@"
+fi

@@ -2,7 +2,9 @@ import unittest
 from unittest.mock import patch, MagicMock
 import pytest
 
-torch = pytest.importorskip("torch")
+from core.utils.imports import torch
+pytestmark = pytest.mark.heavy
+pytestmark = pytest.mark.skipif(torch is None, reason="Torch not installed")
 import tempfile
 import shutil
 from torch.utils.data import DataLoader
@@ -11,8 +13,6 @@ from nn_models.advanced_training import (
     HierarchicalNetwork,
     AdvancedTrainer,
 )
-
-pytestmark = pytest.mark.heavy
 
 
 class TestAdvancedTraining(unittest.TestCase):

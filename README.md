@@ -558,6 +558,13 @@ Der integrierte MCP-Server stellt unter `/v1/mcp/*` eine kompatible Schnittstell
 ## Tests & Beiträge
 
 Bevor du einen Pull Request erstellst, führe bitte `ruff`, `mypy` und `pytest` aus. Details zum Entwicklungsprozess findest du in [CONTRIBUTING.md](CONTRIBUTING.md) sowie im Dokument [docs/test_strategy.md](docs/test_strategy.md). Sollten Module fehlen, können lokale Wheels oder ein internes Paketmirror verwendet werden.
+Manche Tests benötigen zusätzliche GPU-Bibliotheken wie `torch`. Wenn diese nicht installiert werden können, lasse die Schwerlast-Tests aus:
+
+```bash
+pytest -m "not heavy"
+```
+
+Das Setup-Skript bietet dafür die Option `--install-heavy`, um `torch` über das CPU-Wheel zu installieren.
 
 ## Releases
 

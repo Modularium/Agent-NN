@@ -1,4 +1,7 @@
 import pytest
+pytest.importorskip("pydantic")
+pytestmark = pytest.mark.heavy
+import pytest
 import sys
 import types
 

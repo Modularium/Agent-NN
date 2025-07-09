@@ -6,11 +6,12 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
 HELPERS_DIR="$REPO_ROOT/scripts/helpers"
+LIB_DIR="$REPO_ROOT/scripts/lib"
 
 # Helper laden
 source "$HELPERS_DIR/common.sh"
-source "$HELPERS_DIR/docker.sh"
-source "$HELPERS_DIR/env.sh"
+source "$LIB_DIR/docker_utils.sh"
+source "$LIB_DIR/env_check.sh"
 
 usage() {
     cat << EOF
@@ -21,15 +22,11 @@ Startet alle Agent-NN Docker-Services mit Prüfungen
 OPTIONS:
     -h, --help              Diese Hilfe anzeigen
     -f, --file FILE         Docker Compose Datei (default: docker-compose.yml)
-    -b, --build             Services vor dem Start neu bauen
-    -d, --detach            Services im Hintergrund starten (default)
-    --no-detach             Services im Vordergrund starten
     --dry-run               Befehle nur anzeigen, nicht ausführen
     --check-only            Nur Prüfungen durchführen
 
 BEISPIELE:
     $(basename "$0")                    # Standard-Start
-    $(basename "$0") --build            # Mit Rebuild
     $(basename "$0") -f docker-compose.production.yml  # Production
     $(basename "$0") --dry-run          # Testlauf
 
@@ -39,8 +36,6 @@ EOF
 # Hauptfunktion
 main() {
     local compose_file="docker-compose.yml"
-    local build_flag=""
-    local detach_flag="-d"
     local dry_run=false
     local check_only=false
     
@@ -54,18 +49,6 @@ main() {
             -f|--file)
                 compose_file="$2"
                 shift 2
-                ;;
-            -b|--build)
-                build_flag="--build"
-                shift
-                ;;
-            -d|--detach)
-                detach_flag="-d"
-                shift
-                ;;
-            --no-detach)
-                detach_flag=""
-                shift
                 ;;
             --dry-run)
                 dry_run=true
@@ -92,23 +75,21 @@ main() {
     
     log_info "Starte Agent-NN Services..."
     log_debug "Compose-Datei: $compose_file"
-    log_debug "Build-Flag: ${build_flag:-none}"
-    log_debug "Detach-Flag: ${detach_flag:-none}"
     log_debug "Dry-Run: $dry_run"
     
     # Grundlegende Prüfungen
-    if ! check_env_file ".env" ".env.example"; then
+    env_check || exit 1
+
+    if ! has_docker; then
+        echo "Docker nicht gefunden" >&2
+        exit 1
+    fi
+
+    if [[ ! -f "$compose_file" ]]; then
+        echo "Compose-Datei $compose_file nicht gefunden" >&2
         exit 1
     fi
     
-    if ! check_docker; then
-        exit 1
-    fi
-    
-    compose_file=$(find_compose_file "$compose_file") || exit 1
-    
-    # Port-Prüfung
-    check_ports
     
     if [[ "$check_only" == "true" ]]; then
         log_ok "Alle Prüfungen erfolgreich"
@@ -118,9 +99,9 @@ main() {
     # Services starten
     if [[ "$dry_run" == "true" ]]; then
         log_info "DRY-RUN: Würde ausführen:"
-        echo "docker_compose_up '$compose_file' '$build_flag' '$detach_flag'"
+        echo "start_compose '$compose_file'"
     else
-        if docker_compose_up "$compose_file" "$build_flag" "$detach_flag"; then
+        if start_compose "$compose_file"; then
             log_ok "Services erfolgreich gestartet"
             
             # Kurze Wartezeit für Service-Start

@@ -71,6 +71,7 @@ Das Setup-System erkennt automatisch:
 ./scripts/setup.sh --no-docker         # Docker-Schritte überspringen
 ./scripts/setup.sh --verbose           # Ausführliche Ausgabe
 ./scripts/setup.sh --clean             # Entwicklungsumgebung zurücksetzen
+./scripts/setup.sh --recover           # Setup nach Fehlern fortsetzen
 ```
 
 ```bash
@@ -165,6 +166,8 @@ pip install docker-compose
 ```bash
 # Prüfe belegte Ports
 ./scripts/setup.sh --check-only
+# Erweiterte Validierung vor einem Pull Request
+./scripts/validate.sh
 
 # Alternative: Ports in docker-compose.yml ändern
 nano docker-compose.yml
@@ -284,6 +287,7 @@ open http://localhost:9090
 
 ### Log-Dateien
 - **Setup-Logs:** `logs/setup.log`
+- **Fehler-Logs:** `logs/setup_errors.log`
 - **Service-Logs:** `logs/` (Docker-Volumes)
 - **Frontend-Logs:** Browser-Konsole
 
@@ -492,6 +496,7 @@ Zur Fehlersuche helfen `docker ps`, `npm run build` im Frontend-Verzeichnis sowi
 | `scripts/start_mcp.sh` | Startet das Microservice-Compose-Setup |
 | `scripts/setup.sh` | Komplettes Setup in einem Schritt |
 | `scripts/lib/` | Wiederverwendbare Bash-Module (log_utils, spinner_utils, install_utils ...) |
+| `show_spinner` | Visualisiert lange Prozesse im Terminal |
 
 Die Library-Skripte erwarten eine konfigurierte `.env` und prüfen die Ports `8000`, `3000`, `5432`, `6379` und `9090`.
 

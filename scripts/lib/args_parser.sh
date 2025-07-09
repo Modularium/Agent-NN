@@ -27,6 +27,11 @@ parse_setup_args() {
                 BUILD_FRONTEND=false
                 START_DOCKER=false
                 ;;
+            --check)
+                RUN_MODE="check"
+                BUILD_FRONTEND=false
+                START_DOCKER=false
+                ;;
             --install-heavy)
                 INSTALL_HEAVY=true
                 ;;
@@ -45,6 +50,13 @@ parse_setup_args() {
                 ;;
             --no-docker)
                 START_DOCKER=false
+                ;;
+            --exit-on-fail)
+                EXIT_ON_FAIL=true
+                ;;
+            --recover)
+                RECOVERY_MODE=true
+                AUTO_MODE=true
                 ;;
             --clean)
                 clean_environment

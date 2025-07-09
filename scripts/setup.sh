@@ -32,6 +32,9 @@ INSTALL_HEAVY=false
 WITH_DOCKER=false
 AUTO_MODE=false
 RUN_MODE="full"
+EXIT_ON_FAIL=false
+RECOVERY_MODE=false
+LOG_ERROR_FILE=""
 
 usage() {
     cat << EOF
@@ -45,11 +48,14 @@ OPTIONS:
     --no-frontend           Frontend-Build überspringen
     --skip-docker           Docker-Start überspringen
     --check-only            Nur Umgebungsprüfung durchführen
+    --check                 Nur Validierung ausführen und beenden
     --install-heavy         Zusätzliche Heavy-Dependencies installieren
     --with-docker          Abbruch wenn docker-compose.yml fehlt
     --full                  Komplettes Setup ohne Nachfragen
     --minimal               Nur Python-Abhängigkeiten installieren
     --no-docker             Setup ohne Docker-Schritte
+    --exit-on-fail          Bei Fehlern sofort abbrechen
+    --recover               Fehlgeschlagenes Setup wiederaufnehmen
     --clean                 Entwicklungsumgebung zurücksetzen
 
 BEISPIELE:
@@ -72,6 +78,8 @@ EOF
 
 setup_logging() {
     mkdir -p "$(dirname "$LOG_FILE")"
+    LOG_ERROR_FILE="$(dirname "$LOG_FILE")/setup_errors.log"
+    touch "$LOG_ERROR_FILE"
     exec 1> >(tee -a "$LOG_FILE")
     exec 2> >(tee -a "$LOG_FILE" >&2)
 }
@@ -101,6 +109,11 @@ EOF
 
 install_python_dependencies() {
     log_info "Installiere Python-Abhängigkeiten mit Poetry..."
+
+    if [[ "$RECOVERY_MODE" == "true" && -d "$REPO_ROOT/.venv" ]]; then
+        log_info "Python-Abhängigkeiten bereits installiert - überspringe"
+        return 0
+    fi
     
     cd "$REPO_ROOT" || {
         log_err "Kann nicht ins Repository-Verzeichnis wechseln"
@@ -114,7 +127,7 @@ install_python_dependencies() {
     if poetry install; then
         log_ok "Python-Abhängigkeiten installiert"
     else
-        log_err "Fehler bei der Installation der Python-Abhängigkeiten"
+        log_error "Fehler bei der Installation der Python-Abhängigkeiten"
         log_err "Versuche: poetry install --no-dev"
         if poetry install --no-dev; then
             log_warn "Python-Abhängigkeiten ohne Dev-Dependencies installiert"
@@ -279,6 +292,7 @@ main() {
         interactive_menu
     fi
     export AUTO_MODE
+    export LOG_ERROR_FILE
 
     if [[ "$WITH_DOCKER" == "true" ]]; then
         if [[ ! -f docker-compose.yml ]]; then
@@ -308,10 +322,26 @@ main() {
     fi
 
     # Fehlende Komponenten installieren
-    with_spinner "Prüfe Docker" ensure_docker || true
-    with_spinner "Prüfe Node.js" ensure_node || true
-    with_spinner "Prüfe Python" ensure_python || true
-    with_spinner "Prüfe Poetry" ensure_poetry || true
+    with_spinner "Prüfe Docker" ensure_docker; status=$?
+    if [[ $status -ne 0 && "$EXIT_ON_FAIL" == "true" ]]; then
+        log_error "Docker konnte nicht installiert werden. Details siehe $LOG_ERROR_FILE"
+        exit 1
+    fi
+    with_spinner "Prüfe Node.js" ensure_node; status=$?
+    if [[ $status -ne 0 && "$EXIT_ON_FAIL" == "true" ]]; then
+        log_error "Node.js konnte nicht installiert werden. Details siehe $LOG_ERROR_FILE"
+        exit 1
+    fi
+    with_spinner "Prüfe Python" ensure_python; status=$?
+    if [[ $status -ne 0 && "$EXIT_ON_FAIL" == "true" ]]; then
+        log_error "Python konnte nicht installiert werden. Details siehe $LOG_ERROR_FILE"
+        exit 1
+    fi
+    with_spinner "Prüfe Poetry" ensure_poetry; status=$?
+    if [[ $status -ne 0 && "$EXIT_ON_FAIL" == "true" ]]; then
+        log_error "Poetry konnte nicht installiert werden. Details siehe $LOG_ERROR_FILE"
+        exit 1
+    fi
     with_spinner "Prüfe Tools" ensure_python_tools || true
     
     # Docker-Prüfung
@@ -342,10 +372,17 @@ main() {
             build_frontend || exit 1
             ;;
         docker)
-            start_docker_services "docker-compose.yml" || exit 1
+            if [[ "$RECOVERY_MODE" == "true" ]] && docker compose ps | grep -q 'Up'; then
+                log_info "Docker-Services laufen bereits - \u00fcberspringe"
+            else
+                start_docker_services "docker-compose.yml" || exit 1
+            fi
             ;;
         test)
             run_project_tests || exit 1
+            ;;
+        check)
+            "$SCRIPT_DIR/validate.sh" && exit 0
             ;;
         full)
             log_info "=== PYTHON-ABHÄNGIGKEITEN ==="
@@ -364,7 +401,11 @@ main() {
                     compose_file=$(ls docker-compose.*.yml 2>/dev/null | head -n1 || true)
                 fi
                 if [[ -f "$compose_file" ]]; then
-                    start_docker_services "$compose_file" || exit 1
+                    if [[ "$RECOVERY_MODE" == "true" ]] && docker compose ps | grep -q 'Up'; then
+                        log_info "Docker-Services laufen bereits - \u00fcberspringe"
+                    else
+                        start_docker_services "$compose_file" || exit 1
+                    fi
                 elif [[ "$WITH_DOCKER" == "true" ]]; then
                     log_err "Docker Compose Datei nicht gefunden. Setup abgebrochen."
                     exit 1

@@ -33,6 +33,13 @@ log_warn() {
 
 log_err() {
     echo -e "${RED}[✗]${NC} $1" >&2
+    if [[ -n "${LOG_ERROR_FILE:-}" ]]; then
+        printf "%s\n" "$1" >> "$LOG_ERROR_FILE"
+    fi
+}
+
+log_error() {
+    log_err "$1"
 }
 
 log_debug() {
@@ -41,4 +48,4 @@ log_debug() {
     fi
 }
 
-export -f log_info log_ok log_warn log_err log_debug
+export -f log_info log_ok log_warn log_err log_error log_debug

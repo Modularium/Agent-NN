@@ -1,9 +1,14 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../helpers/common.sh"
+__frontend_build_init() {
+    local SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$SCRIPT_DIR/../helpers/common.sh"
+}
+
+__frontend_build_init
 
 build_frontend() {
+    local SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     local dir="$SCRIPT_DIR/../../frontend/agent-ui"
     local target="$SCRIPT_DIR/../../frontend/dist"
 
@@ -26,6 +31,7 @@ build_frontend() {
     cp -r "$dir"/dist/* "$target"/ 2>/dev/null || true
     log_info "Build-Output:"
     ls -al "$target" || true
+    log_ok "Frontend-Build abgeschlossen"
 }
 
 export -f build_frontend

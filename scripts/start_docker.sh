@@ -29,14 +29,12 @@ done
 
 compose_file="docker-compose${ENV_NAME:+.$ENV_NAME}.yml"
 
-if ! has_docker || ! has_docker_compose; then
-    log_err "Docker oder Docker Compose fehlt"
-    exit 1
-fi
+check_docker || exit 1
+check_docker_compose || exit 1
 
 if [[ ! -f "$compose_file" ]]; then
     log_warn "Compose-Datei $compose_file nicht gefunden"
     exit 0
 fi
 
-start_compose "$compose_file"
+start_docker_services "$compose_file"

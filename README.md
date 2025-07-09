@@ -459,6 +459,9 @@ Zur Fehlersuche helfen `docker ps`, `npm run build` im Frontend-Verzeichnis sowi
 | `scripts/deploy_to_registry.sh` | Publiziert Images in ein Container-Registry |
 | `scripts/start_mcp.sh` | Startet das Microservice-Compose-Setup |
 | `scripts/setup.sh` | Komplettes Setup in einem Schritt |
+| `scripts/lib/` | Wiederverwendbare Bash-Module für Docker- und Environment-Checks |
+
+Die Library-Skripte erwarten eine konfigurierte `.env` und prüfen die Ports `8000`, `3000`, `5432`, `6379` und `9090`.
 
 ## Poetry-Workflow
 

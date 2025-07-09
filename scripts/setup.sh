@@ -5,29 +5,21 @@
 set -euo pipefail
 
 # Skript-Verzeichnis und Helpers laden
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly REPO_ROOT="$(dirname "$SCRIPT_DIR")"
-readonly HELPERS_DIR="$SCRIPT_DIR/helpers"
-readonly LIB_DIR="$SCRIPT_DIR/lib"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
-# Alle Helper-Module laden
-for helper in "$HELPERS_DIR"/{common,env,docker,frontend}.sh; do
-    if [[ -f "$helper" ]]; then
-        source "$helper"
-    else
-        echo "FEHLER: Helper-Datei nicht gefunden: $helper" >&2
-        exit 1
-    fi
-done
+source "$SCRIPT_DIR/helpers/common.sh"
+source "$SCRIPT_DIR/helpers/env.sh"
+source "$SCRIPT_DIR/helpers/docker.sh"
+source "$SCRIPT_DIR/helpers/frontend.sh"
 
-# Zusätzliche Library-Module laden
-for lib in "$LIB_DIR"/*.sh; do
-    [[ -f "$lib" ]] && source "$lib"
-done
+source "$SCRIPT_DIR/lib/env_check.sh"
+source "$SCRIPT_DIR/lib/docker_utils.sh"
+source "$SCRIPT_DIR/lib/frontend_build.sh"
 
 # Globale Variablen
-readonly SCRIPT_NAME="$(basename "$0")"
-readonly LOG_FILE="$REPO_ROOT/logs/setup.log"
+SCRIPT_NAME="$(basename "$0")"
+LOG_FILE="$REPO_ROOT/logs/setup.log"
 BUILD_FRONTEND=true
 START_DOCKER=true
 VERBOSE=false

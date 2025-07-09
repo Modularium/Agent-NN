@@ -2,29 +2,30 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/helpers/common.sh"
 LOG_DIR="$SCRIPT_DIR/../logs"
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/deploy_docs.log"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
-echo "[docs] Prüfe Abhängigkeiten"
+log_info "Prüfe Abhängigkeiten"
 if [[ ! -d node_modules ]]; then
   npm ci
 fi
 
-echo "[docs] Baue Docusaurus"
+log_info "Baue Docusaurus"
 npm run build
 
 if [[ ! -d build ]]; then
-  echo "[docs] Build fehlgeschlagen" >&2
+  log_err "Build fehlgeschlagen"
   exit 1
 fi
 
-echo "[docs] Deploye nach gh-pages"
+log_info "Deploye nach gh-pages"
 git worktree add -B gh-pages ../gh-pages origin/gh-pages
 cp -r build/* ../gh-pages/
 git -C ../gh-pages add .
 git -C ../gh-pages commit -am "📚 deploy: $(date +%F_%T)"
 git -C ../gh-pages push origin gh-pages
 
-echo "[docs] Deployment abgeschlossen"
+log_ok "Deployment abgeschlossen"

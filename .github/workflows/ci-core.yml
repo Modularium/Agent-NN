@@ -8,25 +8,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.10', '3.11']
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
-      - name: Install Python deps
-        run: |
-          pip install -r requirements.txt
-          pip install -r test-requirements.txt
-      - name: Set up Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      - name: Install Frontend deps
-        run: npm ci --prefix frontend/agent-ui
-      - name: Lint and Typecheck
-        run: |
-          npm run lint --prefix frontend/agent-ui
-          npx tsc --noEmit --project frontend/agent-ui/tsconfig.app.json
-      - name: Backend Tests
-        run: ./tests/ci_check.sh
+          python-version: ${{ matrix.python }}
+      - name: Install dependencies
+        run: ./ci/setup_env.sh
+      - name: Lint and Tests
+        run: ./ci/lint_test.sh

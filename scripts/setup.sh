@@ -16,6 +16,7 @@ source "$SCRIPT_DIR/helpers/frontend.sh"
 source "$SCRIPT_DIR/lib/env_check.sh"
 source "$SCRIPT_DIR/lib/docker_utils.sh"
 source "$SCRIPT_DIR/lib/frontend_build.sh"
+source "$SCRIPT_DIR/lib/install_utils.sh"
 
 # Globale Variablen
 SCRIPT_NAME="$(basename "$0")"
@@ -25,6 +26,8 @@ START_DOCKER=true
 VERBOSE=false
 INSTALL_HEAVY=false
 WITH_DOCKER=false
+AUTO_MODE=false
+RUN_MODE="full"
 
 usage() {
     cat << EOF
@@ -40,6 +43,9 @@ OPTIONS:
     --check-only            Nur Umgebungsprüfung durchführen
     --install-heavy         Zusätzliche Heavy-Dependencies installieren
     --with-docker          Abbruch wenn docker-compose.yml fehlt
+    --full                  Komplettes Setup ohne Nachfragen
+    --minimal               Nur Python-Abhängigkeiten installieren
+    --no-docker             Setup ohne Docker-Schritte
     --clean                 Entwicklungsumgebung zurücksetzen
 
 BEISPIELE:
@@ -86,6 +92,19 @@ parse_arguments() {
             --with-docker)
                 WITH_DOCKER=true
                 ;;
+            --full)
+                AUTO_MODE=true
+                RUN_MODE="full"
+                ;;
+            --minimal)
+                START_DOCKER=false
+                BUILD_FRONTEND=false
+                AUTO_MODE=true
+                RUN_MODE="python"
+                ;;
+            --no-docker)
+                START_DOCKER=false
+                ;;
             --clean)
                 clean_environment
                 exit 0
@@ -104,6 +123,29 @@ setup_logging() {
     mkdir -p "$(dirname "$LOG_FILE")"
     exec 1> >(tee -a "$LOG_FILE")
     exec 2> >(tee -a "$LOG_FILE" >&2)
+}
+
+interactive_menu() {
+    PS3="Auswahl: "
+    options=(
+        "Komplettes Setup (Empfohlen)"
+        "Nur Python-Abhängigkeiten installieren"
+        "Nur Frontend bauen"
+        "Docker-Container starten"
+        "Projekt testen"
+        "Abbrechen"
+    )
+    select opt in "${options[@]}"; do
+        case $REPLY in
+            1) RUN_MODE="full"; break ;;
+            2) RUN_MODE="python"; break ;;
+            3) RUN_MODE="frontend"; break ;;
+            4) RUN_MODE="docker"; break ;;
+            5) RUN_MODE="test"; break ;;
+            6) exit 0 ;;
+            *) echo "Ungültige Auswahl";;
+        esac
+    done
 }
 
 print_banner() {
@@ -209,6 +251,16 @@ verify_installation() {
     return 0
 }
 
+run_project_tests() {
+    log_info "Starte Tests..."
+    if ruff check . && mypy mcp && pytest -m "not heavy" -q; then
+        log_ok "Tests erfolgreich"
+    else
+        log_err "Tests fehlgeschlagen"
+        return 1
+    fi
+}
+
 print_next_steps() {
     echo
     log_ok "Setup erfolgreich abgeschlossen!"
@@ -285,13 +337,19 @@ clean_environment() {
 
 # Haupt-Setup-Funktion
 main() {
+    local original_args=("$@")
+    local arg_count=$#
     # Setup initialisieren
     setup_error_handling
     ensure_utf8
     setup_logging
     
     # Argumente parsen
-    parse_arguments "$@"
+    parse_arguments "${original_args[@]}"
+    if [[ $arg_count -eq 0 ]]; then
+        interactive_menu
+    fi
+    export AUTO_MODE
 
     if [[ "$WITH_DOCKER" == "true" ]]; then
         if [[ ! -f docker-compose.yml ]]; then
@@ -319,6 +377,13 @@ main() {
         log_err "Umgebungsprüfung fehlgeschlagen. Setup abgebrochen."
         exit 1
     fi
+
+    # Fehlende Komponenten installieren
+    with_spinner "Prüfe Docker" ensure_docker || true
+    with_spinner "Prüfe Node.js" ensure_node || true
+    with_spinner "Prüfe Python" ensure_python || true
+    with_spinner "Prüfe Poetry" ensure_poetry || true
+    with_spinner "Prüfe Tools" ensure_python_tools || true
     
     # Docker-Prüfung
     log_info "=== DOCKER-PRÜFUNG ==="
@@ -340,60 +405,50 @@ main() {
         fi
     fi
     
-    # Python-Dependencies
-    log_info "=== PYTHON-ABHÄNGIGKEITEN ==="
-    if ! install_python_dependencies; then
-        log_err "Installation der Python-Abhängigkeiten fehlgeschlagen. Setup abgebrochen."
-        exit 1
-    fi
-    
-    # Frontend-Build
-    if [[ "$BUILD_FRONTEND" == "true" ]]; then
-        log_info "=== FRONTEND-BUILD ==="
-        if ! build_frontend; then
-            log_err "Frontend-Build fehlgeschlagen. Setup abgebrochen."
-            exit 1
-        fi
-        cd "$REPO_ROOT"
-    fi
-    
-    # Docker-Services starten
-    if [[ "$START_DOCKER" == "true" ]]; then
-        log_info "=== DOCKER-SERVICES ==="
-        compose_file="docker-compose.yml"
-        if [[ ! -f "$compose_file" ]]; then
-            compose_file=$(ls docker-compose.*.yml 2>/dev/null | head -n1 || true)
-        fi
+    case "$RUN_MODE" in
+        python)
+            install_python_dependencies || exit 1
+            ;;
+        frontend)
+            build_frontend || exit 1
+            ;;
+        docker)
+            start_docker_services "docker-compose.yml" || exit 1
+            ;;
+        test)
+            run_project_tests || exit 1
+            ;;
+        full)
+            log_info "=== PYTHON-ABHÄNGIGKEITEN ==="
+            install_python_dependencies || exit 1
 
-        if [[ -f "$compose_file" ]]; then
-            if ! start_docker_services "$compose_file"; then
-                log_err "Start der Docker-Services fehlgeschlagen. Setup abgebrochen."
-                exit 1
+            if [[ "$BUILD_FRONTEND" == "true" ]]; then
+                log_info "=== FRONTEND-BUILD ==="
+                build_frontend || exit 1
+                cd "$REPO_ROOT"
             fi
-        else
-            if [[ "$WITH_DOCKER" == "true" ]]; then
-                log_err "Docker Compose Datei nicht gefunden. Setup abgebrochen."
-                exit 1
-            else
-                log_warn "Docker Compose nicht gefunden – Docker-Start übersprungen"
-                START_DOCKER=false
+
+            if [[ "$START_DOCKER" == "true" ]]; then
+                log_info "=== DOCKER-SERVICES ==="
+                compose_file="docker-compose.yml"
+                if [[ ! -f "$compose_file" ]]; then
+                    compose_file=$(ls docker-compose.*.yml 2>/dev/null | head -n1 || true)
+                fi
+                if [[ -f "$compose_file" ]]; then
+                    start_docker_services "$compose_file" || exit 1
+                elif [[ "$WITH_DOCKER" == "true" ]]; then
+                    log_err "Docker Compose Datei nicht gefunden. Setup abgebrochen."
+                    exit 1
+                fi
             fi
-        fi
-    fi
-    
-    # Installation verifizieren
-    log_info "=== VERIFIZIERUNG ==="
-    verify_installation || log_warn "Verifizierung mit Problemen abgeschlossen"
 
-    mkdir -p "$REPO_ROOT/logs/ci"
-    local ci_log="$REPO_ROOT/logs/ci/setup_$(date +%Y%m%d_%H%M%S).log"
-    (
-        npm run lint --prefix frontend/agent-ui && pytest -m "not heavy"
-    ) &> "$ci_log" || echo 'Tests teilweise fehlgeschlagen'
+            log_info "=== VERIFIZIERUNG ==="
+            verify_installation || log_warn "Verifizierung mit Problemen abgeschlossen"
 
-    # Abschluss
-    log_info "=== SETUP ABGESCHLOSSEN ==="
-    print_next_steps
+            run_project_tests || true
+            print_next_steps
+            ;;
+    esac
 }
 
 # Script ausführen falls direkt aufgerufen

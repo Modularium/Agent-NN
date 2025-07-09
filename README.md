@@ -18,7 +18,8 @@ cd Agent-NN
 ./scripts/setup.sh
 ```
 
-Das war's! Das Setup-Skript erkennt automatisch Ihr System und installiert alle Abhängigkeiten.
+Das war's! Das Setup-Skript erkennt fehlende Systempakete und bietet an,
+Docker, Node.js, Poetry und weitere Tools automatisch zu installieren.
 
 Hinweise:
 - Eine `.env`-Datei muss vorhanden sein. Das Skript legt sie bei Bedarf aus `.env.example` an.
@@ -56,14 +57,18 @@ Das Setup-System erkennt automatisch:
 
 ### Automatisches Setup (Empfohlen)
 ```bash
-# Vollständiges Setup mit allen Prüfungen
+# Interaktives Setup mit Menü
 ./scripts/setup.sh
 
-# Setup-Optionen
+# Vollständiges Setup ohne Rückfragen
+./scripts/setup.sh --full
+
+# Nur Python-Abhängigkeiten
+./scripts/setup.sh --minimal
+
+# Weitere Optionen
 ./scripts/setup.sh --help              # Hilfe anzeigen
-./scripts/setup.sh --check-only        # Nur Umgebung prüfen
-./scripts/setup.sh --skip-docker       # Ohne Docker-Start
-./scripts/setup.sh --with-docker       # Start erzwingen
+./scripts/setup.sh --no-docker         # Docker-Schritte überspringen
 ./scripts/setup.sh --verbose           # Ausführliche Ausgabe
 ./scripts/setup.sh --clean             # Entwicklungsumgebung zurücksetzen
 ```
@@ -125,6 +130,10 @@ pytest -m "not heavy"
 ```
 
 ### Troubleshooting häufiger Probleme
+
+Sollte das Setup aufgrund fehlender Pakete abbrechen, kann das Skript diese
+Abhängigkeiten in der Regel automatisch installieren. Führe das Setup erneut
+mit `--full` aus oder bestätige die vorgeschlagenen Installationen.
 
 #### Docker Compose Fehler
 ```bash

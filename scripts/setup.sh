@@ -316,6 +316,12 @@ main() {
     
     # Banner anzeigen
     print_banner
+
+    STATUS_FILE="$REPO_ROOT/.agentnn/status.json"
+    ensure_status_file "$STATUS_FILE"
+    if [[ -n "$PRESET" ]]; then
+        log_preset "$PRESET" "$STATUS_FILE"
+    fi
     
     # In Repository-Verzeichnis wechseln
     cd "$REPO_ROOT" || {

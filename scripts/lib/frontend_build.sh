@@ -1,10 +1,10 @@
 #!/bin/bash
 
 __frontend_build_init() {
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    source "$SCRIPT_DIR/log_utils.sh"
-    source "$SCRIPT_DIR/../helpers/common.sh"
-    source "$SCRIPT_DIR/status_utils.sh"
+    local dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$dir/log_utils.sh"
+    source "$dir/../helpers/common.sh"
+    source "$dir/status_utils.sh"
 }
 
 __frontend_build_init

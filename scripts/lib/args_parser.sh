@@ -1,8 +1,8 @@
 #!/bin/bash
 
 __args_parser_init() {
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    source "$SCRIPT_DIR/log_utils.sh"
+    local dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$dir/log_utils.sh"
 }
 __args_parser_init
 

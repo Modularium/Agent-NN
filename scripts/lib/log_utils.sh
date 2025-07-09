@@ -4,7 +4,8 @@
 
 # initialization
 __log_utils_init() {
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    LOG_UTILS_DIR="$dir"
 }
 __log_utils_init
 

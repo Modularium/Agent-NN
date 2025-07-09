@@ -1,10 +1,10 @@
 #!/bin/bash
 
 __install_utils_init() {
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    source "$SCRIPT_DIR/log_utils.sh"
-    source "$SCRIPT_DIR/../helpers/common.sh"
-    source "$SCRIPT_DIR/spinner_utils.sh"
+    local dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$dir/log_utils.sh"
+    source "$dir/../helpers/common.sh"
+    source "$dir/spinner_utils.sh"
 }
 
 __install_utils_init

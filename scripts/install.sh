@@ -5,6 +5,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/log_utils.sh"
 source "$SCRIPT_DIR/lib/spinner_utils.sh"
 source "$SCRIPT_DIR/lib/install_utils.sh"
+AUTO_MODE=false
+LOG_ERROR_FILE="$SCRIPT_DIR/../logs/setup_errors.log"
+mkdir -p "$(dirname "$LOG_ERROR_FILE")"
+touch "$LOG_ERROR_FILE"
+EXIT_ON_FAIL=false
 
 usage() {
     cat <<EOT
@@ -17,6 +22,8 @@ Optionen:
   --python       Python installieren
   --poetry       Poetry installieren
   --ci           Installiert Python, Poetry, Node und Docker
+  --exit-on-fail Bei Fehlern sofort abbrechen
+  --recover      Installationsschritte überspringen, wenn bereits erledigt
   -h, --help     Diese Hilfe anzeigen
 EOT
 }
@@ -30,7 +37,12 @@ while [[ $# -gt 0 ]]; do
         --poetry) components+=(ensure_poetry); shift;;
         --ci)
             components=(ensure_python ensure_poetry ensure_node ensure_docker)
+            AUTO_MODE=true
             shift;;
+        --exit-on-fail)
+            EXIT_ON_FAIL=true; shift;;
+        --recover)
+            RECOVERY_MODE=true; AUTO_MODE=true; shift;;
         -h|--help)
             usage; exit 0;;
         *)
@@ -45,7 +57,12 @@ if [[ ${#components[@]} -eq 0 ]]; then
 fi
 
 for comp in "${components[@]}"; do
-    with_spinner "Installiere ${comp#ensure_}" "$comp" || true
+    with_spinner "Installiere ${comp#ensure_}" "$comp"
+    status=$?
+    if [[ $status -ne 0 ]]; then
+        log_error "${comp#ensure_} konnte nicht installiert werden. Details siehe $LOG_ERROR_FILE"
+        [[ "$EXIT_ON_FAIL" == "true" ]] && exit 1
+    fi
 done
 
 exit 0

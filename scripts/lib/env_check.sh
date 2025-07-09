@@ -1,7 +1,8 @@
 #!/bin/bash
 
 __env_check_init() {
-    local SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$SCRIPT_DIR/log_utils.sh"
     source "$SCRIPT_DIR/../helpers/common.sh"
 }
 

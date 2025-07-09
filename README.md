@@ -90,6 +90,19 @@ Das Setup-System erkennt automatisch:
 ./scripts/test.sh
 ```
 
+### Weitere CLI-Tools
+
+- `./scripts/install.sh` – einzelne Abhängigkeiten installieren, z. B. `./scripts/install.sh --node`
+- `./scripts/help.sh` – kurze Übersicht aller Skripte und wichtiger Flags
+- `./scripts/build_frontend.sh` – nur das Frontend bauen
+- `./scripts/build_and_test.sh` – Container bauen und Tests ausführen
+
+Beispiel für Teilinstallationen:
+
+```bash
+./scripts/install.sh --docker --node
+```
+
 ### Manuelles Setup
 ```bash
 # 1. Repository klonen
@@ -342,6 +355,9 @@ poetry run ruff check .
 poetry run mypy mcp
 ```
 
+Eigene Skripte können die Helfer aus `scripts/lib/` einbinden, um Logging,
+Spinner und Installationsroutinen wiederzuverwenden.
+
 ### Code-Style
 - **Python:** Ruff + MyPy
 - **JavaScript/TypeScript:** ESLint + Prettier
@@ -475,7 +491,7 @@ Zur Fehlersuche helfen `docker ps`, `npm run build` im Frontend-Verzeichnis sowi
 | `scripts/deploy_to_registry.sh` | Publiziert Images in ein Container-Registry |
 | `scripts/start_mcp.sh` | Startet das Microservice-Compose-Setup |
 | `scripts/setup.sh` | Komplettes Setup in einem Schritt |
-| `scripts/lib/` | Wiederverwendbare Bash-Module für Docker- und Environment-Checks |
+| `scripts/lib/` | Wiederverwendbare Bash-Module (log_utils, spinner_utils, install_utils ...) |
 
 Die Library-Skripte erwarten eine konfigurierte `.env` und prüfen die Ports `8000`, `3000`, `5432`, `6379` und `9090`.
 

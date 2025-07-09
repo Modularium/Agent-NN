@@ -7,9 +7,6 @@ import path from 'path'
 export default defineConfig({
   plugins: [
     react({
-      // Enable Fast Refresh
-      fastRefresh: true,
-      // Include .tsx files
       include: ['**/*.tsx', '**/*.ts'],
     }),
     VitePWA({
@@ -107,7 +104,7 @@ export default defineConfig({
           utils: ['date-fns', 'clsx', 'zustand']
         }
       },
-      onwarn(warning, warn) {
+      onwarn(warning: any, warn: any) {
         // Suppress certain warnings
         if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
           return
@@ -138,15 +135,15 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-        configure: (proxy, options) => {
-          proxy.on('error', (err, req, res) => {
+        rewrite: (path: string) => path.replace(/^\/api/, ''),
+        configure: (proxy: any, options: any) => {
+          proxy.on('error', (err: any, req: any, res: any) => {
             console.log('proxy error', err)
           })
-          proxy.on('proxyReq', (proxyReq, req, res) => {
+          proxy.on('proxyReq', (proxyReq: any, req: any, res: any) => {
             console.log('Sending Request to the Target:', req.method, req.url)
           })
-          proxy.on('proxyRes', (proxyRes, req, res) => {
+          proxy.on('proxyRes', (proxyRes: any, req: any, res: any) => {
             console.log('Received Response from the Target:', proxyRes.statusCode, req.url)
           })
         }

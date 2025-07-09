@@ -205,14 +205,14 @@ const mockDashboards: Dashboard[] = [
 
 export default function ModernMetricsPage() {
   const [metrics, setMetrics] = useState<MetricDefinition[]>(mockMetrics)
-  const [dashboards, setDashboards] = useState<Dashboard[]>(mockDashboards)
+  const [dashboards] = useState<Dashboard[]>(mockDashboards)
   const [activeTab, setActiveTab] = useState<'overview' | 'explorer' | 'dashboards' | 'alerts'>('overview')
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(['cpu_usage', 'memory_usage', 'avg_response_time'])
+  const [selectedMetrics] = useState<string[]>(['cpu_usage', 'memory_usage', 'avg_response_time'])
   const [timeRange, setTimeRange] = useState<'1h' | '6h' | '24h' | '7d' | '30d'>('24h')
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [isExporting, setIsExporting] = useState(false)
-  const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' })
+  const [customDateRange] = useState({ start: '', end: '' })
   const [refreshInterval, setRefreshInterval] = useState(30)
   const [autoRefresh, setAutoRefresh] = useState(true)
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface RoutingRule {
   id: string
@@ -167,10 +167,10 @@ const mockModels: Model[] = [
 
 export default function ModernRoutingPage() {
   const [routingRules, setRoutingRules] = useState<RoutingRule[]>(mockRoutingRules)
-  const [models, setModels] = useState<Model[]>(mockModels)
+  const [models] = useState<Model[]>(mockModels)
   const [activeTab, setActiveTab] = useState<'rules' | 'models' | 'analytics'>('rules')
-  const [selectedRule, setSelectedRule] = useState<string | null>(null)
-  const [isCreatingRule, setIsCreatingRule] = useState(false)
+  const [selectedRule] = useState<string | null>(null)
+  const [isCreatingRule] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'enabled' | 'disabled'>('all')
 

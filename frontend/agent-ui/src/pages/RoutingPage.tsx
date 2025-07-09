@@ -170,7 +170,7 @@ export default function ModernRoutingPage() {
   const [models] = useState<Model[]>(mockModels)
   const [activeTab, setActiveTab] = useState<'rules' | 'models' | 'analytics'>('rules')
   const [selectedRule] = useState<string | null>(null)
-  const [isCreatingRule] = useState(false)
+  const [isCreatingRule, setIsCreatingRule] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'enabled' | 'disabled'>('all')
 

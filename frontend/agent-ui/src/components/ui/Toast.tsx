@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 interface ToastProps {
   type: 'success' | 'error' | 'warning' | 'info'
@@ -11,6 +11,13 @@ export default function Toast({ type, message, onClose, duration = 5000 }: Toast
   const [isVisible, setIsVisible] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
 
+  const handleClose = useCallback(() => {
+    setIsLeaving(true)
+    setTimeout(() => {
+      onClose()
+    }, 300) // Wait for exit animation
+  }, [onClose])
+
   useEffect(() => {
     // Trigger entrance animation
     setIsVisible(true)
@@ -21,14 +28,7 @@ export default function Toast({ type, message, onClose, duration = 5000 }: Toast
     }, duration)
 
     return () => clearTimeout(timer)
-  }, [duration])
-
-  const handleClose = () => {
-    setIsLeaving(true)
-    setTimeout(() => {
-      onClose()
-    }, 300) // Wait for exit animation
-  }
+  }, [duration, handleClose])
 
   const getToastStyles = () => {
     const baseStyles = "flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg border transform transition-all duration-300 ease-in-out"

@@ -6,6 +6,7 @@ const config = {
   baseUrl: '/Agent-NN/',
   organizationName: 'EcoSphereNetwork',
   projectName: 'Agent-NN',
+  deploymentBranch: 'gh-pages',
   trailingSlash: false,
   favicon: 'img/favicon.ico',
   presets: [

@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "Modular agent execution and neural orchestration framework"
 readme = "README.md"
 license = { text = "MIT" }
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
   "fastapi",
   "httpx",
@@ -29,6 +29,7 @@ dependencies = [
 
 [tool.ruff]
 line-length = 120
+ignore = ["E402"]
 extend-exclude = [
   "archive",
   "agents",
@@ -71,7 +72,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4.0"
+python = ">=3.10,<4.0"
 fastapi = "*"
 httpx = "*"
 typer = "*"

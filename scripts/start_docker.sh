@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/helpers/common.sh"
+source "$SCRIPT_DIR/lib/env_check.sh"
 source "$SCRIPT_DIR/lib/docker_utils.sh"
 
 LOG_DIR="$SCRIPT_DIR/../logs"

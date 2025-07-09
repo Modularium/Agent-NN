@@ -1,7 +1,7 @@
 # Agent-NN 
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 ![Docker](https://img.shields.io/badge/docker-compose-blue)
-![Python](https://img.shields.io/badge/python-3.9+-green)
+![Python](https://img.shields.io/badge/python-3.10+-green)
 ![Node](https://img.shields.io/badge/node.js-18+-green)
 
 Agent-NN ist ein Multi-Agent-System mit integrierten neuronalen Netzen. Jeder Service erfüllt eine klar definierte Aufgabe und kommuniziert über REST-Schnittstellen. Neben den Backend-Diensten stellt das Projekt ein Python‑SDK, eine CLI und ein React-basiertes Frontend bereit.
@@ -20,10 +20,17 @@ cd Agent-NN
 
 Das war's! Das Setup-Skript erkennt automatisch Ihr System und installiert alle Abhängigkeiten.
 
+Hinweise:
+- Eine `.env`-Datei muss vorhanden sein. Das Skript legt sie bei Bedarf aus `.env.example` an.
+- Das Frontend wird automatisch gebaut und in `frontend/dist` abgelegt.
+- Die Docker-Container lassen sich wahlweise per `docker compose` oder über `./scripts/start_docker.sh` starten.
+- Lokal wird Python **3.10 oder neuer** benötigt.
+- Die Tools `ruff`, `mypy` und `pytest` sind optional, werden aber empfohlen.
+
 ## 📋 Systemvoraussetzungen
 
 ### Erforderlich
-- **Python 3.9+** mit Poetry
+- **Python 3.10+** mit Poetry
 - **Node.js 18+** mit npm
 - **Docker** mit Docker Compose (Plugin oder Classic)
 - **Git**
@@ -542,7 +549,7 @@ git clone https://github.com/EcoSphereNetwork/Agent-NN.git && cd Agent-NN
 
 ### Empfohlene Umgebung
 
-- Python 3.9 oder neuer
+- Python 3.10 oder neuer
 - Mindestens 4 GB RAM (8 GB empfohlen)
 
 ## Frontend Development

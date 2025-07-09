@@ -12,7 +12,7 @@ pydantic-settings
 python-dotenv
 fastapi
 Celery
-PostgreSQL
+psycopg2-binary
 psycopg2
 MongoDB
 PyMongo

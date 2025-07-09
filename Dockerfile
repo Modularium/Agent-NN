@@ -1,4 +1,4 @@
-FROM python:3.9-slim as builder
+FROM python:3.10-slim AS builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # copy source
 COPY . .
 
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 
@@ -25,5 +25,4 @@ COPY --from=builder /app /app
 RUN mkdir -p /app/logs /app/models
 
 EXPOSE 8000
-
 CMD ["uvicorn", "api.server:app", "--host", "0.0.0.0", "--port", "8000"]

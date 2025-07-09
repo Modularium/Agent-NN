@@ -366,7 +366,7 @@ main() {
         fi
 
         if [[ -f "$compose_file" ]]; then
-            if ! start_compose "$compose_file"; then
+            if ! start_docker_services "$compose_file"; then
                 log_err "Start der Docker-Services fehlgeschlagen. Setup abgebrochen."
                 exit 1
             fi

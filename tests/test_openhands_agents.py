@@ -165,7 +165,7 @@ class TestDockerAgent(unittest.TestCase):
 
         # Build image
         result = await self.agent.build_image(
-            dockerfile="FROM python:3.9",
+            dockerfile="FROM python:3.10",
             context={"requirements.txt": "requests==2.26.0"},
             tag="test:latest",
         )

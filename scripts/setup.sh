@@ -141,7 +141,14 @@ install_python_dependencies() {
             return 1
         fi
     fi
-    
+
+    if ! poetry show langchain >/dev/null 2>&1; then
+        log_warn "langchain nicht installiert – ggf. '--preset dev' nutzen"
+    fi
+    if [[ "$PRESET" == "minimal" ]]; then
+        log_warn "Preset 'minimal' installiert keine Langchain- oder CLI-Abh\u00e4ngigkeiten"
+    fi
+
     # CLI-Test
     if poetry run agentnn --help &>/dev/null; then
         log_ok "CLI verfügbar: poetry run agentnn"

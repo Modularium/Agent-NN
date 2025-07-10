@@ -16,11 +16,39 @@ if ! command -v python &>/dev/null; then
     exit 1
 fi
 
+set +e
 python - <<'EOF'
 import importlib.util, sys
 sys.exit(0 if importlib.util.find_spec("torch") else 1)
 EOF
 HAS_TORCH=$?
+set -e
+
+check_module() {
+    set +e
+    python - "$1" <<'PY'
+import importlib.util, sys
+sys.exit(0 if importlib.util.find_spec(sys.argv[1]) else 1)
+PY
+    local code=$?
+    set -e
+    return $code
+}
+
+MISSING=()
+for mod in langchain openai pytest ruff; do
+    if check_module "$mod"; then
+        :
+    else
+        MISSING+=("$mod")
+    fi
+done
+
+if [[ ${#MISSING[@]} -gt 0 ]]; then
+    echo "Fehlende Module: ${MISSING[*]}" >&2
+    echo "Bitte Setup mit '--preset dev' ausf\u00fchren." >&2
+    exit 1
+fi
 
 if [[ "$HAS_TORCH" -eq 0 ]]; then
     pytest "$@" -q

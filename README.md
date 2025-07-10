@@ -83,8 +83,15 @@ Wiederkehrende Einstellungen lassen sich über `--preset` laden:
 ./scripts/setup.sh --preset ci        # Nur Python + Tests
 ./scripts/setup.sh --preset minimal   # Ohne Docker/Node
 ```
+
 Verf\u00fcgbare Presets: `dev`, `ci`, `minimal`. Damit lassen sich typische
 Installationsszenarien ohne viele Eingaben starten.
+
+| Preset    | Beschreibung                        | Tools enthalten               |
+| --------- | ----------------------------------- | ----------------------------- |
+| `minimal` | Nur Python- und Docker-Basisdienste | `mcp`, `sdk`, keine UI        |
+| `dev`     | Voller Dev-Stack mit UI und LLM-SDK | `langchain`, `frontend`, etc. |
+| `ci`      | Headless-Setup f\u00fcr CI-Umgebungen    | `pytest`, `ruff`, `mypy`      |
 
 ```bash
 # Basis-Setup
@@ -182,6 +189,10 @@ pip install docker-compose
 ./scripts/validate.sh
 # Aktuellen Setup-Status pr\u00fcfen
 ./scripts/status.sh  # zeigt letztes Setup, verwendetes Preset und Konsistenz
+# Beispielausgabe:
+# Letztes Setup:   2024-07-01T12:00Z
+# Preset genutzt:  dev
+# Konsistenz:      OK
 
 # Alternative: Ports in docker-compose.yml ändern
 nano docker-compose.yml
@@ -332,6 +343,9 @@ poetry run pytest tests/test_setup.py
 poetry run ruff check .
 poetry run mypy mcp
 ```
+Falls beim Testen Module wie `langchain` fehlen, wurde vermutlich
+`--preset=minimal` verwendet. F\u00fchre das Setup erneut mit `--preset dev`
+aus, um alle Entwicklungsabh\u00e4ngigkeiten zu installieren.
 
 ## 🔍 Fehlerdiagnose
 

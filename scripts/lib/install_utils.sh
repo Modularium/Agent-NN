@@ -239,12 +239,16 @@ check_poetry_available() {
     return 1
 }
 
-install_poetry_interactive() {
-    local choice method last
-    last=$(load_config_value "POETRY_METHOD" "venv")
-    if [[ -n "$last" ]]; then
-        echo -e "${CYAN}Hinweis:${NC} Du hast bei der letzten Installation '$last' als bevorzugte Methode für Poetry gewählt."
-    fi
+map_number_to_method() {
+    case "$1" in
+        1) echo "system" ;;
+        2) echo "venv" ;;
+        3) echo "pipx" ;;
+    esac
+}
+
+prompt_poetry_installation_method() {
+    local choice
     while true; do
         cat <<'EOF'
 Poetry kann auf deinem System nicht direkt mit pip installiert werden.
@@ -255,39 +259,51 @@ Poetry kann auf deinem System nicht direkt mit pip installiert werden.
 [4] Abbrechen
 [q] Zurück zum Hauptmenü
 EOF
-        read -rp "> Auswahl: " choice
+        read -rp "Bitte wählen [1-4, q]: " choice
         case "$choice" in
-            1)
-                method="system"
-                install_poetry_break_system && break || continue
-                ;;
-            2)
-                method="venv"
-                install_poetry_venv && break || continue
-                ;;
-            3)
-                method="pipx"
-                install_poetry_pipx && break || continue
+            1|2|3)
+                POETRY_METHOD="$(map_number_to_method "$choice")"
+                export POETRY_METHOD
+                save_config_value "POETRY_METHOD" "$POETRY_METHOD"
+                break
                 ;;
             4)
-                ensure_config_file_exists
-                echo -e "→ Schritt übersprungen, keine Installation vorgenommen."
-                return 130
+                echo "🚫 Abgebrochen."
+                return 1
                 ;;
-            q|exit|back)
-                ensure_config_file_exists
-                echo -e "→ Schritt übersprungen, keine Installation vorgenommen."
+            q|Q)
+                return_to_main_menu
                 return 130
                 ;;
             *)
-                echo -e "${YELLOW}Ungültige Eingabe. Bitte 1-4 wählen.${NC}"
-                continue
+                echo "⚠️ Ungültige Eingabe. Bitte 1-4 oder q wählen."
                 ;;
         esac
     done
-    echo -e "→ Du hast Option [$choice] gewählt: Installation über $method"
+    return 0
+}
+
+install_poetry_interactive() {
+    local last
+    last=$(load_config_value "POETRY_METHOD" "venv")
+    if [[ -n "$last" ]]; then
+        echo -e "${CYAN}Hinweis:${NC} Du hast bei der letzten Installation '$last' als bevorzugte Methode für Poetry gewählt."
+    fi
+
+    if ! prompt_poetry_installation_method; then
+        ensure_config_file_exists
+        echo -e "→ Schritt übersprungen, keine Installation vorgenommen."
+        return 130
+    fi
+
+    case "$POETRY_METHOD" in
+        system) install_poetry_break_system ;;
+        venv)   install_poetry_venv ;;
+        pipx)   install_poetry_pipx ;;
+    esac || return 1
+
+    echo -e "→ Du hast Option [$POETRY_METHOD] gewählt: Installation über $POETRY_METHOD"
     echo -e "→ Fortsetzung in 3 Sekunden ..."
-    save_config_value "POETRY_METHOD" "$method"
     sleep 3
     return 0
 }
@@ -324,6 +340,7 @@ ensure_python_tools() {
 
 export -f ask_install install_docker ensure_docker install_node ensure_node \
           install_python ensure_python ensure_pip install_poetry_interactive \
+          prompt_poetry_installation_method map_number_to_method \
           install_poetry_break_system install_poetry_venv install_poetry_pipx \
           try_install_poetry check_poetry_available ensure_poetry \
           install_python_tool ensure_python_tools \

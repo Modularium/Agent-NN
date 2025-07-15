@@ -197,7 +197,12 @@ install_poetry_pipx() {
     $SUDO_CMD apt install pipx -y >/dev/null && pipx install poetry >/dev/null
 }
 
-install_poetry_menu() {
+install_poetry_interactive() {
+    local choice method last
+    last=$(get_config_value "POETRY_INSTALL_METHOD" || true)
+    if [[ -n "$last" ]]; then
+        echo -e "${CYAN}Hinweis:${NC} Du hast bei der letzten Installation '$last' als bevorzugte Methode für Poetry gewählt."
+    fi
     while true; do
         cat <<'EOF'
 Poetry kann auf deinem System nicht direkt mit pip installiert werden.
@@ -206,29 +211,45 @@ Poetry kann auf deinem System nicht direkt mit pip installiert werden.
 [2] Installation über venv (Standard)
 [3] Installation über pipx (empfohlen)
 [4] Abbrechen
+[q] Zurück zum Hauptmenü
 EOF
         read -rp "> Auswahl: " choice
         case "$choice" in
             1)
-                install_poetry_break_system && return 0 || return 1
+                method="system"
+                install_poetry_break_system && break || continue
                 ;;
             2)
-                install_poetry_venv && return 0 || return 1
+                method="venv"
+                install_poetry_venv && break || continue
                 ;;
             3)
-                install_poetry_pipx && return 0 || return 1
+                method="pipx"
+                install_poetry_pipx && break || continue
                 ;;
             4)
                 return 1
                 ;;
+            q|exit|back)
+                return 130
+                ;;
+            *)
+                echo -e "${YELLOW}Ungültige Eingabe. Bitte 1-4 wählen.${NC}"
+                continue
+                ;;
         esac
     done
+    echo -e "→ Du hast Option [$choice] gewählt: Installation über $method"
+    echo -e "→ Fortsetzung in 3 Sekunden ..."
+    set_config_value "POETRY_INSTALL_METHOD" "$method"
+    sleep 3
+    return 0
 }
 
 ensure_poetry() {
     ensure_pip || return 1
     command -v poetry >/dev/null && return 0
-    install_poetry_menu
+    install_poetry_interactive
 }
 
 install_python_tool() {
@@ -248,7 +269,7 @@ ensure_python_tools() {
 }
 
 export -f ask_install install_docker ensure_docker install_node ensure_node \
-          install_python ensure_python ensure_pip install_poetry_menu \
+          install_python ensure_python ensure_pip install_poetry_interactive \
           install_poetry_break_system install_poetry_venv install_poetry_pipx \
           ensure_poetry install_python_tool ensure_python_tools \
           require_or_install require_or_install_curl \

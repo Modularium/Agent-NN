@@ -47,3 +47,28 @@ PY
 }
 
 export -f load_config
+
+# Project-specific config stored in REPO_ROOT/.agentnn_config
+PROJECT_CONFIG_FILE="${PROJECT_CONFIG_FILE:-$REPO_ROOT/.agentnn_config}"
+
+load_project_config() {
+    [[ -f "$PROJECT_CONFIG_FILE" ]] && source "$PROJECT_CONFIG_FILE"
+}
+
+get_config_value() {
+    local key="$1"
+    grep -E "^${key}=" "$PROJECT_CONFIG_FILE" 2>/dev/null | head -n1 | cut -d= -f2- | tr -d '"'
+}
+
+set_config_value() {
+    local key="$1"; local value="$2"
+    mkdir -p "$(dirname "$PROJECT_CONFIG_FILE")"
+    touch "$PROJECT_CONFIG_FILE"
+    if grep -q "^${key}=" "$PROJECT_CONFIG_FILE" 2>/dev/null; then
+        sed -i "s|^${key}=.*|${key}=\"${value}\"|" "$PROJECT_CONFIG_FILE"
+    else
+        echo "${key}=\"${value}\"" >> "$PROJECT_CONFIG_FILE"
+    fi
+}
+
+export -f load_project_config get_config_value set_config_value

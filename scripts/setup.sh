@@ -432,6 +432,9 @@ main() {
         status)
             "$SCRIPT_DIR/status.sh" || exit 0
             ;;
+        repair)
+            "$SCRIPT_DIR/repair_env.sh" || exit 1
+            ;;
         test)
             run_project_tests || exit 1
             ;;

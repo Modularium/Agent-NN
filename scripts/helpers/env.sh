@@ -64,6 +64,8 @@ check_system_dependencies() {
     local missing_deps=()
     local deps=(
         "python3:Python 3"
+        "pip:pip"
+        "curl:curl"
         "node:Node.js"
         "npm:npm"
         "git:Git"
@@ -81,8 +83,8 @@ check_system_dependencies() {
     if [[ ${#missing_deps[@]} -gt 0 ]]; then
         log_err "Fehlende Abhängigkeiten: ${missing_deps[*]}"
         log_err "Installationshinweise:"
-        log_err "  Ubuntu/Debian: sudo apt update && sudo apt install python3 nodejs npm git"
-        log_err "  macOS: brew install python node npm git"
+        log_err "  Ubuntu/Debian: sudo apt update && sudo apt install python3-pip curl git nodejs npm"
+        log_err "  macOS: brew install python pip curl git node npm"
         log_err "  Windows: Verwende WSL oder installiere manuell"
         echo "${missing_deps[@]}"
         return 1
@@ -113,6 +115,11 @@ check_python_environment() {
     else
         log_err "Python 3 nicht gefunden"
         missing+=("python3")
+    fi
+
+    if ! command -v pip >/dev/null; then
+        log_err "pip nicht gefunden"
+        missing+=("pip")
     fi
     
     # Poetry prüfen

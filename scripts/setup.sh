@@ -38,6 +38,7 @@ RUN_MODE="full"
 EXIT_ON_FAIL=false
 RECOVERY_MODE=false
 LOG_ERROR_FILE=""
+SUDO_CMD=""
 PRESET=""
 
 usage() {
@@ -55,6 +56,8 @@ OPTIONS:
     --check                 Nur Validierung ausführen und beenden
     --install-heavy         Zusätzliche Heavy-Dependencies installieren
     --with-docker          Abbruch wenn docker-compose.yml fehlt
+    --with-sudo            Paketinstallation mit sudo ausführen
+    --auto-install         Fehlende Abhängigkeiten automatisch installieren
     --full                  Komplettes Setup ohne Nachfragen
     --minimal               Nur Python-Abhängigkeiten installieren
     --no-docker             Setup ohne Docker-Schritte
@@ -69,6 +72,7 @@ BEISPIELE:
     $SCRIPT_NAME --skip-docker      # Setup ohne Docker-Start
     $SCRIPT_NAME --verbose          # Mit ausführlicher Ausgabe
     $SCRIPT_NAME --install-heavy    # Heavy-Dependencies installieren
+    $SCRIPT_NAME --auto-install    # Keine Rückfragen bei Abhängigkeitsinstallation
     $SCRIPT_NAME --preset dev       # Preset mit Docker und Frontend
 
 VORAUSSETZUNGEN:
@@ -308,6 +312,7 @@ main() {
         interactive_menu
     fi
     export AUTO_MODE
+    export SUDO_CMD
     export LOG_ERROR_FILE
 
     if [[ "$WITH_DOCKER" == "true" ]]; then

@@ -38,6 +38,9 @@ parse_setup_args() {
             --with-docker)
                 WITH_DOCKER=true
                 ;;
+            --with-sudo)
+                SUDO_CMD="sudo"
+                ;;
             --full)
                 AUTO_MODE=true
                 RUN_MODE="full"
@@ -58,6 +61,9 @@ parse_setup_args() {
                 RECOVERY_MODE=true
                 AUTO_MODE=true
                 ;;
+            --auto-install)
+                AUTO_MODE=true
+                ;;
             --preset)
                 shift
                 PRESET="$1"
@@ -75,6 +81,8 @@ parse_setup_args() {
         esac
         shift
     done
+    export SUDO_CMD
+    export AUTO_MODE
 }
 
 export -f parse_setup_args

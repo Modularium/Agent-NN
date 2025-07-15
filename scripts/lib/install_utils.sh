@@ -18,26 +18,58 @@ fi
 validate_poetry_method() {
     case "$1" in
         system|venv|pipx) return 0 ;;
-        *) echo "Ung\xC3\xBCltige POETRY_METHOD: $1"; return 1 ;;
+        *) echo "Ungültige POETRY_METHOD: $1"; return 1 ;;
     esac
 }
 
 validate_poetry_method "$POETRY_METHOD" || {
-    log_warn "Ung\xC3\xBCltige Methode '$POETRY_METHOD' – fallback auf venv"
+    log_warn "Ungültige Methode '$POETRY_METHOD' – fallback auf venv"
     POETRY_METHOD="venv"
 }
 
 AUTO_MODE="${AUTO_MODE:-false}"
 SUDO_CMD="${SUDO_CMD:-}"
 
+# Sichere Eingabe-Funktion mit Timeout und Validierung
+safe_read() {
+    local prompt="$1"
+    local timeout="${2:-30}"
+    local default_value="${3:-}"
+    local input=""
+    
+    # Stelle sicher, dass stdin verfügbar ist
+    if [[ ! -t 0 ]]; then
+        echo "Keine interaktive Eingabe möglich - verwende Default: $default_value"
+        echo "$default_value"
+        return 0
+    fi
+    
+    # Versuche mit timeout zu lesen
+    if command -v timeout >/dev/null 2>&1; then
+        input=$(timeout "$timeout" bash -c "read -rp '$prompt' input; echo \$input" 2>/dev/null || echo "$default_value")
+    else
+        # Fallback ohne timeout
+        read -rp "$prompt" input 2>/dev/null || input="$default_value"
+    fi
+    
+    # Fallback auf Default wenn leer
+    if [[ -z "$input" ]]; then
+        input="$default_value"
+    fi
+    
+    echo "$input"
+}
+
 # Prompt for sudo if a command requires elevated rights.
 require_sudo_if_needed() {
     if [[ $(id -u) -ne 0 && -z "$SUDO_CMD" ]]; then
-        log_info "F\xC3\xBCr diesen Schritt werden Systemrechte ben\xC3\xB6tigt."
-        read -rp "M\xC3\xB6chtest du 'sudo' aktivieren? [J/n] " ans
+        log_info "Für diesen Schritt werden Systemrechte benötigt."
+        local ans
+        ans=$(safe_read "Möchtest du 'sudo' aktivieren? [J/n] " 10 "J")
         if [[ -z "$ans" || "$ans" =~ ^[JjYy]$ ]]; then
             if ! command -v sudo >/dev/null; then
-                read -rp "sudo ist nicht installiert. Jetzt installieren? [J/n] " ans2
+                local ans2
+                ans2=$(safe_read "sudo ist nicht installiert. Jetzt installieren? [J/n] " 10 "J")
                 if [[ -z "$ans2" || "$ans2" =~ ^[JjYy]$ ]]; then
                     if command -v apt-get >/dev/null; then
                         apt-get update -y >/dev/null
@@ -65,7 +97,8 @@ prompt_and_install_if_missing() {
     local pkg="$1"
     if ! command -v "$pkg" >/dev/null 2>&1; then
         log_warn "$pkg nicht gefunden"
-        read -rp "Soll $pkg jetzt installiert werden? [J/n] " ans
+        local ans
+        ans=$(safe_read "Soll $pkg jetzt installiert werden? [J/n] " 10 "J")
         if [[ -z "$ans" || "$ans" =~ ^[JjYy]$ ]]; then
             require_sudo_if_needed || return 1
             install_packages "$pkg" || return 1
@@ -102,7 +135,8 @@ ask_install() {
     if [[ "$AUTO_MODE" == "true" ]]; then
         return 0
     fi
-    read -rp "Fehlende Komponente $component gefunden. Jetzt installieren? [J/n] " ans
+    local ans
+    ans=$(safe_read "Fehlende Komponente $component gefunden. Jetzt installieren? [J/n] " 10 "J")
     if [[ -z "$ans" || "$ans" =~ ^[JjYy]$ ]]; then
         return 0
     fi
@@ -244,43 +278,69 @@ map_number_to_method() {
         1) echo "system" ;;
         2) echo "venv" ;;
         3) echo "pipx" ;;
+        *) echo "venv" ;;  # Default fallback
     esac
 }
 
+# Verbesserte Poetry-Installation mit besserer Eingabe-Behandlung
 prompt_poetry_installation_method() {
     local choice
-    while true; do
-        cat <<'EOF'
-Poetry kann auf deinem System nicht direkt mit pip installiert werden.
-
-[1] Systemweite Installation mit --break-system-packages (nicht empfohlen)
-[2] Installation über venv (Standard)
-[3] Installation über pipx (empfohlen)
-[4] Abbrechen
-[q] Zurück zum Hauptmenü
-EOF
-        read -rp "Bitte wählen [1-4, q]: " choice
+    local attempts=0
+    local max_attempts=5
+    
+    while [[ $attempts -lt $max_attempts ]]; do
+        echo
+        echo "Poetry kann auf deinem System nicht direkt mit pip installiert werden."
+        echo
+        echo "[1] Systemweite Installation mit --break-system-packages (nicht empfohlen)"
+        echo "[2] Installation über venv (Standard)"
+        echo "[3] Installation über pipx (empfohlen)"
+        echo "[4] Abbrechen"
+        echo "[q] Zurück zum Hauptmenü"
+        echo
+        
+        # Sichere Eingabe mit Timeout
+        choice=$(safe_read "Bitte wählen [1-4, q]: " 30 "2")
+        
         case "$choice" in
             1|2|3)
                 POETRY_METHOD="$(map_number_to_method "$choice")"
                 export POETRY_METHOD
                 save_config_value "POETRY_METHOD" "$POETRY_METHOD"
-                break
+                log_info "Gewählte Methode: $POETRY_METHOD"
+                return 0
                 ;;
             4)
                 echo "🚫 Abgebrochen."
                 return 1
                 ;;
             q|Q)
-                return_to_main_menu
+                echo "→ Zurück zum Hauptmenü..."
                 return 130
                 ;;
+            "")
+                # Leere Eingabe - verwende Default
+                POETRY_METHOD="venv"
+                export POETRY_METHOD
+                save_config_value "POETRY_METHOD" "$POETRY_METHOD"
+                log_info "Verwende Standard-Methode: $POETRY_METHOD"
+                return 0
+                ;;
             *)
-                echo "⚠️ Ungültige Eingabe. Bitte 1-4 oder q wählen."
+                attempts=$((attempts + 1))
+                echo "⚠️ Ungültige Eingabe '$choice'. Bitte 1-4 oder q wählen."
+                if [[ $attempts -ge $max_attempts ]]; then
+                    echo "⚠️ Zu viele ungültige Eingaben. Verwende Standard-Methode: venv"
+                    POETRY_METHOD="venv"
+                    export POETRY_METHOD
+                    save_config_value "POETRY_METHOD" "$POETRY_METHOD"
+                    return 0
+                fi
                 ;;
         esac
     done
-    return 0
+    
+    return 1
 }
 
 install_poetry_interactive() {
@@ -288,12 +348,25 @@ install_poetry_interactive() {
     last=$(load_config_value "POETRY_METHOD" "venv")
     if [[ -n "$last" ]]; then
         echo -e "${CYAN}Hinweis:${NC} Du hast bei der letzten Installation '$last' als bevorzugte Methode für Poetry gewählt."
-    fi
-
-    if ! prompt_poetry_installation_method; then
-        ensure_config_file_exists
-        echo -e "→ Schritt übersprungen, keine Installation vorgenommen."
-        return 130
+        local use_last
+        use_last=$(safe_read "Möchtest du diese Methode erneut verwenden? [J/n] " 10 "J")
+        if [[ -z "$use_last" || "$use_last" =~ ^[JjYy]$ ]]; then
+            POETRY_METHOD="$last"
+            export POETRY_METHOD
+            log_info "Verwende gespeicherte Methode: $POETRY_METHOD"
+        else
+            if ! prompt_poetry_installation_method; then
+                ensure_config_file_exists
+                echo -e "→ Schritt übersprungen, keine Installation vorgenommen."
+                return 130
+            fi
+        fi
+    else
+        if ! prompt_poetry_installation_method; then
+            ensure_config_file_exists
+            echo -e "→ Schritt übersprungen, keine Installation vorgenommen."
+            return 130
+        fi
     fi
 
     case "$POETRY_METHOD" in
@@ -312,9 +385,18 @@ ensure_poetry() {
     ensure_pip || return 1
     check_poetry_available && return 0
 
-    save_config_value "POETRY_INSTALL_ATTEMPTED" "true"
-
-    try_install_poetry || true
+    # Prüfe ob AUTO_MODE aktiv ist
+    if [[ "$AUTO_MODE" == "true" ]]; then
+        log_info "Auto-Modus: Installiere Poetry mit Standard-Methode (venv)"
+        POETRY_METHOD="venv"
+        export POETRY_METHOD
+        save_config_value "POETRY_METHOD" "$POETRY_METHOD"
+        install_poetry_venv || return 1
+    else
+        save_config_value "POETRY_INSTALL_ATTEMPTED" "true"
+        try_install_poetry || return 130
+    fi
+    
     if ! check_poetry_available; then
         echo "[✗] Poetry konnte nicht installiert werden."
         return 130
@@ -337,17 +419,6 @@ ensure_python_tools() {
         fi
     done
 }
-
-export -f ask_install install_docker ensure_docker install_node ensure_node \
-          install_python ensure_python ensure_pip install_poetry_interactive \
-          prompt_poetry_installation_method map_number_to_method \
-          install_poetry_break_system install_poetry_venv install_poetry_pipx \
-          try_install_poetry check_poetry_available ensure_poetry \
-          install_python_tool ensure_python_tools \
-          require_or_install require_or_install_curl \
-          require_or_install_poetry require_or_install_nodejs \
-          ensure_git ensure_curl require_or_install_git \
-          require_sudo_if_needed prompt_and_install_if_missing
 
 # Install a list of system packages using the available package manager.
 # Supports apt for Debian/Ubuntu and brew for macOS.
@@ -400,5 +471,14 @@ install_packages() {
     return 0
 }
 
-export -f install_packages
-
+export -f ask_install install_docker ensure_docker install_node ensure_node \
+          install_python ensure_python ensure_pip install_poetry_interactive \
+          prompt_poetry_installation_method map_number_to_method \
+          install_poetry_break_system install_poetry_venv install_poetry_pipx \
+          try_install_poetry check_poetry_available ensure_poetry \
+          install_python_tool ensure_python_tools \
+          require_or_install require_or_install_curl \
+          require_or_install_poetry require_or_install_nodejs \
+          ensure_git ensure_curl require_or_install_git \
+          require_sudo_if_needed prompt_and_install_if_missing \
+          install_packages safe_read

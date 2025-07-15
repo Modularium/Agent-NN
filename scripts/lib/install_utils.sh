@@ -199,7 +199,7 @@ install_poetry_pipx() {
 
 install_poetry_interactive() {
     local choice method last
-    last=$(get_config_value "POETRY_INSTALL_METHOD" || true)
+    last=$(load_config_value "POETRY_METHOD" "venv")
     if [[ -n "$last" ]]; then
         echo -e "${CYAN}Hinweis:${NC} Du hast bei der letzten Installation '$last' als bevorzugte Methode für Poetry gewählt."
     fi
@@ -228,9 +228,13 @@ EOF
                 install_poetry_pipx && break || continue
                 ;;
             4)
-                return 1
+                ensure_config_file_exists
+                echo -e "→ Schritt übersprungen, keine Installation vorgenommen."
+                return 130
                 ;;
             q|exit|back)
+                ensure_config_file_exists
+                echo -e "→ Schritt übersprungen, keine Installation vorgenommen."
                 return 130
                 ;;
             *)
@@ -241,7 +245,7 @@ EOF
     done
     echo -e "→ Du hast Option [$choice] gewählt: Installation über $method"
     echo -e "→ Fortsetzung in 3 Sekunden ..."
-    set_config_value "POETRY_INSTALL_METHOD" "$method"
+    save_config_value "POETRY_METHOD" "$method"
     sleep 3
     return 0
 }

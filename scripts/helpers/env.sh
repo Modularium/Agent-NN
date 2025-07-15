@@ -11,6 +11,9 @@ fi
 # Source common.sh from the helpers directory
 source "$HELPERS_DIR/common.sh"
 
+# Global array to hold missing packages when running checks
+MISSING_PACKAGES=()
+
 check_env_file() {
     local env_file="${1:-.env}"
     local example_file="${2:-.env.example}"
@@ -81,21 +84,23 @@ check_system_dependencies() {
         log_err "  Ubuntu/Debian: sudo apt update && sudo apt install python3 nodejs npm git"
         log_err "  macOS: brew install python node npm git"
         log_err "  Windows: Verwende WSL oder installiere manuell"
+        echo "${missing_deps[@]}"
         return 1
     fi
-    
+
     log_ok "Alle System-Abhängigkeiten verfügbar"
     return 0
 }
 
 check_python_environment() {
     log_info "Prüfe Python-Umgebung..."
-    
+
     # Python-Version prüfen
     local python_version
+    local missing=()
     if python_version=$(python3 --version 2>/dev/null); then
         log_debug "Python gefunden: $python_version"
-        
+
         # Mindestversion prüfen (3.9+)
         local version_number
         version_number=$(echo "$python_version" | sed 's/Python //' | cut -d. -f1,2)
@@ -103,11 +108,11 @@ check_python_environment() {
             log_ok "Python $version_number ist kompatibel"
         else
             log_err "Python $version_number ist zu alt. Mindestens Python 3.9 erforderlich."
-            return 1
+            missing+=("python3")
         fi
     else
         log_err "Python 3 nicht gefunden"
-        return 1
+        missing+=("python3")
     fi
     
     # Poetry prüfen
@@ -119,20 +124,26 @@ check_python_environment() {
         log_err "Poetry nicht gefunden. Installation:"
         log_err "  curl -sSL https://install.python-poetry.org | python3 -"
         log_err "  Oder: pip install poetry"
+        missing+=("poetry")
+    fi
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        echo "${missing[@]}"
         return 1
     fi
-    
+
     return 0
 }
 
 check_node_environment() {
     log_info "Prüfe Node.js-Umgebung..."
-    
+
     # Node.js Version prüfen
     local node_version
+    local missing=()
     if node_version=$(node --version 2>/dev/null); then
         log_debug "Node.js gefunden: $node_version"
-        
+
         # Mindestversion prüfen (18+)
         local major_version
         major_version=$(echo "$node_version" | sed 's/v//' | cut -d. -f1)
@@ -140,13 +151,13 @@ check_node_environment() {
             log_ok "Node.js $node_version ist kompatibel"
         else
             log_err "Node.js $node_version ist zu alt. Mindestens Node.js 18 erforderlich."
-            return 1
+            missing+=("nodejs")
         fi
     else
         log_err "Node.js nicht gefunden"
-        return 1
+        missing+=("nodejs")
     fi
-    
+
     # npm prüfen
     if check_command npm "npm"; then
         local npm_version
@@ -154,9 +165,14 @@ check_node_environment() {
         log_ok "npm verfügbar (v$npm_version)"
     else
         log_err "npm nicht gefunden"
+        missing+=("npm")
+    fi
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        echo "${missing[@]}"
         return 1
     fi
-    
+
     return 0
 }
 
@@ -192,7 +208,7 @@ check_ports() {
 check_environment() {
     log_info "Führe vollständige Umgebungsprüfung durch..."
     ensure_utf8
-    
+
     local checks=(
         check_system_dependencies
         check_python_environment
@@ -200,20 +216,32 @@ check_environment() {
         check_env_file
         check_ports
     )
-    
+
     local failed_checks=()
-    
+    local missing=()
+
     for check in "${checks[@]}"; do
-        if ! "$check"; then
+        local out=""
+        if out=$("$check" 2>&1); then
+            :
+        else
             failed_checks+=("$check")
+            [[ -n "$out" ]] && missing+=( $out )
         fi
     done
-    
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        MISSING_PACKAGES=($(printf "%s\n" "${missing[@]}" | sort -u))
+    else
+        MISSING_PACKAGES=()
+    fi
+
     if [[ ${#failed_checks[@]} -gt 0 ]]; then
         log_err "Umgebungsprüfung fehlgeschlagen: ${failed_checks[*]}"
+        echo "${MISSING_PACKAGES[@]}"
         return 1
     fi
-    
+
     log_ok "Umgebungsprüfung erfolgreich abgeschlossen"
     return 0
 }

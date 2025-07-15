@@ -4,6 +4,7 @@ This directory contains utility scripts for setting up and managing the system.
 New helper scripts simplify installation and troubleshooting:
 
 - `install_dependencies.sh` installs system packages for different presets.
+- `install/install_packages.sh` installs individual packages on demand.
 - `install_dev_env.sh` wraps the above for a full developer setup.
 - `repair_env.sh` checks the environment and installs missing tools.
 - `check_integrity.sh` verifies that important files exist.

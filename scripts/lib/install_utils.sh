@@ -119,3 +119,55 @@ ensure_python_tools() {
 
 export -f ask_install install_docker ensure_docker install_node ensure_node install_python ensure_python install_poetry ensure_poetry install_python_tool ensure_python_tools
 
+# Install a list of system packages using the available package manager.
+# Supports apt for Debian/Ubuntu and brew for macOS.
+install_packages() {
+    local packages=("$@")
+    if [[ ${#packages[@]} -eq 0 ]]; then
+        return 0
+    fi
+
+    local os=""
+    if [[ -f /etc/os-release ]]; then
+        . /etc/os-release
+        os="$ID"
+    else
+        os="$(uname -s | tr 'A-Z' 'a-z')"
+    fi
+
+    local pkg_list=()
+    for pkg in "${packages[@]}"; do
+        case "$pkg" in
+            poetry)
+                if ! command -v poetry >/dev/null; then
+                    log_info "Installiere Poetry..."
+                    curl -sSL https://install.python-poetry.org | $SUDO_CMD python3 - >/dev/null
+                fi
+                ;;
+            *)
+                pkg_list+=("$pkg")
+                ;;
+        esac
+    done
+
+    if [[ ${#pkg_list[@]} -gt 0 ]]; then
+        case "$os" in
+            ubuntu|debian)
+                $SUDO_CMD apt-get update -y >/dev/null
+                $SUDO_CMD apt-get install -y "${pkg_list[@]}" >/dev/null
+                ;;
+            darwin)
+                brew install "${pkg_list[@]}"
+                ;;
+            *)
+                log_err "Betriebssystem $os wird nicht unterstützt"
+                return 1
+                ;;
+        esac
+    fi
+
+    return 0
+}
+
+export -f install_packages
+

@@ -343,9 +343,27 @@ main() {
     
     # Umgebungsprüfung
     log_info "=== UMGEBUNGSPRÜFUNG ==="
-    if ! check_environment; then
-        log_err "Umgebungsprüfung fehlgeschlagen. Setup abgebrochen."
-        exit 1
+    if ! mapfile -t missing_pkgs < <(check_environment); then
+        if [[ ${#missing_pkgs[@]} -gt 0 ]]; then
+            log_warn "Fehlende Pakete: ${missing_pkgs[*]}"
+            if [[ "$AUTO_MODE" == "true" ]]; then
+                "$SCRIPT_DIR/install/install_packages.sh" ${SUDO_CMD:+--with-sudo} --auto-install "${missing_pkgs[@]}" || exit 1
+            else
+                for pkg in "${missing_pkgs[@]}"; do
+                    read -rp "Fehlt $pkg. Jetzt installieren? [J/n] " ans
+                    if [[ -z "$ans" || "$ans" =~ ^[JjYy]$ ]]; then
+                        "$SCRIPT_DIR/install/install_packages.sh" ${SUDO_CMD:+--with-sudo} "$pkg" || exit 1
+                    fi
+                done
+            fi
+            mapfile -t _ < <(check_environment) || {
+                log_err "Umgebungsprüfung fehlgeschlagen. Setup abgebrochen."
+                exit 1
+            }
+        else
+            log_err "Umgebungsprüfung fehlgeschlagen. Setup abgebrochen."
+            exit 1
+        fi
     fi
 
     # Fehlende Komponenten installieren

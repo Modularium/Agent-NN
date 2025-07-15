@@ -80,6 +80,7 @@ Das Setup-System erkennt automatisch:
 
 Agent-NN bietet ein interaktives Setup-Menü, mit dem du das System vollständig oder modular einrichten kannst – inklusive Abhängigkeitsprüfung, automatischer Paketinstallation und optionaler `sudo`-Verwendung.
 Das Setup erkennt fehlende Rechte und Pakete automatisch und fragt nach Bestätigung zur Installation.
+Bei wiederholten Setups merkt sich Agent-NN deine bisherigen Entscheidungen, z.\u00A0B. ob du Poetry mit `pipx`, `venv` oder systemweit installieren möchtest.
 
 ### 🔃 Schnellstart (empfohlen)
 

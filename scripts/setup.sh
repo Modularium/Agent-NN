@@ -232,6 +232,9 @@ run_step() {
         if [[ $status -eq 0 ]]; then
             break
         fi
+        if [[ $status -eq 130 ]]; then
+            return 130
+        fi
         echo "❌ Installation fehlgeschlagen."
         echo "[1] Wiederholen"
         echo "[2] Überspringen"
@@ -275,6 +278,13 @@ print_next_steps() {
     echo
     echo "🚀 Agent-NN ist bereit!"
     echo
+}
+
+return_to_main_menu() {
+    local delay="${1:-3}"
+    echo
+    echo -e "${CYAN}→ Zurück zum Hauptmenü in ${delay} Sekunden (Ctrl+C zum Abbrechen) ...${NC}"
+    read -t "$delay" -n 1 _ || true
 }
 
 clean_environment() {
@@ -329,6 +339,7 @@ main() {
     ensure_utf8
     setup_logging
     load_config || true
+    load_project_config || true
     
     # Argumente parsen
     parse_setup_args "${original_args[@]}"
@@ -383,11 +394,11 @@ main() {
     fi
 
     # Fehlende Komponenten installieren
-    run_step "Prüfe Docker" ensure_docker
-    run_step "Prüfe Node.js" ensure_node
-    run_step "Prüfe Python" ensure_python
-    run_step "Prüfe Poetry" ensure_poetry
-    run_step "Prüfe Tools" ensure_python_tools
+    run_step "Prüfe Docker" ensure_docker; [[ $? -eq 130 ]] && { RUN_MODE=""; return_to_main_menu; continue; }
+    run_step "Prüfe Node.js" ensure_node; [[ $? -eq 130 ]] && { RUN_MODE=""; return_to_main_menu; continue; }
+    run_step "Prüfe Python" ensure_python; [[ $? -eq 130 ]] && { RUN_MODE=""; return_to_main_menu; continue; }
+    run_step "Prüfe Poetry" ensure_poetry; [[ $? -eq 130 ]] && { RUN_MODE=""; return_to_main_menu; continue; }
+    run_step "Prüfe Tools" ensure_python_tools; [[ $? -eq 130 ]] && { RUN_MODE=""; return_to_main_menu; continue; }
     
     # Docker-Prüfung
     log_info "=== DOCKER-PRÜFUNG ==="
@@ -477,6 +488,10 @@ main() {
             print_next_steps
             ;;
     esac
+
+    if [[ $arg_count -eq 0 ]]; then
+        return_to_main_menu 3
+    fi
 
         if [[ $arg_count -gt 0 ]]; then
             break

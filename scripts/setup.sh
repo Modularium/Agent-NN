@@ -350,6 +350,15 @@ main() {
     load_config || true
     load_project_config || true
     ensure_config_file_exists
+
+    # Ensure POETRY_METHOD is initialized
+    POETRY_METHOD=$(load_config_value "POETRY_METHOD" "venv")
+    if [ -z "$POETRY_METHOD" ]; then
+        echo "\U1F527 Kein gespeicherter Wert für POETRY_METHOD – verwende Default: venv"
+        POETRY_METHOD="venv"
+        save_config_value "POETRY_METHOD" "$POETRY_METHOD"
+    fi
+    export POETRY_METHOD
     
     # Argumente parsen
     parse_setup_args "${original_args[@]}"

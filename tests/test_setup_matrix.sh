@@ -31,8 +31,11 @@ echo "error: externally-managed-environment" >&2
 exit 1
 EOF
 chmod +x "$tmpdir/pip"
-printf "2\n" | PATH="$tmpdir" scripts/setup.sh --check 2>&1 | grep -q "Installation über venv" && echo "poetry menu" || true
-grep -q 'POETRY_METHOD="venv"' "$HOME/.agentnn_config" && echo "config stored" || true
+output=$(printf "2\n" | PATH="$tmpdir" scripts/setup.sh --check 2>&1)
+echo "$output" | grep -q "Installation über venv" && echo "poetry menu" || true
+echo "$output" | grep -q "Poetry konnte nicht installiert werden" && echo "handled" || true
+echo "$output" | grep -q "Zurück zum Hauptmenü" && echo "main menu" || true
+grep -q 'POETRY_INSTALL_ATTEMPTED="true"' "$HOME/.agentnn_config" && echo "attempt logged" || true
 rm -rf "$tmpdir"
 
 echo "setup matrix executed"

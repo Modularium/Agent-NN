@@ -356,6 +356,7 @@ main() {
 
     while true; do
         if [[ $arg_count -eq 0 ]]; then
+            echo "📦 Gewählte Installationsmethode: ${POETRY_METHOD:-nicht gesetzt}"
             interactive_menu
             [[ "$RUN_MODE" == "exit" ]] && break
         fi
@@ -404,11 +405,11 @@ main() {
     fi
 
     # Fehlende Komponenten installieren
-    run_step "Prüfe Docker" ensure_docker; [[ $? -eq 130 ]] && { RUN_MODE=""; return_to_main_menu; continue; }
-    run_step "Prüfe Node.js" ensure_node; [[ $? -eq 130 ]] && { RUN_MODE=""; return_to_main_menu; continue; }
-    run_step "Prüfe Python" ensure_python; [[ $? -eq 130 ]] && { RUN_MODE=""; return_to_main_menu; continue; }
-    run_step "Prüfe Poetry" ensure_poetry; [[ $? -eq 130 ]] && { RUN_MODE=""; return_to_main_menu; continue; }
-    run_step "Prüfe Tools" ensure_python_tools; [[ $? -eq 130 ]] && { RUN_MODE=""; return_to_main_menu; continue; }
+    run_step "Prüfe Docker" ensure_docker; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
+    run_step "Prüfe Node.js" ensure_node; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
+    run_step "Prüfe Python" ensure_python; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
+    run_step "Prüfe Poetry" ensure_poetry; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
+    run_step "Prüfe Tools" ensure_python_tools; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
     
     # Docker-Prüfung
     log_info "=== DOCKER-PRÜFUNG ==="

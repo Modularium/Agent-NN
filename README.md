@@ -28,6 +28,7 @@ Hinweise:
 - Lokal wird Python **3.10 oder neuer** benötigt.
 - Falls Poetry nicht systemweit installierbar ist, hilft dir das Setup,
   alternative Installationspfade wie `pipx` oder `venv` zu wählen.
+- \u26a0\ufe0f Auf Systemen mit `PEP 668`-Fehlern (z.\u202fB. Ubuntu 24.04) schl\u00e4gt die Poetry-Installation m\u00f6glicherweise fehl. W\u00e4hle in diesem Fall `pipx` oder `venv` oder installiere manuell. Das Setup bleibt interaktiv.
 - Die Tools `ruff`, `mypy` und `pytest` sind optional, werden aber empfohlen.
 
 ## 📋 Systemvoraussetzungen

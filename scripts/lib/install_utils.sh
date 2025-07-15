@@ -197,6 +197,30 @@ install_poetry_pipx() {
     $SUDO_CMD apt install pipx -y >/dev/null && pipx install poetry >/dev/null
 }
 
+# Try installing Poetry based on chosen method
+try_install_poetry() {
+    case "$POETRY_METHOD" in
+        system) install_poetry_break_system ;;
+        venv)   install_poetry_venv ;;
+        pipx)   install_poetry_pipx ;;
+        *)      install_poetry_interactive ;;
+    esac
+}
+
+# Check if Poetry is available or in .venv/bin
+check_poetry_available() {
+    if command -v poetry >/dev/null; then
+        return 0
+    fi
+    local local_poetry="$REPO_ROOT/.venv/bin/poetry"
+    if [[ -x "$local_poetry" ]]; then
+        echo "→ Lokales Poetry gefunden: .venv/bin/poetry"
+        export PATH="$REPO_ROOT/.venv/bin:$PATH"
+        return 0
+    fi
+    return 1
+}
+
 install_poetry_interactive() {
     local choice method last
     last=$(load_config_value "POETRY_METHOD" "venv")
@@ -252,8 +276,16 @@ EOF
 
 ensure_poetry() {
     ensure_pip || return 1
-    command -v poetry >/dev/null && return 0
-    install_poetry_interactive
+    check_poetry_available && return 0
+
+    save_config_value "POETRY_INSTALL_ATTEMPTED" "true"
+
+    try_install_poetry || true
+    if ! check_poetry_available; then
+        echo "[✗] Poetry konnte nicht installiert werden."
+        return 130
+    fi
+    return 0
 }
 
 install_python_tool() {
@@ -275,7 +307,8 @@ ensure_python_tools() {
 export -f ask_install install_docker ensure_docker install_node ensure_node \
           install_python ensure_python ensure_pip install_poetry_interactive \
           install_poetry_break_system install_poetry_venv install_poetry_pipx \
-          ensure_poetry install_python_tool ensure_python_tools \
+          try_install_poetry check_poetry_available ensure_poetry \
+          install_python_tool ensure_python_tools \
           require_or_install require_or_install_curl \
           require_or_install_poetry require_or_install_nodejs \
           ensure_git ensure_curl require_or_install_git \

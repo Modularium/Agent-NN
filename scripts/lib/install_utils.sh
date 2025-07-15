@@ -10,6 +10,7 @@ __install_utils_init() {
 __install_utils_init
 
 AUTO_MODE="${AUTO_MODE:-false}"
+SUDO_CMD="${SUDO_CMD:-}"
 
 ask_install() {
     local component="$1"
@@ -25,7 +26,7 @@ ask_install() {
 
 install_docker() {
     log_info "Installiere Docker..."
-    curl -fsSL https://get.docker.com | sh >/dev/null
+    curl -fsSL https://get.docker.com | $SUDO_CMD bash >/dev/null
 }
 
 ensure_docker() {
@@ -45,7 +46,7 @@ ensure_docker() {
 
 install_node() {
     log_info "Installiere Node.js..."
-    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - >/dev/null && apt-get install -y nodejs >/dev/null
+    curl -fsSL https://deb.nodesource.com/setup_18.x | $SUDO_CMD bash - >/dev/null && $SUDO_CMD apt-get install -y nodejs >/dev/null
 }
 
 ensure_node() {
@@ -56,13 +57,14 @@ ensure_node() {
             return 1
         fi
     fi
-    command -v npm &>/dev/null || apt-get install -y npm >/dev/null
+    command -v npm &>/dev/null || $SUDO_CMD apt-get install -y npm >/dev/null
     return 0
 }
 
 install_python() {
     log_info "Installiere Python 3.10..."
-    apt-get update -y >/dev/null && apt-get install -y python3.10 python3.10-venv python3.10-distutils >/dev/null
+    $SUDO_CMD apt-get update -y >/dev/null && \
+    $SUDO_CMD apt-get install -y python3.10 python3.10-venv python3.10-distutils >/dev/null
 }
 
 ensure_python() {

@@ -1,6 +1,7 @@
 #!/bin/bash
 # -*- coding: utf-8 -*-
 # Agent-NN Setup Script - Vollständige Installation und Konfiguration
+# Verbesserte Version mit MCP Integration und robuster Fehlerbehandlung
 
 set -euo pipefail
 
@@ -30,6 +31,7 @@ SCRIPT_NAME="$(basename "$0")"
 LOG_FILE="$REPO_ROOT/logs/setup.log"
 BUILD_FRONTEND=true
 START_DOCKER=true
+START_MCP=false
 VERBOSE=false
 INSTALL_HEAVY=false
 WITH_DOCKER=false
@@ -53,6 +55,7 @@ OPTIONS:
     -v, --verbose           Ausführliche Ausgabe aktivieren
     --no-frontend           Frontend-Build überspringen
     --skip-docker           Docker-Start überspringen
+    --with-mcp              MCP Services starten
     --check-only            Nur Umgebungsprüfung durchführen
     --check                 Nur Validierung ausführen und beenden
     --install-heavy         Zusätzliche Heavy-Dependencies installieren
@@ -64,7 +67,7 @@ OPTIONS:
     --no-docker             Setup ohne Docker-Schritte
     --exit-on-fail          Bei Fehlern sofort abbrechen
     --recover               Fehlgeschlagenes Setup wiederaufnehmen
-    --preset <name>         Vordefinierte Einstellungen laden (dev|ci|minimal)
+    --preset <name>         Vordefinierte Einstellungen laden (dev|ci|minimal|mcp)
     --clean                 Entwicklungsumgebung zurücksetzen
     --timeout <seconds>     Timeout für Benutzer-Eingaben (default: 300)
 
@@ -72,10 +75,9 @@ BEISPIELE:
     $SCRIPT_NAME                    # Vollständiges Setup
     $SCRIPT_NAME --check-only       # Nur Umgebungsprüfung
     $SCRIPT_NAME --skip-docker      # Setup ohne Docker-Start
-    $SCRIPT_NAME --verbose          # Mit ausführlicher Ausgabe
-    $SCRIPT_NAME --install-heavy    # Heavy-Dependencies installieren
+    $SCRIPT_NAME --with-mcp         # Setup mit MCP Services
+    $SCRIPT_NAME --preset mcp       # MCP-fokussiertes Setup
     $SCRIPT_NAME --auto-install    # Keine Rückfragen bei Abhängigkeitsinstallation
-    $SCRIPT_NAME --preset dev       # Preset mit Docker und Frontend
 
 VORAUSSETZUNGEN:
     - Python 3.9+
@@ -87,370 +89,308 @@ VORAUSSETZUNGEN:
 EOF
 }
 
-# Sichere Eingabe-Funktion mit Timeout
-safe_input() {
-    local prompt="$1"
-    local timeout="${2:-$SETUP_TIMEOUT}"
-    local default="${3:-}"
+# Verbesserte interaktive Menü-Funktion
+interactive_menu() {
+    local options=(
+        "💡 Schnellstart (Vollständige Installation)"
+        "🧱 Systemabhängigkeiten (Docker, Node.js, Python)"
+        "🐍 Python & Poetry (Nur Python-Umgebung)"
+        "🎨 Frontend bauen (React-Frontend)"
+        "🐳 Docker-Services (Standard Services starten)"
+        "🔗 MCP-Services (Model Context Protocol)"
+        "🧪 Tests & CI (Testlauf)"
+        "🔁 Reparatur (Umgebung reparieren)"
+        "📊 Status anzeigen (Systemstatus)"
+        "⚙️ Konfiguration anzeigen"
+        "🧹 Umgebung bereinigen"
+        "❌ Beenden"
+    )
     
-    if [[ "$AUTO_MODE" == "true" ]]; then
-        echo "$default"
-        return 0
-    fi
+    local count=${#options[@]}
+    local choice=""
+    local attempts=0
+    local max_attempts=3
     
-    local input=""
-    if command -v timeout >/dev/null; then
-        if input=$(timeout "$timeout" bash -c "read -rp '$prompt' input; echo \$input" 2>/dev/null); then
-            echo "${input:-$default}"
+    while [[ $attempts -lt $max_attempts ]]; do
+        echo "╔══════════════════════════════════════════════════════════════════════════════╗"
+        echo "║                              Agent-NN Setup                                 ║"
+        echo "╠══════════════════════════════════════════════════════════════════════════════╣"
+        echo "║  Wähle eine Aktion:                                                         ║"
+        echo "╠══════════════════════════════════════════════════════════════════════════════╣"
+        
+        for i in "${!options[@]}"; do
+            printf "║  [%2d] %-69s ║\n" "$((i + 1))" "${options[$i]}"
+        done
+        
+        echo "╚══════════════════════════════════════════════════════════════════════════════╝"
+        echo
+        
+        # Prüfe ob whiptail verfügbar ist
+        if command -v whiptail >/dev/null 2>&1 && [[ -t 0 ]] && [[ -t 1 ]]; then
+            local menu_items=()
+            for i in "${!options[@]}"; do
+                menu_items+=("$((i + 1))" "${options[$i]}")
+            done
+            
+            if choice=$(whiptail --title "Agent-NN Setup" --menu "Aktion wählen:" 20 78 12 "${menu_items[@]}" 3>&1 1>&2 2>&3); then
+                case $choice in
+                    1) RUN_MODE="full" ;;
+                    2) RUN_MODE="system" ;;
+                    3) RUN_MODE="python" ;;
+                    4) RUN_MODE="frontend" ;;
+                    5) RUN_MODE="docker" ;;
+                    6) RUN_MODE="mcp" ;;
+                    7) RUN_MODE="test" ;;
+                    8) RUN_MODE="repair" ;;
+                    9) RUN_MODE="status" ;;
+                    10) RUN_MODE="show_config" ;;
+                    11) RUN_MODE="clean" ;;
+                    12) RUN_MODE="exit" ;;
+                    *) RUN_MODE="exit" ;;
+                esac
+                return 0
+            else
+                RUN_MODE="exit"
+                return 0
+            fi
         else
-            echo "$default"
+            # Fallback zu normaler Eingabe
+            choice=$(safe_menu_input "Auswahl [1-${count}]: " 30 "1")
+            
+            case $choice in
+                1) RUN_MODE="full"; break ;;
+                2) RUN_MODE="system"; break ;;
+                3) RUN_MODE="python"; break ;;
+                4) RUN_MODE="frontend"; break ;;
+                5) RUN_MODE="docker"; break ;;
+                6) RUN_MODE="mcp"; break ;;
+                7) RUN_MODE="test"; break ;;
+                8) RUN_MODE="repair"; break ;;
+                9) RUN_MODE="status"; break ;;
+                10) RUN_MODE="show_config"; break ;;
+                11) RUN_MODE="clean"; break ;;
+                12) RUN_MODE="exit"; break ;;
+                ""|q|Q) RUN_MODE="exit"; break ;;
+                *)
+                    attempts=$((attempts + 1))
+                    log_warn "Ungültige Auswahl: $choice"
+                    if [[ $attempts -ge $max_attempts ]]; then
+                        log_warn "Zu viele ungültige Eingaben. Verwende Schnellstart."
+                        RUN_MODE="full"
+                        break
+                    fi
+                    echo "Bitte wähle eine Zahl zwischen 1 und $count."
+                    echo "Drücke Enter für Schnellstart oder q zum Beenden."
+                    sleep 2
+                    ;;
+            esac
         fi
-    else
-        read -rp "$prompt" input 2>/dev/null || input="$default"
-        echo "${input:-$default}"
+    done
+    
+    if [[ -z "$RUN_MODE" ]]; then
+        RUN_MODE="full"
     fi
+    
+    log_info "Gewählte Aktion: $RUN_MODE"
 }
 
-# Fehlerbehandlung mit Timeout
-handle_step_error() {
-    local step_name="$1"
-    local error_code="$2"
-    local retry_count="${3:-0}"
-    local max_retries=3
+# Verbesserte Poetry-Installation mit System-Paket-Fix
+install_poetry_fixed() {
+    log_info "Installiere Poetry mit verbesserter Methode..."
     
-    if [[ "$EXIT_ON_FAIL" == "true" ]]; then
-        log_err "Schritt '$step_name' fehlgeschlagen. Beende Setup."
-        exit "$error_code"
-    fi
-    
-    if [[ "$AUTO_MODE" == "true" ]]; then
-        log_warn "Schritt '$step_name' fehlgeschlagen. Überspringe im Auto-Modus."
-        return 0
-    fi
-    
-    echo "❌ Schritt '$step_name' fehlgeschlagen."
-    
-    if [[ $retry_count -lt $max_retries ]]; then
-        echo "[1] Wiederholen ($((retry_count + 1))/$max_retries)"
-        echo "[2] Überspringen"
-        echo "[3] Abbrechen"
+    # Prüfe und installiere python3-venv falls nötig
+    if ! python3 -m venv --help &>/dev/null; then
+        log_info "python3-venv fehlt - installiere System-Paket..."
+        require_sudo_if_needed || return 1
         
-        local choice
-        choice=$(safe_input "Auswahl [1-3]: " 30 "2")
-        
-        case "$choice" in
-            1) return 2 ;;  # Retry
-            2) return 0 ;;  # Skip
-            3|*) exit 1 ;;  # Exit
-        esac
-    else
-        echo "Maximale Anzahl von Wiederholungen erreicht."
-        echo "[1] Überspringen"
-        echo "[2] Abbrechen"
-        
-        local choice
-        choice=$(safe_input "Auswahl [1-2]: " 30 "1")
-        
-        case "$choice" in
-            1) return 0 ;;  # Skip
-            2|*) exit 1 ;;  # Exit
-        esac
-    fi
-}
-
-setup_logging() {
-    mkdir -p "$(dirname "$LOG_FILE")"
-    LOG_ERROR_FILE="$(dirname "$LOG_FILE")/setup_errors.log"
-    touch "$LOG_ERROR_FILE"
-    
-    if [[ "$VERBOSE" == "true" ]]; then
-        exec 1> >(tee -a "$LOG_FILE")
-        exec 2> >(tee -a "$LOG_FILE" >&2)
-    fi
-}
-
-print_banner() {
-    cat << 'EOF'
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                                                                              ║
-║   █████╗  ██████╗ ███████╗███╗   ██╗████████╗      ███╗   ██╗███╗   ██╗     ║
-║  ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝      ████╗  ██║████╗  ██║     ║
-║  ███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   █████╗██╔██╗ ██║██╔██╗ ██║     ║
-║  ██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ╚════╝██║╚██╗██║██║╚██╗██║     ║
-║  ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║         ██║ ╚████║██║ ╚████║     ║
-║  ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝         ╚═╝  ╚═══╝╚═╝  ╚═══╝     ║
-║                                                                              ║
-║                    Multi-Agent System Setup Script                          ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-EOF
-    echo
-    log_info "Agent-NN Setup gestartet ($(date))"
-    log_info "Repository: $REPO_ROOT"
-    log_info "Log-Datei: $LOG_FILE"
-    log_info "Timeout: ${SETUP_TIMEOUT}s"
-    if [[ "$AUTO_MODE" == "true" ]]; then
-        log_info "Auto-Modus: Aktiv"
-    fi
-    echo
-}
-
-install_python_dependencies() {
-    log_info "Installiere Python-Abhängigkeiten mit Poetry..."
-
-    if [[ "$RECOVERY_MODE" == "true" && -d "$REPO_ROOT/.venv" ]]; then
-        log_info "Python-Abhängigkeiten bereits installiert - überspringe"
-        return 0
-    fi
-    
-    cd "$REPO_ROOT" || {
-        log_err "Kann nicht ins Repository-Verzeichnis wechseln"
-        return 1
-    }
-    
-    # Poetry-Konfiguration optimieren
-    poetry config virtualenvs.in-project true 2>/dev/null || true
-    
-    # Dependencies installieren
-    if timeout "$SETUP_TIMEOUT" poetry install; then
-        log_ok "Python-Abhängigkeiten installiert"
-    else
-        log_error "Fehler bei der Installation der Python-Abhängigkeiten"
-        log_err "Versuche: poetry install --no-dev"
-        if timeout "$SETUP_TIMEOUT" poetry install --no-dev; then
-            log_warn "Python-Abhängigkeiten ohne Dev-Dependencies installiert"
+        if command -v apt-get >/dev/null; then
+            $SUDO_CMD apt-get update -y >/dev/null 2>&1
+            $SUDO_CMD apt-get install -y python3-venv python3-pip >/dev/null 2>&1
+        elif command -v yum >/dev/null; then
+            $SUDO_CMD yum install -y python3-venv python3-pip >/dev/null 2>&1
+        elif command -v dnf >/dev/null; then
+            $SUDO_CMD dnf install -y python3-venv python3-pip >/dev/null 2>&1
         else
+            log_err "Kann python3-venv nicht installieren - unbekannter Paketmanager"
             return 1
         fi
     fi
+    
+    # Versuche Poetry über verschiedene Methoden zu installieren
+    case "${POETRY_METHOD:-venv}" in
+        system)
+            python3 -m pip install --break-system-packages poetry >/dev/null 2>&1
+            ;;
+        venv)
+            if python3 -m venv "$HOME/.agentnn_venv"; then
+                source "$HOME/.agentnn_venv/bin/activate"
+                pip install poetry >/dev/null 2>&1
+                
+                # Füge zu .bashrc hinzu falls nicht vorhanden
+                if ! grep -q "agentnn_venv" "$HOME/.bashrc" 2>/dev/null; then
+                    echo "# Agent-NN Poetry venv" >> "$HOME/.bashrc"
+                    echo "source $HOME/.agentnn_venv/bin/activate" >> "$HOME/.bashrc"
+                fi
+            else
+                return 1
+            fi
+            ;;
+        pipx)
+            if ! command -v pipx >/dev/null; then
+                require_sudo_if_needed || return 1
+                $SUDO_CMD apt-get install -y pipx >/dev/null 2>&1
+            fi
+            pipx install poetry >/dev/null 2>&1
+            ;;
+    esac
+}
 
-    if ! poetry show langchain >/dev/null 2>&1; then
-        log_warn "langchain nicht installiert – ggf. '--preset dev' nutzen"
-    fi
-    if [[ "$PRESET" == "minimal" ]]; then
-        log_warn "Preset 'minimal' installiert keine Langchain- oder CLI-Abhängigkeiten"
-    fi
-
-    # CLI-Test mit Timeout
-    if timeout 10 poetry run agentnn --help &>/dev/null; then
-        log_ok "CLI verfügbar: poetry run agentnn"
-    else
-        log_warn "CLI-Test fehlgeschlagen (möglicherweise normale Dev-Installation)"
+# Verbesserte ensure_poetry Funktion
+ensure_poetry_improved() {
+    ensure_pip || return 1
+    
+    # Prüfe ob Poetry bereits verfügbar ist
+    if check_poetry_available; then 
+        return 0
     fi
     
-    if [[ "$INSTALL_HEAVY" == "true" ]]; then
-        timeout "$SETUP_TIMEOUT" pip install torch==2.2.0+cpu -f https://download.pytorch.org/whl/torch_stable.html \
-            || echo "⚠️ torch konnte nicht installiert werden – Tests evtl. deaktiviert"
+    # Im Auto-Modus: Verwende verbesserte Installation
+    if [[ "$AUTO_MODE" == "true" ]]; then
+        log_info "Auto-Modus: Installiere Poetry mit verbesserter Methode..."
+        POETRY_METHOD="venv"
+        export POETRY_METHOD
+        save_config_value "POETRY_METHOD" "$POETRY_METHOD"
+        install_poetry_fixed || return 1
+    else
+        # Interaktive Installation
+        save_config_value "POETRY_INSTALL_ATTEMPTED" "true"
+        install_poetry_interactive || return 130
     fi
-
-    update_status "python" "ok" "$REPO_ROOT/.agentnn/status.json"
+    
+    if ! check_poetry_available; then
+        echo "[✗] Poetry konnte nicht installiert werden."
+        return 130
+    fi
     return 0
 }
 
-verify_installation() {
-    log_info "Verifiziere Installation..."
+# MCP Services Funktion
+start_mcp_services() {
+    log_info "Starte MCP Services..."
     
-    local verification_steps=(
-        "check_env_file"
-        "check_docker"
+    local mcp_compose="$REPO_ROOT/mcp/docker-compose.yml"
+    
+    if [[ ! -f "$mcp_compose" ]]; then
+        log_err "MCP docker-compose.yml nicht gefunden: $mcp_compose"
+        return 1
+    fi
+    
+    cd "$REPO_ROOT" || return 1
+    
+    if docker_compose_up "$mcp_compose" "--build"; then
+        log_ok "MCP Services gestartet"
+        
+        # Kurze Wartezeit für Service-Start
+        sleep 5
+        
+        # MCP Health-Checks
+        local mcp_urls=(
+            "http://localhost:8001/health:MCP Dispatcher"
+            "http://localhost:8002/health:MCP Registry"
+            "http://localhost:8003/health:MCP Session Manager"
+        )
+        
+        for url_desc in "${mcp_urls[@]}"; do
+            local url="${url_desc%:*}"
+            local desc="${url_desc#*:}"
+            
+            if curl -f -s "$url" &>/dev/null; then
+                log_ok "$desc erreichbar ($url)"
+            else
+                log_warn "$desc nicht erreichbar ($url)"
+            fi
+        done
+        
+        update_status "mcp" "ok" "$REPO_ROOT/.agentnn/status.json"
+        return 0
+    else
+        log_err "Fehler beim Starten der MCP Services"
+        return 1
+    fi
+}
+
+# Erweiterte Preset-Anwendung
+apply_preset_improved() {
+    local preset="$1"
+    validate_preset "$preset" || return 1
+    PRESET="$preset"
+    case "$preset" in
+        dev)
+            RUN_MODE="full"
+            BUILD_FRONTEND=true
+            START_DOCKER=true
+            START_MCP=false
+            ;;
+        ci)
+            RUN_MODE="test"
+            BUILD_FRONTEND=false
+            START_DOCKER=false
+            START_MCP=false
+            ;;
+        minimal)
+            RUN_MODE="python"
+            BUILD_FRONTEND=false
+            START_DOCKER=false
+            START_MCP=false
+            ;;
+        mcp)
+            RUN_MODE="full"
+            BUILD_FRONTEND=true
+            START_DOCKER=true
+            START_MCP=true
+            ;;
+    esac
+}
+
+# Verbesserte Docker-Compose Erkennung
+find_docker_compose_improved() {
+    local search_paths=(
+        "$REPO_ROOT/docker-compose.yml"
+        "$REPO_ROOT/docker-compose.yaml"
+        "$REPO_ROOT/deploy/docker-compose.yml"
+        "$REPO_ROOT/deploy/docker-compose.yaml"
+        "$REPO_ROOT/docker/docker-compose.yml"
+        "$REPO_ROOT/docker/docker-compose.yaml"
     )
     
-    if [[ "$BUILD_FRONTEND" == "true" ]]; then
-        verification_steps+=("check_frontend_build")
-    fi
-    
-    local failed_verifications=()
-    
-    for step in "${verification_steps[@]}"; do
-        case "$step" in
-            check_frontend_build)
-                if [[ ! -f "$REPO_ROOT/frontend/dist/index.html" ]]; then
-                    failed_verifications+=("Frontend-Build")
-                fi
-                ;;
-            check_env_file)
-                if [[ ! -f "$REPO_ROOT/.env" ]]; then
-                    failed_verifications+=("Umgebungskonfiguration")
-                fi
-                ;;
-            check_docker)
-                if [[ "$START_DOCKER" == "true" ]] && ! timeout 10 docker ps &>/dev/null; then
-                    failed_verifications+=("Docker-Services")
-                fi
-                ;;
-        esac
-    done
-    
-    if [[ ${#failed_verifications[@]} -gt 0 ]]; then
-        log_warn "Verifizierung teilweise fehlgeschlagen: ${failed_verifications[*]}"
-        return 1
-    fi
-    
-    log_ok "Installation erfolgreich verifiziert"
-    return 0
-}
-
-run_project_tests() {
-    log_info "Starte Tests..."
-    if timeout "$SETUP_TIMEOUT" bash -c "ruff check . && mypy mcp && pytest -m 'not heavy' -q"; then
-        log_ok "Tests erfolgreich"
-    else
-        log_err "Tests fehlgeschlagen"
-        return 1
-    fi
-}
-
-# Verbesserte run_step Funktion mit Retry-Logik
-run_step() {
-    local msg="$1"
-    local cmd="$2"
-    local retry_count=0
-    local max_retries=3
-    
-    while [[ $retry_count -le $max_retries ]]; do
-        log_info "Führe aus: $msg"
-        
-        if with_spinner "$msg" "$cmd"; then
+    for file in "${search_paths[@]}"; do
+        if [[ -f "$file" ]]; then
+            echo "$file"
             return 0
         fi
-        
-        local error_code=$?
-        
-        # Spezielle Behandlung für Poetry-Probleme
-        if [[ $error_code -eq 130 ]]; then
-            log_warn "Benutzer hat Schritt abgebrochen oder Timeout erreicht"
-            return 130
-        fi
-        
-        case $(handle_step_error "$msg" $error_code $retry_count) in
-            0) return 0 ;;    # Skip
-            2) retry_count=$((retry_count + 1)) ;;  # Retry
-            *) exit 1 ;;      # Exit
-        esac
     done
     
-    log_err "Schritt '$msg' nach $max_retries Versuchen fehlgeschlagen"
+    # Suche nach alternativen Compose-Dateien
+    local alternatives
+    mapfile -t alternatives < <(find "$REPO_ROOT" -maxdepth 2 -name 'docker-compose*.yml' -o -name 'docker-compose*.yaml' 2>/dev/null)
+    
+    if [[ ${#alternatives[@]} -gt 0 ]]; then
+        if [[ ${#alternatives[@]} -gt 1 ]]; then
+            log_warn "Mehrere Compose-Dateien gefunden:"
+            for file in "${alternatives[@]}"; do
+                log_warn "  - $file"
+            done
+            log_info "Verwende erste Datei: ${alternatives[0]}"
+        fi
+        echo "${alternatives[0]}"
+        return 0
+    fi
+    
     return 1
 }
 
-print_next_steps() {
-    echo
-    log_ok "Setup erfolgreich abgeschlossen!"
-    echo
-    echo "📋 NÄCHSTE SCHRITTE:"
-    echo
-    echo "1. Konfiguration anpassen:"
-    echo "   nano .env"
-    echo
-    echo "2. Services starten (falls nicht automatisch gestartet):"
-    echo "   docker compose up -d"
-    echo
-    echo "3. Frontend aufrufen:"
-    echo "   http://localhost:3000"
-    echo
-    echo "4. API testen:"
-    echo "   curl http://localhost:8000/health"
-    echo
-    echo "5. CLI verwenden:"
-    echo "   poetry run agentnn --help"
-    echo
-    echo "📖 WEITERE RESSOURCEN:"
-    echo "   - Dokumentation: docs/"
-    echo "   - Konfiguration: docs/config_reference.md"
-    echo "   - Deployment: docs/deployment.md"
-    echo "   - Troubleshooting: docs/troubleshooting.md"
-    echo
-    echo "🚀 Agent-NN ist bereit!"
-    echo
-}
-
-show_current_config() {
-    ensure_config_file_exists
-    echo "┌─────────────────────────────────────┐"
-    echo "│        Aktuelle Konfiguration       │"
-    echo "├─────────────────────────────────────┤"
-    local poetry
-    poetry=$(load_config_value "POETRY_METHOD" "venv")
-    printf "│ Poetry-Methode: %-18s │\n" "$poetry"
-    printf "│ Auto-Modus:     %-18s │\n" "$AUTO_MODE"
-    printf "│ Preset:         %-18s │\n" "${PRESET:-none}"
-    printf "│ Timeout:        %-18s │\n" "${SETUP_TIMEOUT}s"
-    echo "└─────────────────────────────────────┘"
-}
-
-return_to_main_menu() {
-    local delay="${1:-3}"
-    echo
-    echo -e "${CYAN}→ Zurück zum Hauptmenü in ${delay} Sekunden (Ctrl+C zum Abbrechen) ...${NC}"
-    sleep "$delay" 2>/dev/null || true
-}
-
-clean_environment() {
-    log_info "Bereinige Entwicklungsumgebung..."
-    
-    # Docker-Services stoppen
-    if docker_compose_down; then
-        log_ok "Docker-Services gestoppt"
-    fi
-    
-    # Docker-Volumes entfernen
-    local volumes=("postgres_data" "vector_data")
-    for vol in "${volumes[@]}"; do
-        local full_name="${PWD##*/}_${vol}"
-        if docker volume ls -q | grep -q "^${full_name}$"; then
-            docker volume rm "$full_name" 2>/dev/null || true
-            log_debug "Volume entfernt: $full_name"
-        fi
-    done
-    
-    # Lokale Daten bereinigen
-    local dirs_to_clean=(
-        "data/sessions"
-        "data/vectorstore"
-        "logs"
-        "frontend/dist"
-        ".pytest_cache"
-        "__pycache__"
-    )
-    
-    for dir in "${dirs_to_clean[@]}"; do
-        if [[ -d "$REPO_ROOT/$dir" ]]; then
-            rm -rf "$REPO_ROOT/$dir"
-            log_debug "Verzeichnis bereinigt: $dir"
-        fi
-    done
-    
-    # Frontend bereinigen
-    if [[ -d "$REPO_ROOT/frontend/agent-ui" ]]; then
-        clean_frontend
-    fi
-    
-    log_ok "Entwicklungsumgebung bereinigt"
-}
-
-# Haupt-Setup-Funktion
-main() {
-    local original_args=("$@")
-    local arg_count=$#
-    
-    # Setup initialisieren
-    setup_error_handling
-    ensure_utf8
-    setup_logging
-    load_config || true
-    load_project_config || true
-    ensure_config_file_exists
-
-    # Ensure POETRY_METHOD is initialized
-    POETRY_METHOD=$(load_config_value "POETRY_METHOD" "venv")
-    if [ -z "$POETRY_METHOD" ]; then
-        log_info "🔧 Kein gespeicherter Wert für POETRY_METHOD – verwende Default: venv"
-        POETRY_METHOD="venv"
-        save_config_value "POETRY_METHOD" "$POETRY_METHOD"
-    fi
-    export POETRY_METHOD
-    
-    # Argumente parsen
+# Verbesserte Argument-Behandlung
+parse_arguments() {
     while [[ $# -gt 0 ]]; do
         case $1 in
             -h|--help)
@@ -470,9 +410,14 @@ main() {
                 START_DOCKER=false
                 shift
                 ;;
+            --with-mcp)
+                START_MCP=true
+                shift
+                ;;
             --check-only)
                 BUILD_FRONTEND=false
                 START_DOCKER=false
+                START_MCP=false
                 RUN_MODE="check"
                 shift
                 ;;
@@ -480,6 +425,7 @@ main() {
                 RUN_MODE="check"
                 BUILD_FRONTEND=false
                 START_DOCKER=false
+                START_MCP=false
                 shift
                 ;;
             --install-heavy)
@@ -501,6 +447,7 @@ main() {
                 ;;
             --minimal)
                 START_DOCKER=false
+                START_MCP=false
                 BUILD_FRONTEND=false
                 AUTO_MODE=true
                 RUN_MODE="python"
@@ -508,6 +455,7 @@ main() {
                 ;;
             --no-docker)
                 START_DOCKER=false
+                START_MCP=false
                 shift
                 ;;
             --exit-on-fail)
@@ -526,27 +474,10 @@ main() {
             --preset)
                 shift
                 PRESET="$1"
-                case "$PRESET" in
-                    dev)
-                        RUN_MODE="full"
-                        BUILD_FRONTEND=true
-                        START_DOCKER=true
-                        ;;
-                    ci)
-                        RUN_MODE="test"
-                        BUILD_FRONTEND=false
-                        START_DOCKER=false
-                        ;;
-                    minimal)
-                        RUN_MODE="python"
-                        BUILD_FRONTEND=false
-                        START_DOCKER=false
-                        ;;
-                    *)
-                        log_err "Unbekanntes Preset: $PRESET"
-                        exit 1
-                        ;;
-                esac
+                apply_preset_improved "$PRESET" || {
+                    log_err "Unbekanntes Preset: $PRESET"
+                    exit 1
+                }
                 shift
                 ;;
             --timeout)
@@ -565,9 +496,120 @@ main() {
                 ;;
         esac
     done
+}
+
+# Setup-Initialisierung
+setup_initialization() {
+    setup_error_handling
+    ensure_utf8
+    setup_logging
+    load_config || true
+    load_project_config || true
+    ensure_config_file_exists
+
+    # Ensure POETRY_METHOD is initialized
+    POETRY_METHOD=$(load_config_value "POETRY_METHOD" "venv")
+    if [ -z "$POETRY_METHOD" ]; then
+        log_info "🔧 Kein gespeicherter Wert für POETRY_METHOD – verwende Default: venv"
+        POETRY_METHOD="venv"
+        save_config_value "POETRY_METHOD" "$POETRY_METHOD"
+    fi
+    export POETRY_METHOD
+}
+
+# Haupt-Setup-Ausführung
+execute_setup_mode() {
+    local mode="$1"
     
-    export SUDO_CMD
-    export AUTO_MODE
+    case "$mode" in
+        python)
+            run_step "Python-Abhängigkeiten" install_python_dependencies
+            ;;
+        frontend)
+            run_step "Frontend-Build" build_frontend
+            ;;
+        docker)
+            local compose_file
+            if compose_file=$(find_docker_compose_improved); then
+                run_step "Docker-Services" "docker_compose_up \"$compose_file\""
+            else
+                log_err "Keine Docker-Compose-Datei gefunden"
+                return 1
+            fi
+            ;;
+        mcp)
+            run_step "MCP-Services" start_mcp_services
+            ;;
+        system)
+            run_step "System-Abhängigkeiten" "${SCRIPT_DIR}/install_dependencies.sh ${SUDO_CMD:+--with-sudo} --auto-install"
+            ;;
+        repair)
+            run_step "Repariere" "${SCRIPT_DIR}/repair_env.sh"
+            ;;
+        show_config)
+            show_current_config
+            ;;
+        test)
+            run_step "Tests" run_project_tests
+            ;;
+        check)
+            run_step "Validierung" "${SCRIPT_DIR}/validate.sh" && exit 0
+            ;;
+        status)
+            run_step "Status-Prüfung" "${SCRIPT_DIR}/status.sh" && exit 0
+            ;;
+        clean)
+            clean_environment
+            ;;
+        full)
+            # Vollständiges Setup
+            log_info "=== PYTHON-ABHÄNGIGKEITEN ==="
+            run_step "Python-Abhängigkeiten" install_python_dependencies
+
+            if [[ "$BUILD_FRONTEND" == "true" ]]; then
+                log_info "=== FRONTEND-BUILD ==="
+                run_step "Frontend-Build" build_frontend
+                cd "$REPO_ROOT"
+            fi
+
+            if [[ "$START_DOCKER" == "true" ]]; then
+                log_info "=== DOCKER-SERVICES ==="
+                local compose_file
+                if compose_file=$(find_docker_compose_improved); then
+                    run_step "Docker-Services" "docker_compose_up \"$compose_file\""
+                elif [[ "$WITH_DOCKER" == "true" ]]; then
+                    log_err "Docker Compose Datei nicht gefunden. Setup abgebrochen."
+                    exit 1
+                fi
+            fi
+
+            if [[ "$START_MCP" == "true" ]]; then
+                log_info "=== MCP-SERVICES ==="
+                run_step "MCP-Services" start_mcp_services
+            fi
+
+            log_info "=== VERIFIZIERUNG ==="
+            run_step "Verifizierung" verify_installation || log_warn "Verifizierung mit Problemen abgeschlossen"
+
+            run_step "Tests" run_project_tests || true
+            update_status "last_setup" "$(date -u +%FT%TZ)" "$REPO_ROOT/.agentnn/status.json"
+            print_next_steps
+            ;;
+        *)
+            log_err "Unbekannter Modus: $mode"
+            return 1
+            ;;
+    esac
+}
+
+# Haupt-Funktion
+main() {
+    local original_args=("$@")
+    local arg_count=$#
+    
+    setup_initialization
+    parse_arguments "$@"
+    export SUDO_CMD AUTO_MODE
 
     while true; do
         if [[ $arg_count -eq 0 ]]; then
@@ -590,17 +632,6 @@ main() {
             exit 1
         }
 
-        if [[ "$WITH_DOCKER" == "true" ]]; then
-            if [[ ! -f docker-compose.yml ]]; then
-                log_err "docker-compose.yml fehlt"
-                exit 1
-            fi
-            if ! has_docker_compose; then
-                log_err "Docker Compose nicht ausführbar"
-                exit 1
-            fi
-        fi
-    
         # Umgebungsprüfung
         log_info "=== UMGEBUNGSPRÜFUNG ==="
         if ! mapfile -t missing_pkgs < <(check_environment); then
@@ -609,114 +640,18 @@ main() {
                 for pkg in "${missing_pkgs[@]}"; do
                     prompt_and_install_if_missing "$pkg" || true
                 done
-                mapfile -t _ < <(check_environment) || {
-                    log_err "Umgebungsprüfung fehlgeschlagen. Setup abgebrochen."
-                    exit 1
-                }
-            else
-                log_err "Umgebungsprüfung fehlgeschlagen. Setup abgebrochen."
-                exit 1
             fi
         fi
 
-        # Fehlende Komponenten installieren
+        # Verbesserte Komponenten-Installation
         run_step "Prüfe Docker" ensure_docker; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
         run_step "Prüfe Node.js" ensure_node; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
         run_step "Prüfe Python" ensure_python; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
-        run_step "Prüfe Poetry" ensure_poetry; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
+        run_step "Prüfe Poetry" ensure_poetry_improved; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
         run_step "Prüfe Tools" ensure_python_tools; [[ $? -eq 130 ]] && { RUN_MODE=""; arg_count=0; return_to_main_menu; continue; }
-        
-        # Docker-Prüfung
-        log_info "=== DOCKER-PRÜFUNG ==="
-        if ! has_docker; then
-            if [[ "$WITH_DOCKER" == "true" ]]; then
-                log_err "Docker erforderlich aber nicht gefunden."
-                exit 1
-            else
-                log_warn "Docker nicht verfügbar – Docker-Start wird übersprungen"
-                START_DOCKER=false
-            fi
-        elif ! has_docker_compose; then
-            if [[ "$WITH_DOCKER" == "true" ]]; then
-                log_err "Docker Compose nicht gefunden."
-                exit 1
-            else
-                log_warn "Docker Compose fehlt – Docker-Start wird übersprungen"
-                START_DOCKER=false
-            fi
-        fi
-        
-        case "$RUN_MODE" in
-            python)
-                run_step "Python-Abhängigkeiten" install_python_dependencies
-                ;;
-            frontend)
-                run_step "Frontend-Build" build_frontend
-                ;;
-            docker)
-                if [[ "$RECOVERY_MODE" == "true" ]] && timeout 10 docker compose ps | grep -q 'Up'; then
-                    log_info "Docker-Services laufen bereits - überspringe"
-                else
-                    run_step "Docker-Services" "start_docker_services \"docker-compose.yml\""
-                fi
-                ;;
-            system)
-                run_step "System-Abhängigkeiten" "${SCRIPT_DIR}/install_dependencies.sh ${SUDO_CMD:+--with-sudo} --auto-install"
-                ;;
-            mcp)
-                run_step "Starte MCP" "${SCRIPT_DIR}/start_mcp.sh"
-                ;;
-            status)
-                run_step "Status" "${SCRIPT_DIR}/status.sh" && exit 0
-                ;;
-            repair)
-                run_step "Repariere" "${SCRIPT_DIR}/repair_env.sh"
-                ;;
-            show_config)
-                show_current_config
-                ;;
-            test)
-                run_step "Tests" run_project_tests
-                ;;
-            check)
-                run_step "Validierung" "${SCRIPT_DIR}/validate.sh" && exit 0
-                ;;
-            full)
-                log_info "=== PYTHON-ABHÄNGIGKEITEN ==="
-                run_step "Python-Abhängigkeiten" install_python_dependencies
 
-                if [[ "$BUILD_FRONTEND" == "true" ]]; then
-                    log_info "=== FRONTEND-BUILD ==="
-                    run_step "Frontend-Build" build_frontend
-                    cd "$REPO_ROOT"
-                fi
-
-                if [[ "$START_DOCKER" == "true" ]]; then
-                    log_info "=== DOCKER-SERVICES ==="
-                    compose_file="docker-compose.yml"
-                    if [[ ! -f "$compose_file" ]]; then
-                        compose_file=$(ls docker-compose.*.yml 2>/dev/null | head -n1 || true)
-                    fi
-                    if [[ -f "$compose_file" ]]; then
-                        if [[ "$RECOVERY_MODE" == "true" ]] && timeout 10 docker compose ps | grep -q 'Up'; then
-                            log_info "Docker-Services laufen bereits - überspringe"
-                        else
-                            run_step "Docker-Services" "start_docker_services \"$compose_file\""
-                        fi
-                    elif [[ "$WITH_DOCKER" == "true" ]]; then
-                        log_err "Docker Compose Datei nicht gefunden. Setup abgebrochen."
-                        exit 1
-                    fi
-                fi
-
-                log_info "=== VERIFIZIERUNG ==="
-                run_step "Verifizierung" verify_installation || log_warn "Verifizierung mit Problemen abgeschlossen"
-
-                run_step "Tests" run_project_tests || true
-                update_status "last_setup" "$(date -u +%FT%TZ)" "$REPO_ROOT/.agentnn/status.json"
-                print_next_steps
-                ;;
-        esac
+        # Setup-Modus ausführen
+        execute_setup_mode "$RUN_MODE"
 
         if [[ $arg_count -eq 0 ]]; then
             return_to_main_menu 3

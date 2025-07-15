@@ -178,20 +178,57 @@ ensure_python() {
     fi
 }
 
-install_poetry() {
-    log_info "Installiere Poetry..."
-    pipx install poetry >/dev/null 2>&1 || pip install poetry >/dev/null
+install_poetry_break_system() {
+    log_info "Installiere Poetry systemweit..."
+    python3 -m pip install --break-system-packages poetry >/dev/null
+}
+
+install_poetry_venv() {
+    log_info "Installiere Poetry in ~/.agentnn_venv..."
+    python3 -m venv "$HOME/.agentnn_venv" && \
+    source "$HOME/.agentnn_venv/bin/activate" && \
+    pip install poetry >/dev/null && \
+    grep -q "agentnn_venv" "$HOME/.bashrc" 2>/dev/null || echo "source $HOME/.agentnn_venv/bin/activate" >> "$HOME/.bashrc"
+}
+
+install_poetry_pipx() {
+    log_info "Installiere Poetry via pipx..."
+    require_sudo_if_needed || return 1
+    $SUDO_CMD apt install pipx -y >/dev/null && pipx install poetry >/dev/null
+}
+
+install_poetry_menu() {
+    while true; do
+        cat <<'EOF'
+Poetry kann auf deinem System nicht direkt mit pip installiert werden.
+
+[1] Systemweite Installation mit --break-system-packages (nicht empfohlen)
+[2] Installation über venv (Standard)
+[3] Installation über pipx (empfohlen)
+[4] Abbrechen
+EOF
+        read -rp "> Auswahl: " choice
+        case "$choice" in
+            1)
+                install_poetry_break_system && return 0 || return 1
+                ;;
+            2)
+                install_poetry_venv && return 0 || return 1
+                ;;
+            3)
+                install_poetry_pipx && return 0 || return 1
+                ;;
+            4)
+                return 1
+                ;;
+        esac
+    done
 }
 
 ensure_poetry() {
     ensure_pip || return 1
-    if ! command -v poetry &>/dev/null; then
-        if ask_install "Poetry"; then
-            install_poetry || return 1
-        else
-            return 1
-        fi
-    fi
+    command -v poetry >/dev/null && return 0
+    install_poetry_menu
 }
 
 install_python_tool() {
@@ -211,8 +248,9 @@ ensure_python_tools() {
 }
 
 export -f ask_install install_docker ensure_docker install_node ensure_node \
-          install_python ensure_python ensure_pip install_poetry ensure_poetry \
-          install_python_tool ensure_python_tools \
+          install_python ensure_python ensure_pip install_poetry_menu \
+          install_poetry_break_system install_poetry_venv install_poetry_pipx \
+          ensure_poetry install_python_tool ensure_python_tools \
           require_or_install require_or_install_curl \
           require_or_install_poetry require_or_install_nodejs \
           ensure_git ensure_curl require_or_install_git \

@@ -21,4 +21,15 @@ output=$(PATH="" scripts/setup.sh --check-only 2>&1 || true)
 echo "$output" | grep -q "sudo aktivieren" && echo "sudo prompt" || true
 echo "$output" | grep -q "installiert werden" && echo "install prompt" || true
 
+# Simulate Poetry install failure with PEP 668
+tmpdir=$(mktemp -d)
+cat <<'EOF' >"$tmpdir/pip"
+#!/bin/bash
+echo "error: externally-managed-environment" >&2
+exit 1
+EOF
+chmod +x "$tmpdir/pip"
+PATH="$tmpdir" scripts/setup.sh --check 2>&1 | grep -q "Installation über venv" && echo "poetry menu" || true
+rm -rf "$tmpdir"
+
 echo "setup matrix executed"

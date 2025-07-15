@@ -37,7 +37,7 @@ interactive_menu() {
             5) RUN_MODE="docker" ;;
             6) RUN_MODE="test" ;;
             7) RUN_MODE="repair" ;;
-            8) exit 0 ;;
+            8) RUN_MODE="exit" ;;
         esac
     else
         PS3="Auswahl: "
@@ -50,7 +50,7 @@ interactive_menu() {
                 5) RUN_MODE="docker"; break ;;
                 6) RUN_MODE="test"; break ;;
                 7) RUN_MODE="repair"; break ;;
-                8) exit 0 ;;
+                8) RUN_MODE="exit"; break ;;
                 *) echo "Ungültige Auswahl";;
             esac
         done

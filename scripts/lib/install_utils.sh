@@ -12,6 +12,52 @@ __install_utils_init
 AUTO_MODE="${AUTO_MODE:-false}"
 SUDO_CMD="${SUDO_CMD:-}"
 
+# Prompt for sudo if a command requires elevated rights.
+require_sudo_if_needed() {
+    if [[ $(id -u) -ne 0 && -z "$SUDO_CMD" ]]; then
+        log_info "F\xC3\xBCr diesen Schritt werden Systemrechte ben\xC3\xB6tigt."
+        read -rp "M\xC3\xB6chtest du 'sudo' aktivieren? [J/n] " ans
+        if [[ -z "$ans" || "$ans" =~ ^[JjYy]$ ]]; then
+            if ! command -v sudo >/dev/null; then
+                read -rp "sudo ist nicht installiert. Jetzt installieren? [J/n] " ans2
+                if [[ -z "$ans2" || "$ans2" =~ ^[JjYy]$ ]]; then
+                    if command -v apt-get >/dev/null; then
+                        apt-get update -y >/dev/null
+                        apt-get install -y sudo >/dev/null
+                    else
+                        log_err "sudo konnte nicht installiert werden"
+                        return 1
+                    fi
+                else
+                    return 1
+                fi
+            fi
+            sudo -v || return 1
+            SUDO_CMD="sudo"
+            log_info "sudo aktiviert"
+        else
+            return 1
+        fi
+    fi
+    return 0
+}
+
+# Ensure a command exists or offer interactive installation.
+prompt_and_install_if_missing() {
+    local pkg="$1"
+    if ! command -v "$pkg" >/dev/null 2>&1; then
+        log_warn "$pkg nicht gefunden"
+        read -rp "Soll $pkg jetzt installiert werden? [J/n] " ans
+        if [[ -z "$ans" || "$ans" =~ ^[JjYy]$ ]]; then
+            require_sudo_if_needed || return 1
+            install_packages "$pkg" || return 1
+            log_ok "Installiert: $pkg"
+        else
+            log_warn "$pkg nicht installiert"
+        fi
+    fi
+}
+
 require_or_install() {
     local cmd="$1"
     local pkg="${2:-$1}"
@@ -47,6 +93,7 @@ ask_install() {
 
 install_docker() {
     log_info "Installiere Docker..."
+    require_sudo_if_needed || return 1
     require_or_install_curl || return 1
     curl -fsSL https://get.docker.com | $SUDO_CMD bash >/dev/null
 }
@@ -69,6 +116,7 @@ ensure_docker() {
 
 install_node() {
     log_info "Installiere Node.js..."
+    require_sudo_if_needed || return 1
     require_or_install_curl || return 1
     curl -fsSL https://deb.nodesource.com/setup_18.x | $SUDO_CMD bash - >/dev/null && $SUDO_CMD apt-get install -y nodejs >/dev/null
 }
@@ -81,12 +129,16 @@ ensure_node() {
             return 1
         fi
     fi
-    command -v npm &>/dev/null || $SUDO_CMD apt-get install -y npm >/dev/null
+    if ! command -v npm &>/dev/null; then
+        require_sudo_if_needed || return 1
+        $SUDO_CMD apt-get install -y npm >/dev/null
+    fi
     return 0
 }
 
 install_python() {
     log_info "Installiere Python 3.10..."
+    require_sudo_if_needed || return 1
     $SUDO_CMD apt-get update -y >/dev/null && \
     $SUDO_CMD apt-get install -y python3.10 python3.10-venv python3.10-distutils >/dev/null
 }
@@ -95,6 +147,7 @@ ensure_pip() {
     if ! command -v pip >/dev/null; then
         if ask_install "pip"; then
             if command -v apt-get >/dev/null; then
+                require_sudo_if_needed || return 1
                 $SUDO_CMD apt-get update -y >/dev/null
                 $SUDO_CMD apt-get install -y python3-pip >/dev/null && return 0
             fi
@@ -162,7 +215,8 @@ export -f ask_install install_docker ensure_docker install_node ensure_node \
           install_python_tool ensure_python_tools \
           require_or_install require_or_install_curl \
           require_or_install_poetry require_or_install_nodejs \
-          ensure_git ensure_curl require_or_install_git
+          ensure_git ensure_curl require_or_install_git \
+          require_sudo_if_needed prompt_and_install_if_missing
 
 # Install a list of system packages using the available package manager.
 # Supports apt for Debian/Ubuntu and brew for macOS.
@@ -198,6 +252,7 @@ install_packages() {
     if [[ ${#pkg_list[@]} -gt 0 ]]; then
         case "$os" in
             ubuntu|debian)
+                require_sudo_if_needed || return 1
                 $SUDO_CMD apt-get update -y >/dev/null
                 $SUDO_CMD apt-get install -y "${pkg_list[@]}" >/dev/null
                 ;;

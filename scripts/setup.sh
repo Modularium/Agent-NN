@@ -222,6 +222,30 @@ run_project_tests() {
     fi
 }
 
+run_step() {
+    local msg="$1"
+    local cmd="$2"
+    local status
+    while true; do
+        with_spinner "$msg" "$cmd"
+        status=$?
+        if [[ $status -eq 0 ]]; then
+            break
+        fi
+        echo "❌ Installation fehlgeschlagen."
+        echo "[1] Wiederholen"
+        echo "[2] Überspringen"
+        echo "[3] Abbrechen"
+        read -rp "Auswahl: " choice
+        case "$choice" in
+            1) continue ;;
+            2) return 0 ;;
+            3) exit 1 ;;
+        esac
+    done
+    return 0
+}
+
 print_next_steps() {
     echo
     log_ok "Setup erfolgreich abgeschlossen!"
@@ -308,54 +332,46 @@ main() {
     
     # Argumente parsen
     parse_setup_args "${original_args[@]}"
-    if [[ $arg_count -eq 0 ]]; then
-        interactive_menu
-    fi
-    export AUTO_MODE
-    export SUDO_CMD
-    export LOG_ERROR_FILE
 
-    if [[ "$WITH_DOCKER" == "true" ]]; then
-        if [[ ! -f docker-compose.yml ]]; then
-            log_err "docker-compose.yml fehlt"
-            exit 1
+    while true; do
+        if [[ $arg_count -eq 0 ]]; then
+            interactive_menu
+            [[ "$RUN_MODE" == "exit" ]] && break
         fi
-        if ! has_docker_compose; then
-            log_err "Docker Compose nicht ausführbar"
-            exit 1
-        fi
-    fi
-    
-    # Banner anzeigen
-    print_banner
 
-    STATUS_FILE="$REPO_ROOT/.agentnn/status.json"
-    ensure_status_file "$STATUS_FILE"
-    if [[ -n "$PRESET" ]]; then
-        log_preset "$PRESET" "$STATUS_FILE"
-    fi
-    
-    # In Repository-Verzeichnis wechseln
-    cd "$REPO_ROOT" || {
-        log_err "Kann nicht ins Repository-Verzeichnis wechseln: $REPO_ROOT"
-        exit 1
-    }
+        # Banner anzeigen
+        print_banner
+
+        STATUS_FILE="$REPO_ROOT/.agentnn/status.json"
+        ensure_status_file "$STATUS_FILE"
+        if [[ -n "$PRESET" ]]; then
+            log_preset "$PRESET" "$STATUS_FILE"
+        fi
+
+        cd "$REPO_ROOT" || {
+            log_err "Kann nicht ins Repository-Verzeichnis wechseln: $REPO_ROOT"
+            exit 1
+        }
+
+        if [[ "$WITH_DOCKER" == "true" ]]; then
+            if [[ ! -f docker-compose.yml ]]; then
+                log_err "docker-compose.yml fehlt"
+                exit 1
+            fi
+            if ! has_docker_compose; then
+                log_err "Docker Compose nicht ausführbar"
+                exit 1
+            fi
+        fi
     
     # Umgebungsprüfung
     log_info "=== UMGEBUNGSPRÜFUNG ==="
     if ! mapfile -t missing_pkgs < <(check_environment); then
         if [[ ${#missing_pkgs[@]} -gt 0 ]]; then
             log_warn "Fehlende Pakete: ${missing_pkgs[*]}"
-            if [[ "$AUTO_MODE" == "true" ]]; then
-                "$SCRIPT_DIR/install/install_packages.sh" ${SUDO_CMD:+--with-sudo} --auto-install "${missing_pkgs[@]}" || exit 1
-            else
-                for pkg in "${missing_pkgs[@]}"; do
-                    read -rp "Fehlt $pkg. Jetzt installieren? [J/n] " ans
-                    if [[ -z "$ans" || "$ans" =~ ^[JjYy]$ ]]; then
-                        "$SCRIPT_DIR/install/install_packages.sh" ${SUDO_CMD:+--with-sudo} "$pkg" || exit 1
-                    fi
-                done
-            fi
+            for pkg in "${missing_pkgs[@]}"; do
+                prompt_and_install_if_missing "$pkg" || true
+            done
             mapfile -t _ < <(check_environment) || {
                 log_err "Umgebungsprüfung fehlgeschlagen. Setup abgebrochen."
                 exit 1
@@ -367,27 +383,11 @@ main() {
     fi
 
     # Fehlende Komponenten installieren
-    with_spinner "Prüfe Docker" ensure_docker; status=$?
-    if [[ $status -ne 0 && "$EXIT_ON_FAIL" == "true" ]]; then
-        log_error "Docker konnte nicht installiert werden. Details siehe $LOG_ERROR_FILE"
-        exit 1
-    fi
-    with_spinner "Prüfe Node.js" ensure_node; status=$?
-    if [[ $status -ne 0 && "$EXIT_ON_FAIL" == "true" ]]; then
-        log_error "Node.js konnte nicht installiert werden. Details siehe $LOG_ERROR_FILE"
-        exit 1
-    fi
-    with_spinner "Prüfe Python" ensure_python; status=$?
-    if [[ $status -ne 0 && "$EXIT_ON_FAIL" == "true" ]]; then
-        log_error "Python konnte nicht installiert werden. Details siehe $LOG_ERROR_FILE"
-        exit 1
-    fi
-    with_spinner "Prüfe Poetry" ensure_poetry; status=$?
-    if [[ $status -ne 0 && "$EXIT_ON_FAIL" == "true" ]]; then
-        log_error "Poetry konnte nicht installiert werden. Details siehe $LOG_ERROR_FILE"
-        exit 1
-    fi
-    with_spinner "Prüfe Tools" ensure_python_tools || true
+    run_step "Prüfe Docker" ensure_docker
+    run_step "Prüfe Node.js" ensure_node
+    run_step "Prüfe Python" ensure_python
+    run_step "Prüfe Poetry" ensure_poetry
+    run_step "Prüfe Tools" ensure_python_tools
     
     # Docker-Prüfung
     log_info "=== DOCKER-PRÜFUNG ==="
@@ -411,43 +411,43 @@ main() {
     
     case "$RUN_MODE" in
         python)
-            install_python_dependencies || exit 1
+            run_step "Python-Abhängigkeiten" install_python_dependencies
             ;;
         frontend)
-            build_frontend || exit 1
+            run_step "Frontend-Build" build_frontend
             ;;
         docker)
             if [[ "$RECOVERY_MODE" == "true" ]] && docker compose ps | grep -q 'Up'; then
                 log_info "Docker-Services laufen bereits - \u00fcberspringe"
             else
-                start_docker_services "docker-compose.yml" || exit 1
+                run_step "Docker-Services" "start_docker_services \"docker-compose.yml\""
             fi
             ;;
         system)
-            "$SCRIPT_DIR/install_dependencies.sh" ${SUDO_CMD:+--with-sudo} --auto-install || exit 1
+            run_step "System-Abhängigkeiten" "${SCRIPT_DIR}/install_dependencies.sh ${SUDO_CMD:+--with-sudo} --auto-install"
             ;;
         mcp)
-            "$SCRIPT_DIR/start_mcp.sh" || exit 1
+            run_step "Starte MCP" "${SCRIPT_DIR}/start_mcp.sh"
             ;;
         status)
-            "$SCRIPT_DIR/status.sh" || exit 0
+            run_step "Status" "${SCRIPT_DIR}/status.sh" && exit 0
             ;;
         repair)
-            "$SCRIPT_DIR/repair_env.sh" || exit 1
+            run_step "Repariere" "${SCRIPT_DIR}/repair_env.sh"
             ;;
         test)
-            run_project_tests || exit 1
+            run_step "Tests" run_project_tests
             ;;
         check)
-            "$SCRIPT_DIR/validate.sh" && exit 0
+            run_step "Validierung" "${SCRIPT_DIR}/validate.sh" && exit 0
             ;;
         full)
             log_info "=== PYTHON-ABHÄNGIGKEITEN ==="
-            install_python_dependencies || exit 1
+            run_step "Python-Abhängigkeiten" install_python_dependencies
 
             if [[ "$BUILD_FRONTEND" == "true" ]]; then
                 log_info "=== FRONTEND-BUILD ==="
-                build_frontend || exit 1
+                run_step "Frontend-Build" build_frontend
                 cd "$REPO_ROOT"
             fi
 
@@ -461,7 +461,7 @@ main() {
                     if [[ "$RECOVERY_MODE" == "true" ]] && docker compose ps | grep -q 'Up'; then
                         log_info "Docker-Services laufen bereits - \u00fcberspringe"
                     else
-                        start_docker_services "$compose_file" || exit 1
+                        run_step "Docker-Services" "start_docker_services \"$compose_file\""
                     fi
                 elif [[ "$WITH_DOCKER" == "true" ]]; then
                     log_err "Docker Compose Datei nicht gefunden. Setup abgebrochen."
@@ -470,13 +470,19 @@ main() {
             fi
 
             log_info "=== VERIFIZIERUNG ==="
-            verify_installation || log_warn "Verifizierung mit Problemen abgeschlossen"
+            run_step "Verifizierung" verify_installation || log_warn "Verifizierung mit Problemen abgeschlossen"
 
-            run_project_tests || true
+            run_step "Tests" run_project_tests || true
             update_status "last_setup" "$(date -u +%FT%TZ)" "$REPO_ROOT/.agentnn/status.json"
             print_next_steps
             ;;
     esac
+
+        if [[ $arg_count -gt 0 ]]; then
+            break
+        fi
+        RUN_MODE=""
+    done
 }
 
 # Script ausführen falls direkt aufgerufen

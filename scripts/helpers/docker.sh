@@ -480,10 +480,46 @@ cleanup_docker_resources() {
     log_ok "Docker-Ressourcen bereinigt"
 }
 
-# Export der Funktionen
+# Repariere find_compose_file falls es Probleme gibt
+find_compose_file_fixed() {
+    local name="${1:-docker-compose.yml}"
+    local prefer_type="${2:-standard}"
+    local search_paths=()
+    case "$prefer_type" in
+        mcp)
+            search_paths=(
+                "$REPO_ROOT/mcp/docker-compose.yml"
+                "$REPO_ROOT/mcp/docker-compose.yaml"
+                "$REPO_ROOT/docker-compose.mcp.yml"
+            )
+            ;;
+        *)
+            search_paths=(
+                "$REPO_ROOT/docker-compose.yml"
+                "$REPO_ROOT/docker-compose.yaml"
+                "$REPO_ROOT/deploy/docker-compose.yml"
+            )
+            ;;
+    esac
+    for f in "${search_paths[@]}"; do
+        if [ -f "$f" ]; then
+            echo "$f"
+            return 0
+        fi
+    done
+    log_err "Docker Compose Datei nicht gefunden: $name"
+    return 1
+}
+
+if declare -f find_compose_file >/dev/null; then
+    find_compose_file() {
+        find_compose_file_fixed "$@"
+    }
+fi
 export -f find_compose_file detect_docker_compose check_docker
 export -f docker_compose_up docker_compose_down show_service_status
 export -f check_service_health start_mcp_services stop_mcp_services
 export -f start_standard_services stop_standard_services
+
 export -f start_all_services stop_all_services show_service_logs
 export -f cleanup_docker_resources

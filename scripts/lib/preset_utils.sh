@@ -1,53 +1,123 @@
 #!/bin/bash
+# -*- coding: utf-8 -*-
+# Umfassendes Environment-Repair Script für Agent-NN
 
-# Preset definitions used by setup and install scripts.
-#
-# Available presets:
-#   dev     - full installation including Docker and frontend build
-#   ci      - dependencies for running the test-suite only
-#   minimal - Python environment without Docker or Node.js
+set -euo pipefail
 
-declare -A PRESETS=(
-    [minimal]="core only"
-    [dev]="core + frontend + langchain"
-    [ci]="core + test tools + headless frontend"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+
+source "$SCRIPT_DIR/lib/log_utils.sh"
+source "$SCRIPT_DIR/lib/env_check.sh"
+source "$SCRIPT_DIR/lib/install_utils.sh"
+source "$SCRIPT_DIR/lib/docker_utils.sh"
+source "$SCRIPT_DIR/lib/status_utils.sh"
+source "$SCRIPT_DIR/helpers/common.sh"
+source "$SCRIPT_DIR/helpers/env.sh"
+source "$SCRIPT_DIR/helpers/docker.sh"
+
+# Repair-Konfiguration
+AUTO_FIX=false
+DEEP_REPAIR=false
+BACKUP_CONFIGS=true
+REPAIR_DOCKER=true
+REPAIR_PYTHON=true
+REPAIR_FRONTEND=true
+REPAIR_MCP=true
+REPAIR_PERMISSIONS=true
+
+# Repair-Statistiken
+declare -A REPAIR_STATS=(
+    [attempted]=0
+    [successful]=0
+    [failed]=0
+    [skipped]=0
 )
 
-__preset_utils_init() {
-    local dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    source "$dir/log_utils.sh"
-}
-__preset_utils_init
+usage() {
+    cat << EOF
+Usage: $(basename "$0") [OPTIONS] [COMPONENTS...]
 
-validate_preset() {
-    local preset="$1"
-    if [[ -z "${PRESETS[$preset]+x}" ]]; then
-        log_err "Unbekanntes Preset: $preset"
-        return 1
-    fi
+Umfassendes Environment-Repair Script für Agent-NN
+
+Analysiert und repariert automatisch häufige Probleme in der Agent-NN Umgebung.
+
+OPTIONS:
+    --auto              Automatische Reparatur ohne Rückfragen
+    --deep              Tiefgehende Reparatur (kann länger dauern)
+    --no-backup         Keine Backup-Erstellung von Konfigurationsdateien
+    --no-docker         Docker-Reparaturen überspringen
+    --no-python         Python-Reparaturen überspringen
+    --no-frontend       Frontend-Reparaturen überspringen
+    --no-mcp            MCP-Reparaturen überspringen
+    --no-permissions    Berechtigungs-Reparaturen überspringen
+    --dry-run           Nur Probleme anzeigen, nicht reparieren
+    -h, --help          Diese Hilfe anzeigen
+
+COMPONENTS:
+    system              System-Dependencies und Basis-Tools
+    python              Python-Umgebung und Poetry
+    docker              Docker und Container-Services
+    frontend            Frontend Build und Dependencies
+    mcp                 MCP Services und Konfiguration
+    permissions         Dateiberechtigungen
+    config              Konfigurationsdateien
+    
+    all                 Alle Komponenten (default)
+
+REPARATUR-KATEGORIEN:
+    - Fehlende System-Pakete installieren
+    - Python/Poetry Probleme beheben
+    - Docker-Berechtigungen reparieren
+    - Node.js/npm Issues lösen
+    - Konfigurationsdateien wiederherstellen
+    - Container und Services neustarten
+    - Dateiberechtigungen korrigieren
+
+BEISPIELE:
+    $(basename "$0")                    # Interaktive Reparatur
+    $(basename "$0") --auto --deep      # Automatische Tiefenreparatur
+    $(basename "$0") python docker      # Nur Python und Docker reparieren
+    $(basename "$0") --dry-run          # Nur Probleme analysieren
+
+EOF
 }
 
-apply_preset() {
-    local preset="$1"
-    validate_preset "$preset" || return 1
-    PRESET="$preset"
-    case "$preset" in
-        dev)
-            RUN_MODE="full"
-            BUILD_FRONTEND=true
-            START_DOCKER=true
+# Logging für Repair-Aktionen
+log_repair_action() {
+    local action="$1"
+    local result="$2"  # attempted|successful|failed|skipped
+    local message="$3"
+    
+    REPAIR_STATS[$result]=$((${REPAIR_STATS[$result]} + 1))
+    
+    case "$result" in
+        attempted)
+            log_info "🔧 Repariere: $action"
             ;;
-        ci)
-            RUN_MODE="test"
-            BUILD_FRONTEND=false
-            START_DOCKER=false
+        successful)
+            log_ok "✅ Erfolgreich: $action - $message"
             ;;
-        minimal)
-            RUN_MODE="python"
-            BUILD_FRONTEND=false
-            START_DOCKER=false
+        failed)
+            log_err "❌ Fehlgeschlagen: $action - $message"
+            ;;
+        skipped)
+            log_warn "⏭️ Übersprungen: $action - $message"
             ;;
     esac
 }
 
-export -f apply_preset validate_preset
+# Backup-Funktionen
+create_backup() {
+    local file="$1"
+    local backup_dir="$REPO_ROOT/.agentnn/backups/$(date +%Y%m%d-%H%M%S)"
+    
+    if [[ "$BACKUP_CONFIGS" == "false" ]]; then
+        return 0
+    fi
+    
+    if [[ -f "$file" ]]; then
+        mkdir -p "$backup_dir"
+        local relative_path
+        relative_path=$(realpath --relative-to="$REPO_ROOT" "$file")
+        local backup_file=

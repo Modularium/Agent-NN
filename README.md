@@ -26,6 +26,8 @@ Hinweise:
 - Das Frontend wird automatisch gebaut und in `frontend/dist` abgelegt.
 - Die Docker-Container lassen sich wahlweise per `docker compose` oder über `./scripts/start_docker.sh` starten.
 - Lokal wird Python **3.10 oder neuer** benötigt.
+- Falls Poetry nicht systemweit installierbar ist, hilft dir das Setup,
+  alternative Installationspfade wie `pipx` oder `venv` zu wählen.
 - Die Tools `ruff`, `mypy` und `pytest` sind optional, werden aber empfohlen.
 
 ## 📋 Systemvoraussetzungen

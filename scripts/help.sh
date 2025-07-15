@@ -6,6 +6,8 @@ source "$SCRIPT_DIR/lib/log_utils.sh"
 cat <<'EOT'
 Agent-NN Befehlsübersicht
 
+Das Setup erkennt fehlende Rechte und Pakete automatisch und fragt nach Bestätigung zur Installation.
+
   ./scripts/setup.sh         Interaktives Setup-Menü
   ./scripts/install.sh       Einzelne Komponenten installieren
   ./scripts/start_docker.sh  Docker-Services starten

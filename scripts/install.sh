@@ -14,6 +14,8 @@ touch "$LOG_ERROR_FILE"
 EXIT_ON_FAIL=false
 PRESET=""
 
+[[ -n "$SUDO_CMD" ]] && require_sudo_if_needed || true
+
 usage() {
     cat <<EOT
 Usage: $(basename "$0") [OPTIONS]

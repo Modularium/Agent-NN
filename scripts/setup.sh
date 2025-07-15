@@ -24,6 +24,9 @@ source "$SCRIPT_DIR/lib/menu_utils.sh"
 source "$SCRIPT_DIR/lib/args_parser.sh"
 source "$SCRIPT_DIR/lib/config_utils.sh"
 source "$SCRIPT_DIR/lib/preset_utils.sh"
+# Poetry-Method initialisieren
+POETRY_METHOD="${POETRY_METHOD:-venv}"
+export POETRY_METHOD
 source "$SCRIPT_DIR/lib/status_utils.sh"
 
 # Globale Variablen

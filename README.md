@@ -74,6 +74,81 @@ Das Setup-System erkennt automatisch:
 ./scripts/setup.sh --recover           # Setup nach Fehlern fortsetzen
 ```
 
+## 🛠 Installation über das interaktive Menü
+
+Agent-NN bietet ein interaktives Setup-Menü, mit dem du das System vollständig oder modular einrichten kannst – inklusive Abhängigkeitsprüfung, automatischer Paketinstallation und optionaler `sudo`-Verwendung.
+
+### 🔃 Schnellstart (empfohlen)
+
+```bash
+git clone https://github.com/EcoSphereNetwork/Agent-NN.git
+cd Agent-NN
+./scripts/setup.sh
+```
+
+### 📋 Menü-Optionen
+
+| Option | Beschreibung |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `1`    | 🧠 Komplettes Setup (empfohlen) – installiert alle System- und Python-Abhängigkeiten, richtet Umgebungen ein, startet Docker und baut das Frontend |
+| `2`    | 🐍 Nur Python-Abhängigkeiten installieren (Poetry, venv, Pakete) |
+| `3`    | 🧱 Nur System-Abhängigkeiten installieren (Node.js, npm, curl, poetry, docker, etc.) |
+| `4`    | 🎨 Frontend bauen (nur UI) |
+| `5`    | 🐳 Docker-Container starten (nur Backend-Services) |
+| `6`    | ⚙️ MCP-Server starten (Model Context Protocol) |
+| `7`    | 📊 Installationsstatus & Versionen anzeigen |
+| `8`    | ❌ Abbrechen und Setup beenden |
+
+### ⚙️ Erweiterte Optionen
+
+Du kannst das Setup auch **automatisiert** über CLI ausführen:
+
+```bash
+# Mit automatischer Paketinstallation & sudo
+./scripts/setup.sh --with-sudo --auto-install
+```
+
+**Verfügbare Flags:**
+
+| Flag             | Wirkung                                                                 |           |                                                                                                  |
+| ---------------- | ----------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------ |
+| `--with-sudo`    | Verwendet `sudo`, um Systempakete automatisch zu installieren           |           |                                                                                                  |
+| `--auto-install` | Installiert fehlende Abhängigkeiten automatisch (systemweit oder lokal) |           |                                                                                                  |
+| \`--preset=dev   | ci                                                                      | minimal\` | Verwendet vordefinierte Setup-Presets (für schnelle CI-Integration oder reduzierte Installation) |
+
+### 🧪 Voraussetzungen
+
+Falls du das Setup manuell ausführen möchtest, achte auf folgende Tools:
+
+* Python ≥ 3.10
+* [Poetry](https://python-poetry.org/docs/#installation)
+* Node.js & npm
+* Docker & Docker Compose
+* curl, git
+
+Fehlende Komponenten werden im Setup-Menü erkannt und (je nach Option) automatisch installiert.
+
+### 📁 Log-Dateien & Status
+
+Alle Setup-Aktivitäten werden geloggt:
+
+* **Setup-Log:** `logs/setup.log`
+* **Installationsstatus:** `.agentnn/status.json`
+
+Damit kannst du Installationen nachvollziehen oder fortsetzen.
+
+### 🧯 Hilfe & Wiederherstellung
+
+Falls die Installation fehlschlägt oder du etwas zurücksetzen möchtest:
+
+```bash
+# Nur Setup neu starten (bestehende Dateien bleiben erhalten)
+./scripts/setup.sh
+
+# Reparatur-Skripte anzeigen
+ls ./scripts/repair/
+```
+
 #### Presets
 
 Wiederkehrende Einstellungen lassen sich über `--preset` laden:

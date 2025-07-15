@@ -423,6 +423,15 @@ main() {
                 start_docker_services "docker-compose.yml" || exit 1
             fi
             ;;
+        system)
+            "$SCRIPT_DIR/install_dependencies.sh" ${SUDO_CMD:+--with-sudo} --auto-install || exit 1
+            ;;
+        mcp)
+            "$SCRIPT_DIR/start_mcp.sh" || exit 1
+            ;;
+        status)
+            "$SCRIPT_DIR/status.sh" || exit 0
+            ;;
         test)
             run_project_tests || exit 1
             ;;

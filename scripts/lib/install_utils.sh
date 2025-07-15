@@ -12,6 +12,23 @@ __install_utils_init
 AUTO_MODE="${AUTO_MODE:-false}"
 SUDO_CMD="${SUDO_CMD:-}"
 
+require_or_install() {
+    local cmd="$1"
+    local pkg="${2:-$1}"
+    if ! command -v "$cmd" >/dev/null; then
+        if ask_install "$pkg"; then
+            install_packages "$pkg" || return 1
+        else
+            return 1
+        fi
+    fi
+    return 0
+}
+
+require_or_install_curl() { require_or_install curl curl; }
+require_or_install_poetry() { require_or_install poetry poetry; }
+require_or_install_nodejs() { require_or_install node nodejs; }
+
 ask_install() {
     local component="$1"
     if [[ "$AUTO_MODE" == "true" ]]; then
@@ -26,10 +43,12 @@ ask_install() {
 
 install_docker() {
     log_info "Installiere Docker..."
+    require_or_install_curl || return 1
     curl -fsSL https://get.docker.com | $SUDO_CMD bash >/dev/null
 }
 
 ensure_docker() {
+    require_or_install_curl || return 1
     if ! command -v docker &>/dev/null; then
         if ask_install "Docker"; then
             install_docker || return 1
@@ -46,6 +65,7 @@ ensure_docker() {
 
 install_node() {
     log_info "Installiere Node.js..."
+    require_or_install_curl || return 1
     curl -fsSL https://deb.nodesource.com/setup_18.x | $SUDO_CMD bash - >/dev/null && $SUDO_CMD apt-get install -y nodejs >/dev/null
 }
 
@@ -117,7 +137,11 @@ ensure_python_tools() {
     done
 }
 
-export -f ask_install install_docker ensure_docker install_node ensure_node install_python ensure_python install_poetry ensure_poetry install_python_tool ensure_python_tools
+export -f ask_install install_docker ensure_docker install_node ensure_node \
+          install_python ensure_python install_poetry ensure_poetry \
+          install_python_tool ensure_python_tools \
+          require_or_install require_or_install_curl \
+          require_or_install_poetry require_or_install_nodejs
 
 # Install a list of system packages using the available package manager.
 # Supports apt for Debian/Ubuntu and brew for macOS.

@@ -35,12 +35,12 @@ EOT
 components=()
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --docker) components+=(ensure_docker); shift;;
-        --node) components+=(ensure_node); shift;;
-        --python) components+=(ensure_python); shift;;
+        --docker) components+=(ensure_curl ensure_git ensure_docker); shift;;
+        --node) components+=(ensure_curl ensure_node); shift;;
+        --python) components+=(ensure_python ensure_pip); shift;;
         --poetry) components+=(ensure_poetry); shift;;
         --ci)
-            components=(ensure_python ensure_poetry ensure_node ensure_docker)
+            components=(ensure_python ensure_pip ensure_poetry ensure_node ensure_curl ensure_git ensure_docker)
             AUTO_MODE=true
             shift;;
         --exit-on-fail)
@@ -52,13 +52,13 @@ while [[ $# -gt 0 ]]; do
             PRESET="$1"
             case "$PRESET" in
                 dev)
-                    components=(ensure_docker ensure_node ensure_python ensure_poetry)
+                    components=(ensure_curl ensure_git ensure_docker ensure_node ensure_python ensure_pip ensure_poetry)
                     ;;
                 ci)
-                    components=(ensure_python ensure_poetry)
+                    components=(ensure_python ensure_pip ensure_poetry)
                     ;;
                 minimal)
-                    components=(ensure_python)
+                    components=(ensure_python ensure_pip)
                     ;;
                 *)
                     log_err "Unbekannte Option: $PRESET"; exit 1;;

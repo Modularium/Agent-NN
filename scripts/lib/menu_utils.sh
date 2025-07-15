@@ -8,14 +8,14 @@ __menu_utils_init
 
 interactive_menu() {
     local options=(
-        "Komplettes Setup" \
-        "Nur Python-Abhängigkeiten" \
-        "Nur System-Abhängigkeiten" \
-        "Frontend bauen" \
-        "Docker starten" \
-        "MCP starten" \
-        "Status anzeigen" \
-        "Abbrechen"
+        "💡 Schnellstart" \
+        "🧱 Systemabhängigkeiten" \
+        "🐍 Python & Poetry" \
+        "🎨 Frontend bauen" \
+        "🐳 Docker-Komponenten" \
+        "🧪 Tests & CI" \
+        "🔁 Reparatur" \
+        "❌ Abbrechen"
     )
     local count=${#options[@]}
     if command -v whiptail >/dev/null; then
@@ -31,12 +31,12 @@ interactive_menu() {
             8 "${options[7]}" 3>&1 1>&2 2>&3) || exit 1
         case $choice in
             1) RUN_MODE="full" ;;
-            2) RUN_MODE="python" ;;
-            3) RUN_MODE="system" ;;
+            2) RUN_MODE="system" ;;
+            3) RUN_MODE="python" ;;
             4) RUN_MODE="frontend" ;;
             5) RUN_MODE="docker" ;;
-            6) RUN_MODE="mcp" ;;
-            7) RUN_MODE="status" ;;
+            6) RUN_MODE="test" ;;
+            7) RUN_MODE="repair" ;;
             8) exit 0 ;;
         esac
     else
@@ -44,12 +44,12 @@ interactive_menu() {
         select opt in "${options[@]}"; do
             case $REPLY in
                 1) RUN_MODE="full"; break ;;
-                2) RUN_MODE="python"; break ;;
-                3) RUN_MODE="system"; break ;;
+                2) RUN_MODE="system"; break ;;
+                3) RUN_MODE="python"; break ;;
                 4) RUN_MODE="frontend"; break ;;
                 5) RUN_MODE="docker"; break ;;
-                6) RUN_MODE="mcp"; break ;;
-                7) RUN_MODE="status"; break ;;
+                6) RUN_MODE="test"; break ;;
+                7) RUN_MODE="repair"; break ;;
                 8) exit 0 ;;
                 *) echo "Ungültige Auswahl";;
             esac

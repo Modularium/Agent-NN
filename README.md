@@ -90,14 +90,14 @@ cd Agent-NN
 
 | Option | Beschreibung |
 | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `1`    | 🧠 Komplettes Setup (empfohlen) – installiert alle System- und Python-Abhängigkeiten, richtet Umgebungen ein, startet Docker und baut das Frontend |
-| `2`    | 🐍 Nur Python-Abhängigkeiten installieren (Poetry, venv, Pakete) |
-| `3`    | 🧱 Nur System-Abhängigkeiten installieren (Node.js, npm, curl, poetry, docker, etc.) |
-| `4`    | 🎨 Frontend bauen (nur UI) |
-| `5`    | 🐳 Docker-Container starten (nur Backend-Services) |
-| `6`    | ⚙️ MCP-Server starten (Model Context Protocol) |
-| `7`    | 📊 Installationsstatus & Versionen anzeigen |
-| `8`    | ❌ Abbrechen und Setup beenden |
+| `1`    | 💡 Schnellstart – alles automatisch installieren |
+| `2`    | 🧱 Systemabhängigkeiten (curl, git, Node.js, Docker) |
+| `3`    | 🐍 Python & Poetry einrichten |
+| `4`    | 🎨 Frontend bauen |
+| `5`    | 🐳 Docker-Komponenten starten |
+| `6`    | 🧪 Tests & CI ausführen |
+| `7`    | 🔁 Alles neu installieren / Reparieren |
+| `8`    | ❌ Abbrechen |
 
 ### ⚙️ Erweiterte Optionen
 
@@ -110,12 +110,15 @@ Du kannst das Setup auch **automatisiert** über CLI ausführen:
 
 **Verfügbare Flags:**
 
-| Flag             | Wirkung                                                                 |           |                                                                                                  |
-| ---------------- | ----------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------ |
-| `--with-sudo`    | Verwendet `sudo`, um Systempakete automatisch zu installieren           |           |                                                                                                  |
-| `--auto-install` | Installiert fehlende Abhängigkeiten automatisch (systemweit oder lokal) |           |                                                                                                  |
-| \`--preset=dev   | ci                                                                      | minimal\` | Verwendet vordefinierte Setup-Presets (für schnelle CI-Integration oder reduzierte Installation) |
 
+| Flag | Beschreibung |
+| ---- | ------------ |
+| `--full` | Komplettes Setup ohne Rückfragen |
+| `--auto-install` | Fehlende Pakete automatisch installieren |
+| `--with-sudo` | Paketinstallation mit sudo ausführen |
+| `--no-docker` | Docker-Schritte überspringen |
+| `--preset=dev|minimal|ci` | Vordefinierte Setup-Presets |
+| `--recover` | Bereits erledigte Schritte überspringen |
 ### 🧪 Voraussetzungen
 
 Falls du das Setup manuell ausführen möchtest, achte auf folgende Tools:

@@ -28,6 +28,10 @@ require_or_install() {
 require_or_install_curl() { require_or_install curl curl; }
 require_or_install_poetry() { require_or_install poetry poetry; }
 require_or_install_nodejs() { require_or_install node nodejs; }
+require_or_install_git() { require_or_install git git; }
+
+ensure_git() { require_or_install_git; }
+ensure_curl() { require_or_install_curl; }
 
 ask_install() {
     local component="$1"
@@ -87,6 +91,21 @@ install_python() {
     $SUDO_CMD apt-get install -y python3.10 python3.10-venv python3.10-distutils >/dev/null
 }
 
+ensure_pip() {
+    if ! command -v pip >/dev/null; then
+        if ask_install "pip"; then
+            if command -v apt-get >/dev/null; then
+                $SUDO_CMD apt-get update -y >/dev/null
+                $SUDO_CMD apt-get install -y python3-pip >/dev/null && return 0
+            fi
+            python3 -m ensurepip --upgrade >/dev/null 2>&1 || return 1
+        else
+            return 1
+        fi
+    fi
+    return 0
+}
+
 ensure_python() {
     local version
     if version=$(python3 --version 2>/dev/null); then
@@ -112,6 +131,7 @@ install_poetry() {
 }
 
 ensure_poetry() {
+    ensure_pip || return 1
     if ! command -v poetry &>/dev/null; then
         if ask_install "Poetry"; then
             install_poetry || return 1
@@ -138,10 +158,11 @@ ensure_python_tools() {
 }
 
 export -f ask_install install_docker ensure_docker install_node ensure_node \
-          install_python ensure_python install_poetry ensure_poetry \
+          install_python ensure_python ensure_pip install_poetry ensure_poetry \
           install_python_tool ensure_python_tools \
           require_or_install require_or_install_curl \
-          require_or_install_poetry require_or_install_nodejs
+          require_or_install_poetry require_or_install_nodejs \
+          ensure_git ensure_curl require_or_install_git
 
 # Install a list of system packages using the available package manager.
 # Supports apt for Debian/Ubuntu and brew for macOS.

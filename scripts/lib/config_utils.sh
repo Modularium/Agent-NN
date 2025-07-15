@@ -51,7 +51,15 @@ export -f load_config
 # Project-specific config stored in REPO_ROOT/.agentnn_config
 PROJECT_CONFIG_FILE="${PROJECT_CONFIG_FILE:-$REPO_ROOT/.agentnn_config}"
 
+ensure_config_file_exists() {
+    mkdir -p "$(dirname "$PROJECT_CONFIG_FILE")"
+    if [ ! -f "$PROJECT_CONFIG_FILE" ]; then
+        echo "# Agent-NN Setup Config" > "$PROJECT_CONFIG_FILE"
+    fi
+}
+
 load_project_config() {
+    ensure_config_file_exists
     [[ -f "$PROJECT_CONFIG_FILE" ]] && source "$PROJECT_CONFIG_FILE"
 }
 
@@ -60,10 +68,10 @@ get_config_value() {
     grep -E "^${key}=" "$PROJECT_CONFIG_FILE" 2>/dev/null | head -n1 | cut -d= -f2- | tr -d '"'
 }
 
-set_config_value() {
-    local key="$1"; local value="$2"
-    mkdir -p "$(dirname "$PROJECT_CONFIG_FILE")"
-    touch "$PROJECT_CONFIG_FILE"
+save_config_value() {
+    local key="$1"; local value="${2:-}"
+    ensure_config_file_exists
+    [[ -z "$key" || -z "$value" ]] && return 0
     if grep -q "^${key}=" "$PROJECT_CONFIG_FILE" 2>/dev/null; then
         sed -i "s|^${key}=.*|${key}=\"${value}\"|" "$PROJECT_CONFIG_FILE"
     else
@@ -71,4 +79,18 @@ set_config_value() {
     fi
 }
 
-export -f load_project_config get_config_value set_config_value
+load_config_value() {
+    local key="$1"; local default="$2"
+    ensure_config_file_exists
+    local value
+    value=$(grep -E "^${key}=" "$PROJECT_CONFIG_FILE" 2>/dev/null | head -n1 | cut -d= -f2- | tr -d '"')
+    if [[ -z "$value" ]]; then
+        log_info "→ Kein gespeicherter Wert für ${key,,}, benutze Default: $default"
+        echo "$default"
+    else
+        echo "$value"
+    fi
+}
+
+export -f load_project_config get_config_value \
+          save_config_value load_config_value ensure_config_file_exists

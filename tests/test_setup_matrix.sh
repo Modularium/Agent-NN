@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -eu
 
+echo 'POETRY_METHOD="venv"' > "$HOME/.agentnn_config"
+
 # Run setup with different presets in check mode
 scripts/setup.sh --check --full >/dev/null || true
 scripts/setup.sh --check --minimal >/dev/null || true
@@ -30,7 +32,7 @@ exit 1
 EOF
 chmod +x "$tmpdir/pip"
 printf "2\n" | PATH="$tmpdir" scripts/setup.sh --check 2>&1 | grep -q "Installation über venv" && echo "poetry menu" || true
-grep -q 'POETRY_INSTALL_METHOD="venv"' .agentnn_config && echo "config stored" || true
+grep -q 'POETRY_METHOD="venv"' "$HOME/.agentnn_config" && echo "config stored" || true
 rm -rf "$tmpdir"
 
 echo "setup matrix executed"

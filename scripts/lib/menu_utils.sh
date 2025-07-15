@@ -15,12 +15,13 @@ interactive_menu() {
         "🐳 Docker-Komponenten" \
         "🧪 Tests & CI" \
         "🔁 Reparatur" \
-        "❌ Abbrechen"
+        "❌ Abbrechen" \
+        "⚙️ Konfiguration anzeigen"
     )
     local count=${#options[@]}
     if command -v whiptail >/dev/null; then
         local choice
-        choice=$(whiptail --title "Agent-NN Setup" --menu "Aktion wählen:" 20 78 8 \
+        choice=$(whiptail --title "Agent-NN Setup" --menu "Aktion wählen:" 20 78 9 \
             1 "${options[0]}" \
             2 "${options[1]}" \
             3 "${options[2]}" \
@@ -28,7 +29,8 @@ interactive_menu() {
             5 "${options[4]}" \
             6 "${options[5]}" \
             7 "${options[6]}" \
-            8 "${options[7]}" 3>&1 1>&2 2>&3) || exit 1
+            8 "${options[7]}" \
+            9 "${options[8]}" 3>&1 1>&2 2>&3) || exit 1
         case $choice in
             1) RUN_MODE="full" ;;
             2) RUN_MODE="system" ;;
@@ -38,6 +40,7 @@ interactive_menu() {
             6) RUN_MODE="test" ;;
             7) RUN_MODE="repair" ;;
             8) RUN_MODE="exit" ;;
+            9) RUN_MODE="show_config" ;;
         esac
     else
         PS3="Auswahl: "
@@ -51,6 +54,7 @@ interactive_menu() {
                 6) RUN_MODE="test"; break ;;
                 7) RUN_MODE="repair"; break ;;
                 8) RUN_MODE="exit"; break ;;
+                9) RUN_MODE="show_config"; break ;;
                 *) echo "Ungültige Auswahl";;
             esac
         done

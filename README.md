@@ -103,6 +103,10 @@ cd Agent-NN
 | `7`    | 🔁 Alles neu installieren / Reparieren |
 | `8`    | ❌ Abbrechen |
 
+### 💡 Setup Verhalten
+
+Agent-NN merkt sich ausgewählte Setup-Optionen wie Poetry-Installationsmethode in einer Datei `.agentnn_config`. Diese wird beim ersten Setup automatisch angelegt und kann bearbeitet oder gelöscht werden.
+
 ### ⚙️ Erweiterte Optionen
 
 Du kannst das Setup auch **automatisiert** über CLI ausführen:

@@ -280,6 +280,15 @@ print_next_steps() {
     echo
 }
 
+show_current_config() {
+    ensure_config_file_exists
+    echo "┌ Aktuelle Konfiguration ┐"
+    local poetry
+    poetry=$(load_config_value "POETRY_METHOD" "venv")
+    printf "│ Poetry: %-14s │\n" "$poetry"
+    echo "└─────────────────────────┘"
+}
+
 return_to_main_menu() {
     local delay="${1:-3}"
     echo
@@ -340,6 +349,7 @@ main() {
     setup_logging
     load_config || true
     load_project_config || true
+    ensure_config_file_exists
     
     # Argumente parsen
     parse_setup_args "${original_args[@]}"
@@ -445,6 +455,9 @@ main() {
             ;;
         repair)
             run_step "Repariere" "${SCRIPT_DIR}/repair_env.sh"
+            ;;
+        show_config)
+            show_current_config
             ;;
         test)
             run_step "Tests" run_project_tests

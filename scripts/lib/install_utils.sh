@@ -9,6 +9,24 @@ __install_utils_init() {
 
 __install_utils_init
 
+: "${POETRY_METHOD:=}"
+if [ -z "$POETRY_METHOD" ]; then
+    log_warn "Variable POETRY_METHOD war nicht gesetzt – fallback auf venv"
+    POETRY_METHOD="venv"
+fi
+
+validate_poetry_method() {
+    case "$1" in
+        system|venv|pipx) return 0 ;;
+        *) echo "Ung\xC3\xBCltige POETRY_METHOD: $1"; return 1 ;;
+    esac
+}
+
+validate_poetry_method "$POETRY_METHOD" || {
+    log_warn "Ung\xC3\xBCltige Methode '$POETRY_METHOD' – fallback auf venv"
+    POETRY_METHOD="venv"
+}
+
 AUTO_MODE="${AUTO_MODE:-false}"
 SUDO_CMD="${SUDO_CMD:-}"
 

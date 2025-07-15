@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
 set -eu
 
+# Config file missing
+rm -f "$HOME/.agentnn_config"
+scripts/setup.sh --check >/dev/null || true
+
+# Empty config
+: > "$HOME/.agentnn_config"
+scripts/setup.sh --check >/dev/null || true
+
+# Invalid value
+echo 'POETRY_METHOD="invalid"' > "$HOME/.agentnn_config"
+scripts/setup.sh --check >/dev/null || true
+
+# Unset environment variable
+unset POETRY_METHOD
+scripts/setup.sh --check >/dev/null || true
+
+# Valid default value
 echo 'POETRY_METHOD="venv"' > "$HOME/.agentnn_config"
 
 # Run setup with different presets in check mode
